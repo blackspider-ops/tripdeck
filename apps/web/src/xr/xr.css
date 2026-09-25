@@ -1,0 +1,50 @@
+/* Headset + Gallery page chrome. Paper cards on a dark room; no gradients, no glass, no glow. */
+.cr-page { position: fixed; inset: 0; background: var(--room); color: var(--ink); font-family: var(--f-body); overflow: hidden; }
+.cr-canvas { position: absolute; inset: 0; }
+.cr-overlay { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; pointer-events: none; }
+.cr-card {
+  pointer-events: auto; background: var(--paper); color: var(--ink); border: 1px solid var(--paper-deep);
+  box-shadow: 3px 3px 0 var(--paper-deep); padding: 28px 28px 22px; max-width: 520px; width: 100%;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 25px, rgba(126,98,54,0.12) 25px 26px);
+}
+.cr-card h1 { font-family: var(--f-display); font-weight: 400; font-size: 34px; margin: 0 0 6px; letter-spacing: 0.02em; }
+.cr-card p { margin: 6px 0; line-height: 1.5; font-size: 17px; }
+.cr-card .muted { color: var(--ink-soft); font-size: 15px; }
+.cr-card .mono { font-family: var(--f-mono); }
+.cr-btn {
+  display: inline-block; margin-top: 14px; font-family: var(--f-heading); font-size: 19px; padding: 12px 20px;
+  background: var(--paper); color: var(--ink); border: 2px solid var(--ink); cursor: pointer; min-height: 48px;
+}
+.cr-btn:active { transform: translateY(1px); }
+.cr-btn.primary { background: var(--sounding-red); color: var(--paper); border-color: var(--sounding-red); }
+.cr-btn + .cr-btn { margin-left: 10px; }
+.cr-code {
+  font-family: var(--f-mono); font-size: 44px; letter-spacing: 0.35em; text-transform: uppercase; width: 100%;
+  padding: 12px 10px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); text-align: center;
+  box-sizing: border-box; margin-top: 14px;
+}
+.cr-error { color: var(--sounding-red); margin-top: 10px; }
+.cr-strip {
+  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); width: min(900px, calc(100% - 32px));
+  background: var(--paper); border: 1px solid var(--paper-deep); box-shadow: 2px 2px 0 var(--paper-deep); padding: 12px 18px 14px;
+}
+.cr-strip .who { font-family: var(--f-heading); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; }
+.cr-strip .line { font-size: 21px; line-height: 1.4; margin-top: 3px; }
+.cr-corner {
+  position: absolute; top: 16px; right: 16px; background: var(--paper); border: 1px solid var(--paper-deep);
+  padding: 8px 14px; font-family: var(--f-heading); font-size: 14px; letter-spacing: 0.06em; box-shadow: 2px 2px 0 var(--paper-deep);
+}
+.cr-corner .mono { font-family: var(--f-mono); letter-spacing: 0; }
+.cr-toolbar { position: absolute; top: 16px; left: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+.cr-toolbar button {
+  font-family: var(--f-heading); font-size: 14px; background: var(--paper); color: var(--ink); border: 1px solid var(--ink);
+  padding: 8px 12px; cursor: pointer; min-height: 40px;
+}
+.cr-toolbar button:disabled { opacity: 0.55; cursor: default; }
+/* under the toolbar, narrow: the bottom edge belongs to the in-scene caption strip and the centre to the Menu board */
+.cr-hint { position: absolute; left: 16px; top: 64px; margin: 0; color: #d9cfb8; font-size: 13px; font-family: var(--f-body); max-width: min(200px, 24vw); }
+@media (max-width: 600px) {
+  .cr-strip .line { font-size: 17px; }
+  .cr-card h1 { font-size: 28px; }
+  .cr-code { font-size: 32px; }
+}

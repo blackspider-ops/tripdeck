@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chart book snapshot (b-) > expo: plans, public and private views are unchanged 1`] = `
+{
+  "book": "b784ed5985cb480f",
+  "plans": 12,
+  "views": "a98a85aac54a67b1",
+}
+`;
+
+exports[`chart book snapshot (b-) > four: plans, public and private views are unchanged 1`] = `
+{
+  "book": "54797d8cd6b9b798",
+  "plans": 6,
+  "views": "8fd401adf14883b6",
+}
+`;
+
+exports[`chart book snapshot (b-) > noCommonWindow: plans, public and private views are unchanged 1`] = `
+{
+  "book": "75140594bc15a938",
+  "plans": 24,
+  "views": "7367da1997a2ca07",
+}
+`;
+
+exports[`chart book snapshot (b-) > pair: plans, public and private views are unchanged 1`] = `
+{
+  "book": "c21417e73615917a",
+  "plans": 12,
+  "views": "712bb7c3e782af90",
+}
+`;
+
+exports[`chart book snapshot (b-) > picky: plans, public and private views are unchanged 1`] = `
+{
+  "book": "705fb6c25d999938",
+  "plans": 12,
+  "views": "97a31f5715dcec8c",
+}
+`;
+
+exports[`chart book snapshot (b-) > solo: plans, public and private views are unchanged 1`] = `
+{
+  "book": "d95762841a02d4d8",
+  "plans": 30,
+  "views": "8ac9982b2ad0832d",
+}
+`;
+
+exports[`chart book snapshot (b-) > w2: plans, public and private views are unchanged 1`] = `
+{
+  "book": "7a6afbd10879f5d4",
+  "plans": 12,
+  "views": "fbae0e9b8c3de646",
+}
+`;

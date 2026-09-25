@@ -1,0 +1,22 @@
+node_modules
+**/node_modules
+apps/web/dist
+apps/server/.cache
+.env
+.git
+# TR5-017: runtime data never ships in the image (memory.json, backboard-assistants.json, *.corrupt-*, *.tmp)
+apps/server/data
+# SEC-021: no local secrets, build output, caches, tests or review docs in the build context
+.env*
+!.env.example
+apps/server/dist
+**/.cache
+**/dist
+**/*.log
+**/.DS_Store
+coverage
+apps/server/test
+apps/web/src/**/*.test.ts
+docs
+scripts
+.claude

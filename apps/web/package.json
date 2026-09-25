@@ -1,0 +1,39 @@
+{
+  "name": "@all-ayes/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:lan": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run src"
+  },
+  "dependencies": {
+    "@all-ayes/shared": "*",
+    "@simplewebauthn/browser": "^13.3.0",
+    "3d-tiles-renderer": "^0.4.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.0",
+    "socket.io-client": "^4.8.1",
+    "three": "^0.170.0",
+    "troika-three-text": "^0.52.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.170.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "happy-dom": "^20.14.5",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vitest": "^4.1.11"
+  }
+}

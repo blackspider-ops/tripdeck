@@ -1,0 +1,36 @@
+/* Chart Room design tokens (docs/02-design-language.md §3–4). Phone UI builds on these. */
+/* OPT-058: the same bundled woffs the headset uses (public/textures/type), no third-party font CSS on the critical path.
+   font-display: swap paints text at once in the fallback; missing weights/italics are synthesised by the browser. */
+@font-face { font-family: "Source Serif 4"; src: url("/textures/type/source-serif.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Libre Caslon Text"; src: url("/textures/type/caslon-text.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Libre Caslon Text"; src: url("/textures/type/caslon-text-bold.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Libre Caslon Display"; src: url("/textures/type/caslon-display.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("/textures/type/plex-mono.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Homemade Apple"; src: url("/textures/type/homemade-apple.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+:root {
+  --paper: #EFE6D2; --paper-deep: #E2D6BA; --ink: #1F2A44; --ink-soft: #4A5670;
+  --sounding-red: #B23A2E; --brass: #B08D57; --brass-dark: #7E6236; --sea-wash: #9DB7B5;
+  --wood: #6B4A2E; --ok-green: #3F6B4E;
+  /* not themed: the dim chart room behind the table (= PALETTE.room), and the light paper a QR code is printed on */
+  --room: #221C17; --qr-paper: #EFE6D2;
+  --f-display: "Libre Caslon Display", Georgia, serif;
+  --f-heading: "Libre Caslon Text", Georgia, serif;
+  --f-body: "Source Serif 4", Georgia, serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --f-hand: "Homemade Apple", cursive;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #1B2130; --paper-deep: #252C3D; --ink: #E8DFC9; --ink-soft: #B9B2A0;
+    --sounding-red: #E0705F; --brass: #C9A66B; --brass-dark: #C9A66B; --sea-wash: #5E7F7C;
+    --ok-green: #7FB28F;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1B2130; --paper-deep: #252C3D; --ink: #E8DFC9; --ink-soft: #B9B2A0;
+  --sounding-red: #E0705F; --brass: #C9A66B; --brass-dark: #C9A66B; --sea-wash: #5E7F7C;
+  --ok-green: #7FB28F;
+}
+html, body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--f-body); }
+.boot { font-family: var(--f-body); padding: 40px 20px; color: var(--ink-soft); }

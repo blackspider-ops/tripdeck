@@ -1,0 +1,81 @@
+{
+  "presetId": "three-ports",
+  "name": "Three Ports",
+  "cities": [
+    { "_id": "LIS", "name": "Lisbon", "centerLat": 38.712, "centerLng": -9.138, "tileRadiusKm": 1.5, "publicFlags": ["hilly neighborhoods", "overnight flights from the US"] },
+    { "_id": "MEX", "name": "Mexico City", "centerLat": 19.42, "centerLng": -99.165, "tileRadiusKm": 2.0, "publicFlags": ["high altitude (2,240 m)"] },
+    { "_id": "YUL", "name": "Montréal", "centerLat": 45.508, "centerLng": -73.57, "tileRadiusKm": 1.5, "publicFlags": ["below freezing in March"] }
+  ],
+  "dateWindows": [
+    { "id": "W1", "start": "2027-03-12", "end": "2027-03-16", "nights": 4 },
+    { "id": "W2", "start": "2027-03-13", "end": "2027-03-16", "nights": 3 }
+  ],
+  "flights": [
+    { "_id": "LIS-f-atl-dl", "kind": "flight", "cityId": "LIS", "origin": "ATL", "dateWindowId": "W1", "airline": "Delta", "departLocal": "2027-03-12T18:10", "arriveLocal": "2027-03-13T07:55", "returnLocal": "2027-03-16T12:40", "stops": 0, "redEye": true, "priceCents": 69000 },
+    { "_id": "LIS-f-atl-ua", "kind": "flight", "cityId": "LIS", "origin": "ATL", "dateWindowId": "W1", "airline": "United (via EWR)", "departLocal": "2027-03-12T13:05", "arriveLocal": "2027-03-13T08:30", "returnLocal": "2027-03-16T13:10", "stops": 1, "redEye": true, "priceCents": 61200 },
+    { "_id": "LIS-f-ord-ua", "kind": "flight", "cityId": "LIS", "origin": "ORD", "dateWindowId": "W1", "airline": "United (via EWR)", "departLocal": "2027-03-12T12:40", "arriveLocal": "2027-03-13T08:30", "returnLocal": "2027-03-16T13:10", "stops": 1, "redEye": true, "priceCents": 52000 },
+    { "_id": "LIS-f-ord-tp", "kind": "flight", "cityId": "LIS", "origin": "ORD", "dateWindowId": "W1", "airline": "TAP", "departLocal": "2027-03-12T17:30", "arriveLocal": "2027-03-13T07:20", "returnLocal": "2027-03-16T12:15", "stops": 0, "redEye": true, "priceCents": 64800 },
+    { "_id": "LIS-f-jfk-tp", "kind": "flight", "cityId": "LIS", "origin": "JFK", "dateWindowId": "W1", "airline": "TAP", "departLocal": "2027-03-12T20:30", "arriveLocal": "2027-03-13T08:25", "returnLocal": "2027-03-16T13:45", "stops": 0, "redEye": true, "priceCents": 54000 },
+    { "_id": "LIS-f-jfk-dl", "kind": "flight", "cityId": "LIS", "origin": "JFK", "dateWindowId": "W1", "airline": "Delta", "departLocal": "2027-03-12T19:00", "arriveLocal": "2027-03-13T07:05", "returnLocal": "2027-03-16T12:30", "stops": 0, "redEye": true, "priceCents": 57500 },
+    { "_id": "MEX-f-atl-dl", "kind": "flight", "cityId": "MEX", "origin": "ATL", "dateWindowId": "W1", "airline": "Delta", "departLocal": "2027-03-12T09:40", "arriveLocal": "2027-03-12T11:25", "returnLocal": "2027-03-16T13:30", "stops": 0, "redEye": false, "priceCents": 38000 },
+    { "_id": "MEX-f-ord-am", "kind": "flight", "cityId": "MEX", "origin": "ORD", "dateWindowId": "W1", "airline": "Aeroméxico", "departLocal": "2027-03-12T08:15", "arriveLocal": "2027-03-12T11:55", "returnLocal": "2027-03-16T14:05", "stops": 0, "redEye": false, "priceCents": 33000 },
+    { "_id": "MEX-f-jfk-am", "kind": "flight", "cityId": "MEX", "origin": "JFK", "dateWindowId": "W1", "airline": "Aeroméxico", "departLocal": "2027-03-12T08:00", "arriveLocal": "2027-03-12T11:40", "returnLocal": "2027-03-16T13:00", "stops": 0, "redEye": false, "priceCents": 36000 },
+    { "_id": "MEX-f-jfk-2s", "kind": "flight", "cityId": "MEX", "origin": "JFK", "dateWindowId": "W1", "airline": "Budget (2 stops)", "departLocal": "2027-03-12T06:05", "arriveLocal": "2027-03-12T16:50", "returnLocal": "2027-03-16T11:20", "stops": 2, "redEye": false, "priceCents": 24500 },
+    { "_id": "YUL-f-atl-dl", "kind": "flight", "cityId": "YUL", "origin": "ATL", "dateWindowId": "W1", "airline": "Delta", "departLocal": "2027-03-12T10:15", "arriveLocal": "2027-03-12T12:45", "returnLocal": "2027-03-16T14:00", "stops": 0, "redEye": false, "priceCents": 31000 },
+    { "_id": "YUL-f-ord-ac", "kind": "flight", "cityId": "YUL", "origin": "ORD", "dateWindowId": "W1", "airline": "Air Canada", "departLocal": "2027-03-12T09:00", "arriveLocal": "2027-03-12T11:55", "returnLocal": "2027-03-16T13:20", "stops": 0, "redEye": false, "priceCents": 28000 },
+    { "_id": "YUL-f-jfk-dl", "kind": "flight", "cityId": "YUL", "origin": "JFK", "dateWindowId": "W1", "airline": "Delta", "departLocal": "2027-03-12T08:30", "arriveLocal": "2027-03-12T10:05", "returnLocal": "2027-03-16T12:45", "stops": 0, "redEye": false, "priceCents": 19000 }
+  ],
+  "hotels": [
+    { "_id": "LIS-h-casa-alfama", "kind": "hotel", "cityId": "LIS", "name": "Casa Alfama", "neighborhood": "Alfama", "lat": 38.711, "lng": -9.13, "stayType": "apartment", "nightlyCents": 21000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "LIS-h-baixa-triple", "kind": "hotel", "cityId": "LIS", "name": "Hotel Baixa (triple room)", "neighborhood": "Baixa", "lat": 38.7107, "lng": -9.1374, "stayType": "hotel", "nightlyCents": 23500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "LIS-h-cais-loft", "kind": "hotel", "cityId": "LIS", "name": "Cais Loft", "neighborhood": "Cais do Sodré", "lat": 38.706, "lng": -9.144, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "LIS-h-belem-guest", "kind": "hotel", "cityId": "LIS", "name": "Belém Guesthouse", "neighborhood": "Belém", "lat": 38.697, "lng": -9.206, "stayType": "guesthouse", "nightlyCents": 26000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "LIS-h-bairro-hostel", "kind": "hotel", "cityId": "LIS", "name": "Bairro Alto Hostel (3 beds)", "neighborhood": "Bairro Alto", "lat": 38.7131, "lng": -9.1447, "stayType": "hostel", "nightlyCents": 12600, "sleeps": 3, "rating": 4.0 },
+    { "_id": "MEX-h-roma-flat", "kind": "hotel", "cityId": "MEX", "name": "Roma Norte Flat", "neighborhood": "Roma Norte", "lat": 19.415, "lng": -99.162, "stayType": "apartment", "nightlyCents": 15000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "MEX-h-condesa", "kind": "hotel", "cityId": "MEX", "name": "Condesa Boutique (triple)", "neighborhood": "Condesa", "lat": 19.412, "lng": -99.174, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "MEX-h-polanco", "kind": "hotel", "cityId": "MEX", "name": "Polanco Hotel (triple)", "neighborhood": "Polanco", "lat": 19.433, "lng": -99.195, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "MEX-h-coyoacan", "kind": "hotel", "cityId": "MEX", "name": "Casa Coyoacán", "neighborhood": "Coyoacán", "lat": 19.35, "lng": -99.162, "stayType": "guesthouse", "nightlyCents": 12000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "MEX-h-centro-hostel", "kind": "hotel", "cityId": "MEX", "name": "Centro Hostel (3 beds)", "neighborhood": "Centro Histórico", "lat": 19.4326, "lng": -99.1332, "stayType": "hostel", "nightlyCents": 6600, "sleeps": 3, "rating": 3.9 },
+    { "_id": "YUL-h-plateau", "kind": "hotel", "cityId": "YUL", "name": "Plateau Apartment", "neighborhood": "Plateau", "lat": 45.523, "lng": -73.581, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "YUL-h-old-mtl", "kind": "hotel", "cityId": "YUL", "name": "Old Montréal Inn (triple)", "neighborhood": "Vieux-Montréal", "lat": 45.5075, "lng": -73.554, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "YUL-h-mile-end", "kind": "hotel", "cityId": "YUL", "name": "Mile End Guesthouse", "neighborhood": "Mile End", "lat": 45.525, "lng": -73.6, "stayType": "guesthouse", "nightlyCents": 13500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "YUL-h-griffintown", "kind": "hotel", "cityId": "YUL", "name": "Griffintown Loft", "neighborhood": "Griffintown", "lat": 45.492, "lng": -73.56, "stayType": "apartment", "nightlyCents": 20000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "YUL-h-downtown-hostel", "kind": "hotel", "cityId": "YUL", "name": "Downtown Hostel (3 beds)", "neighborhood": "Downtown", "lat": 45.5017, "lng": -73.5673, "stayType": "hostel", "nightlyCents": 10500, "sleeps": 3, "rating": 4.0 }
+  ],
+  "activities": [
+    { "_id": "LIS-a-tram-castle", "kind": "activity", "cityId": "LIS", "name": "Tram 28 & Castelo de São Jorge", "short": "Tram 28 & castle", "tags": ["history"], "lat": 38.7139, "lng": -9.1334, "durationMin": 150, "priceCents": 1800, "startEarliest": "09:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "LIS-a-fado", "kind": "activity", "cityId": "LIS", "name": "Fado night (Bairro Alto tasca)", "short": "Fado night", "tags": ["music", "nightlife"], "lat": 38.7127, "lng": -9.144, "durationMin": 120, "priceCents": 3800, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "LIS-a-food-tour", "kind": "activity", "cityId": "LIS", "name": "Tascas & pastéis food tour", "short": "Food tour", "tags": ["food"], "lat": 38.7107, "lng": -9.1374, "durationMin": 180, "priceCents": 6500, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "LIS-a-cascais", "kind": "activity", "cityId": "LIS", "name": "Cascais beach day (train)", "short": "Cascais beach day", "tags": ["beach", "chill"], "lat": 38.6979, "lng": -9.4215, "durationMin": 360, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "LIS-a-belem", "kind": "activity", "cityId": "LIS", "name": "Belém Tower & Jerónimos", "short": "Belém", "tags": ["museums", "history"], "lat": 38.6916, "lng": -9.216, "durationMin": 180, "priceCents": 2200, "startEarliest": "09:30", "startLatest": "14:00", "role": "pick" },
+    { "_id": "LIS-a-tile-museum", "kind": "activity", "cityId": "LIS", "name": "National Tile Museum", "short": "Tile Museum", "tags": ["museums"], "lat": 38.7247, "lng": -9.1136, "durationMin": 90, "priceCents": 800, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "LIS-a-bairro-night", "kind": "activity", "cityId": "LIS", "name": "Bairro Alto night out", "short": "Bairro Alto night out", "tags": ["nightlife"], "lat": 38.7131, "lng": -9.1447, "durationMin": 180, "priceCents": 2500, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "LIS-a-sintra", "kind": "activity", "cityId": "LIS", "name": "Sintra day trip", "short": "Sintra", "tags": ["history", "nature"], "lat": 38.7876, "lng": -9.3905, "durationMin": 480, "priceCents": 5500, "startEarliest": "07:30", "startLatest": "08:30", "role": "pick", "earlyStart": true },
+    { "_id": "MEX-a-frida", "kind": "activity", "cityId": "MEX", "name": "Museo Frida Kahlo", "short": "Frida Kahlo museum", "tags": ["museums", "history"], "lat": 19.3551, "lng": -99.1625, "durationMin": 120, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "MEX-a-lucha", "kind": "activity", "cityId": "MEX", "name": "Lucha libre, Arena México", "short": "Lucha libre", "tags": ["nightlife"], "lat": 19.4247, "lng": -99.15, "durationMin": 150, "priceCents": 3000, "startEarliest": "19:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "MEX-a-food-tour", "kind": "activity", "cityId": "MEX", "name": "Roma street food tour", "short": "Street food tour", "tags": ["food"], "lat": 19.415, "lng": -99.162, "durationMin": 180, "priceCents": 5500, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "MEX-a-anthro", "kind": "activity", "cityId": "MEX", "name": "Museo Nacional de Antropología", "short": "Anthropology museum", "tags": ["museums"], "lat": 19.426, "lng": -99.1863, "durationMin": 180, "priceCents": 600, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MEX-a-mezcal", "kind": "activity", "cityId": "MEX", "name": "Mezcal bar crawl, Roma", "short": "Mezcal crawl", "tags": ["nightlife"], "lat": 19.418, "lng": -99.16, "durationMin": 180, "priceCents": 2500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "MEX-a-xochimilco", "kind": "activity", "cityId": "MEX", "name": "Xochimilco trajinera", "short": "Xochimilco boats", "tags": ["chill", "music"], "lat": 19.257, "lng": -99.103, "durationMin": 180, "priceCents": 2000, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MEX-a-teotihuacan", "kind": "activity", "cityId": "MEX", "name": "Teotihuacán pyramids", "short": "Teotihuacán", "tags": ["history", "nature"], "lat": 19.6925, "lng": -98.8438, "durationMin": 480, "priceCents": 4500, "startEarliest": "06:30", "startLatest": "07:30", "role": "pick", "earlyStart": true },
+    { "_id": "YUL-a-old-mtl", "kind": "activity", "cityId": "YUL", "name": "Old Montréal walk", "short": "Old Montréal walk", "tags": ["history"], "lat": 45.5075, "lng": -73.554, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "YUL-a-jazz", "kind": "activity", "cityId": "YUL", "name": "Jazz bar night", "short": "Jazz night", "tags": ["music", "nightlife"], "lat": 45.51, "lng": -73.565, "durationMin": 150, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "YUL-a-market", "kind": "activity", "cityId": "YUL", "name": "Jean-Talon market food walk", "short": "Jean-Talon market", "tags": ["food"], "lat": 45.5362, "lng": -73.6146, "durationMin": 150, "priceCents": 4000, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "YUL-a-bagels", "kind": "activity", "cityId": "YUL", "name": "St-Viateur vs Fairmount bagel run", "short": "Bagel run", "tags": ["food"], "lat": 45.5227, "lng": -73.601, "durationMin": 60, "priceCents": 1200, "startEarliest": "08:30", "startLatest": "16:00", "role": "pick" },
+    { "_id": "YUL-a-mmfa", "kind": "activity", "cityId": "YUL", "name": "Museum of Fine Arts", "short": "Fine Arts museum", "tags": ["museums"], "lat": 45.4986, "lng": -73.5794, "durationMin": 150, "priceCents": 2400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "YUL-a-snowshoe", "kind": "activity", "cityId": "YUL", "name": "Mont-Royal snowshoe", "short": "Mont-Royal snowshoe", "tags": ["nature"], "lat": 45.5048, "lng": -73.5874, "durationMin": 150, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "YUL-a-spa", "kind": "activity", "cityId": "YUL", "name": "Bota Bota floating spa", "short": "Bota Bota spa", "tags": ["chill"], "lat": 45.5, "lng": -73.551, "durationMin": 180, "priceCents": 7000, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LIS-h-casa-alfama", "toId": "LIS-a-fado", "mode": "walk", "minutes": 30, "note": "steep streets" },
+    { "fromId": "LIS-h-casa-alfama", "toId": "LIS-a-cascais", "mode": "train", "minutes": 55, "note": "tram + train via Cais do Sodré" },
+    { "fromId": "LIS-h-casa-alfama", "toId": "LIS-a-belem", "mode": "tram", "minutes": 35, "note": "Tram 15E" },
+    { "fromId": "MEX-h-roma-flat", "toId": "MEX-a-frida", "mode": "taxi", "minutes": 25 },
+    { "fromId": "MEX-h-roma-flat", "toId": "MEX-a-xochimilco", "mode": "taxi", "minutes": 45 },
+    { "fromId": "MEX-h-roma-flat", "toId": "MEX-a-anthro", "mode": "taxi", "minutes": 15 },
+    { "fromId": "MEX-h-roma-flat", "toId": "MEX-a-lucha", "mode": "taxi", "minutes": 15 },
+    { "fromId": "MEX-a-frida", "toId": "MEX-a-lucha", "mode": "taxi", "minutes": 30, "note": "Coyoacán → Doctores" },
+    { "fromId": "MEX-a-xochimilco", "toId": "MEX-a-frida", "mode": "taxi", "minutes": 25 },
+    { "fromId": "MEX-a-food-tour", "toId": "MEX-a-frida", "mode": "taxi", "minutes": 25 }
+  ]
+}

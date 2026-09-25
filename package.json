@@ -1,0 +1,25 @@
+{
+  "name": "all-ayes",
+  "private": true,
+  "version": "0.1.0",
+  "description": "All Ayes \u2014 everyone's in, or nobody pays. Group trip planning with private AI mates, a mixed-reality chart table, and all-or-nothing group checkout.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @all-ayes/server & npm run dev --workspace @all-ayes/web",
+    "dev:server": "npm run dev --workspace @all-ayes/server",
+    "dev:web": "npm run dev --workspace @all-ayes/web",
+    "build": "npm run build --workspace @all-ayes/web && npm run build --workspace @all-ayes/server",
+    "start": "npm run start --workspace @all-ayes/server",
+    "start:prod": "npm run start:prod --workspace @all-ayes/server",
+    "test": "npm test --workspace @all-ayes/server && npm test --workspace @all-ayes/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "budget": "node scripts/bundle-budget.mjs",
+    "check": "npm run typecheck && npm test && npm run build && npm run budget"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

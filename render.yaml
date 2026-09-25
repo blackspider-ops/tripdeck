@@ -1,0 +1,60 @@
+# One-click deploy on Render (Blueprint). Long-lived WebSockets + HTTPS, which the Quest needs.
+# Dashboard → New → Blueprint → pick this repo. Then add the custom domain allayes.tech.
+services:
+  - type: web
+    name: all-ayes
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    # L5-002: single writer — exactly one instance (see the disk note below and DEPLOY.md "One helm at a time")
+    numInstances: 1
+    # TR5-008: the container disk is wiped on deploy. This disk keeps local memory + the Backboard assistant map
+    # (only used when MONGODB_URI is unset; with Mongo they live there) and the regenerable voice cache.
+    # Render mounts it root-owned; the Dockerfile's entrypoint chowns DATA_DIR/CACHE_DIR to `node` before dropping root.
+    # Keep it even with MongoDB (L5-002): a disk turns off zero-downtime deploys, so the old helm stops before the new
+    # one restores. The helm must be the ONLY writer (restore voids "abandoned" seals); a MongoDB lease backs this up
+    # (a new instance waits for the old one's lease), but never run two instances or remove the disk.
+    disk:
+      name: all-ayes-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PUBLIC_BASE_URL
+        value: https://allayes.tech
+      # Render generates a random 256-bit value (44 chars, over the 32-char production minimum). The /demo page needs it.
+      - key: DEV_KEY
+        generateValue: true
+      # Headset pair codes are HMAC'd under this; without it they're per process and break after a restart/redeploy.
+      - key: PAIRING_SECRET
+        generateValue: true
+      # Render's load balancer is the one proxy in front (the server also defaults to 1 when RENDER is set).
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: DATA_DIR
+        value: /var/data/data
+      - key: CACHE_DIR
+        value: /var/data/cache
+      - key: EXPO_MODE
+        value: "true"
+      - key: PAYMENTS_MODE
+        value: sim
+      # Atlas → Network Access must allow Render's outbound IPs (or 0.0.0.0/0), else the server runs without Mongo.
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB
+        value: all_ayes
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: BACKBOARD_API_KEY
+        sync: false
+      # VITE_* are build-time: Render passes env vars to `docker build` as build args, and the Dockerfile declares
+      # both ARGs before `npm run build`. Changing one needs a redeploy (rebuild), not just a restart.
+      - key: VITE_GOOGLE_MAP_TILES_KEY
+        sync: false
+      - key: VITE_CESIUM_ION_TOKEN
+        sync: false
