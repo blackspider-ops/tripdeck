@@ -29,11 +29,13 @@ import type { DryRun } from "./dryrun.js";
 import type { Sealing } from "./sealing.js";
 import type { Replayer } from "./replay.js";
 import type { Persistence } from "./persistence.js";
+import type { LivePrices } from "./live.js";
+import type { LiveInventory } from "../fit/live.js";
 
 /** What every trips module sees: the core and its sibling modules (O2-027). TripService implements it. */
 export interface Helm extends HelmCore {
   readonly crew: Crew; readonly identity: Identity; readonly table: Table; readonly dryrun: DryRun;
-  readonly sealing: Sealing; readonly replayer: Replayer; readonly archive: Persistence;
+  readonly sealing: Sealing; readonly replayer: Replayer; readonly archive: Persistence; readonly live: LivePrices;
 }
 
 /** O2-010: the organizer-action checks, in the order they have always run (who, then which voyage, then its phase). */
@@ -52,6 +54,8 @@ export abstract class HelmCore {
   briefs = new Map<string, BriefRec>(); // key memberId
   chartBooks = new Map<string, Plan[]>();
   privacy = new Map<string, PrivacyContext>();
+  /** docs/12: each voyage's live (RouteStack) overlay — never the shared Dataset. Recomputable (the provider caches 6 h). */
+  liveInventory = new Map<string, LiveInventory>();
   pendingHails = new Map<string, { memberId: string; text: string }[]>();
   lastHailAt = new Map<string, number>();
   /** Trips whose Captain is deciding: hails are refused from here on (TR4-011). */
@@ -338,6 +342,7 @@ export abstract class HelmCore {
   dropHot(tripId: string) {
     this.chartBooks.delete(tripId);
     this.privacy.delete(tripId);
+    this.liveInventory.delete(tripId);
     this.pendingHails.delete(tripId);
     this.hailsClosed.delete(tripId);
   }

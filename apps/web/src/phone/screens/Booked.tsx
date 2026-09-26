@@ -56,6 +56,9 @@ export default function Booked() {
             <span className="mono">{formatCents(share)}</span>
           </p>
         ) : null}
+        {plan?.priceSource === "live" ? (
+          <p className="small price-source">Prices from RouteStack{plan.priceFeed === "live" ? "" : " sandbox"}</p>
+        ) : null}
         {plan ? <Button block onClick={() => downloadIcs(tripName, plan, mine, win, reference)}>Save to your log (.ics)</Button> : null}
       </Card>
 

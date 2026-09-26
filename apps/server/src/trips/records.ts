@@ -64,6 +64,11 @@ export interface TripRec {
    */
   shortlistPlans?: Plan[];
   datasetHash?: string;
+  /**
+   * docs/12: priced on curated listings only — no live (RouteStack) prefetch. Set for the scripted Expo voyage, whose
+   * numbers the pitch and tests rely on.
+   */
+  curatedOnly?: boolean;
   /** TR5-021: the table was interrupted (engine failure or a restart) and the voyage went back to BRIEFING. */
   tableReset?: { at: string; reason: string };
   createdAt: string; updatedAt: string;

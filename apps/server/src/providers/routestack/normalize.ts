@@ -37,6 +37,10 @@ export type LiveHotelOption = HotelOption & {
   source: "routestack"; bookingRef?: string;
   /** RouteStack's search list has no coordinates: lat/lng sit `distancekm` from the search centre on a stable bearing. */
   approxLocation?: boolean; imageUrl?: string; freeCancellation?: boolean;
+  /** The supplier's star class (not the review-style `rating`). */
+  stars?: number;
+  /** Distance from the search centre (km), as the list gives it. */
+  distanceKm?: number;
 };
 export type LiveFlightOption = FlightOption & { source: "routestack"; bookingRef?: string; currency: "USD" };
 
@@ -90,11 +94,26 @@ export function stayTypeOf(h: Pick<RsHotel, "name" | "chain" | "providerName">):
   return "hotel";
 }
 
-/** A 0–5 rating: guest reviews when present (a 10-point scale is halved), else the star rating, else 0. */
+/**
+ * HotelOption.rating is a guest-review style score (the curated stays sit at 3.8–4.8). RouteStack's `reviews.rating`
+ * is used when present, normalized to 0–5 (a 10-point score is halved, a 100-point one divided by 20). Without reviews
+ * (the sandbox sends `reviews: null`) it is derived from the star class, which is not a review score: 3.5 + 0.25 per
+ * star, at most 4.8 (1★ → 3.8, 3★ → 4.3, 5★ → 4.8). No reviews and no stars → 3.5. The stars are kept apart (`stars`).
+ */
 export function ratingOf(h: Pick<RsHotel, "reviews" | "starRating">): number {
   const r = Number(h.reviews?.rating);
-  const v = Number.isFinite(r) && r > 0 ? (r > 5 ? r / 2 : r) : Number(h.starRating) || 0;
-  return Math.round(Math.max(0, Math.min(5, v)) * 10) / 10;
+  if (Number.isFinite(r) && r > 0) {
+    const v = r > 10 ? r / 20 : r > 5 ? r / 2 : r;
+    return Math.round(Math.max(0, Math.min(5, v)) * 10) / 10;
+  }
+  const stars = starsOf(h);
+  return Math.round(Math.min(4.8, 3.5 + 0.25 * (stars ?? 0)) * 10) / 10;
+}
+
+/** The star class (0–5, halves allowed), or undefined when the supplier gives none. */
+export function starsOf(h: Pick<RsHotel, "starRating">): number | undefined {
+  const s = Number(h.starRating);
+  return Number.isFinite(s) && s > 0 ? Math.min(5, Math.round(s * 2) / 2) : undefined;
 }
 
 /** A point `km` from (lat, lng) on a bearing fixed by `seed` (stable across runs; the list only gives a distance). */
@@ -136,6 +155,8 @@ export function normalizeHotel(h: RsHotel, page: RsHotelPage, ctx: HotelCtx): Li
     nightlyCents: Math.round(totalCents / nights),
     sleeps: Math.max(1, Math.round(ctx.guests)),
     rating: ratingOf(h),
+    ...(starsOf(h) !== undefined ? { stars: starsOf(h) } : {}),
+    ...(km > 0 ? { distanceKm: Math.round(km * 100) / 100 } : {}),
     source: "routestack",
     bookingRef: `hotel:${id}`,
     ...(typeof h.heroImage === "string" && /^https:\/\//.test(h.heroImage) ? { imageUrl: h.heroImage } : {}),
@@ -171,9 +192,10 @@ export function isRedEye(departLocal: string, arriveLocal: string): boolean {
 }
 
 /**
- * Price per person: `showOurprice` (display price) ?? `ourprice` ?? `totalFare`. Alpha's newsearch prices each
- * itinerary per passenger type (`paxType: "ADT"`, `quantity` = travellers of that type), so the fare is per adult
- * whatever `adults` we searched with; FlightOption.priceCents is per member too.
+ * The itinerary's fare: `showOurprice` (display price) ?? `ourprice` ?? `totalFare`. This is the price for the whole
+ * party searched, not per person: verified live on the sandbox (2026-09-26, ATL→LIS 12–16 Mar 2027): the same United
+ * itinerary is $861.38 with `adults: 1` (`quantity: 1`) and $2,584.14 with `adults: 3` (`quantity: 3`) — exactly 3×.
+ * perPersonFare divides by the travellers.
  */
 export function farePrice(it: RsItinerary): number | null {
   const show = typeof it.showOurprice === "object" && it.showOurprice ? it.showOurprice.amount : it.showOurprice;
@@ -181,7 +203,16 @@ export function farePrice(it: RsItinerary): number | null {
   return null;
 }
 
-export interface FlightCtx { cityId: string; origin: string; destinationIata: string; dateWindowId: string; depart: string; return?: string }
+/** Per-person fare: the party's fare ÷ `quantity` (the travellers Alpha priced), else ÷ the adults we searched with. */
+export function perPersonFare(it: RsItinerary, adults = 1): number | null {
+  const total = farePrice(it);
+  if (total === null) return null;
+  const q = Number(it.quantity);
+  const n = Number.isInteger(q) && q >= 1 && q <= 9 ? q : Math.max(1, Math.round(adults) || 1);
+  return total / n;
+}
+
+export interface FlightCtx { cityId: string; origin: string; destinationIata: string; dateWindowId: string; depart: string; return?: string; adults?: number }
 
 export function normalizeItinerary(it: RsItinerary, currency: string | undefined, ctx: FlightCtx): LiveFlightOption | null {
   const segs = Array.isArray(it.flights) ? it.flights.filter((s) => s && typeof s === "object") : [];
@@ -195,7 +226,7 @@ export function normalizeItinerary(it: RsItinerary, currency: string | undefined
   // A round trip's return leg gives returnLocal (its first departure); a one-way search leaves the return date's noon.
   const returnLocal = localMinute(back[0]?.departureTime) ?? (ctx.return ? `${ctx.return}T12:00` : null);
   if (!returnLocal) return null;
-  const price = farePrice(it);
+  const price = perPersonFare(it, ctx.adults ?? 1);
   const cents = toUsdCents(price, it.currency ?? currency);
   if (cents === null) return null;
   const legStops = (legs: RsSegment[]) => legs.length - 1 + legs.reduce((n, s) => n + (Number(s.stops) || 0), 0);

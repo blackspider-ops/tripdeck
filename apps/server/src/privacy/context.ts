@@ -16,8 +16,9 @@ import type { PrivacyContext } from "./filter.js";
 /** O2-033: headroom (cap − share) above this is itself a secret; below it, it is too small to say anything. */
 const HEADROOM_SECRET_MIN_CENTS = 2_000;
 
-export function buildPrivacyContext(ds: Dataset, crew: PricingMember[], plans: Plan[]): PrivacyContext {
-  const sensitive = new Set<number>();
+export function buildPrivacyContext(ds: Dataset, crew: PricingMember[], plans: Plan[], keepSensitive: readonly number[] = []): PrivacyContext {
+  // docs/12: a re-priced chart book (live prices) keeps the earlier secrets too, so nothing said before becomes sayable
+  const sensitive = new Set<number>(keepSensitive);
   for (const c of crew) sensitive.add(c.brief.capCents / 100);
   for (const p of plans) sensitive.add(Math.round(p.groupCents / 100));
   for (const p of plans) for (const m of p.members) {
@@ -36,6 +37,12 @@ export function buildPrivacyContext(ds: Dataset, crew: PricingMember[], plans: P
   for (const c of cities) for (const h of ix.hotelsOf(c)) {
     allowed.add(h.nightlyCents / 100);
     allowed.add((h.nightlyCents * roomsFor(h, crew.length)) / 100);
+  }
+  // live stays (docs/12) are listings too: their price depends only on the port, window and crew size. Live fares are
+  // not added: they exist only for the crew's own home airports, so saying one would say where someone flies from.
+  for (const p of plans) if (p.stay) {
+    allowed.add(p.stay.nightlyCents / 100);
+    allowed.add((p.stay.nightlyCents * roomsFor(p.stay, crew.length)) / 100);
   }
   for (const c of cities) for (const a of ix.activitiesOf(c)) allowed.add(a.priceCents / 100);
   for (const p of plans) {

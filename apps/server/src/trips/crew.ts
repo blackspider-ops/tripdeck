@@ -4,7 +4,7 @@
  */
 import type { Band, BriefInput, CityId, Dataset, Destination, Origin, Role } from "@all-ayes/shared";
 import {
-  BANDS, CAP_MAX_CENTS, CAP_MIN_CENTS, DEALBREAKERS, MAX_CREW, MAX_DEALBREAKERS, MAX_MUST_HAVES, NAME_MAX_CHARS, NOTE_MAX_CHARS, ORIGINS,
+  BANDS, CAP_MAX_CENTS, CAP_MIN_CENTS, DEALBREAKERS, MAX_CREW, MAX_DEALBREAKERS, MAX_MUST_HAVES, MIN_TABLE_CREW, NAME_MAX_CHARS, NOTE_MAX_CHARS, ORIGINS,
   TAGS, TRIP_NAME_MAX_CHARS, formatDollars,
 } from "@all-ayes/shared";
 import { indexOf } from "../data/loader.js";
@@ -266,6 +266,13 @@ export class Crew {
       helm.table.newRound(t);
     }
     helm.save(t);
+    // docs/12: named ports and every member's windows are fixed once the last terms seal: start fetching live prices
+    // now (in the background), so the chart book can use them when the table meets. Regions / anywhere wait for the
+    // table's pre-rank (table.ts).
+    const seated = helm.activeMembers(t);
+    if (t.status === "BRIEFING" && (!t.destination || t.destination.kind === "cities") && seated.length >= MIN_TABLE_CREW && seated.every((x) => x.briefSealed)) {
+      void helm.live.prefetch(t, helm.table.pricingCrew(t));
+    }
     // WP-11 follow-up: the sealed terms go back at once; slow memory lines follow in a second brief:private
     const { later } = await helm.replayer.briefPrivate(m, briefOut(rec), (p) => helm.toMember(tripId, memberId, "brief:private", p));
     helm.broadcastState(t); // carries briefSealed (OPT-003: no separate brief:received)

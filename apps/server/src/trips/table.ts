@@ -5,7 +5,7 @@
 import type { Plan, PlanPublic, TripStatus, Turn } from "@all-ayes/shared";
 import { HAIL_MAX_CHARS, MAX_WATCHES, MIN_TABLE_CREW, monthDayLabel, stateName } from "@all-ayes/shared";
 import { cityName, indexOf } from "../data/loader.js";
-import { buildChartBook, toPrivate, toPublic, type PricingMember } from "../fit/pricing.js";
+import { buildChartBook, buildPlan, planHotel, toPrivate, toPublic, type PricingMember } from "../fit/pricing.js";
 import { pickPorts } from "../fit/prerank.js";
 import { destinationLabel, scopeOf } from "./course.js";
 import { NegotiationEngine, type EngineIO } from "../negotiation/engine.js";
@@ -53,7 +53,8 @@ export class Table {
     let book = this.helm.chartBooks.get(t._id);
     if (!book || !this.helm.privacy.has(t._id)) {
       const priced = crew ?? this.pricingCrew(t);
-      let built = buildChartBook(this.helm.ds, priced, t.candidateCityIds, CHART_BOOK_LIMIT);
+      // docs/12: live (RouteStack) stays and fares that have landed for this voyage are preferred; the rest is estimated
+      let built = buildChartBook(this.helm.ds, priced, t.candidateCityIds, CHART_BOOK_LIMIT, this.helm.live.inventory(t));
       // TR5-022: the Two Charts keep the prices they were decided at, even if the dataset changed since
       if (t.shortlistPlans?.length) {
         const stored = new Map(t.shortlistPlans.map((p) => [p._id, p]));
@@ -66,6 +67,41 @@ export class Table {
     }
     return book;
   }
+  /**
+   * docs/12: live prices landed while the table is still arguing: each plan of the chart book is priced again on the
+   * same port, window and stay with the voyage's live fares (the engine holds this same array, so the Advocates and
+   * the Captain see the new numbers), and the privacy context gains the new secrets without losing the old ones.
+   * While the Captain is still opening (Watch 0, no plan named yet) the whole book is rebuilt, live stays included.
+   * Only while AT_TABLE and before the Captain decides (hails closed): never during the Dry Run or after the pick, so
+   * the Two Charts' private shares stay the ones sealed. From Watch 1 on, a plan's identity (port, window, stay)
+   * never changes: new live stays wait for the next meeting. Returns how many plans changed.
+   */
+  repriceLive(t: TripRec): number {
+    const { helm } = this;
+    if (t.status !== "AT_TABLE" || !t.negotiation.running || helm.hailsClosed.has(t._id)) return 0;
+    const book = helm.chartBooks.get(t._id), ctx = helm.privacy.get(t._id), live = helm.live.inventory(t);
+    if (!book || !ctx || !live) return 0;
+    const crew = this.pricingCrew(t);
+    let changed = 0;
+    if (t.negotiation.watch === 0) {
+      // the Captain is still opening (ports and dates only): no plan has been named yet, so the whole chart book may
+      // be built again — live stays included. The engine holds this array, so it is refilled in place.
+      const rebuilt = buildChartBook(helm.ds, crew, t.candidateCityIds, CHART_BOOK_LIMIT, live);
+      if (JSON.stringify(rebuilt) !== JSON.stringify(book)) { changed = rebuilt.length; book.splice(0, book.length, ...rebuilt); }
+    } else for (let i = 0; i < book.length; i++) {
+      const p = book[i];
+      const q = buildPlan(helm.ds, crew, p.cityId, p.dateWindowId, planHotel(helm.ds, p), live);
+      if (q._id !== p._id || JSON.stringify(q) === JSON.stringify(p)) continue;
+      book[i] = q;
+      changed++;
+    }
+    if (changed) {
+      Object.assign(ctx, buildPrivacyContext(helm.ds, crew, book, ctx.sensitiveDollars));
+      console.log(`[live] voyage ${t._id}: re-priced ${changed} of ${book.length} charts before the Dry Run (${book.filter((p) => p.priceSource === "live").length} live)`);
+    }
+    return changed;
+  }
+
   /** The table's privacy context (built with the chart book if a restore left it unset: OPT-064). */
   privacyOf(t: TripRec): PrivacyContext {
     this.chartBook(t);
@@ -170,6 +206,9 @@ export class Table {
     helm.transition(t, "AT_TABLE", { from: ["BRIEFING"] });
     if (ports) t.candidateCityIds = ports; // (regions / anywhere take curated ports only, so no world packs to add)
     this.clearCharts(t);
+    // docs/12: the ports and windows are fixed now: fetch live prices in the background (never awaited; whatever has
+    // landed already — e.g. from when the last terms sealed — prices this chart book, the rest re-prices it later)
+    void helm.live.prefetch(t, this.pricingCrew(t));
     t.tableRuns = (t.tableRuns ?? 0) + 1;
     // a new meeting = a new round: turns of an earlier (interrupted) meeting are never re-attached (TR5-012)
     this.newRound(t, true);
@@ -181,6 +220,7 @@ export class Table {
     // OPT-045: the crew is priced once per meeting
     const crew = this.pricingCrew(t);
     const plans = this.chartBook(t, crew);
+    if (helm.live.inventory(t) && !process.env.VITEST) console.log(`[live] voyage ${t._id}: chart book of ${plans.length}, ${plans.filter((p) => p.priceSource === "live").length} priced live`);
     helm.save(t);
     helm.broadcastState(t, Boolean(ports)); // new ports: the snapshot carries them (a static field)
 
@@ -227,6 +267,9 @@ export class Table {
     const { helm } = this;
     helm.transition(t, "DRY_RUN", { from: ["AT_TABLE"] });
     t.negotiation.running = false;
+    // docs/12: the chart book holds exactly the plans the Captain decided on (a late re-price can't swap them)
+    const book = helm.chartBooks.get(t._id);
+    if (book) for (const p of [a, b]) { const i = book.findIndex((x) => x._id === p._id); if (i >= 0) book[i] = p; }
     t.shortlistIds = [a._id, b._id];
     t.shortlistPlans = [a, b]; // TR5-022: the prices the crew saw survive a dataset change
     helm.dryrun.startClock(t);

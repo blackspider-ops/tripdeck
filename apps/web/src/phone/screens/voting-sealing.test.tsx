@@ -94,6 +94,20 @@ describe("DryRun vote (L1-003)", () => {
   });
 });
 
+describe("DryRun chart cards: where the prices come from (docs/12)", () => {
+  it("a live chart says \"Live prices\"; an estimated or older one says \"Estimated\"", async () => {
+    const live = { ...(chart("MEX-1", "A", "Mexico City") as object), priceSource: "live", priceFeed: "sandbox" } as never;
+    const est = { ...(chart("LIS-1", "B", "Lisbon") as object), priceSource: "estimated" } as never;
+    await mount(<DryRun />, { trip: trip(), shortlist: [live, est] });
+    expect(screen.getAllByText("Live prices")).toHaveLength(1);
+    expect(screen.getAllByText("Estimated")).toHaveLength(1);
+    cleanup();
+    await mount(<DryRun />, { trip: trip(), shortlist }); // no priceSource (an older helm): estimated
+    expect(screen.getAllByText("Estimated")).toHaveLength(2);
+    expect(screen.queryByText("Live prices")).toBeNull();
+  });
+});
+
 describe("HeadsetControls (L1-006)", () => {
   const booking = { bookingId: "b1", planId: "LIS-1", attempt: 1, status: "PENDING", mode: "sim", seals: [{ memberId: "m1", status: "PENDING" }, { memberId: "m2", status: "PENDING" }] };
   const sealPrivate = { bookingId: "b1", lines: [{ label: "Stay", amountCents: 10_000, kind: "lodging" }], fits: true, cardLast4: "4242", mode: "sim" };

@@ -11,7 +11,7 @@ import { config } from "../src/config.js";
 import { resetSpend } from "../src/util/limits.js";
 import { RouteStackClient, jwtExpiryMs, parseExpiresIn, signPartnerHmac, TOKEN_REFRESH_EARLY_MS } from "../src/providers/routestack/client.js";
 import { liveFlights, liveHotels, resetRouteStackClient, routestackStatus } from "../src/providers/routestack/index.js";
-import { isRedEye, nightsBetween, normalizeFlights, normalizeHotels, roomsFor, stayTypeOf, toUsdCents } from "../src/providers/routestack/normalize.js";
+import { isRedEye, nightsBetween, normalizeFlights, normalizeHotels, perPersonFare, ratingOf, roomsFor, starsOf, stayTypeOf, toUsdCents } from "../src/providers/routestack/normalize.js";
 
 const BASE = "https://rs.test";
 const ENV = { ROUTESTACK_API_KEY: "pk_test", ROUTESTACK_API_SECRET: "sk_test", ROUTESTACK_BASE_URL: BASE, ROUTESTACK_MODE: "", ROUTESTACK_SEARCH_TIMEOUT_MS: "", ROUTESTACK_TIMEOUT_MS: "" };
@@ -42,17 +42,17 @@ const HOTELS = {
     ],
   }],
 };
-/** flight/search: round trip ATL→LIS, segments with legindicator 0 (outbound) / 1 (return), prices per adult in USD. */
+/** flight/search: round trip ATL→LIS for 3 adults, legindicator 0 (outbound) / 1 (return); prices are for the whole party (quantity 3), as verified live. */
 const seg = (dep: string, arr: string, dt: string, at: string, leg: 0 | 1, airline = "Delta") => ({ triptime: 480, airline, cabin: "Economy", departure: dep, arrival: arr, departureTime: dt, arrivalTime: at, stops: 0, flightCode: "DL", flightNumber: "100", fareFamily: "MAIN CABIN", legindicator: leg });
 const FLIGHTS = {
   count: 3, code: "6026", message: "data retrieved", success: true, currency: "USD", currencyrate: 1,
   searchFilterObj: '{"type":"RoundTrip","adult":3}',
   result: [
-    { stops: 0, fareSourceCode: "FSC-direct", paxType: "ADT", quantity: 3, baseFare: 500, totalFare: 690, ourprice: 712.4, showOurprice: 712.4,
+    { stops: 0, fareSourceCode: "FSC-direct", paxType: "ADT", quantity: 3, baseFare: 1500, totalFare: 2070, ourprice: 2137.2, showOurprice: 2137.2,
       flights: [seg("ATL", "LIS", "2027-03-12T18:10:00", "2027-03-13T07:55:00", 0), seg("LIS", "ATL", "2027-03-16T12:40:00", "2027-03-16T16:50:00", 1)] },
-    { stops: 1, fareSourceCode: "FSC-via", paxType: "ADT", quantity: 3, ourprice: 615, showOurprice: 615,
+    { stops: 1, fareSourceCode: "FSC-via", paxType: "ADT", quantity: 3, ourprice: 1845, showOurprice: 1845,
       flights: [seg("ATL", "EWR", "2027-03-12T13:05:00", "2027-03-12T15:10:00", 0, "United"), seg("EWR", "LIS", "2027-03-12T19:00:00", "2027-03-13T08:30:00", 0, "United"), seg("LIS", "EWR", "2027-03-16T13:10:00", "2027-03-16T16:05:00", 1, "United"), seg("EWR", "ATL", "2027-03-16T18:00:00", "2027-03-16T20:20:00", 1, "United")] },
-    { stops: 0, fareSourceCode: "FSC-direct-basic", paxType: "ADT", quantity: 3, ourprice: 690, showOurprice: 690,
+    { stops: 0, fareSourceCode: "FSC-direct-basic", paxType: "ADT", quantity: 3, ourprice: 2070, showOurprice: 2070,
       flights: [seg("ATL", "LIS", "2027-03-12T18:10:00", "2027-03-13T07:55:00", 0), seg("LIS", "ATL", "2027-03-16T12:40:00", "2027-03-16T16:50:00", 1)] },
     { stops: 0, fareSourceCode: "FSC-broken", ourprice: 100, flights: [] },
   ],
@@ -341,13 +341,32 @@ describe("normalization", () => {
     expect(ibis).toMatchObject({
       kind: "hotel", cityId: "LIS", name: "ibis Styles Lisboa Centro", neighborhood: "", stayType: "hotel",
       nightlyCents: 22000, // €800 whole stay × 1.10 = $880 / 4 nights
-      sleeps: 3, rating: 3, source: "routestack", bookingRef: "hotel:41393487", approxLocation: true, freeCancellation: false,
+      sleeps: 3, rating: 4.3, stars: 3, source: "routestack", bookingRef: "hotel:41393487", approxLocation: true, freeCancellation: false,
     });
     const km = Math.hypot((ibis.lat - LISBON.lat) * 111.32, (ibis.lng - LISBON.lng) * 111.32 * Math.cos((LISBON.lat * Math.PI) / 180));
     expect(km).toBeGreaterThan(1.8);
     expect(km).toBeLessThan(2.1);
     expect(got.find((h) => h._id === "RS-h-5550001")).toMatchObject({ stayType: "apartment", rating: 4.6, nightlyCents: 27500 });
-    expect(got.find((h) => h._id === "RS-h-5550002")).toMatchObject({ stayType: "hostel", rating: 4.1 });
+    expect(got.find((h) => h._id === "RS-h-5550002")).toMatchObject({ stayType: "hostel", rating: 4.1, stars: 2 });
+  });
+
+  it("hotel rating: a review score normalized to 0–5, else derived from the stars (never the raw star class)", () => {
+    expect(ratingOf({ reviews: { rating: 8.6 }, starRating: 2 })).toBe(4.3);
+    expect(ratingOf({ reviews: { rating: 4.4 }, starRating: 5 })).toBe(4.4);
+    expect(ratingOf({ reviews: { rating: 92 } })).toBe(4.6);
+    expect(ratingOf({ reviews: null, starRating: 1 })).toBe(3.8);
+    expect(ratingOf({ reviews: null, starRating: 2 })).toBe(4);
+    expect(ratingOf({ reviews: null, starRating: 5 })).toBe(4.8);
+    expect(ratingOf({ reviews: null })).toBe(3.5);
+    expect(starsOf({ starRating: 2.5 })).toBe(2.5);
+    expect(starsOf({})).toBeUndefined();
+  });
+
+  it("flight fares are for the whole party: per person = fare ÷ quantity (else ÷ adults searched)", () => {
+    expect(perPersonFare({ ourprice: 2584.14, quantity: 3 })).toBeCloseTo(861.38, 2);
+    expect(perPersonFare({ ourprice: 861.38, quantity: 1 }, 3)).toBeCloseTo(861.38, 2);
+    expect(perPersonFare({ ourprice: 900 }, 3)).toBe(300);
+    expect(perPersonFare({}, 3)).toBeNull();
   });
 
   it("hotels: the documented un-wrapped page shape works too", () => {

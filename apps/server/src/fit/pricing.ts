@@ -11,6 +11,7 @@ import { EARLY_START_BEFORE, MAX_MUST_HAVES, ORIGINS, TAGS, clockToMin, dayLabel
 import { travel, type Point } from "../dryrun/walking.js";
 import { compareFairness, fairness, satisfaction } from "./fairness.js";
 import { flightsFor, publicFlights } from "./flights.js";
+import { isLiveOption, liveBand, liveFaresFor, liveStaysFor, type LiveInventory } from "./live.js";
 import { cityName, datasetRev, indexOf, mustFind } from "../data/loader.js";
 
 export interface PricingMember {
@@ -41,7 +42,7 @@ const NO_FLIGHT_FREE_FROM = 9 * 60;
 const legFromStay = (gapMin: number, startMin: number) => (gapMin > 60 && startMin >= EVENING_MIN) || gapMin > 180;
 
 /** Windows everyone can do; if none, the ones the most members can do. */
-function usableWindows(ds: Dataset, crew: PricingMember[]): string[] {
+export function usableWindows(ds: Dataset, crew: PricingMember[]): string[] {
   const counts = ds.dateWindows.map((w) => ({ id: w.id, n: crew.filter((m) => m.brief.dateWindowIds.includes(w.id)).length }));
   const best = Math.max(...counts.map((c) => c.n));
   return counts.filter((c) => c.n === best && c.n > 0).map((c) => c.id);
@@ -49,10 +50,16 @@ function usableWindows(ds: Dataset, crew: PricingMember[]): string[] {
 
 type FlightChoice = { flight: FlightOption | null; violates: FitReason[] };
 
-/** Cheapest flight that breaks none of the member's dealbreakers. */
-export function chooseFlight(ds: Dataset, m: PricingMember, cityId: CityId, windowId: string): FlightChoice {
+/**
+ * Cheapest flight that breaks none of the member's dealbreakers. With a voyage's live inventory (docs/12), the
+ * member's live fares (within the port's live band) come first: the cheapest live fare that breaks no rule, else the
+ * cheapest curated / modelled one that doesn't, else the cheapest of all (with what it breaks).
+ */
+export function chooseFlight(ds: Dataset, m: PricingMember, cityId: CityId, windowId: string, live?: LiveInventory): FlightChoice {
   // curated listings where they exist, else the flight model's options (fit/flights.ts); a home port is one $0 option
-  const all = [...flightsFor(ds, cityId, m.origin, windowId)].sort((a, b) => a.priceCents - b.priceCents);
+  const base = [...flightsFor(ds, cityId, m.origin, windowId)].sort((a, b) => a.priceCents - b.priceCents);
+  const fares = base.some((f) => f.homePort) ? [] : liveFaresFor(ds, live, cityId, m.origin, windowId);
+  const all = fares.length ? [...fares, ...base].sort((a, b) => a.priceCents - b.priceCents) : base;
   if (!all.length) return { flight: null, violates: ["no_flight"] };
   const bad = (f: FlightOption): FitReason[] => {
     const v: FitReason[] = [];
@@ -61,7 +68,7 @@ export function chooseFlight(ds: Dataset, m: PricingMember, cityId: CityId, wind
     if (m.brief.dealbreakers.includes("early_start") && minOf(f.departLocal) < EARLY_START_MIN) v.push("dealbreaker:early_start");
     return v;
   };
-  const ok = all.find((f) => bad(f).length === 0);
+  const ok = fares.find((f) => bad(f).length === 0) ?? base.find((f) => bad(f).length === 0);
   if (ok) return { flight: ok, violates: [] };
   return { flight: all[0], violates: bad(all[0]) };
 }
@@ -86,8 +93,8 @@ type Placed = { a: ActivityOption; day: number; start: number; end: number; atte
 type Arrivals = NonNullable<PlanDay["arrivals"]>;
 
 /** Step 1: each member's flight. */
-function chooseFlights(ds: Dataset, crew: PricingMember[], cityId: CityId, windowId: string): Map<string, FlightChoice> {
-  return new Map(crew.map((m) => [m.memberId, chooseFlight(ds, m, cityId, windowId)] as const));
+function chooseFlights(ds: Dataset, crew: PricingMember[], cityId: CityId, windowId: string, live?: LiveInventory): Map<string, FlightChoice> {
+  return new Map(crew.map((m) => [m.memberId, chooseFlight(ds, m, cityId, windowId, live)] as const));
 }
 
 /** Whole days from one ISO date to another ("2028-03-10" → "2028-03-15" is 5). */
@@ -297,12 +304,12 @@ function sharedPublicFlags(members: MemberPlanView[]): PlanFlag[] {
   return out;
 }
 
-export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, windowId: string, hotel: HotelOption): Plan {
+export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, windowId: string, hotel: HotelOption, live?: LiveInventory): Plan {
   const win = mustFind(indexOf(ds).window.get(windowId), "date window", windowId);
   const organizerId = crew.find((c) => c.role === "organizer")?.memberId ?? crew[0].memberId;
   const hotelPt: Point = { id: hotel._id, lat: hotel.lat, lng: hotel.lng };
 
-  const flights = chooseFlights(ds, crew, cityId, windowId);
+  const flights = chooseFlights(ds, crew, cityId, windowId, live);
   const { day1Date, freeFrom, arrivals } = arrivalsFor(crew, flights, win);
   const { shown, placeable } = dayCounts(day1Date, win);
   // the crew is together from the last one's landing (+ an hour): group moments on day 1 never start before
@@ -317,6 +324,11 @@ export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, wi
     flight: flights.get(m.memberId) ?? { flight: null, violates: ["no_flight"] }, placed, flags: memberFlags.get(m.memberId) ?? [],
   }));
 
+  // docs/12: "live" only when the stay and every member's flight (a home port has none) came from RouteStack
+  const chosen = [...flights.values()].map((c) => c.flight);
+  const liveFares = chosen.some((f) => isLiveOption(f));
+  const allLive = isLiveOption(hotel) && chosen.every((f) => f && (f.homePort || isLiveOption(f)));
+  const inDataset = indexOf(ds).hotel.get(hotel._id) === hotel;
   return {
     _id: `${cityId}-${windowId}-${hotelSlug(hotel._id)}`,
     cityId, dateWindowId: windowId, hotelId: hotel._id, days,
@@ -325,11 +337,20 @@ export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, wi
     fairness: fairness(members.map((mm) => mm.satisfaction)),
     fitsEveryone: members.every((mm) => mm.fits),
     publicFlags: sharedPublicFlags(members),
+    priceSource: allLive ? "live" : "estimated",
+    ...(allLive && live ? { priceFeed: live.feed } : {}),
+    ...(liveFares ? { liveBand: true } : {}),
+    ...(inDataset ? {} : { stay: hotel }),
   };
 }
 
-/** O2-033: dataset hotel ids are `<city>-h-<slug>`; a plan id keeps the slug (`LIS-W1-casa-alfama`). */
-const hotelSlug = (hotelId: string) => hotelId.split("-h-")[1];
+/** The plan's stay: the dataset's listing, or the live stay the plan carries (docs/12). */
+export function planHotel(ds: Dataset, p: Pick<Plan, "hotelId" | "stay">): HotelOption {
+  return mustFind(indexOf(ds).hotel.get(p.hotelId) ?? p.stay, "hotel", p.hotelId);
+}
+
+/** O2-033: dataset hotel ids are `<city>-h-<slug>`; a plan id keeps the slug (`LIS-W1-casa-alfama`, live: `LIS-W1-41393487`). */
+const hotelSlug = (hotelId: string) => hotelId.split("-h-")[1] ?? hotelId;
 
 /** O2-043: one cached formatter (shared format.ts), not a new one per day label. */
 const labelFor = (startDate: string, offset: number): string => dayLabel(startDate, offset);
@@ -338,14 +359,16 @@ const labelFor = (startDate: string, offset: number): string => dayLabel(startDa
  * All candidate plans, best first (the "chart book"). Every stay is a candidate: a crew larger than a stay sleeps books
  * several rooms/units of it (roomsFor), and the dearer bill simply scores lower.
  */
-export function buildChartBook(ds: Dataset, crew: PricingMember[], cityIds: CityId[], limit = 12): Plan[] {
+export function buildChartBook(ds: Dataset, crew: PricingMember[], cityIds: CityId[], limit = 12, live?: LiveInventory): Plan[] {
   const noHostel = crew.some((m) => m.brief.dealbreakers.includes("hostel"));
   const plans: Plan[] = [];
   for (const windowId of usableWindows(ds, crew)) {
     for (const cityId of cityIds) {
-      for (const h of indexOf(ds).hotelsOf(cityId)) {
+      // docs/12: a port × window with live stays (searched for this crew size) is priced on them, else on the curated ones
+      const liveStays = liveStaysFor(live, cityId, windowId, crew.length).filter((h) => !(noHostel && h.stayType === "hostel"));
+      for (const h of liveStays.length ? liveStays : indexOf(ds).hotelsOf(cityId)) {
         if (noHostel && h.stayType === "hostel") continue;
-        plans.push(buildPlan(ds, crew, cityId, windowId, h));
+        plans.push(buildPlan(ds, crew, cityId, windowId, h, live));
       }
     }
   }
@@ -370,6 +393,7 @@ const CHOICE_DEALBREAKERS: Dealbreaker[] = ["red_eye", "layovers_2plus", "early_
  * Cached per dataset (revision).
  */
 const optionCache = new WeakMap<Dataset, { rev: number; byKey: Map<string, { cents: number; picks: string[] }[]> }>();
+type Band = { lowCents: number; highCents: number } | null;
 let mustHaveOrders: Tag[][] | null = null;
 function allMustHaveOrders(): Tag[][] {
   if (mustHaveOrders) return mustHaveOrders;
@@ -380,10 +404,10 @@ function allMustHaveOrders(): Tag[][] {
   }
   return (mustHaveOrders = orders);
 }
-function publicMemberOptions(ds: Dataset, cityId: CityId, windowId: string): { cents: number; picks: string[] }[] {
+function publicMemberOptions(ds: Dataset, cityId: CityId, windowId: string, band: Band = null): { cents: number; picks: string[] }[] {
   let c = optionCache.get(ds);
   if (!c || c.rev !== datasetRev(ds)) optionCache.set(ds, (c = { rev: datasetRev(ds), byKey: new Map() }));
-  const key = `${cityId}|${windowId}`;
+  const key = `${cityId}|${windowId}${band ? `|${band.lowCents}-${band.highCents}` : ""}`;
   const hit = c.byKey.get(key);
   if (hit) return hit;
   const seen = new Map<string, { cents: number; picks: string[] }>();
@@ -393,6 +417,8 @@ function publicMemberOptions(ds: Dataset, cityId: CityId, windowId: string): { c
     const dealbreakers = CHOICE_DEALBREAKERS.filter((_, i) => mask & (1 << i));
     const flightCents = new Set<number>();
     for (const origin of ORIGINS) flightCents.add(chooseFlight(ds, member(origin, dealbreakers, []), cityId, windowId).flight?.priceCents ?? 0);
+    // docs/12: a plan with a live fare may hold any fare of the port's live band (public facts only, never the crew's)
+    if (band) { flightCents.add(band.lowCents); flightCents.add(band.highCents); }
     const pickSets = new Map<string, ActivityOption[]>();
     for (const mustHaves of allMustHaveOrders()) {
       const picks = choosePicks(ds, cityId, member("", dealbreakers, mustHaves));
@@ -418,14 +444,14 @@ function publicMemberOptions(ds: Dataset, cityId: CityId, windowId: string): { c
 export function publicTotalRange(ds: Dataset, p: Plan): { lowCents: number; highCents: number } {
   const ix = indexOf(ds);
   const win = mustFind(ix.window.get(p.dateWindowId), "date window", p.dateWindowId);
-  const hotel = mustFind(ix.hotel.get(p.hotelId), "hotel", p.hotelId);
+  const hotel = planHotel(ds, p);
   const n = p.members.length;
   const groupEach = placeGroupMoments(ds, p.cityId, []).reduce((s, g) => s + g.a.priceCents, 0);
   const pickIds = [...new Set(p.days.flatMap((d) => d.items).map((it) => it.activityId).filter((id) => ix.activity.get(id)?.role === "pick"))];
   const bit = (id: string) => 1 << pickIds.indexOf(id);
   // per set of picks, only the cheapest and dearest option matter to the range (min/max of sums)
   const byMask = new Map<number, [number, number]>();
-  for (const o of publicMemberOptions(ds, p.cityId, p.dateWindowId)) {
+  for (const o of publicMemberOptions(ds, p.cityId, p.dateWindowId, p.liveBand ? liveBand(ds, p.cityId, p.dateWindowId) : null)) {
     if (!o.picks.every((x) => pickIds.includes(x))) continue;
     const m = o.picks.reduce((s, x) => s | bit(x), 0);
     const c = byMask.get(m);
@@ -472,7 +498,7 @@ const PUBLIC_SLOT = "crew";
  */
 function publicDays(ds: Dataset, p: Plan): PublicDay[] {
   const ix = indexOf(ds);
-  const h = mustFind(ix.hotel.get(p.hotelId), "hotel", p.hotelId);
+  const h = planHotel(ds, p);
   const stay: Point = { id: h._id, lat: h.lat, lng: h.lng };
   const pickIds = new Set(p.days.flatMap((d) => d.items).map((it) => it.activityId).filter((id) => ix.activity.get(id)?.role === "pick"));
   const groups = placeGroupMoments(ds, p.cityId, []).map((g) => ({ ...g, attendees: [PUBLIC_SLOT] }));
@@ -518,7 +544,7 @@ function publicPlanFlags(ds: Dataset, p: Plan, days: PublicDay[]): PlanFlag[] {
 
 export function toPublic(ds: Dataset, p: Plan, label?: "A" | "B"): PlanPublic {
   const ix = indexOf(ds);
-  const h = mustFind(ix.hotel.get(p.hotelId), "hotel", p.hotelId);
+  const h = planHotel(ds, p);
   const city = mustFind(ix.city.get(p.cityId), "city", p.cityId);
   const days = publicDays(ds, p);
   const rooms = roomsFor(h, p.members.length);
@@ -528,6 +554,8 @@ export function toPublic(ds: Dataset, p: Plan, label?: "A" | "B"): PlanPublic {
     hotelId: h._id, hotelLat: h.lat, hotelLng: h.lng, dateWindowId: p.dateWindowId, groupRange: publicTotalRange(ds, p),
     fitsEveryone: p.fitsEveryone, publicFlags: publicPlanFlags(ds, p, days), cityNotes: city.publicFlags,
     cityCenter: { lat: city.centerLat, lng: city.centerLng }, tileRadiusKm: city.tileRadiusKm, days,
+    // docs/12: per plan and public-safe (where the prices come from, nothing about anyone's terms)
+    priceSource: p.priceSource ?? "estimated", ...(p.priceSource === "live" && p.priceFeed ? { priceFeed: p.priceFeed } : {}),
   };
 }
 

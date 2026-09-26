@@ -306,6 +306,11 @@ function refuse(kind: Paid, what: string) {
   return false;
 }
 
+/** Paid calls of this kind counted against a voyage so far (docs/12: the live prefetch plans within the voyage cap). */
+export function tripSpent(kind: Paid, tripId: string): number {
+  return tripLedger(tripId).counts[kind];
+}
+
 /** Coarse flags for /api/health: never the counts themselves ("reserve" = only voyages past the table get calls). */
 export function spendFlags(): Record<Paid, "ok" | "reserve" | "capped"> {
   rollover();

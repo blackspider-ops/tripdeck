@@ -15,7 +15,7 @@ export interface LiveFlightsQuery {
   depart: string;
   /** YYYY-MM-DD return; omitted = one way. */
   return?: string;
-  /** Travellers searched together (seat availability); prices come back per person. */
+  /** Travellers searched together (seat availability). RouteStack prices the whole party; options carry per-person fares. */
   adults: number;
   /** Stamped on each option (defaults: destinationIata, ""). */
   cityId?: string;
@@ -74,6 +74,6 @@ export function liveFlights(q: LiveFlightsQuery): Promise<LiveFlightOption[] | n
       const body = typeof sid === "string" && sid ? { sessionId: sid, ...search } : search;
       return billable(key, q.tripId, async () => slim(await client.post("/mcp/flight/search", body, { billable: true })));
     });
-    return normalizeFlights(page, { cityId: q.cityId ?? destination, origin, destinationIata: destination, dateWindowId: q.dateWindowId ?? "", depart: q.depart, return: ret }, q.max ?? 15);
+    return normalizeFlights(page, { cityId: q.cityId ?? destination, origin, destinationIata: destination, dateWindowId: q.dateWindowId ?? "", depart: q.depart, return: ret, adults }, q.max ?? 15);
   });
 }

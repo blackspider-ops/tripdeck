@@ -179,7 +179,24 @@ export interface Plan {
   fairness: { maximin: number; sum: number };
   fitsEveryone: boolean;
   publicFlags: PlanFlag[];
+  /**
+   * docs/12: "live" when the stay and every member's flight (home ports aside) came from RouteStack; otherwise
+   * "estimated" (curated listings and the flight model). Absent on plans from older builds = "estimated".
+   */
+  priceSource?: PriceSource;
+  /** The RouteStack gateway the live prices came from (only with priceSource "live"). */
+  priceFeed?: PriceFeed;
+  /**
+   * Some member's flight is a live fare: the public group range then spans the live fare band of this port and
+   * window (crew-independent, fit/live.ts), since live fares exist only for the crew's own home airports.
+   */
+  liveBand?: boolean;
+  /** A stay that isn't in the dataset (a live RouteStack hotel), carried with the plan so it resolves after a restore. */
+  stay?: HotelOption & { approxLocation?: boolean; stars?: number; distanceKm?: number; source?: "routestack" };
 }
+/** docs/12: where a plan's prices come from. Per plan and public-safe (it says nothing about anyone's terms). */
+export type PriceSource = "live" | "estimated";
+export type PriceFeed = "sandbox" | "live";
 /** What anyone may see about a plan (doc 04 §7.2 table:decided). */
 export interface PlanPublic {
   planId: string; label?: "A" | "B"; cityId: CityId; cityName: string;
@@ -201,6 +218,10 @@ export interface PlanPublic {
   cityCenter: { lat: number; lng: number }; tileRadiusKm: number;
   /** Group-level schedule only (see PublicScheduleItem); labels are "Day 1", "Day 2". */
   days: PublicDay[];
+  /** docs/12: "live" (RouteStack prices for the stay and every flight) or "estimated". Absent from older builds. */
+  priceSource?: PriceSource;
+  /** With priceSource "live": the RouteStack gateway ("sandbox" or "live"). */
+  priceFeed?: PriceFeed;
 }
 /** What only the member themselves sees (plan:private → member:{id}). */
 export interface PlanPrivate {

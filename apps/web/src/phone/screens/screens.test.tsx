@@ -66,6 +66,17 @@ describe("Booked: Save to your log (.ics)", () => {
   });
 });
 
+describe("Booked: the price source (docs/12)", () => {
+  const plan = { planId: "LIS-1", cityName: "Lisbon", hotelName: "Casa", neighborhood: "Alfama", dateWindowId: "W1" };
+  it("names RouteStack's sandbox when the chart was priced live, and says nothing otherwise", () => {
+    mount(<Booked />, { trip: trip(), shortlist: [{ ...plan, priceSource: "live", priceFeed: "sandbox" } as never] });
+    expect(screen.getByText("Prices from RouteStack sandbox")).toBeTruthy();
+    cleanup();
+    mount(<Booked />, { trip: trip(), shortlist: [{ ...plan, priceSource: "estimated" } as never] });
+    expect(screen.queryByText(/RouteStack/)).toBeNull();
+  });
+});
+
 describe("SailWithout: the 2-minute clock (TR1-007)", () => {
   it("appears only after SAIL_WITHOUT_AFTER_MS, survives a remount, and forgets the voyage once all have sealed", () => {
     vi.useFakeTimers({ toFake: ["Date", "setInterval", "clearInterval", "setTimeout", "clearTimeout"] });

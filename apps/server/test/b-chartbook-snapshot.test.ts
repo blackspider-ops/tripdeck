@@ -12,7 +12,9 @@ import { EXPO_CREW } from "./fixtures.js";
 
 const ds = loadDataset();
 const CITIES: CityId[] = ["LIS", "MEX", "YUL"];
-const digest = (v: unknown) => createHash("sha256").update(JSON.stringify(v)).digest("hex").slice(0, 16);
+// docs/12: every plan now says where its prices come from ("estimated" here: no live inventory); the label is left out
+// of the digest so the hashes still prove the prices, schedules and views are byte-for-byte unchanged
+const digest = (v: unknown) => createHash("sha256").update(JSON.stringify(v, (k, x) => (k === "priceSource" ? undefined : x))).digest("hex").slice(0, 16);
 
 const withBrief = (m: PricingMember, b: Partial<PricingMember["brief"]>): PricingMember => ({ ...m, brief: { ...m.brief, ...b } });
 const SCENARIOS: Record<string, PricingMember[]> = {

@@ -180,6 +180,7 @@ const ChartCard = memo(function ChartCard({ plan, priv, selected, onSelect }: { 
       <div className="small">{plan.neighborhood} · {plan.hotelName}</div>
       {/* S2-002: the group total anyone may see is a range from public facts; your exact share is private */}
       <div className="total">{formatDollars(plan.groupRange.lowCents)}–{formatDollars(plan.groupRange.highCents).slice(1)} <span className="small">group, all in</span></div>
+      <PriceTag plan={plan} />
       {priv ? <FitStamp fits={priv.fits} /> : null}
       {plan.fitsEveryone ? <div className="mt-xs"><span className="plaque">Fits everyone</span></div> : null}
       <ul>
@@ -190,6 +191,18 @@ const ChartCard = memo(function ChartCard({ plan, priv, selected, onSelect }: { 
     </button>
   );
 });
+
+/** docs/12: where the chart's prices come from — RouteStack ("Live prices") or curated / modelled ("Estimated"). */
+function PriceTag({ plan }: { plan: Pick<PlanPublic, "priceSource"> }) {
+  const live = plan.priceSource === "live";
+  return (
+    <div className="mt-xs">
+      <span className={`price-tag${live ? " live" : ""}`} title={live ? "Stay and flights priced live" : "Listed and modelled prices"}>
+        {live ? "Live prices" : "Estimated"}
+      </span>
+    </div>
+  );
+}
 
 /** My own day — read from plan:private only (the public plan carries no per-member schedule, SEC-001). */
 function Timeline({ plan, priv }: { plan: PlanPublic; priv?: PlanPrivate }) {

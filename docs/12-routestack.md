@@ -1,6 +1,6 @@
 # 12 — RouteStack.ai live inventory
 
-**Status:** the provider is built and tested (`apps/server/src/providers/routestack/`, `apps/server/test/routestack.test.ts`). It is **not wired into the engine yet**: nothing calls it until the chart book does (see *Wiring plan*). With no keys it is off, and every function returns `null`.
+**Status:** the provider is built, tested (`apps/server/test/routestack.test.ts`) and **wired into trip planning** (`apps/server/src/trips/live.ts`, `apps/server/src/fit/live.ts`, `apps/server/test/live-prices.test.ts`; see *Wiring*). It has been run against the sandbox (see *Live smoke*). With no keys, or `ROUTESTACK_MODE=off`, it is off: every function returns `null` and nothing is prefetched.
 
 ## What it does
 
@@ -112,14 +112,14 @@ body      = { apiKey, hmac, timestamp, nonce }
     - apartment / flat / residence / loft / studio / villa → `apartment`
     - guest house / B&B / pension / pousada / casa / inn / lodge → `guesthouse`
     - anything else → `hotel`
-  - **`rating`** (0–5) is the guest review score when present (a 10-point score is halved), else the star rating.
+  - **`rating`** is a review-style 0–5 score, like the curated stays' 3.8–4.8. It is `reviews.rating` when present, normalized: a 10-point score is halved, a 100-point one divided by 20. The sandbox sends `reviews: null`, so the fallback derives it from the star class, which is not a review score: `3.5 + 0.25 × stars`, at most 4.8 (1★ → 3.8, 2★ → 4.0, 3★ → 4.3, 5★ → 4.8), or 3.5 with no stars. The star class is kept separately as `stars`, and the list's distance as `distanceKm`.
   - **`lat`/`lng`:** the list gives only `distancekm` from the search centre. The hotel is placed that far from the city centre on a bearing fixed by a hash of its id, and flagged `approxLocation:true`. This is good enough for "near the centre?" ranking, **not** for walking routes. A later step can call the free `get-hotel-details` for the chosen hotel.
 - **Flights:** `_id = "RS-f-<cityId>-<origin>-<windowId>-<hash(fareSourceCode)>"`.
   - The outbound segments are those with `legindicator 0` and the return segments those with `1`. `departLocal` is the first outbound departure, `arriveLocal` the last outbound arrival, and `returnLocal` the first return departure. For a one-way search, `returnLocal` is the return date at 12:00. Times are trimmed to `YYYY-MM-DDTHH:MM`, the dataset's format.
   - `stops` is the larger leg's connections plus any segment `stops`, clamped to 0–2.
   - `airline` is the outbound carriers plus `(via EWR, …)`.
   - `redEye` is true when the flight departs 21:00–04:59 or lands on a later calendar day.
-  - **`priceCents` is per person:** `showOurprice ?? ourprice ?? totalFare`. Alpha prices each itinerary per passenger type (`paxType:"ADT"`, `quantity` = travellers), which matches `FlightOption.priceCents` being per member. ⚠️ Verify this on the first live smoke with `adults: 3`: if the price is 3× the `adults: 1` price, divide by `quantity`.
+  - **The fare is for the whole party; `priceCents` is per person.** The fare is `showOurprice ?? ourprice ?? totalFare`. It covers every traveller searched: verified on the sandbox on 2026-09-26 for ATL→LIS, 12–16 Mar 2027. The same United itinerary via EWR came back at **$861.38 with `adults: 1`** (`quantity: 1`) and **$2,584.14 with `adults: 3`** (`quantity: 3`), exactly 3×. `perPersonFare` divides by `quantity`, or by the adults searched when `quantity` is missing, so `priceCents` is per member, which is what `FlightOption.priceCents` means.
   - Duplicate fare families of the same flight collapse to the cheapest.
 - **Currency:** we always ask for USD. Anything else is converted with the static `FX_TO_USD` table in `normalize.ts` (September 2026 ballpark rates; an estimate for ranking, not a quote, since checkout re-prices). An unknown currency drops the option. Prices are stored as integer cents.
 
@@ -138,21 +138,53 @@ body      = { apiKey, hmac, timestamp, nonce }
 
 Tests blank both keys (`test/setup/isolate.ts`) and stub `fetch`, so the suite never reaches RouteStack.
 
-## Wiring plan (for the engine owners — not done here)
+## Wiring (implemented)
 
-The engine files (`data/loader.ts`, `fit/**`, `trips/**`) are being edited by others, so this is the plan only.
+| File | Role |
+|---|---|
+| `trips/live.ts` | `LivePrices`: the background prefetch, per voyage, under `withTrip`; the swappable `provider` (tests use a fake) |
+| `fit/live.ts` | The per-voyage `LiveInventory` overlay, `liveStaysFor`, `liveFaresFor`, and the public **live fare band** |
+| `fit/pricing.ts` | `buildChartBook` / `buildPlan` / `chooseFlight` take the overlay; plans carry `priceSource`, `priceFeed`, `liveBand` and `stay` |
+| `trips/table.ts` | The chart book is built with the overlay. `repriceLive` runs before the Dry Run. `onDecided` pins the decided plans |
+| `trips/crew.ts` | Starts the prefetch when the last terms seal, for named ports with at least 2 crew |
 
-1. **When:** as soon as a voyage's ports and windows are known, meaning the chart book or prerank has chosen the shortlist (the 2–4 ports) and the crew's date windows. In `trips/table.ts` or `trips/course.ts`, fire a **background prefetch** that nobody awaits (`void prefetchLive(trip)`), wrapped in `withTrip(trip._id, …)` so spend is counted per voyage:
-   - For each shortlisted `city × window`, call `liveHotels({cityName: city.name, cityId: city._id, lat: city.lat, lng: city.lng, checkIn: window.start, checkOut: window.end, guests: crew.length})`.
-   - For each `city × window × distinct member origin` (not the home port), call `liveFlights({origin, destinationIata: city.airport.code, depart: window.start, return: window.end, adults: <members from that origin>, cityId, dateWindowId: window.id})`.
-   - Run at most 4 at a time; each result lands in the 6-hour cache.
-2. **Where results live:** keep a per-voyage `live` map keyed by `city|window|origin` (flights) and `city|window` (hotels), in `trips/records.ts` or next to the voyage state. Don't put it in the shared `Dataset` (`loadDataset()` is global and cached per `datasetRev`). One more option: in `fit/flights.ts` `flightsFor`, merge in the order **live, then curated, then modelled**. Pass live options through a `LiveInventory` argument or a per-voyage overlay dataset, `{...ds, flights: [...liveFlights, ...ds.flights], hotels: [...liveHotels, ...ds.hotels]}`, built once per table run so the pricing code stays pure.
-3. **Preference:** when live options exist for a `city × window`, the pricing (`fit/pricing.ts` `buildPlan`, and the hotel choice loop) should consider them first, but still apply the same dealbreakers and fit rules (`stayType === "hostel"`, stops, red-eye). A live hotel's `nightlyCents` is already the group's nightly cost (see the rooming rule), the same meaning as the curated hotels. If a live flight list comes back empty, or has no option within the rules, fall back to curated or modelled for that member only.
-4. **Labels:** each plan gets `priceSource: "live" | "estimated"`. It is "live" only when its hotel and **every** member flight came from RouteStack (`source === "routestack"`); a mix shows "Estimated". The phone shows a **"Live prices"** chip with the fetch time, or **"Estimated"** otherwise. Modelled flights already carry `modelled: true`.
-5. **Timing:** the table must never wait on RouteStack. If the prefetch hasn't landed when a plan is priced, price it as estimated. When results arrive, re-price in the background and push the update with the existing plan-update event, or apply them at the next table step. Searches in the prefetch take up to 90 s each.
-6. **Booking:** the Visa payment stays **simulated** (`PAYMENTS_MODE=sim`). `bookingRef` (`hotel:<id>` / `fare:<fareSourceCode>`) is kept only for a later "open on RouteStack" deep link, via the free `get-payment-url`. We never book or charge through RouteStack.
-7. **Budget math:** with the default trip cap of 20, prefetch only the top 2 ports × the crew's chosen window: 2 hotel searches + 2 × origins flight searches. Fetch other ports only when a crew member opens them. The cache and in-flight dedupe keep re-renders free.
+1. **When.** The prefetch starts as soon as the ports and windows are fixed. For named ports, that is when the last member seals their terms (at least 2 crew). For regions or anywhere, it is when the table starts, after the pre-rank. The table start runs it again in every case, but it skips searches that already landed, are in flight, or fell back less than 10 minutes ago. Nothing awaits it.
+   - **Stays:** one search per port × window, with `guests` = the crew size. The provider's rooming rule applies: rooms of two from 4 guests up.
+   - **Fares:** one search per port × window × distinct home airport, with `adults` = the members flying from that airport. Home ports are skipped. So are windows more than `FLIGHT_HORIZON_DAYS` (330) days out: the sandbox refused every search 377 days out (`TOOL_ERROR`, see *Live smoke*), because airlines open sales about 330 days ahead.
+   - **Limits:** at most 4 searches run at once. The full set is planned against what is left of the voyage cap (`ROUTESTACK_TRIP_CAP` minus what the voyage has spent). If the full set doesn't fit, only the **top 2 ranked ports** (`rankPorts`) × the crew's **common window** are fetched, trimmed to what's left. A search that fell back (`null`) isn't repeated for the voyage for 10 minutes, because a refused search may have been billed.
+   - **Off:** there is no prefetch when `ROUTESTACK_MODE=off` or no keys are set. The Expo seed is marked `curatedOnly`, so it keeps its curated flights and stays exactly.
+2. **Where results live.** `helm.liveInventory` holds a per-voyage `LiveInventory`. Stays are keyed `city|window|guests` and fares `city|window|origin`. It is never written to the shared `Dataset`. It is dropped with the voyage's other hot caches, and the provider's 6-hour cache makes a refetch free.
+3. **Preference: live, then curated, then modelled.**
+   - **Stays:** a port × window with live stays for this crew size is priced on them, and not on the curated ones. At most 6 are used: the 4 cheapest and the 2 best rated. `nightlyCents` is the group's nightly price, `sleeps` = the crew size, so there is one "room". The hostel dealbreaker still applies.
+   - **Locations:** the provider places a stay only approximately (`approxLocation`). The plan's stay therefore uses **the port's centre** for walking legs and the public map. Its neighbourhood reads "1.4 km from the centre" (from `distanceKm`) or "Near the centre".
+   - **Fares:** per member. The cheapest live fare that breaks no dealbreaker wins, even when a curated or modelled fare is cheaper. Next comes the cheapest curated or modelled fare that breaks none. Last is the cheapest of all, with what it breaks.
+   - **Outliers:** a live fare outside the port's **live band** is ignored (see below).
+4. **Privacy (S2-002).** Live fares exist only for the crew's own home airports, and the origins are private. So nothing public is built from them:
+   - **Public range:** the group range of a plan with a live fare (`liveBand`) is widened to the port × window's **live band**. The band runs from `0.6 ×` the cheapest to `1.4 ×` the dearest curated or modelled fare from *every* home airport (`liveBand`, crew-independent). This is also the band a live fare must fall in to be used, so the range always holds the exact total.
+   - **Public flags:** these still come from the curated and modelled listings.
+   - **Privacy context:** live stay prices are allowed, since they depend only on port, window and crew size. Live fares are not added, because saying one would say where someone flies from.
+   - **`priceSource`:** "live" when the stay and every member's flight (home ports aside) came from RouteStack, else "estimated". It is per plan and public-safe. `priceFeed` ("sandbox" or "live") goes with "live".
+5. **Timing and re-pricing.** The table never waits. The chart book is built from whatever has landed; the rest is estimated. When a prefetch lands, `repriceLive` runs, but **only while `AT_TABLE`, the negotiation is running, and the Captain hasn't started deciding** (hails closed).
+   - **Watch 0:** the Captain is still opening, and no plan has been named, so the whole book is rebuilt in place, live stays included. The engine holds the same array.
+   - **Watch 1 on:** each plan is re-priced on the same port, window and stay, so only fares move. New live stays wait for the next meeting.
+   - **Privacy context:** it is rebuilt in place and keeps every earlier secret.
+   - **After the decision:** `onDecided` puts exactly the decided plans in the book. The Dry Run, the pick, the seals and the booking then use those shares. Nothing re-prices after DRY_RUN.
+   - **Restores:** a live stay travels inside the plan (`plan.stay`), so the stored Two Charts resolve after a restart without the overlay.
+6. **UI.** Phone chart cards (Dry Run) show a small **"Live prices"** or **"Estimated"** tag. Booked shows **"Prices from RouteStack sandbox"** when the chosen chart was live (just "RouteStack" in live mode).
+7. **Booking.** The Visa payment stays **simulated** (`PAYMENTS_MODE=sim`). `bookingRef` (`hotel:<id>` / `fare:<fareSourceCode>`) is kept only for a later "open on RouteStack" deep link via the free `get-payment-url`. We never book or charge through RouteStack.
+8. **Logs:** the server logs `[live] voyage <id>: …` for each search (answered / fell back, ms), each prefetch (answered, billed, trimmed), the chart book's live count, and each re-price.
 
 ## Live smoke
 
-Not run: `.env` has no `ROUTESTACK_API_KEY` or `ROUTESTACK_API_SECRET`. Once the keys are set, run one sandbox hotel search (Lisbon, 2027-03-12 → 2027-03-16, 3 guests) and one flight search (ATL → LIS, same dates, 3 adults) through `liveHotels` / `liveFlights`. Then check the per-person flight price (see ⚠️ above) and whether the hotel page is wrapped in an array.
+Run on 2026-09-26 against the sandbox (`evolvemcp.routestack.ai`):
+
+- **Stays:** Lisbon, 12 → 16 Mar 2027, 3 guests: 20 stays in about 14 s. The page is wrapped in a one-item array, and `reviews` is `null`, so ratings come from the stars.
+- **Fares:** ATL → LIS, same dates:
+  - `adults: 1`: 15 options in about 17 s, cheapest $861.38 (United via EWR).
+  - `adults: 3`: 15 options in 26 s, $2,584.14 for the same itinerary. That is the party's total, so the per-person rule above divides by `quantity`.
+- **A random demo voyage on the dev server** (`POST /api/demo/seed?kind=random&crew=3`: Delhi, Medellín, St. Louis in W7, 8–12 Oct 2027; two home airports):
+  - **Prefetch:** it started when the seed sealed the last brief and finished in 13.3 s. The 3 stay searches answered in 5.5–7.9 s each.
+  - **Fares refused:** all 6 fare searches were refused (`TOOL_ERROR`) in 1.5–4.9 s. The departure was 377 days out; the March 2027 searches (167 days out) worked, so the sales horizon is the likely cause. So the chart book used live stays with modelled fares, and every plan was "Estimated". The table decided in 41 s.
+  - **Retries:** the table start retried the 6 refused searches. That is now fixed (the 10-minute retry rule and the 330-day horizon).
+  - **Spend:** 15 counted against the voyage: 3 answered and 12 refused (6, plus the 6 retries). A refused search may not be billed upstream; the cap counts it anyway.
+- **In process, from the sandbox answers above** (Lisbon + Mexico City, W1, 3 crew from ATL): the Lisbon charts came back **"live" / sandbox**, with $861.38 per person and a live stay 3.2 km from the centre. The public range held the exact total. Mexico City stayed estimated. No network was used: the cache answered.

@@ -24,6 +24,7 @@ import { DryRun } from "./dryrun.js";
 import { Sealing } from "./sealing.js";
 import { Replayer } from "./replay.js";
 import { Persistence } from "./persistence.js";
+import { LivePrices } from "./live.js";
 import type { Actor, Emit, TripRec } from "./records.js";
 
 export class TripService extends HelmCore implements Helm {
@@ -34,6 +35,7 @@ export class TripService extends HelmCore implements Helm {
   readonly sealing: Sealing = new Sealing(this);
   readonly replayer: Replayer = new Replayer(this);
   readonly archive: Persistence = new Persistence(this);
+  readonly live: LivePrices = new LivePrices(this);
 
   protected onBookingResult(b: BookingRec, status: "CAPTURED" | "VOIDED", publicReason?: string) { return this.sealing.onBookingResult(b, status, publicReason); }
 

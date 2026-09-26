@@ -33,6 +33,9 @@ export async function seedExpo(helm: TripService): Promise<DemoSeed & { maya: De
   const { trip, member: rae, token: raeToken } = helm.createTrip({
     name: "Spring Break '27", organizerName: "Rae", band: 1, origin: "ATL", cityIds: ["LIS", "MEX", "YUL"], windowIds: ["W1", "W2"],
   });
+  // docs/12: the Expo keeps its curated flights and stays exactly (no live prefetch), before any terms seal
+  trip.curatedOnly = true;
+  helm.save(trip);
   // SEC-003: memory is keyed on a private crew key, not "Maya|ORD". Seeded Maya gets her own fresh key, and her
   // "previous voyage" is written under it, so the Expo line ("gave up the city pick last time") still plays and
   // nobody else's history can leak into (or out of) the demo.

@@ -11,7 +11,7 @@
  *   debug      debug.ts
  */
 import express, { type NextFunction, type Request, type Response, type Router } from "express";
-import { AIRPORTS, HAIL_MAX_CHARS, NOTE_MAX_CHARS, REGIONS, type Band, type CityId, type Destination, type Origin } from "@all-ayes/shared";
+import { AIRPORTS, HAIL_MAX_CHARS, MAX_CREW, NOTE_MAX_CHARS, REGIONS, type Band, type CityId, type Destination, type Origin } from "@all-ayes/shared";
 import type { TripService } from "../trips/service.js";
 import { SPEND_PRIORITY_PHASES, VOICE_PHASES } from "../trips/records.js";
 import { audioFile, transcribe } from "../voice/voice.js";
@@ -302,7 +302,9 @@ function mountMiscRoutes(r: Router, helm: TripService) {
     const kind = String(req.query.kind ?? "random");
     if (kind !== "random" && kind !== "expo") throw new HelmError("BAD_INPUT", "kind is random or expo.");
     const seed = Number(req.query.seed);
-    res.json(kind === "expo" ? await seedExpo(helm) : await seedRandom(helm, Number.isInteger(seed) && seed >= 0 ? seed : undefined));
+    const crew = req.query.crew === undefined ? undefined : Number(req.query.crew);
+    if (crew !== undefined && !(Number.isInteger(crew) && crew >= 2 && crew <= MAX_CREW)) throw new HelmError("BAD_INPUT", `crew is 2 to ${MAX_CREW}.`);
+    res.json(kind === "expo" ? await seedExpo(helm) : await seedRandom(helm, Number.isInteger(seed) && seed >= 0 ? seed : undefined, crew));
   }));
 
   r.get("/cities", (_req, res) => {

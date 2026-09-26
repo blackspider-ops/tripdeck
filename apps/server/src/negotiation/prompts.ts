@@ -12,7 +12,7 @@ import { publicTotalLabel, publicTotalRange, roomsFor, stayName, type PricingMem
 
 /** The stay as the table may name it: "Casa Alfama", or "Casa Alfama ×3" when the crew books three rooms. */
 const stayOf = (ds: Dataset, p: Plan) => {
-  const h = indexOf(ds).hotel.get(p.hotelId);
+  const h = indexOf(ds).hotel.get(p.hotelId) ?? p.stay;
   return h ? stayName(h, roomsFor(h, p.members.length)) : undefined;
 };
 
