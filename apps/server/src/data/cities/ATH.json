@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "ATH", "name": "Athens", "country": "Greece", "region": "Europe", "airport": { "code": "ATH", "lat": 37.9364, "lng": 23.9445 }, "utcOffset": 2, "centerLat": 37.975, "centerLng": 23.729, "tileRadiusKm": 2.0, "publicFlags": ["steep Acropolis climb on slippery marble", "occasional transport strikes"] },
+  "hotels": [
+    { "_id": "ATH-h-psyrri-hostel", "kind": "hotel", "cityId": "ATH", "name": "Psyrri Hostel (3 beds)", "neighborhood": "Psyrri", "lat": 37.9785, "lng": 23.724, "stayType": "hostel", "nightlyCents": 8000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "ATH-h-pangrati-guest", "kind": "hotel", "cityId": "ATH", "name": "Pangrati Guesthouse", "neighborhood": "Pangrati", "lat": 37.968, "lng": 23.744, "stayType": "guesthouse", "nightlyCents": 11000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ATH-h-koukaki-flat", "kind": "hotel", "cityId": "ATH", "name": "Koukaki Apartment", "neighborhood": "Koukaki", "lat": 37.9645, "lng": 23.7255, "stayType": "apartment", "nightlyCents": 13500, "sleeps": 4, "rating": 4.6 },
+    { "_id": "ATH-h-plaka-triple", "kind": "hotel", "cityId": "ATH", "name": "Plaka Hotel (triple)", "neighborhood": "Plaka", "lat": 37.973, "lng": 23.73, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "ATH-h-kolonaki-triple", "kind": "hotel", "cityId": "ATH", "name": "Kolonaki Hotel (triple)", "neighborhood": "Kolonaki", "lat": 37.978, "lng": 23.743, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "ATH-a-acropolis", "kind": "activity", "cityId": "ATH", "name": "Acropolis & Parthenon", "short": "Acropolis", "tags": ["history"], "lat": 37.9715, "lng": 23.7257, "durationMin": 150, "priceCents": 3500, "startEarliest": "08:00", "startLatest": "14:30", "role": "group" },
+    { "_id": "ATH-a-acropolis-museum", "kind": "activity", "cityId": "ATH", "name": "Acropolis Museum", "short": "Acropolis Museum", "tags": ["museums", "history"], "lat": 37.9685, "lng": 23.7285, "durationMin": 120, "priceCents": 2200, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "ATH-a-taverna", "kind": "activity", "cityId": "ATH", "name": "Taverna dinner & rembetiko, Psyrri", "short": "Taverna & rembetiko", "tags": ["food", "music"], "lat": 37.978, "lng": 23.7245, "durationMin": 180, "priceCents": 4000, "startEarliest": "20:30", "startLatest": "21:30", "role": "group" },
+    { "_id": "ATH-a-vouliagmeni", "kind": "activity", "cityId": "ATH", "name": "Lake Vouliagmeni swim & Riviera beach", "short": "Vouliagmeni swim", "tags": ["beach", "chill"], "lat": 37.8078, "lng": 23.786, "durationMin": 240, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "ATH-a-lycabettus", "kind": "activity", "cityId": "ATH", "name": "Lycabettus Hill sunset", "short": "Lycabettus sunset", "tags": ["nature", "chill"], "lat": 37.9819, "lng": 23.7431, "durationMin": 120, "priceCents": 0, "startEarliest": "16:30", "startLatest": "17:45", "role": "pick" },
+    { "_id": "ATH-a-food-tour", "kind": "activity", "cityId": "ATH", "name": "Varvakios market & food tour", "short": "Athens food tour", "tags": ["food"], "lat": 37.9805, "lng": 23.727, "durationMin": 210, "priceCents": 7500, "startEarliest": "09:30", "startLatest": "11:00", "role": "pick" },
+    { "_id": "ATH-a-sounion", "kind": "activity", "cityId": "ATH", "name": "Cape Sounion & Temple of Poseidon sunset", "short": "Cape Sounion", "tags": ["history", "nature"], "lat": 37.6503, "lng": 24.0246, "durationMin": 300, "priceCents": 6000, "startEarliest": "14:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ATH-a-rooftops", "kind": "activity", "cityId": "ATH", "name": "Rooftop bars, Monastiraki", "short": "Rooftop bars", "tags": ["nightlife"], "lat": 37.976, "lng": 23.7255, "durationMin": 150, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ATH-h-plaka-triple", "toId": "ATH-a-vouliagmeni", "mode": "transit", "minutes": 60, "note": "tram to Glyfada + bus along the Riviera" },
+    { "fromId": "ATH-h-plaka-triple", "toId": "ATH-a-sounion", "mode": "transit", "minutes": 110, "note": "KTEL coastal bus or tour coach" },
+    { "fromId": "ATH-h-koukaki-flat", "toId": "ATH-a-acropolis", "mode": "walk", "minutes": 15, "note": "uphill to the south entrance" }
+  ],
+  "hilly": ["ATH-a-acropolis", "ATH-a-lycabettus", "ATH-h-kolonaki-triple"]
+}

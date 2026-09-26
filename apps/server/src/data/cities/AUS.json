@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "AUS", "name": "Austin", "country": "United States", "state": "TX", "region": "United States", "airport": {"code": "AUS", "lat": 30.1975, "lng": -97.6664}, "utcOffset": -6, "centerLat": 30.263, "centerLng": -97.744, "tileRadiusKm": 2.5, "publicFlags": ["100°F+ summer heat"] },
+  "hotels": [
+    { "_id": "AUS-h-east-bungalow", "kind": "hotel", "cityId": "AUS", "name": "East Austin Bungalow", "neighborhood": "East Austin", "lat": 30.264, "lng": -97.725, "stayType": "apartment", "nightlyCents": 27000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "AUS-h-downtown-triple", "kind": "hotel", "cityId": "AUS", "name": "Downtown Hotel (triple)", "neighborhood": "Downtown", "lat": 30.267, "lng": -97.743, "stayType": "hotel", "nightlyCents": 34000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "AUS-h-soco-triple", "kind": "hotel", "cityId": "AUS", "name": "SoCo Motor Court (triple)", "neighborhood": "South Congress", "lat": 30.249, "lng": -97.7495, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "AUS-h-travis-guest", "kind": "hotel", "cityId": "AUS", "name": "Travis Heights Guesthouse", "neighborhood": "Travis Heights", "lat": 30.247, "lng": -97.742, "stayType": "guesthouse", "nightlyCents": 21000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "AUS-h-rainey-hostel", "kind": "hotel", "cityId": "AUS", "name": "Rainey Street Hostel (3 beds)", "neighborhood": "Rainey Street", "lat": 30.2585, "lng": -97.7385, "stayType": "hostel", "nightlyCents": 13500, "sleeps": 3, "rating": 4 }
+  ],
+  "activities": [
+    { "_id": "AUS-a-bbq", "kind": "activity", "cityId": "AUS", "name": "Franklin Barbecue (line & lunch)", "short": "Franklin BBQ", "tags": ["food"], "lat": 30.2701, "lng": -97.7313, "durationMin": 180, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "10:30", "role": "group" },
+    { "_id": "AUS-a-sixth-street", "kind": "activity", "cityId": "AUS", "name": "Sixth Street live music", "short": "Sixth St music", "tags": ["music", "nightlife"], "lat": 30.2672, "lng": -97.739, "durationMin": 180, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "AUS-a-barton-springs", "kind": "activity", "cityId": "AUS", "name": "Barton Springs Pool swim", "short": "Barton Springs", "tags": ["nature", "chill"], "lat": 30.264, "lng": -97.7713, "durationMin": 150, "priceCents": 900, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "AUS-a-bats", "kind": "activity", "cityId": "AUS", "name": "Congress Bridge bat flight", "short": "Bat flight", "tags": ["nature"], "lat": 30.261, "lng": -97.7451, "durationMin": 45, "priceCents": 0, "startEarliest": "19:30", "startLatest": "20:15", "role": "pick" },
+    { "_id": "AUS-a-capitol", "kind": "activity", "cityId": "AUS", "name": "Texas State Capitol tour", "short": "State Capitol", "tags": ["history"], "lat": 30.2747, "lng": -97.7404, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:30", "role": "pick" },
+    { "_id": "AUS-a-bullock", "kind": "activity", "cityId": "AUS", "name": "Bullock Texas State History Museum", "short": "Bullock Museum", "tags": ["museums", "history"], "lat": 30.2804, "lng": -97.739, "durationMin": 120, "priceCents": 1700, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "AUS-a-paddleboard", "kind": "activity", "cityId": "AUS", "name": "Lady Bird Lake paddleboard", "short": "Lake paddleboard", "tags": ["chill", "nature"], "lat": 30.2667, "lng": -97.763, "durationMin": 90, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "AUS-a-continental", "kind": "activity", "cityId": "AUS", "name": "Continental Club honky-tonk", "short": "Continental Club", "tags": ["music", "nightlife"], "lat": 30.2502, "lng": -97.7496, "durationMin": 150, "priceCents": 1500, "startEarliest": "20:00", "startLatest": "22:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "AUS-h-east-bungalow", "toId": "AUS-a-barton-springs", "mode": "taxi", "minutes": 15 },
+    { "fromId": "AUS-h-rainey-hostel", "toId": "AUS-a-barton-springs", "mode": "walk", "minutes": 35, "note": "Butler Trail along the lake" }
+  ],
+  "hilly": []
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BOS", "name": "Boston", "country": "United States", "state": "MA", "region": "United States", "airport": { "code": "BOS", "lat": 42.3656, "lng": -71.0096 }, "utcOffset": -5, "centerLat": 42.355, "centerLng": -71.066, "tileRadiusKm": 2, "publicFlags": ["cold, windy winters", "pricey hotels"] },
+  "hotels": [
+    { "_id": "BOS-h-hi-chinatown", "kind": "hotel", "cityId": "BOS", "name": "HI Boston (4-bed private)", "neighborhood": "Chinatown", "lat": 42.3525, "lng": -71.0629, "stayType": "hostel", "nightlyCents": 16500, "sleeps": 4, "rating": 4.3 },
+    { "_id": "BOS-h-irving-house", "kind": "hotel", "cityId": "BOS", "name": "Irving House at Harvard", "neighborhood": "Cambridge", "lat": 42.3765, "lng": -71.1128, "stayType": "guesthouse", "nightlyCents": 26000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "BOS-h-omni-parker", "kind": "hotel", "cityId": "BOS", "name": "Omni Parker House (2 queens)", "neighborhood": "Downtown Crossing", "lat": 42.3577, "lng": -71.0602, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "BOS-h-back-bay-flat", "kind": "hotel", "cityId": "BOS", "name": "Back Bay Brownstone Apartment", "neighborhood": "Back Bay", "lat": 42.3496, "lng": -71.0795, "stayType": "apartment", "nightlyCents": 42000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BOS-h-liberty", "kind": "hotel", "cityId": "BOS", "name": "The Liberty Hotel (2 queens)", "neighborhood": "Beacon Hill", "lat": 42.362, "lng": -71.0705, "stayType": "hotel", "nightlyCents": 54000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "BOS-a-freedom-trail", "kind": "activity", "cityId": "BOS", "name": "Freedom Trail walk", "short": "Freedom Trail", "tags": ["history"], "lat": 42.3554, "lng": -71.064, "durationMin": 150, "priceCents": 0, "startEarliest": "09:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "BOS-a-north-end", "kind": "activity", "cityId": "BOS", "name": "North End pasta & cannoli crawl", "short": "North End crawl", "tags": ["food"], "lat": 42.3647, "lng": -71.0542, "durationMin": 150, "priceCents": 4500, "startEarliest": "17:30", "startLatest": "19:30", "role": "group" },
+    { "_id": "BOS-a-wallys", "kind": "activity", "cityId": "BOS", "name": "Jazz at Wally's Café", "short": "Wally's jazz", "tags": ["music", "nightlife"], "lat": 42.3423, "lng": -71.0814, "durationMin": 150, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "BOS-a-mfa", "kind": "activity", "cityId": "BOS", "name": "Museum of Fine Arts", "short": "MFA Boston", "tags": ["museums"], "lat": 42.3394, "lng": -71.094, "durationMin": 180, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "BOS-a-gardner", "kind": "activity", "cityId": "BOS", "name": "Isabella Stewart Gardner Museum", "short": "Gardner Museum", "tags": ["museums", "history"], "lat": 42.3382, "lng": -71.0991, "durationMin": 120, "priceCents": 2200, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BOS-a-arboretum", "kind": "activity", "cityId": "BOS", "name": "Arnold Arboretum walk", "short": "Arnold Arboretum", "tags": ["nature", "chill"], "lat": 42.3074, "lng": -71.1206, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BOS-a-harpoon", "kind": "activity", "cityId": "BOS", "name": "Harpoon Beer Hall, Seaport", "short": "Harpoon beer hall", "tags": ["nightlife", "food"], "lat": 42.3466, "lng": -71.0343, "durationMin": 120, "priceCents": 2000, "startEarliest": "12:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "BOS-a-bpl", "kind": "activity", "cityId": "BOS", "name": "Boston Public Library & Copley Sq", "short": "Public Library", "tags": ["chill", "history"], "lat": 42.3493, "lng": -71.0781, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BOS-h-hi-chinatown", "toId": "BOS-a-arboretum", "mode": "transit", "minutes": 30, "note": "Orange Line to Forest Hills + walk" },
+    { "fromId": "BOS-h-irving-house", "toId": "BOS-a-freedom-trail", "mode": "transit", "minutes": 20, "note": "Red Line Harvard → Park St" },
+    { "fromId": "BOS-h-back-bay-flat", "toId": "BOS-a-arboretum", "mode": "transit", "minutes": 30, "note": "Orange Line to Forest Hills + walk" }
+  ],
+  "hilly": ["BOS-h-liberty"]
+}

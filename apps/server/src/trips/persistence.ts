@@ -2,6 +2,7 @@
  * Persistence & restore (OPT-031): boot restore with per-voyage repair, booking reconciliation and standing
  * instructions; the reconnect sync; on-demand loading of archived voyages (`hydrate`) and the lookups that use it.
  */
+import { adoptPack } from "../world/packs.js";
 import type { Turn } from "@all-ayes/shared";
 import { REASONS, STANDING_TTL_MS, type BookingRec, type StoredStanding } from "../payments/orchestrator.js";
 import { loadPasskeysFor, persistAllPasskeys } from "../passkeys/passkeys.js";
@@ -208,6 +209,8 @@ export class Persistence {
       try {
         const stored = turnsByTrip.get(doc._id) ?? [];
         const t = normalizeTrip(doc, stored);
+        // docs/11: generated ports travel with their voyage; re-added (validated, no network) before any plan is built
+        for (const p of t.worldPacks ?? []) await adoptPack(p);
         // LEGACY (O2-036): plans embedded in an older trip doc move to their own doc (the next trip save drops them)
         if (attachShortlist(t, shortlistOf.get(t._id)) === "embedded") helm.persistShortlist(t);
         await restoreAudio(t.negotiation.turns, stored);

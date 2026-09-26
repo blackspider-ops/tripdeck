@@ -190,10 +190,10 @@ function normalizeIp(raw: string): string {
 }
 
 // ---------- spend caps (SEC-005) ----------
-export type Paid = "gemini" | "tts" | "stt" | "backboard";
-const PAID: Paid[] = ["gemini", "tts", "stt", "backboard"];
+export type Paid = "gemini" | "tts" | "stt" | "backboard" | "routestack";
+const PAID: Paid[] = ["gemini", "tts", "stt", "backboard", "routestack"];
 type Counts = Record<Paid, number>;
-const zero = (): Counts => ({ gemini: 0, tts: 0, stt: 0, backboard: 0 });
+const zero = (): Counts => ({ gemini: 0, tts: 0, stt: 0, backboard: 0, routestack: 0 });
 
 /**
  * R2-WP-12 (L5-011 / S2-014): one set of counters and whether its stored value has been read. With MongoDB the
@@ -217,7 +217,7 @@ function load(l: Ledger): Promise<void> {
   l.loading ??= (async () => {
     try {
       const [doc] = await loadWhere<SpendDoc>("spend", { _id: l.id }, { limit: 1 });
-      for (const k of PAID) l.counts[k] += Number(doc?.[k]) || 0;
+      for (const k of PAID) l.counts[k] += Number((doc as Partial<Record<Paid, number>> | undefined)?.[k]) || 0;
       l.loaded = true;
       save(l);
     } catch (e) {

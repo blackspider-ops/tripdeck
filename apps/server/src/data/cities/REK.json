@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "REK", "name": "Reykjavík", "country": "Iceland", "region": "Europe", "airport": { "code": "KEF", "lat": 63.985, "lng": -22.6056 }, "utcOffset": 0, "centerLat": 64.1466, "centerLng": -21.9426, "tileRadiusKm": 1.5, "publicFlags": ["very expensive food and drink", "icy streets; tours depend on weather"] },
+  "hotels": [
+    { "_id": "REK-h-midborg-hostel", "kind": "hotel", "cityId": "REK", "name": "Miðborg Hostel (3 beds)", "neighborhood": "Miðborg", "lat": 64.147, "lng": -21.938, "stayType": "hostel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "REK-h-vesturbaer-guest", "kind": "hotel", "cityId": "REK", "name": "Vesturbær Guesthouse", "neighborhood": "Vesturbær", "lat": 64.1455, "lng": -21.96, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "REK-h-laugavegur-flat", "kind": "hotel", "cityId": "REK", "name": "Laugavegur Apartment", "neighborhood": "Laugavegur", "lat": 64.144, "lng": -21.923, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "REK-h-skolavordu-triple", "kind": "hotel", "cityId": "REK", "name": "Skólavörðustígur Hotel (triple)", "neighborhood": "Skólavörðuholt", "lat": 64.144, "lng": -21.931, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "REK-h-harbour-triple", "kind": "hotel", "cityId": "REK", "name": "Old Harbour Hotel (triple)", "neighborhood": "Grandi", "lat": 64.154, "lng": -21.951, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "REK-a-hallgrimskirkja", "kind": "activity", "cityId": "REK", "name": "Hallgrímskirkja tower & downtown walk", "short": "Hallgrímskirkja", "tags": ["history"], "lat": 64.1417, "lng": -21.9266, "durationMin": 120, "priceCents": 1100, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "REK-a-sky-lagoon", "kind": "activity", "cityId": "REK", "name": "Sky Lagoon geothermal ritual", "short": "Sky Lagoon", "tags": ["chill"], "lat": 64.1161, "lng": -21.9451, "durationMin": 150, "priceCents": 9500, "startEarliest": "11:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "REK-a-northern-lights", "kind": "activity", "cityId": "REK", "name": "Northern lights coach tour", "short": "Northern lights", "tags": ["nature"], "lat": 64.1375, "lng": -21.9361, "durationMin": 240, "priceCents": 7000, "startEarliest": "20:30", "startLatest": "21:30", "role": "group" },
+    { "_id": "REK-a-golden-circle", "kind": "activity", "cityId": "REK", "name": "Golden Circle tour (Þingvellir, Geysir, Gullfoss)", "short": "Golden Circle", "tags": ["nature", "history"], "lat": 64.2559, "lng": -21.1299, "durationMin": 540, "priceCents": 9500, "startEarliest": "08:00", "startLatest": "09:00", "role": "pick", "earlyStart": true },
+    { "_id": "REK-a-harpa", "kind": "activity", "cityId": "REK", "name": "Concert at Harpa", "short": "Harpa concert", "tags": ["music"], "lat": 64.1504, "lng": -21.9325, "durationMin": 120, "priceCents": 5000, "startEarliest": "19:30", "startLatest": "20:00", "role": "pick" },
+    { "_id": "REK-a-food-walk", "kind": "activity", "cityId": "REK", "name": "Icelandic food walk", "short": "Food walk", "tags": ["food"], "lat": 64.147, "lng": -21.933, "durationMin": 180, "priceCents": 12500, "startEarliest": "11:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "REK-a-national-museum", "kind": "activity", "cityId": "REK", "name": "National Museum of Iceland", "short": "National Museum", "tags": ["museums", "history"], "lat": 64.1417, "lng": -21.9483, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "REK-a-bar-crawl", "kind": "activity", "cityId": "REK", "name": "Laugavegur bar crawl", "short": "Bar crawl", "tags": ["nightlife"], "lat": 64.145, "lng": -21.927, "durationMin": 180, "priceCents": 5000, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "REK-h-laugavegur-flat", "toId": "REK-a-golden-circle", "mode": "transit", "minutes": 60, "note": "tour coach pickup, Þingvellir first stop" },
+    { "fromId": "REK-h-laugavegur-flat", "toId": "REK-a-sky-lagoon", "mode": "taxi", "minutes": 15, "note": "or shuttle from BSÍ terminal" },
+    { "fromId": "REK-h-harbour-triple", "toId": "REK-a-northern-lights", "mode": "transit", "minutes": 20, "note": "hotel pickup to BSÍ departure" }
+  ],
+  "hilly": []
+}

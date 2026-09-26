@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "HAV", "name": "Havana", "country": "Cuba", "region": "Caribbean", "airport": {"code": "HAV", "lat": 22.9892, "lng": -82.4091}, "utcOffset": -5, "centerLat": 23.137, "centerLng": -82.37, "tileRadiusKm": 2.5, "publicFlags": ["US travel rules apply (OFAC categories)", "cash only: US cards don't work"] },
+  "hotels": [
+    { "_id": "HAV-h-vieja-hostel", "kind": "hotel", "cityId": "HAV", "name": "Habana Vieja Hostel (3 beds)", "neighborhood": "Habana Vieja", "lat": 23.139, "lng": -82.352, "stayType": "hostel", "nightlyCents": 4500, "sleeps": 3, "rating": 4 },
+    { "_id": "HAV-h-vedado-casa", "kind": "hotel", "cityId": "HAV", "name": "Vedado Casa Particular", "neighborhood": "Vedado", "lat": 23.14, "lng": -82.392, "stayType": "guesthouse", "nightlyCents": 7000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "HAV-h-vieja-flat", "kind": "hotel", "cityId": "HAV", "name": "Habana Vieja Apartment", "neighborhood": "Habana Vieja", "lat": 23.138, "lng": -82.351, "stayType": "apartment", "nightlyCents": 9000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "HAV-h-miramar-triple", "kind": "hotel", "cityId": "HAV", "name": "Miramar Hotel (triple)", "neighborhood": "Miramar", "lat": 23.116, "lng": -82.427, "stayType": "hotel", "nightlyCents": 18000, "sleeps": 3, "rating": 4 },
+    { "_id": "HAV-h-centro-triple", "kind": "hotel", "cityId": "HAV", "name": "Parque Central Hotel (triple)", "neighborhood": "Centro Habana", "lat": 23.1375, "lng": -82.359, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.2 }
+  ],
+  "activities": [
+    { "_id": "HAV-a-old-havana", "kind": "activity", "cityId": "HAV", "name": "Old Havana walking tour", "short": "Old Havana walk", "tags": ["history"], "lat": 23.1386, "lng": -82.35, "durationMin": 150, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "HAV-a-classic-car", "kind": "activity", "cityId": "HAV", "name": "Classic convertible car tour", "short": "Classic car tour", "tags": ["history", "chill"], "lat": 23.136, "lng": -82.359, "durationMin": 60, "priceCents": 1700, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "HAV-a-salsa-night", "kind": "activity", "cityId": "HAV", "name": "Live son & salsa, Casa de la Música", "short": "Salsa night", "tags": ["music", "nightlife"], "lat": 23.137, "lng": -82.3665, "durationMin": 180, "priceCents": 2000, "startEarliest": "22:00", "startLatest": "23:30", "role": "group" },
+    { "_id": "HAV-a-revolution-museum", "kind": "activity", "cityId": "HAV", "name": "Museo de la Revolución", "short": "Revolution Museum", "tags": ["museums", "history"], "lat": 23.1415, "lng": -82.357, "durationMin": 90, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "HAV-a-fac", "kind": "activity", "cityId": "HAV", "name": "Fábrica de Arte Cubano", "short": "Fábrica de Arte", "tags": ["music", "nightlife", "museums"], "lat": 23.1385, "lng": -82.4065, "durationMin": 240, "priceCents": 1000, "startEarliest": "20:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "HAV-a-paladar", "kind": "activity", "cityId": "HAV", "name": "Paladar dinner, Habana Vieja", "short": "Paladar dinner", "tags": ["food"], "lat": 23.1395, "lng": -82.349, "durationMin": 120, "priceCents": 3500, "startEarliest": "19:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "HAV-a-malecon", "kind": "activity", "cityId": "HAV", "name": "Malecón sunset walk", "short": "Malecón sunset", "tags": ["chill"], "lat": 23.144, "lng": -82.37, "durationMin": 90, "priceCents": 0, "startEarliest": "17:30", "startLatest": "19:00", "role": "pick" },
+    { "_id": "HAV-a-playas-este", "kind": "activity", "cityId": "HAV", "name": "Playas del Este beach day", "short": "Playas del Este", "tags": ["beach", "chill"], "lat": 23.178, "lng": -82.2, "durationMin": 360, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "11:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "HAV-h-vieja-flat", "toId": "HAV-a-playas-este", "mode": "taxi", "minutes": 30, "note": "private taxi east through the bay tunnel" },
+    { "fromId": "HAV-h-vedado-casa", "toId": "HAV-a-playas-este", "mode": "taxi", "minutes": 40 },
+    { "fromId": "HAV-h-vieja-flat", "toId": "HAV-a-fac", "mode": "taxi", "minutes": 15 }
+  ],
+  "hilly": []
+}

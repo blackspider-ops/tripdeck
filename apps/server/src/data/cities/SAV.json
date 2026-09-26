@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SAV", "name": "Savannah", "country": "United States", "state": "GA", "region": "United States", "airport": { "code": "SAV", "lat": 32.1276, "lng": -81.2021 }, "utcOffset": -5, "centerLat": 32.076, "centerLng": -81.093, "tileRadiusKm": 1.5, "publicFlags": ["hurricane season Jun–Nov", "Tybee beach needs a car"] },
+  "hotels": [
+    { "_id": "SAV-h-thunderbird", "kind": "hotel", "cityId": "SAV", "name": "Thunderbird Inn (2 queens)", "neighborhood": "Historic District", "lat": 32.0797, "lng": -81.099, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 4, "rating": 4.2 },
+    { "_id": "SAV-h-jones-street-flat", "kind": "hotel", "cityId": "SAV", "name": "Jones Street Carriage House", "neighborhood": "Historic District", "lat": 32.0715, "lng": -81.096, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "SAV-h-marshall-house", "kind": "hotel", "cityId": "SAV", "name": "The Marshall House (triple)", "neighborhood": "Broughton Street", "lat": 32.0785, "lng": -81.089, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "SAV-h-gastonian", "kind": "hotel", "cityId": "SAV", "name": "The Gastonian", "neighborhood": "Historic District", "lat": 32.0693, "lng": -81.093, "stayType": "guesthouse", "nightlyCents": 33000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "SAV-h-perry-lane", "kind": "hotel", "cityId": "SAV", "name": "Perry Lane Hotel (2 queens)", "neighborhood": "Historic District", "lat": 32.074, "lng": -81.0895, "stayType": "hotel", "nightlyCents": 45000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "SAV-a-squares", "kind": "activity", "cityId": "SAV", "name": "Historic squares & Forsyth Park", "short": "Squares & Forsyth", "tags": ["history", "nature"], "lat": 32.0676, "lng": -81.0957, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "SAV-a-mrs-wilkes", "kind": "activity", "cityId": "SAV", "name": "Mrs. Wilkes' Dining Room lunch", "short": "Mrs. Wilkes' lunch", "tags": ["food"], "lat": 32.0719, "lng": -81.0935, "durationMin": 90, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "13:30", "role": "group" },
+    { "_id": "SAV-a-river-street", "kind": "activity", "cityId": "SAV", "name": "River Street & City Market night", "short": "River Street night", "tags": ["nightlife", "music"], "lat": 32.081, "lng": -81.091, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "SAV-a-tybee", "kind": "activity", "cityId": "SAV", "name": "Tybee Island beach day", "short": "Tybee beach", "tags": ["beach", "chill"], "lat": 32.0006, "lng": -80.8457, "durationMin": 240, "priceCents": 0, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "SAV-a-bonaventure", "kind": "activity", "cityId": "SAV", "name": "Bonaventure Cemetery", "short": "Bonaventure", "tags": ["history", "nature"], "lat": 32.0453, "lng": -81.0467, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "SAV-a-telfair", "kind": "activity", "cityId": "SAV", "name": "Telfair Academy & Jepson Center", "short": "Telfair museums", "tags": ["museums"], "lat": 32.0786, "lng": -81.0957, "durationMin": 120, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SAV-a-leopolds", "kind": "activity", "cityId": "SAV", "name": "Leopold's Ice Cream", "short": "Leopold's", "tags": ["food", "chill"], "lat": 32.0762, "lng": -81.0906, "durationMin": 45, "priceCents": 800, "startEarliest": "12:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "SAV-a-ghost-tour", "kind": "activity", "cityId": "SAV", "name": "Historic District ghost tour", "short": "Ghost tour", "tags": ["history", "nightlife"], "lat": 32.077, "lng": -81.092, "durationMin": 90, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SAV-h-jones-street-flat", "toId": "SAV-a-tybee", "mode": "taxi", "minutes": 30, "note": "~28 km; no transit" },
+    { "fromId": "SAV-h-jones-street-flat", "toId": "SAV-a-bonaventure", "mode": "taxi", "minutes": 15, "note": "no convenient transit" },
+    { "fromId": "SAV-h-thunderbird", "toId": "SAV-a-tybee", "mode": "taxi", "minutes": 30, "note": "~28 km; no transit" }
+  ],
+  "hilly": []
+}

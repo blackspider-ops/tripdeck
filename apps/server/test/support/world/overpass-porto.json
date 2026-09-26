@@ -1,0 +1,359 @@
+{
+ "version": 0.6,
+ "generator": "Overpass API 0.7.62.1 084b4234",
+ "osm3s": {
+  "timestamp_osm_base": "2026-09-20T10:11:12Z",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+ },
+ "elements": [
+  {
+   "type": "node",
+   "id": 1587324101,
+   "lat": 41.1497361,
+   "lon": -8.6179811,
+   "tags": {
+    "tourism": "hostel",
+    "name": "Gallery Hostel",
+    "website": "https://gallery-hostel.com",
+    "addr:street": "Rua de Miguel Bombarda",
+    "addr:suburb": "Cedofeita"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2334500812,
+   "lat": 41.1470153,
+   "lon": -8.6143342,
+   "tags": {
+    "tourism": "hostel",
+    "name": "Porto Spot Hostel"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4110022233,
+   "lat": 41.1553024,
+   "lon": -8.6181447,
+   "tags": {
+    "tourism": "guest_house",
+    "name": "Casa do Conto",
+    "website": "https://www.casadoconto.com",
+    "addr:street": "Rua da Boavista"
+   }
+  },
+  {
+   "type": "way",
+   "id": 301155870,
+   "center": {
+    "lat": 41.1407213,
+    "lon": -8.6129877
+   },
+   "tags": {
+    "tourism": "apartment",
+    "name": "Ribeira Riverside Apartments",
+    "addr:street": "Cais da Ribeira"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1832209455,
+   "lat": 41.1478391,
+   "lon": -8.6068957,
+   "tags": {
+    "tourism": "hotel",
+    "name": "Grande Hotel do Porto",
+    "stars": "3",
+    "wikidata": "Q10302118",
+    "addr:street": "Rua de Santa Catarina"
+   }
+  },
+  {
+   "type": "way",
+   "id": 165223415,
+   "center": {
+    "lat": 41.1334751,
+    "lon": -8.6133208
+   },
+   "tags": {
+    "tourism": "hotel",
+    "name": "The Yeatman",
+    "stars": "5",
+    "wikidata": "Q7754049",
+    "website": "https://www.the-yeatman-hotel.com",
+    "addr:city_district": "Vila Nova de Gaia"
+   }
+  },
+  {
+   "type": "way",
+   "id": 98134122,
+   "center": {
+    "lat": 41.1463178,
+    "lon": -8.6117004
+   },
+   "tags": {
+    "tourism": "hotel",
+    "name": "InterContinental Porto - Palácio das Cardosas",
+    "stars": "5",
+    "wikidata": "Q10349834"
+   }
+  },
+  {
+   "type": "node",
+   "id": 6612230012,
+   "lat": 41.2512,
+   "lon": -8.6801,
+   "tags": {
+    "tourism": "hotel",
+    "name": "Airport Inn"
+   }
+  },
+  {
+   "type": "way",
+   "id": 24926405,
+   "center": {
+    "lat": 41.1457698,
+    "lon": -8.6143786
+   },
+   "tags": {
+    "tourism": "attraction",
+    "man_made": "tower",
+    "historic": "yes",
+    "heritage": "2",
+    "name": "Torre dos Clérigos",
+    "name:en": "Clérigos Tower",
+    "name:es": "Torre de los Clérigos",
+    "name:fr": "Tour des Clercs",
+    "name:de": "Clérigos-Turm",
+    "name:it": "Torre dei Chierici",
+    "name:ja": "クレリゴスの塔",
+    "name:ru": "Башня Клеригуш",
+    "name:zh": "牧师塔",
+    "wikidata": "Q1164233",
+    "wikipedia": "pt:Torre dos Clérigos"
+   }
+  },
+  {
+   "type": "way",
+   "id": 25116398,
+   "center": {
+    "lat": 41.1414253,
+    "lon": -8.6155612
+   },
+   "tags": {
+    "tourism": "museum",
+    "historic": "building",
+    "name": "Palácio da Bolsa",
+    "name:en": "Stock Exchange Palace",
+    "name:es": "Palacio de la Bolsa",
+    "name:fr": "Palais de la Bourse",
+    "wikidata": "Q1519574",
+    "wikipedia": "pt:Palácio da Bolsa"
+   }
+  },
+  {
+   "type": "node",
+   "id": 5200112233,
+   "lat": 41.1414901,
+   "lon": -8.6154001,
+   "tags": {
+    "tourism": "museum",
+    "name": "Palácio da Bolsa"
+   }
+  },
+  {
+   "type": "way",
+   "id": 32554021,
+   "center": {
+    "lat": 41.1491836,
+    "lon": -8.6071523
+   },
+   "tags": {
+    "amenity": "marketplace",
+    "name": "Mercado do Bolhão",
+    "name:en": "Bolhão Market",
+    "wikidata": "Q10321545",
+    "wikipedia": "pt:Mercado do Bolhão"
+   }
+  },
+  {
+   "type": "way",
+   "id": 22882736,
+   "center": {
+    "lat": 41.1480296,
+    "lon": -8.6259847
+   },
+   "tags": {
+    "leisure": "park",
+    "name": "Jardins do Palácio de Cristal",
+    "name:en": "Crystal Palace Gardens",
+    "wikidata": "Q10301234"
+   }
+  },
+  {
+   "type": "node",
+   "id": 3308812123,
+   "lat": 41.1449321,
+   "lon": -8.6146812,
+   "tags": {
+    "tourism": "viewpoint",
+    "name": "Miradouro da Vitória"
+   }
+  },
+  {
+   "type": "way",
+   "id": 39012388,
+   "center": {
+    "lat": 41.1596504,
+    "lon": -8.6598412
+   },
+   "tags": {
+    "tourism": "museum",
+    "name": "Museu de Serralves",
+    "wikidata": "Q1954298"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1911022001,
+   "lat": 41.1471802,
+   "lon": -8.6137233,
+   "tags": {
+    "amenity": "bar",
+    "name": "Galeria de Paris",
+    "live_music": "yes"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1911022002,
+   "lat": 41.1468011,
+   "lon": -8.6132094,
+   "tags": {
+    "amenity": "nightclub",
+    "name": "Plano B"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1911022003,
+   "lat": 41.1455001,
+   "lon": -8.6101101,
+   "tags": {
+    "amenity": "pub",
+    "name": "The Wall"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1911022004,
+   "lat": 41.1458201,
+   "lon": -8.6105502,
+   "tags": {
+    "amenity": "restaurant",
+    "cuisine": "portuguese",
+    "name": "Cantinho do Avillez",
+    "website": "https://cantinhodoavillez.pt"
+   }
+  },
+  {
+   "type": "node",
+   "id": 1911022005,
+   "lat": 41.1462802,
+   "lon": -8.6120403,
+   "tags": {
+    "amenity": "restaurant",
+    "cuisine": "seafood",
+    "name": "Ostras & Coisas"
+   }
+  },
+  {
+   "type": "way",
+   "id": 46553127,
+   "center": {
+    "lat": 41.1429311,
+    "lon": -8.6084123
+   },
+   "tags": {
+    "amenity": "theatre",
+    "name": "Teatro Nacional São João",
+    "wikidata": "Q10369889",
+    "name:en": "São João National Theatre"
+   }
+  },
+  {
+   "type": "node",
+   "id": 2230111234,
+   "lat": 41.1581022,
+   "lon": -8.6292204,
+   "tags": {
+    "historic": "monument",
+    "name": "Monumento aos Heróis da Guerra Peninsular",
+    "wikidata": "Q10330521"
+   }
+  },
+  {
+   "type": "way",
+   "id": 27340199,
+   "center": {
+    "lat": 41.1468842,
+    "lon": -8.6112213
+   },
+   "tags": {
+    "place": "square",
+    "name": "Praça da Liberdade",
+    "name:en": "Liberty Square"
+   }
+  },
+  {
+   "type": "node",
+   "id": 4433120099,
+   "lat": 41.1524401,
+   "lon": -8.6203302,
+   "tags": {
+    "tourism": "gallery",
+    "name": "Galeria Municipal do Porto"
+   }
+  },
+  {
+   "type": "way",
+   "id": 131288822,
+   "center": {
+    "lat": 41.1497312,
+    "lon": -8.6710004
+   },
+   "tags": {
+    "natural": "beach",
+    "name": "Praia do Carneiro"
+   }
+  },
+  {
+   "type": "relation",
+   "id": 7318211,
+   "center": {
+    "lat": 41.1405203,
+    "lon": -8.6134112
+   },
+   "tags": {
+    "tourism": "attraction",
+    "name": "Ribeira",
+    "name:en": "Ribeira",
+    "name:es": "Ribeira",
+    "name:fr": "Ribeira",
+    "name:de": "Ribeira",
+    "wikidata": "Q3395398",
+    "wikipedia": "pt:Ribeira (Porto)",
+    "heritage": "1"
+   }
+  },
+  {
+   "type": "node",
+   "id": 7788112200,
+   "lat": 41.1434,
+   "lon": -8.6099,
+   "tags": {
+    "historic": "memorial",
+    "name": "Memorial"
+   }
+  }
+ ]
+}

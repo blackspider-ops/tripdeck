@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "ROM", "name": "Rome", "country": "Italy", "region": "Europe", "airport": { "code": "FCO", "lat": 41.8003, "lng": 12.2389 }, "utcOffset": 1, "centerLat": 41.8986, "centerLng": 12.4768, "tileRadiusKm": 2.5, "publicFlags": ["long queues at big sights — book ahead", "cobblestones everywhere"] },
+  "hotels": [
+    { "_id": "ROM-h-termini-hostel", "kind": "hotel", "cityId": "ROM", "name": "Termini Hostel (3 beds)", "neighborhood": "Esquilino", "lat": 41.899, "lng": 12.501, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 3.9 },
+    { "_id": "ROM-h-prati-guest", "kind": "hotel", "cityId": "ROM", "name": "Prati Guesthouse", "neighborhood": "Prati", "lat": 41.907, "lng": 12.463, "stayType": "guesthouse", "nightlyCents": 17000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ROM-h-trastevere-flat", "kind": "hotel", "cityId": "ROM", "name": "Trastevere Apartment", "neighborhood": "Trastevere", "lat": 41.889, "lng": 12.47, "stayType": "apartment", "nightlyCents": 21000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "ROM-h-monti-triple", "kind": "hotel", "cityId": "ROM", "name": "Monti Hotel (triple)", "neighborhood": "Monti", "lat": 41.8955, "lng": 12.493, "stayType": "hotel", "nightlyCents": 25000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "ROM-h-navona-triple", "kind": "hotel", "cityId": "ROM", "name": "Piazza Navona Hotel (triple)", "neighborhood": "Centro Storico", "lat": 41.899, "lng": 12.4731, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "ROM-a-colosseum", "kind": "activity", "cityId": "ROM", "name": "Colosseum & Roman Forum", "short": "Colosseum & Forum", "tags": ["history"], "lat": 41.8902, "lng": 12.4922, "durationMin": 180, "priceCents": 2600, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "ROM-a-vatican", "kind": "activity", "cityId": "ROM", "name": "Vatican Museums & Sistine Chapel", "short": "Vatican Museums", "tags": ["museums", "history"], "lat": 41.9065, "lng": 12.4536, "durationMin": 210, "priceCents": 3000, "startEarliest": "08:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "ROM-a-trastevere-dinner", "kind": "activity", "cityId": "ROM", "name": "Trattoria dinner in Trastevere", "short": "Trastevere dinner", "tags": ["food", "nightlife"], "lat": 41.8894, "lng": 12.4695, "durationMin": 150, "priceCents": 4500, "startEarliest": "19:30", "startLatest": "21:00", "role": "group" },
+    { "_id": "ROM-a-borghese", "kind": "activity", "cityId": "ROM", "name": "Galleria Borghese", "short": "Galleria Borghese", "tags": ["museums"], "lat": 41.9142, "lng": 12.4921, "durationMin": 120, "priceCents": 2600, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "ROM-a-pasta-class", "kind": "activity", "cityId": "ROM", "name": "Pasta-making class near Campo de' Fiori", "short": "Pasta class", "tags": ["food"], "lat": 41.8955, "lng": 12.4722, "durationMin": 180, "priceCents": 7500, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "ROM-a-ostia", "kind": "activity", "cityId": "ROM", "name": "Ostia Lido beach day (train)", "short": "Ostia beach", "tags": ["beach", "chill"], "lat": 41.732, "lng": 12.279, "durationMin": 300, "priceCents": 800, "startEarliest": "10:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "ROM-a-opera", "kind": "activity", "cityId": "ROM", "name": "Evening at Teatro dell'Opera di Roma", "short": "Opera night", "tags": ["music"], "lat": 41.9008, "lng": 12.496, "durationMin": 180, "priceCents": 6000, "startEarliest": "18:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "ROM-a-appia", "kind": "activity", "cityId": "ROM", "name": "Appian Way bike ride", "short": "Appian Way bikes", "tags": ["nature", "history"], "lat": 41.8575, "lng": 12.5125, "durationMin": 240, "priceCents": 3000, "startEarliest": "09:30", "startLatest": "12:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ROM-h-monti-triple", "toId": "ROM-a-ostia", "mode": "train", "minutes": 55, "note": "metro B to Piramide + Roma–Lido train" },
+    { "fromId": "ROM-h-trastevere-flat", "toId": "ROM-a-appia", "mode": "transit", "minutes": 35, "note": "bus 118 from Circo Massimo" },
+    { "fromId": "ROM-h-trastevere-flat", "toId": "ROM-a-vatican", "mode": "walk", "minutes": 30, "note": "along the Tiber" }
+  ],
+  "hilly": []
+}

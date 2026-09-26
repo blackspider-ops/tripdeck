@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SGN", "name": "Ho Chi Minh City", "country": "Vietnam", "region": "Asia", "airport": { "code": "SGN", "lat": 10.8188, "lng": 106.652 }, "utcOffset": 7, "centerLat": 10.778, "centerLng": 106.698, "tileRadiusKm": 2.0, "publicFlags": ["hot year-round; rainy season May–Nov", "long flight from the US (20+ h, one stop)"] },
+  "hotels": [
+    { "_id": "SGN-h-bui-vien-hostel", "kind": "hotel", "cityId": "SGN", "name": "Bui Vien Hostel (3 beds)", "neighborhood": "Pham Ngu Lao", "lat": 10.7676, "lng": 106.6932, "stayType": "hostel", "nightlyCents": 3300, "sleeps": 3, "rating": 4.0 },
+    { "_id": "SGN-h-district-3-guest", "kind": "hotel", "cityId": "SGN", "name": "District 3 Guesthouse", "neighborhood": "District 3", "lat": 10.783, "lng": 106.687, "stayType": "guesthouse", "nightlyCents": 5000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "SGN-h-thao-dien-flat", "kind": "hotel", "cityId": "SGN", "name": "Thao Dien Apartment", "neighborhood": "Thao Dien", "lat": 10.803, "lng": 106.735, "stayType": "apartment", "nightlyCents": 8500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "SGN-h-district-1-triple", "kind": "hotel", "cityId": "SGN", "name": "District 1 Hotel (triple)", "neighborhood": "Dong Khoi", "lat": 10.776, "lng": 106.703, "stayType": "hotel", "nightlyCents": 11000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "SGN-h-riverside-triple", "kind": "hotel", "cityId": "SGN", "name": "Saigon Riverside Hotel (triple)", "neighborhood": "Ton Duc Thang", "lat": 10.774, "lng": 106.706, "stayType": "hotel", "nightlyCents": 20000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "SGN-a-war-remnants", "kind": "activity", "cityId": "SGN", "name": "War Remnants Museum", "short": "War Remnants Museum", "tags": ["museums", "history"], "lat": 10.7795, "lng": 106.6921, "durationMin": 120, "priceCents": 200, "startEarliest": "07:30", "startLatest": "16:00", "role": "group" },
+    { "_id": "SGN-a-moto-food", "kind": "activity", "cityId": "SGN", "name": "Motorbike street food tour", "short": "Moto food tour", "tags": ["food"], "lat": 10.772, "lng": 106.698, "durationMin": 240, "priceCents": 5500, "startEarliest": "17:30", "startLatest": "18:30", "role": "group" },
+    { "_id": "SGN-a-rooftop", "kind": "activity", "cityId": "SGN", "name": "Rooftop bar night, District 1", "short": "Rooftop bars", "tags": ["nightlife", "music"], "lat": 10.7765, "lng": 106.7025, "durationMin": 150, "priceCents": 3000, "startEarliest": "19:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "SGN-a-cu-chi", "kind": "activity", "cityId": "SGN", "name": "Cu Chi Tunnels (Ben Dinh)", "short": "Cu Chi Tunnels", "tags": ["history", "nature"], "lat": 11.061, "lng": 106.5262, "durationMin": 360, "priceCents": 4000, "startEarliest": "07:30", "startLatest": "12:00", "role": "pick" },
+    { "_id": "SGN-a-ao-show", "kind": "activity", "cityId": "SGN", "name": "AO Show at the Saigon Opera House", "short": "AO Show", "tags": ["music"], "lat": 10.7765, "lng": 106.7032, "durationMin": 70, "priceCents": 4000, "startEarliest": "18:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SGN-a-cathedral", "kind": "activity", "cityId": "SGN", "name": "Notre-Dame Cathedral & Central Post Office", "short": "Notre-Dame Cathedral", "tags": ["history"], "lat": 10.7798, "lng": 106.699, "durationMin": 90, "priceCents": 0, "startEarliest": "08:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "SGN-a-river-cruise", "kind": "activity", "cityId": "SGN", "name": "Saigon River sunset cruise", "short": "River sunset cruise", "tags": ["chill"], "lat": 10.7705, "lng": 106.706, "durationMin": 120, "priceCents": 3500, "startEarliest": "17:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "SGN-a-cooking", "kind": "activity", "cityId": "SGN", "name": "Vietnamese cooking class & Ben Thanh market", "short": "Cooking class", "tags": ["food"], "lat": 10.7725, "lng": 106.698, "durationMin": 210, "priceCents": 4500, "startEarliest": "08:30", "startLatest": "14:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SGN-h-district-1-triple", "toId": "SGN-a-cu-chi", "mode": "taxi", "minutes": 90, "note": "~45 km northwest" },
+    { "fromId": "SGN-h-thao-dien-flat", "toId": "SGN-a-cu-chi", "mode": "taxi", "minutes": 90, "note": "~45 km northwest" },
+    { "fromId": "SGN-h-thao-dien-flat", "toId": "SGN-a-war-remnants", "mode": "taxi", "minutes": 20, "note": "over Saigon Bridge" }
+  ],
+  "hilly": []
+}

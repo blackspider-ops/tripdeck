@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "PRG", "name": "Prague", "country": "Czechia", "region": "Europe", "airport": { "code": "PRG", "lat": 50.1008, "lng": 14.26 }, "utcOffset": 1, "centerLat": 50.087, "centerLng": 14.42, "tileRadiusKm": 2.0, "publicFlags": ["steep castle district & cobblestones", "grey and chilly in March"] },
+  "hotels": [
+    { "_id": "PRG-h-zizkov-hostel", "kind": "hotel", "cityId": "PRG", "name": "Žižkov Hostel (3 beds)", "neighborhood": "Žižkov", "lat": 50.084, "lng": 14.445, "stayType": "hostel", "nightlyCents": 7500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "PRG-h-karlin-guest", "kind": "hotel", "cityId": "PRG", "name": "Karlín Guesthouse", "neighborhood": "Karlín", "lat": 50.0925, "lng": 14.444, "stayType": "guesthouse", "nightlyCents": 11000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "PRG-h-vinohrady-flat", "kind": "hotel", "cityId": "PRG", "name": "Vinohrady Apartment", "neighborhood": "Vinohrady", "lat": 50.076, "lng": 14.438, "stayType": "apartment", "nightlyCents": 14000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PRG-h-old-town-triple", "kind": "hotel", "cityId": "PRG", "name": "Old Town Hotel (triple)", "neighborhood": "Staré Město", "lat": 50.0865, "lng": 14.419, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "PRG-h-mala-strana-triple", "kind": "hotel", "cityId": "PRG", "name": "Malá Strana Hotel (triple)", "neighborhood": "Malá Strana", "lat": 50.0875, "lng": 14.4035, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "PRG-a-castle", "kind": "activity", "cityId": "PRG", "name": "Prague Castle & St Vitus Cathedral", "short": "Prague Castle", "tags": ["history"], "lat": 50.0909, "lng": 14.4005, "durationMin": 180, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "13:30", "role": "group" },
+    { "_id": "PRG-a-charles-bridge", "kind": "activity", "cityId": "PRG", "name": "Charles Bridge & Old Town Square walk", "short": "Charles Bridge walk", "tags": ["history", "chill"], "lat": 50.0865, "lng": 14.4114, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "PRG-a-u-fleku", "kind": "activity", "cityId": "PRG", "name": "Beer hall dinner at U Fleků", "short": "U Fleků beer hall", "tags": ["food", "nightlife"], "lat": 50.0788, "lng": 14.4178, "durationMin": 150, "priceCents": 2500, "startEarliest": "18:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "PRG-a-jewish-quarter", "kind": "activity", "cityId": "PRG", "name": "Jewish Quarter synagogues", "short": "Jewish Quarter", "tags": ["history", "museums"], "lat": 50.09, "lng": 14.418, "durationMin": 150, "priceCents": 2200, "startEarliest": "09:00", "startLatest": "14:30", "role": "pick" },
+    { "_id": "PRG-a-petrin", "kind": "activity", "cityId": "PRG", "name": "Petřín Hill & lookout tower", "short": "Petřín Hill", "tags": ["nature", "chill"], "lat": 50.0835, "lng": 14.3951, "durationMin": 120, "priceCents": 1100, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "PRG-a-reduta", "kind": "activity", "cityId": "PRG", "name": "Reduta Jazz Club", "short": "Reduta jazz", "tags": ["music", "nightlife"], "lat": 50.0819, "lng": 14.4172, "durationMin": 150, "priceCents": 1800, "startEarliest": "21:00", "startLatest": "21:30", "role": "pick" },
+    { "_id": "PRG-a-mucha", "kind": "activity", "cityId": "PRG", "name": "Mucha Museum", "short": "Mucha Museum", "tags": ["museums"], "lat": 50.0846, "lng": 14.4265, "durationMin": 60, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "PRG-a-food-tour", "kind": "activity", "cityId": "PRG", "name": "Czech food tasting tour", "short": "Czech food tour", "tags": ["food"], "lat": 50.0858, "lng": 14.425, "durationMin": 210, "priceCents": 9000, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PRG-h-zizkov-hostel", "toId": "PRG-a-castle", "mode": "transit", "minutes": 30, "note": "tram 22 uphill to Pražský hrad" },
+    { "fromId": "PRG-h-old-town-triple", "toId": "PRG-a-castle", "mode": "walk", "minutes": 25, "note": "over Charles Bridge, steep Nerudova climb" }
+  ],
+  "hilly": ["PRG-h-mala-strana-triple", "PRG-a-castle", "PRG-a-petrin"]
+}

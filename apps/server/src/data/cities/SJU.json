@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SJU", "name": "San Juan", "country": "Puerto Rico", "region": "Caribbean", "airport": { "code": "SJU", "lat": 18.4394, "lng": -66.0018 }, "utcOffset": -4, "centerLat": 18.463, "centerLng": -66.098, "tileRadiusKm": 3.0, "publicFlags": ["hurricane season Jun–Nov", "cruise-ship crowds in Old San Juan"] },
+  "hotels": [
+    { "_id": "SJU-h-old-sj-hostel", "kind": "hotel", "cityId": "SJU", "name": "Old San Juan Hostel (3 beds)", "neighborhood": "Old San Juan", "lat": 18.4648, "lng": -66.1165, "stayType": "hostel", "nightlyCents": 10500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "SJU-h-miramar-guest", "kind": "hotel", "cityId": "SJU", "name": "Miramar Guesthouse", "neighborhood": "Miramar", "lat": 18.457, "lng": -66.085, "stayType": "guesthouse", "nightlyCents": 15500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "SJU-h-condado-apt", "kind": "hotel", "cityId": "SJU", "name": "Condado Beach Apartment", "neighborhood": "Condado", "lat": 18.4585, "lng": -66.077, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "SJU-h-old-sj-triple", "kind": "hotel", "cityId": "SJU", "name": "Old San Juan Hotel (triple)", "neighborhood": "Old San Juan", "lat": 18.4655, "lng": -66.1105, "stayType": "hotel", "nightlyCents": 28000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "SJU-h-condado-triple", "kind": "hotel", "cityId": "SJU", "name": "Condado Lagoon Hotel (triple)", "neighborhood": "Condado", "lat": 18.4555, "lng": -66.0735, "stayType": "hotel", "nightlyCents": 33000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "SJU-a-forts", "kind": "activity", "cityId": "SJU", "name": "El Morro & San Cristóbal forts", "short": "El Morro forts", "tags": ["history"], "lat": 18.471, "lng": -66.124, "durationMin": 180, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "SJU-a-condado-beach", "kind": "activity", "cityId": "SJU", "name": "Condado beach day", "short": "Condado beach", "tags": ["beach", "chill"], "lat": 18.4588, "lng": -66.0745, "durationMin": 240, "priceCents": 0, "startEarliest": "10:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "SJU-a-placita", "kind": "activity", "cityId": "SJU", "name": "Salsa night at La Placita de Santurce", "short": "La Placita salsa", "tags": ["nightlife", "music"], "lat": 18.4485, "lng": -66.0645, "durationMin": 180, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "SJU-a-el-yunque", "kind": "activity", "cityId": "SJU", "name": "El Yunque rainforest day trip", "short": "El Yunque", "tags": ["nature"], "lat": 18.3787, "lng": -65.8191, "durationMin": 420, "priceCents": 7000, "startEarliest": "07:30", "startLatest": "08:30", "role": "pick", "earlyStart": true },
+    { "_id": "SJU-a-bio-bay", "kind": "activity", "cityId": "SJU", "name": "Bioluminescent bay kayak, Fajardo", "short": "Bio bay kayak", "tags": ["nature"], "lat": 18.381, "lng": -65.627, "durationMin": 150, "priceCents": 5500, "startEarliest": "18:30", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SJU-a-mapr", "kind": "activity", "cityId": "SJU", "name": "Museo de Arte de Puerto Rico", "short": "Art museum (MAPR)", "tags": ["museums"], "lat": 18.448, "lng": -66.0675, "durationMin": 120, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SJU-a-food-tour", "kind": "activity", "cityId": "SJU", "name": "Old San Juan mofongo & food tour", "short": "Food tour", "tags": ["food"], "lat": 18.4655, "lng": -66.1085, "durationMin": 180, "priceCents": 9000, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "SJU-a-factoria", "kind": "activity", "cityId": "SJU", "name": "La Factoría cocktail bar night", "short": "La Factoría", "tags": ["nightlife", "music"], "lat": 18.4663, "lng": -66.1159, "durationMin": 180, "priceCents": 2500, "startEarliest": "21:30", "startLatest": "23:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SJU-h-condado-apt", "toId": "SJU-a-el-yunque", "mode": "taxi", "minutes": 50, "note": "rental car or tour van via PR-3" },
+    { "fromId": "SJU-h-condado-apt", "toId": "SJU-a-bio-bay", "mode": "taxi", "minutes": 70, "note": "tour van via PR-3 to Fajardo" },
+    { "fromId": "SJU-h-condado-apt", "toId": "SJU-a-forts", "mode": "taxi", "minutes": 15, "note": "Condado → Old San Juan" }
+  ],
+  "hilly": ["SJU-h-old-sj-hostel", "SJU-a-forts"]
+}

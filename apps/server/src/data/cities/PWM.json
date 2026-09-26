@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "PWM", "name": "Portland", "country": "United States", "state": "ME", "region": "United States", "airport": { "code": "PWM", "lat": 43.6462, "lng": -70.3093 }, "utcOffset": -5, "centerLat": 43.658, "centerLng": -70.255, "tileRadiusKm": 1.5, "publicFlags": ["cold, snowy winters", "island ferries on reduced winter schedule"] },
+  "hotels": [
+    { "_id": "PWM-h-black-elephant", "kind": "hotel", "cityId": "PWM", "name": "Black Elephant Hostel (private room)", "neighborhood": "East Bayside", "lat": 43.6608, "lng": -70.252, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "PWM-h-west-end-guest", "kind": "hotel", "cityId": "PWM", "name": "West End Guesthouse", "neighborhood": "West End", "lat": 43.65, "lng": -70.269, "stayType": "guesthouse", "nightlyCents": 20000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "PWM-h-munjoy-flat", "kind": "hotel", "cityId": "PWM", "name": "Munjoy Hill Apartment", "neighborhood": "Munjoy Hill", "lat": 43.664, "lng": -70.246, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "PWM-h-harbor-hotel", "kind": "hotel", "cityId": "PWM", "name": "Portland Harbor Hotel (2 queens)", "neighborhood": "Old Port", "lat": 43.6558, "lng": -70.257, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "PWM-h-press", "kind": "hotel", "cityId": "PWM", "name": "The Press Hotel (2 queens)", "neighborhood": "Old Port", "lat": 43.6573, "lng": -70.2555, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "PWM-a-head-light", "kind": "activity", "cityId": "PWM", "name": "Portland Head Light", "short": "Portland Head Light", "tags": ["history", "nature"], "lat": 43.6231, "lng": -70.2079, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "PWM-a-lobster-rolls", "kind": "activity", "cityId": "PWM", "name": "Old Port lobster rolls & oysters", "short": "Lobster rolls", "tags": ["food"], "lat": 43.657, "lng": -70.253, "durationMin": 90, "priceCents": 4500, "startEarliest": "11:30", "startLatest": "19:00", "role": "group" },
+    { "_id": "PWM-a-breweries", "kind": "activity", "cityId": "PWM", "name": "East Bayside brewery crawl", "short": "Brewery crawl", "tags": ["nightlife", "food"], "lat": 43.664, "lng": -70.256, "durationMin": 180, "priceCents": 3000, "startEarliest": "14:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "PWM-a-mailboat", "kind": "activity", "cityId": "PWM", "name": "Casco Bay Lines mailboat run", "short": "Mailboat cruise", "tags": ["chill", "nature"], "lat": 43.656, "lng": -70.2485, "durationMin": 180, "priceCents": 2300, "startEarliest": "10:00", "startLatest": "14:45", "role": "pick" },
+    { "_id": "PWM-a-pma", "kind": "activity", "cityId": "PWM", "name": "Portland Museum of Art", "short": "Museum of Art", "tags": ["museums"], "lat": 43.6537, "lng": -70.2621, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "PWM-a-eastern-prom", "kind": "activity", "cityId": "PWM", "name": "Eastern Promenade trail", "short": "Eastern Prom", "tags": ["nature", "chill"], "lat": 43.666, "lng": -70.241, "durationMin": 90, "priceCents": 0, "startEarliest": "08:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "PWM-a-house-of-music", "kind": "activity", "cityId": "PWM", "name": "Live show, Portland House of Music", "short": "House of Music", "tags": ["music", "nightlife"], "lat": 43.6572, "lng": -70.256, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" },
+    { "_id": "PWM-a-longfellow", "kind": "activity", "cityId": "PWM", "name": "Wadsworth-Longfellow House", "short": "Longfellow House", "tags": ["history", "museums"], "lat": 43.6574, "lng": -70.2605, "durationMin": 60, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PWM-h-harbor-hotel", "toId": "PWM-a-head-light", "mode": "taxi", "minutes": 20, "note": "Cape Elizabeth; no convenient transit" },
+    { "fromId": "PWM-h-munjoy-flat", "toId": "PWM-a-head-light", "mode": "taxi", "minutes": 20, "note": "Cape Elizabeth; no convenient transit" }
+  ],
+  "hilly": ["PWM-h-munjoy-flat"]
+}

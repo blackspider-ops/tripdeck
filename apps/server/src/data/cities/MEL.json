@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "MEL", "name": "Melbourne", "country": "Australia", "region": "Oceania", "airport": { "code": "MEL", "lat": -37.669, "lng": 144.841 }, "utcOffset": 10, "centerLat": -37.815, "centerLng": 144.966, "tileRadiusKm": 2.0, "publicFlags": ["long flight from the US (16+ h)", "winter in Jun–Aug"] },
+  "hotels": [
+    { "_id": "MEL-h-flinders-hostel", "kind": "hotel", "cityId": "MEL", "name": "Flinders Lane Hostel (3 beds)", "neighborhood": "CBD", "lat": -37.817, "lng": 144.966, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "MEL-h-st-kilda-guest", "kind": "hotel", "cityId": "MEL", "name": "St Kilda Guesthouse", "neighborhood": "St Kilda", "lat": -37.867, "lng": 144.98, "stayType": "guesthouse", "nightlyCents": 20000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "MEL-h-fitzroy-flat", "kind": "hotel", "cityId": "MEL", "name": "Fitzroy Apartment", "neighborhood": "Fitzroy", "lat": -37.799, "lng": 144.978, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "MEL-h-laneway-triple", "kind": "hotel", "cityId": "MEL", "name": "CBD Laneway Hotel (triple)", "neighborhood": "CBD", "lat": -37.815, "lng": 144.963, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "MEL-h-southbank-triple", "kind": "hotel", "cityId": "MEL", "name": "Southbank Hotel (triple)", "neighborhood": "Southbank", "lat": -37.823, "lng": 144.964, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "MEL-a-laneways", "kind": "activity", "cityId": "MEL", "name": "Laneways, street art & coffee walk", "short": "Laneways & coffee", "tags": ["food"], "lat": -37.8166, "lng": 144.9655, "durationMin": 150, "priceCents": 3500, "startEarliest": "08:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "MEL-a-ngv", "kind": "activity", "cityId": "MEL", "name": "NGV International", "short": "NGV", "tags": ["museums"], "lat": -37.8226, "lng": 144.9689, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MEL-a-fitzroy-live", "kind": "activity", "cityId": "MEL", "name": "Live music, Fitzroy pubs", "short": "Fitzroy live music", "tags": ["music", "nightlife"], "lat": -37.7983, "lng": 144.9785, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "MEL-a-vic-market", "kind": "activity", "cityId": "MEL", "name": "Queen Victoria Market", "short": "Vic Market", "tags": ["food"], "lat": -37.8076, "lng": 144.9568, "durationMin": 120, "priceCents": 2500, "startEarliest": "07:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "MEL-a-brighton", "kind": "activity", "cityId": "MEL", "name": "Brighton Beach bathing boxes", "short": "Brighton Beach", "tags": ["beach"], "lat": -37.918, "lng": 144.986, "durationMin": 150, "priceCents": 500, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MEL-a-st-kilda-penguins", "kind": "activity", "cityId": "MEL", "name": "St Kilda pier penguins at dusk", "short": "St Kilda penguins", "tags": ["nature", "chill"], "lat": -37.863, "lng": 144.966, "durationMin": 120, "priceCents": 0, "startEarliest": "19:00", "startLatest": "20:30", "role": "pick" },
+    { "_id": "MEL-a-botanic", "kind": "activity", "cityId": "MEL", "name": "Royal Botanic Gardens", "short": "Botanic Gardens", "tags": ["nature", "chill"], "lat": -37.8304, "lng": 144.9796, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MEL-a-rooftop", "kind": "activity", "cityId": "MEL", "name": "Rooftop bar night, Curtin House", "short": "Rooftop bar", "tags": ["nightlife"], "lat": -37.8117, "lng": 144.9656, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MEL-h-fitzroy-flat", "toId": "MEL-a-brighton", "mode": "train", "minutes": 40, "note": "tram + Sandringham line" },
+    { "fromId": "MEL-h-fitzroy-flat", "toId": "MEL-a-st-kilda-penguins", "mode": "transit", "minutes": 35, "note": "tram 96 to St Kilda" },
+    { "fromId": "MEL-h-flinders-hostel", "toId": "MEL-a-brighton", "mode": "train", "minutes": 30, "note": "Sandringham line from Flinders St" }
+  ],
+  "hilly": []
+}

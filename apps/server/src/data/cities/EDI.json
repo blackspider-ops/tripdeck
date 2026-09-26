@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "EDI", "name": "Edinburgh", "country": "United Kingdom", "region": "Europe", "airport": {"code": "EDI", "lat": 55.95, "lng": -3.3725}, "utcOffset": 0, "centerLat": 55.951, "centerLng": -3.192, "tileRadiusKm": 1.5, "publicFlags": ["cold, wet and windy", "steep Old Town closes & stairs"] },
+  "hotels": [
+    { "_id": "EDI-h-grassmarket-hostel", "kind": "hotel", "cityId": "EDI", "name": "Grassmarket Hostel (3 beds)", "neighborhood": "Grassmarket", "lat": 55.9475, "lng": -3.1955, "stayType": "hostel", "nightlyCents": 11000, "sleeps": 3, "rating": 4 },
+    { "_id": "EDI-h-leith-guest", "kind": "hotel", "cityId": "EDI", "name": "Leith Guesthouse", "neighborhood": "Leith", "lat": 55.975, "lng": -3.172, "stayType": "guesthouse", "nightlyCents": 15000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "EDI-h-stockbridge-triple", "kind": "hotel", "cityId": "EDI", "name": "Stockbridge Townhouse (triple)", "neighborhood": "Stockbridge", "lat": 55.9585, "lng": -3.2085, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "EDI-h-oldtown-flat", "kind": "hotel", "cityId": "EDI", "name": "Royal Mile Apartment", "neighborhood": "Old Town", "lat": 55.95, "lng": -3.188, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "EDI-h-newtown-triple", "kind": "hotel", "cityId": "EDI", "name": "New Town Hotel (triple)", "neighborhood": "New Town", "lat": 55.9545, "lng": -3.199, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "EDI-a-castle", "kind": "activity", "cityId": "EDI", "name": "Edinburgh Castle", "short": "Edinburgh Castle", "tags": ["history"], "lat": 55.9486, "lng": -3.1999, "durationMin": 150, "priceCents": 2800, "startEarliest": "09:30", "startLatest": "16:00", "role": "group" },
+    { "_id": "EDI-a-arthurs-seat", "kind": "activity", "cityId": "EDI", "name": "Arthur's Seat hike", "short": "Arthur's Seat", "tags": ["nature"], "lat": 55.9441, "lng": -3.1618, "durationMin": 150, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "EDI-a-folk-session", "kind": "activity", "cityId": "EDI", "name": "Folk session, Sandy Bell's", "short": "Folk session", "tags": ["music", "nightlife"], "lat": 55.9459, "lng": -3.1897, "durationMin": 150, "priceCents": 1000, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "EDI-a-nms", "kind": "activity", "cityId": "EDI", "name": "National Museum of Scotland", "short": "National Museum", "tags": ["museums"], "lat": 55.9469, "lng": -3.1899, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "EDI-a-whisky", "kind": "activity", "cityId": "EDI", "name": "Scotch whisky tasting", "short": "Whisky tasting", "tags": ["food"], "lat": 55.9488, "lng": -3.196, "durationMin": 90, "priceCents": 4500, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "EDI-a-leith-crawl", "kind": "activity", "cityId": "EDI", "name": "Leith seafood & pub crawl", "short": "Leith food crawl", "tags": ["food", "nightlife"], "lat": 55.9765, "lng": -3.17, "durationMin": 180, "priceCents": 6000, "startEarliest": "18:00", "startLatest": "19:30", "role": "pick" },
+    { "_id": "EDI-a-portobello", "kind": "activity", "cityId": "EDI", "name": "Portobello beach promenade", "short": "Portobello beach", "tags": ["beach", "chill"], "lat": 55.953, "lng": -3.11, "durationMin": 150, "priceCents": 0, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "EDI-a-stirling", "kind": "activity", "cityId": "EDI", "name": "Stirling Castle day trip (train)", "short": "Stirling Castle", "tags": ["history", "nature"], "lat": 56.1238, "lng": -3.9475, "durationMin": 420, "priceCents": 5500, "startEarliest": "08:30", "startLatest": "10:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "EDI-h-newtown-triple", "toId": "EDI-a-stirling", "mode": "train", "minutes": 75, "note": "train from Waverley + uphill walk to the castle" },
+    { "fromId": "EDI-h-oldtown-flat", "toId": "EDI-a-portobello", "mode": "transit", "minutes": 25, "note": "Lothian bus 26 to Portobello" },
+    { "fromId": "EDI-h-oldtown-flat", "toId": "EDI-a-castle", "mode": "walk", "minutes": 15, "note": "uphill along the Royal Mile" }
+  ],
+  "hilly": ["EDI-a-castle", "EDI-a-arthurs-seat", "EDI-h-oldtown-flat"]
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "ACC", "name": "Accra", "country": "Ghana", "region": "Africa", "airport": { "code": "ACC", "lat": 5.6052, "lng": -0.1668 }, "utcOffset": 0, "centerLat": 5.557, "centerLng": -0.185, "tileRadiusKm": 3, "publicFlags": ["hot and humid year-round", "heavy traffic; allow extra time"] },
+  "hotels": [
+    { "_id": "ACC-h-osu-hostel", "kind": "hotel", "cityId": "ACC", "name": "Osu Hostel (3 beds)", "neighborhood": "Osu", "lat": 5.557, "lng": -0.182, "stayType": "hostel", "nightlyCents": 3800, "sleeps": 3, "rating": 4.0 },
+    { "_id": "ACC-h-labone-guest", "kind": "hotel", "cityId": "ACC", "name": "Labone Guesthouse", "neighborhood": "Labone", "lat": 5.565, "lng": -0.1715, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ACC-h-cantonments-flat", "kind": "hotel", "cityId": "ACC", "name": "Cantonments Apartment", "neighborhood": "Cantonments", "lat": 5.577, "lng": -0.174, "stayType": "apartment", "nightlyCents": 12000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "ACC-h-osu-triple", "kind": "hotel", "cityId": "ACC", "name": "Oxford Street Hotel (triple)", "neighborhood": "Osu", "lat": 5.5595, "lng": -0.183, "stayType": "hotel", "nightlyCents": 14000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ACC-h-airport-res-triple", "kind": "hotel", "cityId": "ACC", "name": "Airport Residential Hotel (triple)", "neighborhood": "Airport Residential", "lat": 5.603, "lng": -0.183, "stayType": "hotel", "nightlyCents": 25000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "ACC-a-jamestown", "kind": "activity", "cityId": "ACC", "name": "Jamestown lighthouse & harbour walk", "short": "Jamestown walk", "tags": ["history"], "lat": 5.5325, "lng": -0.212, "durationMin": 150, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "ACC-a-nkrumah", "kind": "activity", "cityId": "ACC", "name": "Kwame Nkrumah Memorial Park", "short": "Nkrumah Memorial", "tags": ["history", "museums"], "lat": 5.5445, "lng": -0.204, "durationMin": 90, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "ACC-a-highlife", "kind": "activity", "cityId": "ACC", "name": "Live highlife night, Osu", "short": "Highlife night", "tags": ["music", "nightlife"], "lat": 5.5585, "lng": -0.181, "durationMin": 180, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "ACC-a-labadi", "kind": "activity", "cityId": "ACC", "name": "Labadi Beach afternoon", "short": "Labadi Beach", "tags": ["beach", "chill"], "lat": 5.5605, "lng": -0.144, "durationMin": 180, "priceCents": 500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "ACC-a-makola", "kind": "activity", "cityId": "ACC", "name": "Makola Market & chop bar food walk", "short": "Makola food walk", "tags": ["food"], "lat": 5.5475, "lng": -0.2085, "durationMin": 150, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "ACC-a-artists-alliance", "kind": "activity", "cityId": "ACC", "name": "Artists Alliance Gallery", "short": "Artists Alliance", "tags": ["museums"], "lat": 5.5605, "lng": -0.151, "durationMin": 90, "priceCents": 500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "ACC-a-aburi", "kind": "activity", "cityId": "ACC", "name": "Aburi Botanical Gardens", "short": "Aburi Gardens", "tags": ["nature", "chill"], "lat": 5.8495, "lng": -0.1765, "durationMin": 300, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "ACC-a-du-bois", "kind": "activity", "cityId": "ACC", "name": "W.E.B. Du Bois Centre", "short": "Du Bois Centre", "tags": ["history", "museums"], "lat": 5.582, "lng": -0.1795, "durationMin": 90, "priceCents": 800, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ACC-h-cantonments-flat", "toId": "ACC-a-aburi", "mode": "taxi", "minutes": 60, "note": "uphill on the Aburi road" },
+    { "fromId": "ACC-h-cantonments-flat", "toId": "ACC-a-jamestown", "mode": "taxi", "minutes": 30 },
+    { "fromId": "ACC-h-cantonments-flat", "toId": "ACC-a-makola", "mode": "taxi", "minutes": 30, "note": "busy market streets" }
+  ],
+  "hilly": ["ACC-a-aburi"]
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "PHL", "name": "Philadelphia", "country": "United States", "state": "PA", "region": "United States", "airport": { "code": "PHL", "lat": 39.8744, "lng": -75.2424 }, "utcOffset": -5, "centerLat": 39.952, "centerLng": -75.16, "tileRadiusKm": 2, "publicFlags": ["cold, grey winters"] },
+  "hotels": [
+    { "_id": "PHL-h-apple-hostel", "kind": "hotel", "cityId": "PHL", "name": "Apple Hostels (4-bed private)", "neighborhood": "Old City", "lat": 39.95, "lng": -75.1439, "stayType": "hostel", "nightlyCents": 13000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "PHL-h-alexander-inn", "kind": "hotel", "cityId": "PHL", "name": "Alexander Inn", "neighborhood": "Washington Square West", "lat": 39.9468, "lng": -75.1614, "stayType": "guesthouse", "nightlyCents": 20000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "PHL-h-rittenhouse-flat", "kind": "hotel", "cityId": "PHL", "name": "Rittenhouse Square Apartment", "neighborhood": "Rittenhouse Square", "lat": 39.9496, "lng": -75.1718, "stayType": "apartment", "nightlyCents": 28000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PHL-h-monaco", "kind": "hotel", "cityId": "PHL", "name": "Kimpton Hotel Monaco (2 queens)", "neighborhood": "Old City", "lat": 39.95, "lng": -75.1494, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PHL-h-logan", "kind": "hotel", "cityId": "PHL", "name": "The Logan (2 queens)", "neighborhood": "Logan Square", "lat": 39.9575, "lng": -75.1698, "stayType": "hotel", "nightlyCents": 40000, "sleeps": 4, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "PHL-a-independence", "kind": "activity", "cityId": "PHL", "name": "Independence Hall & Liberty Bell", "short": "Independence Hall", "tags": ["history"], "lat": 39.9489, "lng": -75.15, "durationMin": 120, "priceCents": 100, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "PHL-a-reading-terminal", "kind": "activity", "cityId": "PHL", "name": "Reading Terminal Market lunch", "short": "Reading Terminal", "tags": ["food"], "lat": 39.9533, "lng": -75.159, "durationMin": 90, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "14:30", "role": "group" },
+    { "_id": "PHL-a-pma", "kind": "activity", "cityId": "PHL", "name": "Philadelphia Museum of Art & Rocky Steps", "short": "Art Museum & steps", "tags": ["museums"], "lat": 39.9656, "lng": -75.181, "durationMin": 180, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "PHL-a-cheesesteak", "kind": "activity", "cityId": "PHL", "name": "Pat's vs Geno's cheesesteak showdown", "short": "Cheesesteak duel", "tags": ["food"], "lat": 39.9335, "lng": -75.159, "durationMin": 60, "priceCents": 1600, "startEarliest": "11:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "PHL-a-eastern-state", "kind": "activity", "cityId": "PHL", "name": "Eastern State Penitentiary", "short": "Eastern State", "tags": ["history"], "lat": 39.9683, "lng": -75.1727, "durationMin": 120, "priceCents": 2100, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "PHL-a-barnes", "kind": "activity", "cityId": "PHL", "name": "Barnes Foundation", "short": "Barnes Foundation", "tags": ["museums"], "lat": 39.9606, "lng": -75.1726, "durationMin": 150, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "PHL-a-johnny-brendas", "kind": "activity", "cityId": "PHL", "name": "Live show at Johnny Brenda's", "short": "Johnny Brenda's", "tags": ["music", "nightlife"], "lat": 39.9695, "lng": -75.134, "durationMin": 180, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" },
+    { "_id": "PHL-a-wissahickon", "kind": "activity", "cityId": "PHL", "name": "Wissahickon Valley hike", "short": "Wissahickon hike", "tags": ["nature", "chill"], "lat": 40.0561, "lng": -75.2197, "durationMin": 180, "priceCents": 0, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PHL-h-apple-hostel", "toId": "PHL-a-wissahickon", "mode": "taxi", "minutes": 30, "note": "~14 km NW; no direct transit" },
+    { "fromId": "PHL-h-rittenhouse-flat", "toId": "PHL-a-wissahickon", "mode": "taxi", "minutes": 25, "note": "~13 km NW; no direct transit" },
+    { "fromId": "PHL-h-rittenhouse-flat", "toId": "PHL-a-johnny-brendas", "mode": "transit", "minutes": 25, "note": "Market-Frankford Line to Girard" }
+  ],
+  "hilly": ["PHL-a-wissahickon"]
+}

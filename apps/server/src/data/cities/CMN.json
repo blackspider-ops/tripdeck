@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "CMN", "name": "Casablanca", "country": "Morocco", "region": "Africa", "airport": { "code": "CMN", "lat": 33.3675, "lng": -7.5898 }, "utcOffset": 1, "centerLat": 33.595, "centerLng": -7.625, "tileRadiusKm": 2.5, "publicFlags": ["modest dress at religious sites"] },
+  "hotels": [
+    { "_id": "CMN-h-medina-hostel", "kind": "hotel", "cityId": "CMN", "name": "Medina Hostel (3 beds)", "neighborhood": "Old Medina", "lat": 33.6005, "lng": -7.6175, "stayType": "hostel", "nightlyCents": 3500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "CMN-h-maarif-guest", "kind": "hotel", "cityId": "CMN", "name": "Maarif Guesthouse", "neighborhood": "Maarif", "lat": 33.582, "lng": -7.6385, "stayType": "guesthouse", "nightlyCents": 7500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "CMN-h-gauthier-flat", "kind": "hotel", "cityId": "CMN", "name": "Gauthier Apartment", "neighborhood": "Gauthier", "lat": 33.5905, "lng": -7.6305, "stayType": "apartment", "nightlyCents": 9000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CMN-h-centre-triple", "kind": "hotel", "cityId": "CMN", "name": "Art Deco Downtown Hotel (triple)", "neighborhood": "Centre-Ville", "lat": 33.5945, "lng": -7.616, "stayType": "hotel", "nightlyCents": 12500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "CMN-h-ain-diab-triple", "kind": "hotel", "cityId": "CMN", "name": "Ain Diab Corniche Hotel (triple)", "neighborhood": "Ain Diab", "lat": 33.593, "lng": -7.672, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "CMN-a-hassan-ii", "kind": "activity", "cityId": "CMN", "name": "Hassan II Mosque guided tour", "short": "Hassan II Mosque", "tags": ["history"], "lat": 33.6082, "lng": -7.6325, "durationMin": 60, "priceCents": 1400, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "CMN-a-medina", "kind": "activity", "cityId": "CMN", "name": "Old Medina & port fish market walk", "short": "Old Medina walk", "tags": ["history", "food"], "lat": 33.601, "lng": -7.6165, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "CMN-a-ricks", "kind": "activity", "cityId": "CMN", "name": "Rick's Café dinner & piano", "short": "Rick's Café", "tags": ["food", "music"], "lat": 33.6055, "lng": -7.6193, "durationMin": 120, "priceCents": 4500, "startEarliest": "19:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "CMN-a-corniche", "kind": "activity", "cityId": "CMN", "name": "Ain Diab corniche & beach", "short": "Ain Diab beach", "tags": ["beach", "chill"], "lat": 33.5935, "lng": -7.67, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CMN-a-habous", "kind": "activity", "cityId": "CMN", "name": "Quartier Habous market", "short": "Habous market", "tags": ["food", "history"], "lat": 33.5795, "lng": -7.606, "durationMin": 120, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CMN-a-slaoui", "kind": "activity", "cityId": "CMN", "name": "Abderrahman Slaoui Museum", "short": "Slaoui Museum", "tags": ["museums"], "lat": 33.5943, "lng": -7.6283, "durationMin": 90, "priceCents": 500, "startEarliest": "10:00", "startLatest": "16:30", "role": "pick" },
+    { "_id": "CMN-a-hammam", "kind": "activity", "cityId": "CMN", "name": "Traditional hammam & scrub", "short": "Hammam", "tags": ["chill"], "lat": 33.589, "lng": -7.631, "durationMin": 120, "priceCents": 3500, "startEarliest": "10:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "CMN-a-gauthier-night", "kind": "activity", "cityId": "CMN", "name": "Gauthier rooftops & lounges", "short": "Gauthier night out", "tags": ["nightlife"], "lat": 33.5895, "lng": -7.63, "durationMin": 180, "priceCents": 2500, "startEarliest": "21:30", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CMN-h-gauthier-flat", "toId": "CMN-a-corniche", "mode": "taxi", "minutes": 15 },
+    { "fromId": "CMN-h-gauthier-flat", "toId": "CMN-a-habous", "mode": "taxi", "minutes": 12 },
+    { "fromId": "CMN-h-gauthier-flat", "toId": "CMN-a-hassan-ii", "mode": "taxi", "minutes": 10 }
+  ],
+  "hilly": []
+}

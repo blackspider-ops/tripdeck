@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "PAR", "name": "Paris", "country": "France", "region": "Europe", "airport": { "code": "CDG", "lat": 49.0097, "lng": 2.5479 }, "utcOffset": 1, "centerLat": 48.859, "centerLng": 2.33, "tileRadiusKm": 3.0, "publicFlags": ["pricey, small rooms", "grey and drizzly in March"] },
+  "hotels": [
+    { "_id": "PAR-h-pigalle-hostel", "kind": "hotel", "cityId": "PAR", "name": "Pigalle Hostel (3 beds)", "neighborhood": "Pigalle", "lat": 48.882, "lng": 2.338, "stayType": "hostel", "nightlyCents": 15000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "PAR-h-canal-guest", "kind": "hotel", "cityId": "PAR", "name": "Canal Saint-Martin Guesthouse", "neighborhood": "Canal Saint-Martin", "lat": 48.871, "lng": 2.365, "stayType": "guesthouse", "nightlyCents": 21000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "PAR-h-latin-triple", "kind": "hotel", "cityId": "PAR", "name": "Latin Quarter Hotel (triple)", "neighborhood": "Latin Quarter", "lat": 48.849, "lng": 2.345, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "PAR-h-marais-flat", "kind": "hotel", "cityId": "PAR", "name": "Le Marais Apartment", "neighborhood": "Le Marais", "lat": 48.859, "lng": 2.36, "stayType": "apartment", "nightlyCents": 32000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "PAR-h-stgermain-triple", "kind": "hotel", "cityId": "PAR", "name": "Saint-Germain Hotel (triple)", "neighborhood": "Saint-Germain-des-Prés", "lat": 48.854, "lng": 2.333, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "PAR-a-louvre", "kind": "activity", "cityId": "PAR", "name": "Louvre", "short": "Louvre", "tags": ["museums", "history"], "lat": 48.8606, "lng": 2.3376, "durationMin": 180, "priceCents": 3600, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "PAR-a-eiffel", "kind": "activity", "cityId": "PAR", "name": "Eiffel Tower summit", "short": "Eiffel Tower", "tags": ["history"], "lat": 48.8584, "lng": 2.2945, "durationMin": 150, "priceCents": 4000, "startEarliest": "09:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "PAR-a-seine-cruise", "kind": "activity", "cityId": "PAR", "name": "Seine river cruise at dusk", "short": "Seine cruise", "tags": ["chill"], "lat": 48.8638, "lng": 2.305, "durationMin": 75, "priceCents": 2000, "startEarliest": "18:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "PAR-a-montmartre", "kind": "activity", "cityId": "PAR", "name": "Montmartre & Sacré-Cœur walk", "short": "Montmartre walk", "tags": ["history", "chill"], "lat": 48.8867, "lng": 2.3431, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "PAR-a-orsay", "kind": "activity", "cityId": "PAR", "name": "Musée d'Orsay", "short": "Musée d'Orsay", "tags": ["museums"], "lat": 48.86, "lng": 2.3266, "durationMin": 150, "priceCents": 1900, "startEarliest": "09:30", "startLatest": "16:00", "role": "pick" },
+    { "_id": "PAR-a-food-tour", "kind": "activity", "cityId": "PAR", "name": "Marais cheese & pastry walk", "short": "Marais food walk", "tags": ["food"], "lat": 48.857, "lng": 2.358, "durationMin": 180, "priceCents": 11000, "startEarliest": "10:30", "startLatest": "14:00", "role": "pick" },
+    { "_id": "PAR-a-huchette", "kind": "activity", "cityId": "PAR", "name": "Jazz at Le Caveau de la Huchette", "short": "Caveau jazz", "tags": ["music", "nightlife"], "lat": 48.8527, "lng": 2.3464, "durationMin": 150, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "PAR-a-luxembourg", "kind": "activity", "cityId": "PAR", "name": "Jardin du Luxembourg picnic", "short": "Luxembourg picnic", "tags": ["nature", "chill"], "lat": 48.8462, "lng": 2.3372, "durationMin": 90, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PAR-h-marais-flat", "toId": "PAR-a-eiffel", "mode": "transit", "minutes": 30, "note": "metro 1 + 6 to Bir-Hakeim" },
+    { "fromId": "PAR-h-canal-guest", "toId": "PAR-a-montmartre", "mode": "transit", "minutes": 25, "note": "metro 2 to Anvers + steps" }
+  ],
+  "hilly": ["PAR-a-montmartre"]
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "DUB", "name": "Dublin", "country": "Ireland", "region": "Europe", "airport": { "code": "DUB", "lat": 53.4213, "lng": -6.2701 }, "utcOffset": 0, "centerLat": 53.345, "centerLng": -6.26, "tileRadiusKm": 2.0, "publicFlags": ["rainy and grey in March", "pricey pints and rooms"] },
+  "hotels": [
+    { "_id": "DUB-h-temple-bar-hostel", "kind": "hotel", "cityId": "DUB", "name": "Temple Bar Hostel (3 beds)", "neighborhood": "Temple Bar", "lat": 53.3452, "lng": -6.265, "stayType": "hostel", "nightlyCents": 13500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "DUB-h-portobello-guest", "kind": "hotel", "cityId": "DUB", "name": "Portobello Guesthouse", "neighborhood": "Portobello", "lat": 53.332, "lng": -6.268, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "DUB-h-smithfield-flat", "kind": "hotel", "cityId": "DUB", "name": "Smithfield Apartment", "neighborhood": "Smithfield", "lat": 53.348, "lng": -6.278, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "DUB-h-docklands-triple", "kind": "hotel", "cityId": "DUB", "name": "Docklands Hotel (triple)", "neighborhood": "Docklands", "lat": 53.344, "lng": -6.239, "stayType": "hotel", "nightlyCents": 28000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DUB-h-grafton-triple", "kind": "hotel", "cityId": "DUB", "name": "St Stephen's Green Hotel (triple)", "neighborhood": "Grafton Street", "lat": 53.339, "lng": -6.26, "stayType": "hotel", "nightlyCents": 34000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "DUB-a-book-of-kells", "kind": "activity", "cityId": "DUB", "name": "Trinity College & Book of Kells", "short": "Book of Kells", "tags": ["history", "museums"], "lat": 53.3438, "lng": -6.2546, "durationMin": 90, "priceCents": 2800, "startEarliest": "09:30", "startLatest": "15:30", "role": "group" },
+    { "_id": "DUB-a-guinness", "kind": "activity", "cityId": "DUB", "name": "Guinness Storehouse", "short": "Guinness Storehouse", "tags": ["history", "food"], "lat": 53.3419, "lng": -6.2867, "durationMin": 120, "priceCents": 3200, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "DUB-a-trad-session", "kind": "activity", "cityId": "DUB", "name": "Trad session at The Cobblestone", "short": "Trad music session", "tags": ["music", "nightlife"], "lat": 53.3494, "lng": -6.2787, "durationMin": 150, "priceCents": 1500, "startEarliest": "21:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "DUB-a-howth", "kind": "activity", "cityId": "DUB", "name": "Howth cliff walk (DART)", "short": "Howth cliff walk", "tags": ["nature"], "lat": 53.386, "lng": -6.064, "durationMin": 240, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "DUB-a-epic", "kind": "activity", "cityId": "DUB", "name": "EPIC The Irish Emigration Museum", "short": "EPIC museum", "tags": ["museums"], "lat": 53.348, "lng": -6.248, "durationMin": 120, "priceCents": 2600, "startEarliest": "10:00", "startLatest": "16:45", "role": "pick" },
+    { "_id": "DUB-a-kilmainham", "kind": "activity", "cityId": "DUB", "name": "Kilmainham Gaol tour", "short": "Kilmainham Gaol", "tags": ["history"], "lat": 53.3418, "lng": -6.3097, "durationMin": 90, "priceCents": 1100, "startEarliest": "09:30", "startLatest": "16:00", "role": "pick" },
+    { "_id": "DUB-a-phoenix-park", "kind": "activity", "cityId": "DUB", "name": "Phoenix Park deer & bikes", "short": "Phoenix Park", "tags": ["nature", "chill"], "lat": 53.3559, "lng": -6.3298, "durationMin": 150, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DUB-a-food-walk", "kind": "activity", "cityId": "DUB", "name": "Irish food & whiskey walk", "short": "Food & whiskey walk", "tags": ["food"], "lat": 53.342, "lng": -6.261, "durationMin": 180, "priceCents": 8500, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DUB-h-grafton-triple", "toId": "DUB-a-howth", "mode": "train", "minutes": 40, "note": "DART from Pearse to Howth" },
+    { "fromId": "DUB-h-docklands-triple", "toId": "DUB-a-kilmainham", "mode": "transit", "minutes": 35, "note": "Luas Red line + walk" },
+    { "fromId": "DUB-h-temple-bar-hostel", "toId": "DUB-a-phoenix-park", "mode": "transit", "minutes": 25, "note": "Luas Red line to Heuston + walk" }
+  ],
+  "hilly": ["DUB-a-howth"]
+}

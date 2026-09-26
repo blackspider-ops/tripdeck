@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "DBV", "name": "Dubrovnik", "country": "Croatia", "region": "Europe", "airport": {"code": "DBV", "lat": 42.5614, "lng": 18.2682}, "utcOffset": 1, "centerLat": 42.645, "centerLng": 18.098, "tileRadiusKm": 1.5, "publicFlags": ["much closes Nov–Mar", "steep stone stairs everywhere"] },
+  "hotels": [
+    { "_id": "DBV-h-gruz-hostel", "kind": "hotel", "cityId": "DBV", "name": "Gruž Hostel (3 beds)", "neighborhood": "Gruž", "lat": 42.6585, "lng": 18.087, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4 },
+    { "_id": "DBV-h-pile-guest", "kind": "hotel", "cityId": "DBV", "name": "Pile Guesthouse", "neighborhood": "Pile", "lat": 42.642, "lng": 18.104, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DBV-h-lapad-triple", "kind": "hotel", "cityId": "DBV", "name": "Lapad Bay Hotel (triple)", "neighborhood": "Lapad", "lat": 42.653, "lng": 18.078, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DBV-h-oldtown-flat", "kind": "hotel", "cityId": "DBV", "name": "Old Town Apartment", "neighborhood": "Stari Grad", "lat": 42.641, "lng": 18.108, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "DBV-h-ploce-triple", "kind": "hotel", "cityId": "DBV", "name": "Ploče Sea-view Hotel (triple)", "neighborhood": "Ploče", "lat": 42.6415, "lng": 18.116, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "DBV-a-city-walls", "kind": "activity", "cityId": "DBV", "name": "City walls walk", "short": "City walls", "tags": ["history"], "lat": 42.6415, "lng": 18.107, "durationMin": 120, "priceCents": 4800, "startEarliest": "08:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "DBV-a-srd-cable", "kind": "activity", "cityId": "DBV", "name": "Srđ cable car at sunset", "short": "Srđ cable car", "tags": ["nature", "chill"], "lat": 42.644, "lng": 18.111, "durationMin": 90, "priceCents": 3200, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "DBV-a-konoba", "kind": "activity", "cityId": "DBV", "name": "Seafood konoba dinner", "short": "Seafood dinner", "tags": ["food"], "lat": 42.6405, "lng": 18.11, "durationMin": 120, "priceCents": 5500, "startEarliest": "19:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "DBV-a-banje", "kind": "activity", "cityId": "DBV", "name": "Banje beach", "short": "Banje beach", "tags": ["beach", "chill"], "lat": 42.641, "lng": 18.115, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DBV-a-lokrum", "kind": "activity", "cityId": "DBV", "name": "Lokrum island (ferry)", "short": "Lokrum island", "tags": ["nature", "beach"], "lat": 42.625, "lng": 18.121, "durationMin": 240, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "DBV-a-kayak", "kind": "activity", "cityId": "DBV", "name": "Sea kayak & snorkel tour", "short": "Sea kayak", "tags": ["beach", "nature"], "lat": 42.64, "lng": 18.103, "durationMin": 180, "priceCents": 5000, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "DBV-a-buza", "kind": "activity", "cityId": "DBV", "name": "Buža cliff bar drinks", "short": "Buža cliff bar", "tags": ["nightlife", "chill"], "lat": 42.6395, "lng": 18.109, "durationMin": 120, "priceCents": 2000, "startEarliest": "17:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "DBV-a-rectors-palace", "kind": "activity", "cityId": "DBV", "name": "Rector's Palace museum", "short": "Rector's Palace", "tags": ["museums", "history"], "lat": 42.64, "lng": 18.1105, "durationMin": 75, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DBV-h-lapad-triple", "toId": "DBV-a-city-walls", "mode": "transit", "minutes": 20, "note": "bus 6 to Pile Gate" },
+    { "fromId": "DBV-h-oldtown-flat", "toId": "DBV-a-lokrum", "mode": "transit", "minutes": 20, "note": "15-min ferry from the Old Port" },
+    { "fromId": "DBV-h-ploce-triple", "toId": "DBV-a-lokrum", "mode": "transit", "minutes": 25, "note": "walk to the Old Port + ferry" }
+  ],
+  "hilly": ["DBV-h-oldtown-flat", "DBV-h-ploce-triple", "DBV-a-srd-cable", "DBV-a-city-walls"]
+}

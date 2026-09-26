@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "ANC", "name": "Anchorage", "country": "United States", "state": "AK", "region": "United States", "airport": {"code": "ANC", "lat": 61.1743, "lng": -149.9983}, "utcOffset": -9, "centerLat": 61.215, "centerLng": -149.893, "tileRadiusKm": 1.5, "publicFlags": ["winter darkness (~5.5 h daylight in Dec)", "remote; long flights"] },
+  "hotels": [
+    { "_id": "ANC-h-spenard-hostel", "kind": "hotel", "cityId": "ANC", "name": "Spenard Hostel International (3 beds)", "neighborhood": "Spenard", "lat": 61.181, "lng": -149.9395, "stayType": "hostel", "nightlyCents": 9500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ANC-h-copper-whale", "kind": "hotel", "cityId": "ANC", "name": "Copper Whale Inn (triple)", "neighborhood": "Downtown", "lat": 61.2185, "lng": -149.8975, "stayType": "guesthouse", "nightlyCents": 19000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "ANC-h-downtown-condo", "kind": "hotel", "cityId": "ANC", "name": "Downtown Condo", "neighborhood": "Downtown", "lat": 61.215, "lng": -149.887, "stayType": "apartment", "nightlyCents": 22000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "ANC-h-captain-cook", "kind": "hotel", "cityId": "ANC", "name": "Hotel Captain Cook (2 queens)", "neighborhood": "Downtown", "lat": 61.2179, "lng": -149.8955, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "ANC-h-marriott", "kind": "hotel", "cityId": "ANC", "name": "Anchorage Marriott Downtown (2 queens)", "neighborhood": "Downtown", "lat": 61.2158, "lng": -149.894, "stayType": "hotel", "nightlyCents": 34000, "sleeps": 4, "rating": 4.4 }
+  ],
+  "activities": [
+    { "_id": "ANC-a-anchorage-museum", "kind": "activity", "cityId": "ANC", "name": "Anchorage Museum", "short": "Anchorage Museum", "tags": ["museums", "history"], "lat": 61.216, "lng": -149.886, "durationMin": 150, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "ANC-a-coastal-trail", "kind": "activity", "cityId": "ANC", "name": "Tony Knowles Coastal Trail bike", "short": "Coastal Trail bike", "tags": ["nature"], "lat": 61.2178, "lng": -149.9055, "durationMin": 180, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "ANC-a-glacier-brewhouse", "kind": "activity", "cityId": "ANC", "name": "Glacier Brewhouse dinner", "short": "Glacier Brewhouse", "tags": ["food"], "lat": 61.2178, "lng": -149.892, "durationMin": 120, "priceCents": 4500, "startEarliest": "17:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "ANC-a-native-heritage", "kind": "activity", "cityId": "ANC", "name": "Alaska Native Heritage Center", "short": "Native Heritage Center", "tags": ["history", "museums"], "lat": 61.233, "lng": -149.717, "durationMin": 150, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ANC-a-flattop", "kind": "activity", "cityId": "ANC", "name": "Flattop Mountain hike", "short": "Flattop hike", "tags": ["nature"], "lat": 61.1034, "lng": -149.6815, "durationMin": 240, "priceCents": 250, "startEarliest": "08:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "ANC-a-alyeska", "kind": "activity", "cityId": "ANC", "name": "Turnagain Arm drive & Alyeska tram", "short": "Alyeska tram", "tags": ["nature", "chill"], "lat": 60.97, "lng": -149.098, "durationMin": 420, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "ANC-a-chilkoot-charlies", "kind": "activity", "cityId": "ANC", "name": "Chilkoot Charlie's night out", "short": "Chilkoot Charlie's", "tags": ["nightlife", "music"], "lat": 61.196, "lng": -149.912, "durationMin": 180, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "ANC-a-earthquake-park", "kind": "activity", "cityId": "ANC", "name": "Earthquake Park & Cook Inlet views", "short": "Earthquake Park", "tags": ["history", "chill"], "lat": 61.1946, "lng": -149.9765, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "18:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ANC-h-captain-cook", "toId": "ANC-a-alyeska", "mode": "taxi", "minutes": 50, "note": "Seward Hwy along Turnagain Arm" },
+    { "fromId": "ANC-h-captain-cook", "toId": "ANC-a-flattop", "mode": "taxi", "minutes": 30, "note": "Glen Alps trailhead" },
+    { "fromId": "ANC-h-captain-cook", "toId": "ANC-a-native-heritage", "mode": "taxi", "minutes": 15 },
+    { "fromId": "ANC-h-spenard-hostel", "toId": "ANC-a-anchorage-museum", "mode": "transit", "minutes": 25, "note": "People Mover bus" }
+  ],
+  "hilly": ["ANC-a-flattop", "ANC-a-alyeska"]
+}

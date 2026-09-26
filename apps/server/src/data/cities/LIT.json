@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "LIT", "name": "Little Rock", "country": "United States", "state": "AR", "region": "United States", "airport": { "code": "LIT", "lat": 34.7294, "lng": -92.2243 }, "utcOffset": -6, "centerLat": 34.745, "centerLng": -92.275, "tileRadiusKm": 2.5, "publicFlags": ["hot, humid summers", "car needed for the parks and trails"] },
+  "hotels": [
+    { "_id": "LIT-h-soma-guest", "kind": "hotel", "cityId": "LIT", "name": "SoMa Guest Room", "neighborhood": "SoMa", "lat": 34.73, "lng": -92.28, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "LIT-h-river-market-flat", "kind": "hotel", "cityId": "LIT", "name": "River Market Apartment", "neighborhood": "River Market", "lat": 34.747, "lng": -92.263, "stayType": "apartment", "nightlyCents": 15000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "LIT-h-empress", "kind": "hotel", "cityId": "LIT", "name": "The Empress of Little Rock B&B", "neighborhood": "Quapaw Quarter", "lat": 34.728, "lng": -92.275, "stayType": "guesthouse", "nightlyCents": 19000, "sleeps": 3, "rating": 4.8 },
+    { "_id": "LIT-h-marriott", "kind": "hotel", "cityId": "LIT", "name": "Little Rock Marriott (2 queens)", "neighborhood": "Downtown", "lat": 34.7485, "lng": -92.27, "stayType": "hotel", "nightlyCents": 20000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "LIT-h-capital-hotel", "kind": "hotel", "cityId": "LIT", "name": "The Capital Hotel (2 queens)", "neighborhood": "Downtown", "lat": 34.7471, "lng": -92.269, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "LIT-a-central-high", "kind": "activity", "cityId": "LIT", "name": "Little Rock Central High School NHS", "short": "Central High NHS", "tags": ["history"], "lat": 34.7369, "lng": -92.2984, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "LIT-a-clinton-library", "kind": "activity", "cityId": "LIT", "name": "Clinton Presidential Library", "short": "Clinton Library", "tags": ["museums", "history"], "lat": 34.747, "lng": -92.2575, "durationMin": 120, "priceCents": 1300, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "LIT-a-white-water", "kind": "activity", "cityId": "LIT", "name": "Live music at White Water Tavern", "short": "White Water Tavern", "tags": ["music", "nightlife"], "lat": 34.7465, "lng": -92.3, "durationMin": 150, "priceCents": 1500, "startEarliest": "21:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "LIT-a-big-dam-bridge", "kind": "activity", "cityId": "LIT", "name": "Big Dam Bridge & Arkansas River Trail", "short": "Big Dam Bridge", "tags": ["nature", "chill"], "lat": 34.792, "lng": -92.356, "durationMin": 120, "priceCents": 0, "startEarliest": "08:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "LIT-a-pinnacle", "kind": "activity", "cityId": "LIT", "name": "Pinnacle Mountain summit hike", "short": "Pinnacle Mountain", "tags": ["nature"], "lat": 34.8409, "lng": -92.4917, "durationMin": 180, "priceCents": 0, "startEarliest": "08:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "LIT-a-river-market", "kind": "activity", "cityId": "LIT", "name": "River Market District lunch", "short": "River Market lunch", "tags": ["food"], "lat": 34.7475, "lng": -92.2655, "durationMin": 60, "priceCents": 1800, "startEarliest": "11:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "LIT-a-amfa", "kind": "activity", "cityId": "LIT", "name": "Arkansas Museum of Fine Arts", "short": "Fine Arts museum", "tags": ["museums"], "lat": 34.74, "lng": -92.265, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "LIT-a-riverfront-park", "kind": "activity", "cityId": "LIT", "name": "Riverfront Park & Junction Bridge", "short": "Junction Bridge", "tags": ["chill"], "lat": 34.7505, "lng": -92.266, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "19:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LIT-h-capital-hotel", "toId": "LIT-a-pinnacle", "mode": "taxi", "minutes": 30 },
+    { "fromId": "LIT-h-capital-hotel", "toId": "LIT-a-big-dam-bridge", "mode": "taxi", "minutes": 15 },
+    { "fromId": "LIT-h-empress", "toId": "LIT-a-pinnacle", "mode": "taxi", "minutes": 30 }
+  ],
+  "hilly": ["LIT-a-pinnacle"]
+}

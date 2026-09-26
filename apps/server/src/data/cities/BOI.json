@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BOI", "name": "Boise", "country": "United States", "state": "ID", "region": "United States", "airport": {"code": "BOI", "lat": 43.5644, "lng": -116.2228}, "utcOffset": -7, "centerLat": 43.615, "centerLng": -116.202, "tileRadiusKm": 1.5, "publicFlags": ["car helpful beyond downtown", "hot, dry summers"] },
+  "hotels": [
+    { "_id": "BOI-h-safari-inn", "kind": "hotel", "cityId": "BOI", "name": "Safari Inn Downtown (2 queens)", "neighborhood": "Downtown", "lat": 43.6168, "lng": -116.2062, "stayType": "guesthouse", "nightlyCents": 13000, "sleeps": 4, "rating": 3.9 },
+    { "_id": "BOI-h-north-end-bungalow", "kind": "hotel", "cityId": "BOI", "name": "North End Bungalow", "neighborhood": "North End", "lat": 43.6275, "lng": -116.2055, "stayType": "apartment", "nightlyCents": 17500, "sleeps": 4, "rating": 4.7 },
+    { "_id": "BOI-h-modern", "kind": "hotel", "cityId": "BOI", "name": "The Modern Hotel (triple)", "neighborhood": "Linen District", "lat": 43.6178, "lng": -116.2093, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "BOI-h-grove", "kind": "hotel", "cityId": "BOI", "name": "The Grove Hotel (2 queens)", "neighborhood": "Downtown", "lat": 43.6139, "lng": -116.2027, "stayType": "hotel", "nightlyCents": 25000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "BOI-h-inn-at-500", "kind": "hotel", "cityId": "BOI", "name": "Inn at 500 Capitol (2 queens)", "neighborhood": "Downtown", "lat": 43.6124, "lng": -116.2032, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "BOI-a-greenbelt", "kind": "activity", "cityId": "BOI", "name": "Boise River Greenbelt bike ride", "short": "Greenbelt bike ride", "tags": ["nature", "chill"], "lat": 43.609, "lng": -116.202, "durationMin": 150, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BOI-a-basque-block", "kind": "activity", "cityId": "BOI", "name": "Basque Block lunch & Basque Museum", "short": "Basque Block", "tags": ["history", "food"], "lat": 43.614, "lng": -116.2005, "durationMin": 120, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "BOI-a-main-st-night", "kind": "activity", "cityId": "BOI", "name": "8th & Main bar night", "short": "Downtown bar night", "tags": ["nightlife"], "lat": 43.6167, "lng": -116.2035, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "BOI-a-table-rock", "kind": "activity", "cityId": "BOI", "name": "Table Rock hike", "short": "Table Rock hike", "tags": ["nature"], "lat": 43.6035, "lng": -116.1605, "durationMin": 150, "priceCents": 0, "startEarliest": "07:30", "startLatest": "16:00", "role": "pick" },
+    { "_id": "BOI-a-old-pen", "kind": "activity", "cityId": "BOI", "name": "Old Idaho Penitentiary", "short": "Old Penitentiary", "tags": ["history", "museums"], "lat": 43.603, "lng": -116.1627, "durationMin": 120, "priceCents": 1400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BOI-a-capitol", "kind": "activity", "cityId": "BOI", "name": "Idaho State Capitol tour", "short": "State Capitol", "tags": ["history"], "lat": 43.6177, "lng": -116.1996, "durationMin": 60, "priceCents": 0, "startEarliest": "08:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "BOI-a-knitting-factory", "kind": "activity", "cityId": "BOI", "name": "Concert at Knitting Factory", "short": "Knitting Factory gig", "tags": ["music", "nightlife"], "lat": 43.6143, "lng": -116.2045, "durationMin": 180, "priceCents": 3500, "startEarliest": "19:30", "startLatest": "20:30", "role": "pick" },
+    { "_id": "BOI-a-bogus-basin", "kind": "activity", "cityId": "BOI", "name": "Bogus Basin mountain day", "short": "Bogus Basin", "tags": ["nature"], "lat": 43.7644, "lng": -116.1026, "durationMin": 360, "priceCents": 7500, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BOI-h-safari-inn", "toId": "BOI-a-bogus-basin", "mode": "taxi", "minutes": 45, "note": "16 mi of switchbacks" },
+    { "fromId": "BOI-h-grove", "toId": "BOI-a-bogus-basin", "mode": "taxi", "minutes": 45, "note": "16 mi of switchbacks" },
+    { "fromId": "BOI-h-grove", "toId": "BOI-a-table-rock", "mode": "taxi", "minutes": 12, "note": "trailhead by the Old Pen" }
+  ],
+  "hilly": ["BOI-a-table-rock", "BOI-a-bogus-basin"]
+}

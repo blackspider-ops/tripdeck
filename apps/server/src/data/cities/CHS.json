@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "CHS", "name": "Charleston", "country": "United States", "state": "SC", "region": "United States", "airport": { "code": "CHS", "lat": 32.8986, "lng": -80.0405 }, "utcOffset": -5, "centerLat": 32.781, "centerLng": -79.933, "tileRadiusKm": 1.5, "publicFlags": ["hurricane season Jun–Nov", "beaches and plantations need a car"] },
+  "hotels": [
+    { "_id": "CHS-h-notso-hostel", "kind": "hotel", "cityId": "CHS", "name": "NotSo Hostel (private room)", "neighborhood": "Cannonborough", "lat": 32.7929, "lng": -79.9445, "stayType": "hostel", "nightlyCents": 11000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "CHS-h-elliott-house", "kind": "hotel", "cityId": "CHS", "name": "Elliott House Inn", "neighborhood": "French Quarter", "lat": 32.7778, "lng": -79.929, "stayType": "guesthouse", "nightlyCents": 26000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "CHS-h-french-quarter-flat", "kind": "hotel", "cityId": "CHS", "name": "French Quarter Apartment", "neighborhood": "French Quarter", "lat": 32.7795, "lng": -79.9275, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "CHS-h-mills-house", "kind": "hotel", "cityId": "CHS", "name": "Mills House (2 queens)", "neighborhood": "Historic District", "lat": 32.778, "lng": -79.931, "stayType": "hotel", "nightlyCents": 34000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CHS-h-dewberry", "kind": "hotel", "cityId": "CHS", "name": "The Dewberry (2 queens)", "neighborhood": "Marion Square", "lat": 32.787, "lng": -79.9375, "stayType": "hotel", "nightlyCents": 55000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "CHS-a-fort-sumter", "kind": "activity", "cityId": "CHS", "name": "Fort Sumter ferry", "short": "Fort Sumter", "tags": ["history"], "lat": 32.7825, "lng": -79.9258, "durationMin": 150, "priceCents": 3900, "startEarliest": "09:30", "startLatest": "14:30", "role": "group" },
+    { "_id": "CHS-a-food-tour", "kind": "activity", "cityId": "CHS", "name": "Lowcountry food tour, King Street", "short": "Lowcountry food tour", "tags": ["food"], "lat": 32.785, "lng": -79.938, "durationMin": 180, "priceCents": 8500, "startEarliest": "11:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "CHS-a-battery", "kind": "activity", "cityId": "CHS", "name": "Rainbow Row & the Battery", "short": "Rainbow Row & Battery", "tags": ["history", "chill"], "lat": 32.7759, "lng": -79.9275, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "CHS-a-folly", "kind": "activity", "cityId": "CHS", "name": "Folly Beach day", "short": "Folly Beach", "tags": ["beach", "chill"], "lat": 32.6552, "lng": -79.9404, "durationMin": 240, "priceCents": 0, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "CHS-a-magnolia", "kind": "activity", "cityId": "CHS", "name": "Magnolia Plantation & Gardens", "short": "Magnolia gardens", "tags": ["nature", "history"], "lat": 32.8747, "lng": -80.0831, "durationMin": 240, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "CHS-a-gibbes", "kind": "activity", "cityId": "CHS", "name": "Gibbes Museum of Art", "short": "Gibbes Museum", "tags": ["museums"], "lat": 32.779, "lng": -79.9315, "durationMin": 90, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CHS-a-upper-king", "kind": "activity", "cityId": "CHS", "name": "Upper King Street bar hop", "short": "Upper King bars", "tags": ["nightlife"], "lat": 32.788, "lng": -79.9398, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "CHS-a-music-hall", "kind": "activity", "cityId": "CHS", "name": "Show at Charleston Music Hall", "short": "Music Hall show", "tags": ["music", "nightlife"], "lat": 32.7865, "lng": -79.9345, "durationMin": 150, "priceCents": 4000, "startEarliest": "19:30", "startLatest": "20:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CHS-h-french-quarter-flat", "toId": "CHS-a-folly", "mode": "taxi", "minutes": 25, "note": "no transit to Folly" },
+    { "fromId": "CHS-h-french-quarter-flat", "toId": "CHS-a-magnolia", "mode": "taxi", "minutes": 25, "note": "Ashley River Rd; no transit" },
+    { "fromId": "CHS-h-notso-hostel", "toId": "CHS-a-folly", "mode": "taxi", "minutes": 25, "note": "no transit to Folly" }
+  ],
+  "hilly": []
+}

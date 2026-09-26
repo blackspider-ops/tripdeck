@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "FAR", "name": "Fargo", "country": "United States", "state": "ND", "region": "United States", "airport": { "code": "FAR", "lat": 46.9207, "lng": -96.8158 }, "utcOffset": -6, "centerLat": 46.876, "centerLng": -96.795, "tileRadiusKm": 2.5, "publicFlags": ["extremely cold winters (−20 °C nights)", "car-dependent outside downtown"] },
+  "hotels": [
+    { "_id": "FAR-h-island-park-guest", "kind": "hotel", "cityId": "FAR", "name": "Island Park Guest Room", "neighborhood": "Island Park", "lat": 46.8655, "lng": -96.786, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "FAR-h-downtown-flat", "kind": "hotel", "cityId": "FAR", "name": "Downtown Fargo Apartment", "neighborhood": "Downtown", "lat": 46.878, "lng": -96.788, "stayType": "apartment", "nightlyCents": 14000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "FAR-h-radisson", "kind": "hotel", "cityId": "FAR", "name": "Radisson Blu Fargo (2 queens)", "neighborhood": "Downtown", "lat": 46.8772, "lng": -96.7849, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "FAR-h-jasper", "kind": "hotel", "cityId": "FAR", "name": "The Jasper Hotel (2 queens)", "neighborhood": "Downtown", "lat": 46.8765, "lng": -96.7885, "stayType": "hotel", "nightlyCents": 23000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "FAR-h-donaldson", "kind": "hotel", "cityId": "FAR", "name": "Hotel Donaldson (suite)", "neighborhood": "Downtown", "lat": 46.8753, "lng": -96.7862, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "FAR-a-fargo-theatre", "kind": "activity", "cityId": "FAR", "name": "Film or show at the Fargo Theatre", "short": "Fargo Theatre", "tags": ["music", "nightlife"], "lat": 46.8755, "lng": -96.7873, "durationMin": 150, "priceCents": 1500, "startEarliest": "19:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "FAR-a-brewhalla", "kind": "activity", "cityId": "FAR", "name": "Drekker Brewing's Brewhalla", "short": "Brewhalla", "tags": ["food", "nightlife"], "lat": 46.87, "lng": -96.789, "durationMin": 120, "priceCents": 2000, "startEarliest": "16:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "FAR-a-plains-art", "kind": "activity", "cityId": "FAR", "name": "Plains Art Museum", "short": "Plains Art Museum", "tags": ["museums"], "lat": 46.8795, "lng": -96.789, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "FAR-a-air-museum", "kind": "activity", "cityId": "FAR", "name": "Fargo Air Museum", "short": "Air Museum", "tags": ["museums", "history"], "lat": 46.915, "lng": -96.812, "durationMin": 90, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "FAR-a-zoo", "kind": "activity", "cityId": "FAR", "name": "Red River Zoo", "short": "Red River Zoo", "tags": ["nature"], "lat": 46.8495, "lng": -96.8505, "durationMin": 120, "priceCents": 1400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "FAR-a-woodchipper", "kind": "activity", "cityId": "FAR", "name": "The Fargo woodchipper (Visitors Center)", "short": "The woodchipper", "tags": ["chill"], "lat": 46.857, "lng": -96.862, "durationMin": 30, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "FAR-a-bonanzaville", "kind": "activity", "cityId": "FAR", "name": "Bonanzaville pioneer village", "short": "Bonanzaville", "tags": ["history", "museums"], "lat": 46.876, "lng": -96.9, "durationMin": 120, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "FAR-a-lindenwood", "kind": "activity", "cityId": "FAR", "name": "Lindenwood Park & Red River trail", "short": "Red River trail", "tags": ["nature", "chill"], "lat": 46.858, "lng": -96.777, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "FAR-h-donaldson", "toId": "FAR-a-bonanzaville", "mode": "taxi", "minutes": 15 },
+    { "fromId": "FAR-h-donaldson", "toId": "FAR-a-woodchipper", "mode": "taxi", "minutes": 12 }
+  ],
+  "hilly": []
+}

@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "BAL", "name": "Baltimore", "country": "United States", "state": "MD", "region": "United States", "airport": { "code": "BWI", "lat": 39.1754, "lng": -76.6683 }, "utcOffset": -5, "centerLat": 39.287, "centerLng": -76.605, "tileRadiusKm": 2, "publicFlags": ["cold, damp winters", "some blocks feel rough at night"] },
+  "hotels": [
+    { "_id": "BAL-h-inner-harbor-budget", "kind": "hotel", "cityId": "BAL", "name": "Inner Harbor Budget Hotel (2 doubles)", "neighborhood": "Downtown", "lat": 39.2863, "lng": -76.6194, "stayType": "guesthouse", "nightlyCents": 13500, "sleeps": 4, "rating": 3.7 },
+    { "_id": "BAL-h-federal-hill-guest", "kind": "hotel", "cityId": "BAL", "name": "Federal Hill Guesthouse", "neighborhood": "Federal Hill", "lat": 39.279, "lng": -76.612, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "BAL-h-revival", "kind": "hotel", "cityId": "BAL", "name": "Hotel Revival (2 queens)", "neighborhood": "Mount Vernon", "lat": 39.2976, "lng": -76.6154, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "BAL-h-fells-rowhouse", "kind": "hotel", "cityId": "BAL", "name": "Fells Point Rowhouse", "neighborhood": "Fells Point", "lat": 39.2826, "lng": -76.5926, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BAL-h-pendry", "kind": "hotel", "cityId": "BAL", "name": "Sagamore Pendry (2 queens)", "neighborhood": "Fells Point", "lat": 39.2819, "lng": -76.5911, "stayType": "hotel", "nightlyCents": 45000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "BAL-a-aquarium", "kind": "activity", "cityId": "BAL", "name": "National Aquarium", "short": "National Aquarium", "tags": ["nature", "museums"], "lat": 39.2854, "lng": -76.6084, "durationMin": 150, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BAL-a-fort-mchenry", "kind": "activity", "cityId": "BAL", "name": "Fort McHenry", "short": "Fort McHenry", "tags": ["history"], "lat": 39.2633, "lng": -76.58, "durationMin": 120, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BAL-a-fells-night", "kind": "activity", "cityId": "BAL", "name": "Fells Point pubs & live music", "short": "Fells Point night", "tags": ["nightlife", "music"], "lat": 39.2817, "lng": -76.5925, "durationMin": 180, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "BAL-a-lexington", "kind": "activity", "cityId": "BAL", "name": "Faidley's crab cake, Lexington Market", "short": "Faidley's crab cake", "tags": ["food"], "lat": 39.2916, "lng": -76.6219, "durationMin": 60, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BAL-a-avam", "kind": "activity", "cityId": "BAL", "name": "American Visionary Art Museum", "short": "Visionary Art Museum", "tags": ["museums"], "lat": 39.2801, "lng": -76.6068, "durationMin": 120, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BAL-a-walters", "kind": "activity", "cityId": "BAL", "name": "Walters Art Museum", "short": "Walters Art Museum", "tags": ["museums", "history"], "lat": 39.2966, "lng": -76.6164, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BAL-a-water-taxi", "kind": "activity", "cityId": "BAL", "name": "Harbor water taxi & promenade", "short": "Water taxi", "tags": ["chill"], "lat": 39.2855, "lng": -76.6097, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "BAL-a-cross-street", "kind": "activity", "cityId": "BAL", "name": "Cross Street Market grazing", "short": "Cross Street Market", "tags": ["food", "chill"], "lat": 39.2765, "lng": -76.613, "durationMin": 90, "priceCents": 2000, "startEarliest": "11:00", "startLatest": "19:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BAL-h-federal-hill-guest", "toId": "BAL-a-fort-mchenry", "mode": "taxi", "minutes": 10, "note": "no convenient transit" },
+    { "fromId": "BAL-h-revival", "toId": "BAL-a-fort-mchenry", "mode": "taxi", "minutes": 15, "note": "no convenient transit" }
+  ],
+  "hilly": []
+}

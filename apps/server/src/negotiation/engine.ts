@@ -24,7 +24,8 @@ import { generateLine } from "./gemini.js";
 import {
   advocateFacts, advocateLineRequest, captainLineRequest, decideInstruction, legalActs, modelChoiceRequest, openInstruction,
 } from "./prompts.js";
-import { cityName } from "../data/loader.js";
+import { cityName, indexOf } from "../data/loader.js";
+import { namesPort } from "../trips/course.js";
 
 export interface EmittedTurn {
   speaker: Speaker; act: Act; planId?: string; cityId?: CityId; text: string; ribbon: string; voiced: boolean; redactions: number;
@@ -46,6 +47,13 @@ export interface EngineIO {
 export interface EngineCrew extends PricingMember { band: number }
 
 export interface EngineResult { shortlist: [Plan, Plan] }
+
+export interface EngineOptions {
+  /** A region / anywhere voyage: what the organizer asked for ("Europe"), said in the Captain's OPEN. */
+  scopeLabel?: string;
+  /** A member's loved / skipped place ("BCN", "Europe", "CA") as a name, for their own mate's facts. */
+  placeNames?: (entry: string) => string;
+}
 
 /** O2-033: words per spoken line (Expo mode keeps them short). */
 const MAX_WORDS_EXPO = 20;
@@ -73,6 +81,7 @@ export class NegotiationEngine {
     private datesLabel: string | null,
     private io: EngineIO,
     privacy?: PrivacyContext,
+    private opts: EngineOptions = {},
   ) {
     this.privacy = privacy ?? buildPrivacyContext(ds, crew, plans);
   }
@@ -87,8 +96,9 @@ export class NegotiationEngine {
   async run(): Promise<EngineResult> {
     // WATCH 0 — Captain opens with group-level facts only
     const cities = this.cityIds.map((c) => cityName(this.ds, c));
-    await this.say({ kind: "captain" }, "OPEN", undefined, 0, openLine(this.datesLabel, cities), (noAmounts) =>
-      this.captainPrompt("OPEN", openInstruction(this.datesLabel, cities), noAmounts));
+    const scope = this.opts.scopeLabel;
+    await this.say({ kind: "captain" }, "OPEN", undefined, 0, openLine(this.datesLabel, cities, scope), (noAmounts) =>
+      this.captainPrompt("OPEN", openInstruction(this.datesLabel, cities, scope), noAmounts));
 
     let lastWatch = 0;
     for (let watch = 1; watch <= MAX_WATCHES; watch++) {
@@ -99,7 +109,7 @@ export class NegotiationEngine {
       for (const c of this.order()) {
         if (this.io.cancelled()) break;
         const hail = this.hails.get(c.memberId);
-        let d = watch === 1 ? decideWatch1(this.plans, this.st, c.memberId) : decideResponse(this.ds, this.plans, this.st, c.memberId, watch, hail);
+        let d = watch === 1 ? decideWatch1(this.plans, this.st, c.memberId, placeBias(this.ds, c)) : decideResponse(this.ds, this.plans, this.st, c.memberId, watch, hail);
         if (config.agentDecisions === "model" && features.gemini()) d = await this.modelChoice(c, d, watch, hail) ?? d;
         apply(this.st, c.memberId, d);
         if (hail) this.hails.delete(c.memberId);
@@ -189,7 +199,7 @@ export class NegotiationEngine {
 
   // ---------- prompts (worded in prompts.ts) ----------
   private async advocatePrompt(c: EngineCrew, d: Decision, watch: number, hail?: HailNote, noAmounts = false): Promise<LineOut | null> {
-    const facts = advocateFacts(this.ds, c, d, planById(this.plans, d.planId), watch, this.io.memory(c.memberId), hail);
+    const facts = advocateFacts(this.ds, c, d, planById(this.plans, d.planId), watch, this.io.memory(c.memberId), hail, this.opts.placeNames);
     const out = await generateLine(advocateLineRequest(c.name, facts, this.maxWords, noAmounts));
     return out ? { line: out.line, ribbon: out.ribbon } : null;
   }
@@ -215,3 +225,18 @@ export class NegotiationEngine {
 }
 
 type Prompt = (noAmounts: boolean) => Promise<LineOut | null>;
+
+/**
+ * A member's loved / skipped places nudge which chart their mate proposes first (+8 / −15 preference points), so a
+ * mate argues for the place its member hoped for. No brief places → no bias (the Expo table is unchanged).
+ */
+function placeBias(ds: Dataset, c: PricingMember): ((p: Plan) => number) | undefined {
+  const { loves = [], skips = [] } = c.brief;
+  if (!loves.length && !skips.length) return undefined;
+  const city = indexOf(ds).city;
+  return (p) => {
+    const port = city.get(p.cityId);
+    if (!port) return 0;
+    return (loves.some((l) => namesPort(l, port)) ? 8 : 0) - (skips.some((s) => namesPort(s, port)) ? 15 : 0);
+  };
+}

@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "CHI", "name": "Chicago", "country": "United States", "state": "IL", "region": "United States", "airport": {"code": "ORD", "lat": 41.9742, "lng": -87.9073}, "utcOffset": -6, "centerLat": 41.888, "centerLng": -87.63, "tileRadiusKm": 3, "publicFlags": ["cold, windy winters"] },
+  "hotels": [
+    { "_id": "CHI-h-west-loop", "kind": "hotel", "cityId": "CHI", "name": "West Loop Apartment", "neighborhood": "West Loop", "lat": 41.8835, "lng": -87.648, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "CHI-h-river-north-triple", "kind": "hotel", "cityId": "CHI", "name": "River North Hotel (triple)", "neighborhood": "River North", "lat": 41.8925, "lng": -87.631, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "CHI-h-mag-mile-triple", "kind": "hotel", "cityId": "CHI", "name": "Magnificent Mile Hotel (triple)", "neighborhood": "Streeterville", "lat": 41.895, "lng": -87.623, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "CHI-h-old-town-guest", "kind": "hotel", "cityId": "CHI", "name": "Old Town Guesthouse", "neighborhood": "Old Town", "lat": 41.911, "lng": -87.635, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "CHI-h-loop-hostel", "kind": "hotel", "cityId": "CHI", "name": "Loop Hostel (3 beds)", "neighborhood": "The Loop", "lat": 41.8757, "lng": -87.6264, "stayType": "hostel", "nightlyCents": 13500, "sleeps": 3, "rating": 4.2 }
+  ],
+  "activities": [
+    { "_id": "CHI-a-arch-cruise", "kind": "activity", "cityId": "CHI", "name": "Architecture river cruise", "short": "Architecture cruise", "tags": ["history"], "lat": 41.888, "lng": -87.6235, "durationMin": 90, "priceCents": 5500, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "CHI-a-deep-dish", "kind": "activity", "cityId": "CHI", "name": "Deep-dish pizza dinner", "short": "Deep-dish pizza", "tags": ["food"], "lat": 41.8905, "lng": -87.6337, "durationMin": 90, "priceCents": 2500, "startEarliest": "17:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "CHI-a-art-institute", "kind": "activity", "cityId": "CHI", "name": "Art Institute of Chicago", "short": "Art Institute", "tags": ["museums"], "lat": 41.8796, "lng": -87.6237, "durationMin": 180, "priceCents": 3200, "startEarliest": "11:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "CHI-a-blues", "kind": "activity", "cityId": "CHI", "name": "Buddy Guy's Legends blues night", "short": "Blues club night", "tags": ["music", "nightlife"], "lat": 41.8743, "lng": -87.6264, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "CHI-a-second-city", "kind": "activity", "cityId": "CHI", "name": "The Second City comedy show", "short": "Second City", "tags": ["nightlife"], "lat": 41.9115, "lng": -87.6352, "durationMin": 120, "priceCents": 4500, "startEarliest": "19:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "CHI-a-lakefront", "kind": "activity", "cityId": "CHI", "name": "Lakefront Trail bike ride", "short": "Lakefront bike", "tags": ["nature", "chill"], "lat": 41.8918, "lng": -87.6094, "durationMin": 150, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CHI-a-field", "kind": "activity", "cityId": "CHI", "name": "Field Museum", "short": "Field Museum", "tags": ["museums", "history"], "lat": 41.8663, "lng": -87.617, "durationMin": 180, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "CHI-a-millennium", "kind": "activity", "cityId": "CHI", "name": "Millennium Park & Riverwalk", "short": "Millennium Park", "tags": ["chill"], "lat": 41.8826, "lng": -87.6226, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "18:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CHI-h-old-town-guest", "toId": "CHI-a-field", "mode": "transit", "minutes": 30, "note": "bus 22 + 146" },
+    { "fromId": "CHI-h-west-loop", "toId": "CHI-a-field", "mode": "taxi", "minutes": 15 }
+  ],
+  "hilly": []
+}

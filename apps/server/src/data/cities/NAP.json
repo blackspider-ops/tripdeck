@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "NAP", "name": "Naples", "country": "Italy", "region": "Europe", "airport": {"code": "NAP", "lat": 40.886, "lng": 14.2908}, "utcOffset": 1, "centerLat": 40.843, "centerLng": 14.249, "tileRadiusKm": 2, "publicFlags": ["pickpockets on crowded buses & trains", "chaotic traffic"] },
+  "hotels": [
+    { "_id": "NAP-h-spaccanapoli-hostel", "kind": "hotel", "cityId": "NAP", "name": "Spaccanapoli Hostel (3 beds)", "neighborhood": "Centro Storico", "lat": 40.8485, "lng": 14.254, "stayType": "hostel", "nightlyCents": 8000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "NAP-h-vomero-guest", "kind": "hotel", "cityId": "NAP", "name": "Vomero Guesthouse", "neighborhood": "Vomero", "lat": 40.845, "lng": 14.231, "stayType": "guesthouse", "nightlyCents": 12000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "NAP-h-centro-flat", "kind": "hotel", "cityId": "NAP", "name": "Centro Storico Apartment", "neighborhood": "Centro Storico", "lat": 40.85, "lng": 14.256, "stayType": "apartment", "nightlyCents": 15000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "NAP-h-chiaia-triple", "kind": "hotel", "cityId": "NAP", "name": "Chiaia Hotel (triple)", "neighborhood": "Chiaia", "lat": 40.835, "lng": 14.24, "stayType": "hotel", "nightlyCents": 23000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "NAP-h-lungomare-triple", "kind": "hotel", "cityId": "NAP", "name": "Lungomare Sea-view Hotel (triple)", "neighborhood": "Santa Lucia", "lat": 40.832, "lng": 14.249, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "NAP-a-pizza-crawl", "kind": "activity", "cityId": "NAP", "name": "Pizza crawl, Via dei Tribunali", "short": "Pizza crawl", "tags": ["food"], "lat": 40.851, "lng": 14.2575, "durationMin": 120, "priceCents": 2500, "startEarliest": "12:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "NAP-a-pompeii", "kind": "activity", "cityId": "NAP", "name": "Pompeii ruins (train)", "short": "Pompeii", "tags": ["history"], "lat": 40.749, "lng": 14.487, "durationMin": 300, "priceCents": 2600, "startEarliest": "09:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "NAP-a-underground", "kind": "activity", "cityId": "NAP", "name": "Napoli Sotterranea tour", "short": "Naples Underground", "tags": ["history"], "lat": 40.8513, "lng": 14.2566, "durationMin": 90, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "NAP-a-mann", "kind": "activity", "cityId": "NAP", "name": "National Archaeological Museum", "short": "Archaeological Museum", "tags": ["museums", "history"], "lat": 40.8535, "lng": 14.2505, "durationMin": 150, "priceCents": 2400, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "NAP-a-sansevero", "kind": "activity", "cityId": "NAP", "name": "Sansevero Chapel (Veiled Christ)", "short": "Veiled Christ", "tags": ["museums"], "lat": 40.849, "lng": 14.255, "durationMin": 60, "priceCents": 1400, "startEarliest": "09:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "NAP-a-lungomare-walk", "kind": "activity", "cityId": "NAP", "name": "Lungomare & Castel dell'Ovo sunset", "short": "Seafront sunset", "tags": ["chill"], "lat": 40.8283, "lng": 14.2475, "durationMin": 90, "priceCents": 0, "startEarliest": "16:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "NAP-a-chiaia-night", "kind": "activity", "cityId": "NAP", "name": "Chiaia aperitivo & bar night", "short": "Chiaia night out", "tags": ["nightlife"], "lat": 40.8365, "lng": 14.241, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "NAP-a-amalfi", "kind": "activity", "cityId": "NAP", "name": "Amalfi Coast day trip (Positano & Amalfi)", "short": "Amalfi Coast", "tags": ["beach", "nature"], "lat": 40.634, "lng": 14.6027, "durationMin": 540, "priceCents": 6500, "startEarliest": "07:30", "startLatest": "08:30", "role": "pick", "earlyStart": true }
+  ],
+  "overrides": [
+    { "fromId": "NAP-h-centro-flat", "toId": "NAP-a-amalfi", "mode": "train", "minutes": 150, "note": "Circumvesuviana to Sorrento + SITA bus along the coast" },
+    { "fromId": "NAP-h-chiaia-triple", "toId": "NAP-a-amalfi", "mode": "train", "minutes": 160, "note": "metro to Garibaldi + Circumvesuviana + SITA bus" },
+    { "fromId": "NAP-h-centro-flat", "toId": "NAP-a-pompeii", "mode": "train", "minutes": 45, "note": "Circumvesuviana from Garibaldi to Pompei Scavi" },
+    { "fromId": "NAP-h-chiaia-triple", "toId": "NAP-a-pompeii", "mode": "train", "minutes": 55, "note": "metro to Garibaldi + Circumvesuviana" }
+  ],
+  "hilly": ["NAP-h-vomero-guest"]
+}

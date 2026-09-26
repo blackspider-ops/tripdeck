@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BKK", "name": "Bangkok", "country": "Thailand", "region": "Asia", "airport": {"code": "BKK", "lat": 13.69, "lng": 100.7501}, "utcOffset": 7, "centerLat": 13.735, "centerLng": 100.535, "tileRadiusKm": 3, "publicFlags": ["hot and humid year-round", "long flight from the US"] },
+  "hotels": [
+    { "_id": "BKK-h-sukhumvit-apt", "kind": "hotel", "cityId": "BKK", "name": "Sukhumvit Serviced Apartment", "neighborhood": "Asok", "lat": 13.738, "lng": 100.559, "stayType": "apartment", "nightlyCents": 9500, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BKK-h-riverside-triple", "kind": "hotel", "cityId": "BKK", "name": "Riverside Hotel (triple)", "neighborhood": "Charoen Krung", "lat": 13.7235, "lng": 100.5145, "stayType": "hotel", "nightlyCents": 14000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "BKK-h-siam-triple", "kind": "hotel", "cityId": "BKK", "name": "Pathum Wan Hotel (triple)", "neighborhood": "Siam", "lat": 13.746, "lng": 100.532, "stayType": "hotel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "BKK-h-chinatown-guest", "kind": "hotel", "cityId": "BKK", "name": "Chinatown Guesthouse", "neighborhood": "Yaowarat", "lat": 13.74, "lng": 100.509, "stayType": "guesthouse", "nightlyCents": 5500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "BKK-h-silom-hostel", "kind": "hotel", "cityId": "BKK", "name": "Silom Hostel (3 beds)", "neighborhood": "Silom", "lat": 13.728, "lng": 100.533, "stayType": "hostel", "nightlyCents": 4500, "sleeps": 3, "rating": 4.2 }
+  ],
+  "activities": [
+    { "_id": "BKK-a-grand-palace", "kind": "activity", "cityId": "BKK", "name": "Grand Palace & Wat Pho", "short": "Grand Palace", "tags": ["history"], "lat": 13.75, "lng": 100.4913, "durationMin": 210, "priceCents": 2200, "startEarliest": "08:30", "startLatest": "13:00", "role": "group" },
+    { "_id": "BKK-a-chinatown-food", "kind": "activity", "cityId": "BKK", "name": "Yaowarat street food night", "short": "Chinatown food", "tags": ["food", "nightlife"], "lat": 13.74, "lng": 100.509, "durationMin": 150, "priceCents": 2500, "startEarliest": "18:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "BKK-a-river-arun", "kind": "activity", "cityId": "BKK", "name": "Chao Phraya boat & Wat Arun", "short": "River & Wat Arun", "tags": ["chill", "history"], "lat": 13.7437, "lng": 100.4888, "durationMin": 120, "priceCents": 800, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "BKK-a-cooking", "kind": "activity", "cityId": "BKK", "name": "Thai cooking class", "short": "Cooking class", "tags": ["food"], "lat": 13.7245, "lng": 100.53, "durationMin": 240, "priceCents": 4000, "startEarliest": "09:00", "startLatest": "13:30", "role": "pick" },
+    { "_id": "BKK-a-sky-bar", "kind": "activity", "cityId": "BKK", "name": "Rooftop bar sunset, Silom", "short": "Rooftop sunset", "tags": ["nightlife", "chill"], "lat": 13.7215, "lng": 100.517, "durationMin": 90, "priceCents": 3500, "startEarliest": "17:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "BKK-a-jim-thompson", "kind": "activity", "cityId": "BKK", "name": "Jim Thompson House", "short": "Jim Thompson House", "tags": ["museums", "history"], "lat": 13.7493, "lng": 100.5282, "durationMin": 90, "priceCents": 600, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "BKK-a-muay-thai", "kind": "activity", "cityId": "BKK", "name": "Muay Thai at Rajadamnern Stadium", "short": "Muay Thai night", "tags": ["nightlife"], "lat": 13.7575, "lng": 100.5089, "durationMin": 180, "priceCents": 5000, "startEarliest": "18:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "BKK-a-lumphini", "kind": "activity", "cityId": "BKK", "name": "Lumphini Park bike & monitor lizards", "short": "Lumphini Park", "tags": ["nature", "chill"], "lat": 13.731, "lng": 100.5418, "durationMin": 90, "priceCents": 0, "startEarliest": "07:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BKK-h-sukhumvit-apt", "toId": "BKK-a-grand-palace", "mode": "taxi", "minutes": 35, "note": "or BTS + river boat" },
+    { "fromId": "BKK-h-sukhumvit-apt", "toId": "BKK-a-chinatown-food", "mode": "transit", "minutes": 30, "note": "MRT to Wat Mangkon" },
+    { "fromId": "BKK-h-sukhumvit-apt", "toId": "BKK-a-river-arun", "mode": "transit", "minutes": 40, "note": "BTS to Saphan Taksin + boat" }
+  ],
+  "hilly": []
+}

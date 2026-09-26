@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SAF", "name": "Santa Fe", "country": "United States", "state": "NM", "region": "United States", "airport": {"code": "SAF", "lat": 35.6171, "lng": -106.0894}, "utcOffset": -7, "centerLat": 35.684, "centerLng": -105.945, "tileRadiusKm": 1.5, "publicFlags": ["high altitude (2,130 m)", "few direct flights; many fly via ABQ"] },
+  "hotels": [
+    { "_id": "SAF-h-silver-saddle", "kind": "hotel", "cityId": "SAF", "name": "Silver Saddle Motel (2 queens)", "neighborhood": "Cerrillos Road", "lat": 35.6555, "lng": -105.976, "stayType": "guesthouse", "nightlyCents": 11000, "sleeps": 4, "rating": 4.1 },
+    { "_id": "SAF-h-el-rey", "kind": "hotel", "cityId": "SAF", "name": "El Rey Court (triple)", "neighborhood": "Cerrillos Road", "lat": 35.6695, "lng": -105.962, "stayType": "hotel", "nightlyCents": 19500, "sleeps": 3, "rating": 4.5 },
+    { "_id": "SAF-h-canyon-road-casita", "kind": "hotel", "cityId": "SAF", "name": "Canyon Road Casita", "neighborhood": "East Side", "lat": 35.683, "lng": -105.929, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.7 },
+    { "_id": "SAF-h-hotel-santa-fe", "kind": "hotel", "cityId": "SAF", "name": "Hotel Santa Fe (2 queens)", "neighborhood": "Railyard", "lat": 35.68, "lng": -105.953, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "SAF-h-la-fonda", "kind": "hotel", "cityId": "SAF", "name": "La Fonda on the Plaza (2 queens)", "neighborhood": "The Plaza", "lat": 35.6869, "lng": -105.9372, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "SAF-a-palace-governors", "kind": "activity", "cityId": "SAF", "name": "Plaza & Palace of the Governors", "short": "Palace of Governors", "tags": ["history", "museums"], "lat": 35.6878, "lng": -105.9385, "durationMin": 120, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "SAF-a-canyon-road", "kind": "activity", "cityId": "SAF", "name": "Canyon Road gallery walk", "short": "Canyon Road galleries", "tags": ["chill"], "lat": 35.6825, "lng": -105.928, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "SAF-a-meow-wolf", "kind": "activity", "cityId": "SAF", "name": "Meow Wolf: House of Eternal Return", "short": "Meow Wolf", "tags": ["museums"], "lat": 35.6546, "lng": -105.9965, "durationMin": 150, "priceCents": 5000, "startEarliest": "10:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "SAF-a-okeeffe", "kind": "activity", "cityId": "SAF", "name": "Georgia O'Keeffe Museum", "short": "O'Keeffe Museum", "tags": ["museums"], "lat": 35.6891, "lng": -105.9413, "durationMin": 90, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "SAF-a-ten-thousand-waves", "kind": "activity", "cityId": "SAF", "name": "Ten Thousand Waves hot tubs", "short": "Ten Thousand Waves", "tags": ["chill"], "lat": 35.708, "lng": -105.899, "durationMin": 180, "priceCents": 6500, "startEarliest": "10:30", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SAF-a-bandelier", "kind": "activity", "cityId": "SAF", "name": "Bandelier National Monument", "short": "Bandelier", "tags": ["nature", "history"], "lat": 35.779, "lng": -106.27, "durationMin": 300, "priceCents": 1000, "startEarliest": "08:30", "startLatest": "11:00", "role": "pick" },
+    { "_id": "SAF-a-the-shed", "kind": "activity", "cityId": "SAF", "name": "Red-or-green lunch at The Shed", "short": "The Shed lunch", "tags": ["food"], "lat": 35.6878, "lng": -105.9369, "durationMin": 90, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SAF-a-el-farol", "kind": "activity", "cityId": "SAF", "name": "Live music at El Farol", "short": "El Farol live music", "tags": ["music", "nightlife"], "lat": 35.6818, "lng": -105.927, "durationMin": 150, "priceCents": 3500, "startEarliest": "19:30", "startLatest": "21:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SAF-h-la-fonda", "toId": "SAF-a-meow-wolf", "mode": "taxi", "minutes": 15 },
+    { "fromId": "SAF-h-la-fonda", "toId": "SAF-a-bandelier", "mode": "taxi", "minutes": 60, "note": "no transit; car needed" },
+    { "fromId": "SAF-h-la-fonda", "toId": "SAF-a-ten-thousand-waves", "mode": "taxi", "minutes": 12, "note": "up Hyde Park Rd" }
+  ],
+  "hilly": ["SAF-a-ten-thousand-waves", "SAF-a-bandelier"]
+}

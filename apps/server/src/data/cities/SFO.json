@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "SFO", "name": "San Francisco", "country": "United States", "state": "CA", "region": "United States", "airport": {"code": "SFO", "lat": 37.6213, "lng": -122.379}, "utcOffset": -8, "centerLat": 37.793, "centerLng": -122.413, "tileRadiusKm": 2.5, "publicFlags": ["hilly neighborhoods", "cool, foggy summers"] },
+  "hotels": [
+    { "_id": "SFO-h-nob-hill", "kind": "hotel", "cityId": "SFO", "name": "Nob Hill Flat", "neighborhood": "Nob Hill", "lat": 37.793, "lng": -122.416, "stayType": "apartment", "nightlyCents": 34000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "SFO-h-union-sq-triple", "kind": "hotel", "cityId": "SFO", "name": "Union Square Hotel (triple)", "neighborhood": "Union Square", "lat": 37.788, "lng": -122.4075, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SFO-h-north-beach-triple", "kind": "hotel", "cityId": "SFO", "name": "North Beach Boutique (triple)", "neighborhood": "North Beach", "lat": 37.8, "lng": -122.41, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "SFO-h-russian-hill-guest", "kind": "hotel", "cityId": "SFO", "name": "Russian Hill Guesthouse", "neighborhood": "Russian Hill", "lat": 37.801, "lng": -122.419, "stayType": "guesthouse", "nightlyCents": 27000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "SFO-h-wharf-hostel", "kind": "hotel", "cityId": "SFO", "name": "Fort Mason Hostel (3 beds)", "neighborhood": "Fort Mason", "lat": 37.8065, "lng": -122.429, "stayType": "hostel", "nightlyCents": 15000, "sleeps": 3, "rating": 4.1 }
+  ],
+  "activities": [
+    { "_id": "SFO-a-alcatraz", "kind": "activity", "cityId": "SFO", "name": "Alcatraz Island tour", "short": "Alcatraz", "tags": ["history"], "lat": 37.8267, "lng": -122.423, "durationMin": 180, "priceCents": 4700, "startEarliest": "08:45", "startLatest": "15:30", "role": "group" },
+    { "_id": "SFO-a-golden-gate", "kind": "activity", "cityId": "SFO", "name": "Golden Gate Bridge walk", "short": "Golden Gate walk", "tags": ["nature"], "lat": 37.8199, "lng": -122.4783, "durationMin": 150, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "SFO-a-ferry-building", "kind": "activity", "cityId": "SFO", "name": "Ferry Building food hall", "short": "Ferry Building", "tags": ["food", "chill"], "lat": 37.7955, "lng": -122.3937, "durationMin": 90, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "SFO-a-sfmoma", "kind": "activity", "cityId": "SFO", "name": "SFMOMA", "short": "SFMOMA", "tags": ["museums"], "lat": 37.7857, "lng": -122.4011, "durationMin": 150, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SFO-a-coit", "kind": "activity", "cityId": "SFO", "name": "Lombard Street & Coit Tower", "short": "Coit Tower climb", "tags": ["history", "nature"], "lat": 37.8024, "lng": -122.4058, "durationMin": 120, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "SFO-a-mission", "kind": "activity", "cityId": "SFO", "name": "Mission tacos & bar crawl", "short": "Mission tacos & bars", "tags": ["food", "nightlife"], "lat": 37.76, "lng": -122.4148, "durationMin": 150, "priceCents": 3500, "startEarliest": "17:30", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SFO-a-sfjazz", "kind": "activity", "cityId": "SFO", "name": "SFJAZZ Center show", "short": "SFJAZZ show", "tags": ["music"], "lat": 37.7763, "lng": -122.4216, "durationMin": 120, "priceCents": 6000, "startEarliest": "19:30", "startLatest": "20:30", "role": "pick" },
+    { "_id": "SFO-a-muir-woods", "kind": "activity", "cityId": "SFO", "name": "Muir Woods redwoods", "short": "Muir Woods", "tags": ["nature"], "lat": 37.8913, "lng": -122.5719, "durationMin": 240, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SFO-h-nob-hill", "toId": "SFO-a-golden-gate", "mode": "taxi", "minutes": 20 },
+    { "fromId": "SFO-h-nob-hill", "toId": "SFO-a-muir-woods", "mode": "taxi", "minutes": 45, "note": "reserve parking/shuttle" },
+    { "fromId": "SFO-h-nob-hill", "toId": "SFO-a-alcatraz", "mode": "transit", "minutes": 25, "note": "cable car + ferry from Pier 33" },
+    { "fromId": "SFO-h-russian-hill-guest", "toId": "SFO-a-coit", "mode": "walk", "minutes": 20, "note": "steep stairs" }
+  ],
+  "hilly": ["SFO-h-nob-hill", "SFO-h-russian-hill-guest", "SFO-a-coit"]
+}

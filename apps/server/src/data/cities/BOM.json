@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "BOM", "name": "Mumbai", "country": "India", "region": "Asia", "airport": { "code": "BOM", "lat": 19.0896, "lng": 72.8656 }, "utcOffset": 5.5, "centerLat": 18.93, "centerLng": 72.828, "tileRadiusKm": 2.5, "publicFlags": ["heavy monsoon Jun–Sep", "long flight from the US (16+ h)"] },
+  "hotels": [
+    { "_id": "BOM-h-colaba-hostel", "kind": "hotel", "cityId": "BOM", "name": "Colaba Hostel (3 beds)", "neighborhood": "Colaba", "lat": 18.915, "lng": 72.827, "stayType": "hostel", "nightlyCents": 4200, "sleeps": 3, "rating": 4.0 },
+    { "_id": "BOM-h-kala-ghoda-guest", "kind": "hotel", "cityId": "BOM", "name": "Kala Ghoda Guesthouse", "neighborhood": "Kala Ghoda", "lat": 18.928, "lng": 72.832, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "BOM-h-fort-triple", "kind": "hotel", "cityId": "BOM", "name": "Fort Heritage Hotel (triple)", "neighborhood": "Fort", "lat": 18.932, "lng": 72.834, "stayType": "hotel", "nightlyCents": 15000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "BOM-h-marine-drive-flat", "kind": "hotel", "cityId": "BOM", "name": "Marine Drive Apartment", "neighborhood": "Marine Drive", "lat": 18.943, "lng": 72.823, "stayType": "apartment", "nightlyCents": 16000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "BOM-h-apollo-bunder-triple", "kind": "hotel", "cityId": "BOM", "name": "Apollo Bunder Hotel (triple)", "neighborhood": "Apollo Bunder", "lat": 18.9217, "lng": 72.833, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.8 }
+  ],
+  "activities": [
+    { "_id": "BOM-a-gateway", "kind": "activity", "cityId": "BOM", "name": "Gateway of India & Colaba walk", "short": "Gateway & Colaba", "tags": ["history"], "lat": 18.922, "lng": 72.8347, "durationMin": 120, "priceCents": 0, "startEarliest": "08:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "BOM-a-chowpatty", "kind": "activity", "cityId": "BOM", "name": "Marine Drive sunset & Chowpatty street food", "short": "Chowpatty sunset", "tags": ["food", "chill"], "lat": 18.9543, "lng": 72.815, "durationMin": 150, "priceCents": 1500, "startEarliest": "17:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "BOM-a-csmvs", "kind": "activity", "cityId": "BOM", "name": "Chhatrapati Shivaji Maharaj Vastu Sangrahalaya", "short": "CSMVS museum", "tags": ["museums", "history"], "lat": 18.9269, "lng": 72.8326, "durationMin": 150, "priceCents": 1200, "startEarliest": "10:15", "startLatest": "16:30", "role": "group" },
+    { "_id": "BOM-a-elephanta", "kind": "activity", "cityId": "BOM", "name": "Elephanta Caves (ferry)", "short": "Elephanta Caves", "tags": ["history", "nature"], "lat": 18.9633, "lng": 72.9315, "durationMin": 300, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "13:30", "role": "pick" },
+    { "_id": "BOM-a-dharavi", "kind": "activity", "cityId": "BOM", "name": "Dharavi walking tour", "short": "Dharavi tour", "tags": ["history"], "lat": 19.04, "lng": 72.855, "durationMin": 150, "priceCents": 1800, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BOM-a-bandra-bars", "kind": "activity", "cityId": "BOM", "name": "Bandra bar night", "short": "Bandra bars", "tags": ["nightlife", "music"], "lat": 19.063, "lng": 72.834, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "BOM-a-kanheri", "kind": "activity", "cityId": "BOM", "name": "Kanheri Caves, Sanjay Gandhi NP", "short": "Kanheri Caves", "tags": ["nature", "history"], "lat": 19.206, "lng": 72.9063, "durationMin": 300, "priceCents": 1200, "startEarliest": "07:30", "startLatest": "10:00", "role": "pick" },
+    { "_id": "BOM-a-juhu", "kind": "activity", "cityId": "BOM", "name": "Juhu Beach sunset & chaat", "short": "Juhu Beach", "tags": ["beach", "food"], "lat": 19.099, "lng": 72.8265, "durationMin": 120, "priceCents": 1000, "startEarliest": "16:00", "startLatest": "18:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BOM-h-fort-triple", "toId": "BOM-a-elephanta", "mode": "transit", "minutes": 70, "note": "walk to Gateway + 1 h ferry" },
+    { "fromId": "BOM-h-fort-triple", "toId": "BOM-a-dharavi", "mode": "train", "minutes": 35, "note": "Western line from Churchgate to Mahim" },
+    { "fromId": "BOM-h-fort-triple", "toId": "BOM-a-bandra-bars", "mode": "taxi", "minutes": 45, "note": "via the Sea Link" },
+    { "fromId": "BOM-h-fort-triple", "toId": "BOM-a-kanheri", "mode": "taxi", "minutes": 75, "note": "north via Western Express Hwy" }
+  ],
+  "hilly": []
+}

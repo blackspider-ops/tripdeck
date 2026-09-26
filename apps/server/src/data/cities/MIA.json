@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "MIA", "name": "Miami", "country": "United States", "state": "FL", "region": "United States", "airport": {"code": "MIA", "lat": 25.7959, "lng": -80.287}, "utcOffset": -5, "centerLat": 25.781, "centerLng": -80.132, "tileRadiusKm": 2.5, "publicFlags": ["hot and humid in summer", "hurricane season Jun–Nov"] },
+  "hotels": [
+    { "_id": "MIA-h-flamingo-apt", "kind": "hotel", "cityId": "MIA", "name": "Flamingo Park Apartment", "neighborhood": "Flamingo Park", "lat": 25.781, "lng": -80.137, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "MIA-h-deco-triple", "kind": "hotel", "cityId": "MIA", "name": "Ocean Drive Art Deco Hotel (triple)", "neighborhood": "South Beach", "lat": 25.78, "lng": -80.13, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "MIA-h-collins-triple", "kind": "hotel", "cityId": "MIA", "name": "Collins Park Hotel (triple)", "neighborhood": "Collins Park", "lat": 25.793, "lng": -80.1285, "stayType": "hotel", "nightlyCents": 44000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "MIA-h-sofi-guest", "kind": "hotel", "cityId": "MIA", "name": "SoFi Guesthouse", "neighborhood": "South of Fifth", "lat": 25.77, "lng": -80.135, "stayType": "guesthouse", "nightlyCents": 26000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "MIA-h-sobe-hostel", "kind": "hotel", "cityId": "MIA", "name": "South Beach Hostel (3 beds)", "neighborhood": "South Beach", "lat": 25.7715, "lng": -80.134, "stayType": "hostel", "nightlyCents": 14000, "sleeps": 3, "rating": 4 }
+  ],
+  "activities": [
+    { "_id": "MIA-a-beach", "kind": "activity", "cityId": "MIA", "name": "South Beach at Lummus Park", "short": "South Beach day", "tags": ["beach", "chill"], "lat": 25.7825, "lng": -80.1285, "durationMin": 240, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "MIA-a-little-havana", "kind": "activity", "cityId": "MIA", "name": "Little Havana & Calle Ocho food walk", "short": "Little Havana", "tags": ["food", "history", "music"], "lat": 25.7654, "lng": -80.2194, "durationMin": 150, "priceCents": 4500, "startEarliest": "11:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MIA-a-wynwood", "kind": "activity", "cityId": "MIA", "name": "Wynwood Walls & breweries", "short": "Wynwood Walls", "tags": ["museums", "nightlife"], "lat": 25.801, "lng": -80.1994, "durationMin": 150, "priceCents": 1500, "startEarliest": "11:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "MIA-a-bass", "kind": "activity", "cityId": "MIA", "name": "The Bass Museum of Art", "short": "The Bass", "tags": ["museums"], "lat": 25.7953, "lng": -80.1302, "durationMin": 90, "priceCents": 1500, "startEarliest": "12:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MIA-a-vizcaya", "kind": "activity", "cityId": "MIA", "name": "Vizcaya Museum & Gardens", "short": "Vizcaya", "tags": ["history", "nature"], "lat": 25.7443, "lng": -80.2105, "durationMin": 150, "priceCents": 2500, "startEarliest": "09:30", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MIA-a-everglades", "kind": "activity", "cityId": "MIA", "name": "Everglades airboat ride", "short": "Everglades airboat", "tags": ["nature"], "lat": 25.7607, "lng": -80.5561, "durationMin": 240, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "MIA-a-club-night", "kind": "activity", "cityId": "MIA", "name": "Española Way & club night", "short": "SoBe club night", "tags": ["nightlife"], "lat": 25.7865, "lng": -80.1325, "durationMin": 240, "priceCents": 4000, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "MIA-a-stone-crab", "kind": "activity", "cityId": "MIA", "name": "Joe's Stone Crab dinner", "short": "Joe's Stone Crab", "tags": ["food"], "lat": 25.7686, "lng": -80.1348, "durationMin": 120, "priceCents": 9000, "startEarliest": "17:00", "startLatest": "20:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MIA-h-flamingo-apt", "toId": "MIA-a-little-havana", "mode": "taxi", "minutes": 20 },
+    { "fromId": "MIA-h-flamingo-apt", "toId": "MIA-a-everglades", "mode": "taxi", "minutes": 50, "note": "west on Tamiami Trail" },
+    { "fromId": "MIA-h-flamingo-apt", "toId": "MIA-a-wynwood", "mode": "taxi", "minutes": 15 },
+    { "fromId": "MIA-h-flamingo-apt", "toId": "MIA-a-vizcaya", "mode": "taxi", "minutes": 20 }
+  ],
+  "hilly": []
+}

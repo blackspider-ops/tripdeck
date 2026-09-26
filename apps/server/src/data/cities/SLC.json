@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SLC", "name": "Salt Lake City", "country": "United States", "state": "UT", "region": "United States", "airport": {"code": "SLC", "lat": 40.7899, "lng": -111.9791}, "utcOffset": -7, "centerLat": 40.765, "centerLng": -111.889, "tileRadiusKm": 2, "publicFlags": ["dry air at 1,300 m", "winter inversion haze"] },
+  "hotels": [
+    { "_id": "SLC-h-avenues-hostel", "kind": "hotel", "cityId": "SLC", "name": "Avenues Hostel (private 3-bed)", "neighborhood": "The Avenues", "lat": 40.7727, "lng": -111.8745, "stayType": "hostel", "nightlyCents": 9500, "sleeps": 3, "rating": 3.8 },
+    { "_id": "SLC-h-nine-and-nine", "kind": "hotel", "cityId": "SLC", "name": "9th & 9th Bungalow", "neighborhood": "East Central", "lat": 40.7503, "lng": -111.865, "stayType": "apartment", "nightlyCents": 17500, "sleeps": 4, "rating": 4.6 },
+    { "_id": "SLC-h-peery", "kind": "hotel", "cityId": "SLC", "name": "Peery Hotel (triple)", "neighborhood": "Downtown", "lat": 40.7626, "lng": -111.894, "stayType": "hotel", "nightlyCents": 18500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SLC-h-monaco", "kind": "hotel", "cityId": "SLC", "name": "Kimpton Hotel Monaco (2 queens)", "neighborhood": "Downtown", "lat": 40.7634, "lng": -111.8915, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "SLC-h-grand-america", "kind": "hotel", "cityId": "SLC", "name": "Grand America Hotel (2 queens)", "neighborhood": "Downtown", "lat": 40.7563, "lng": -111.8912, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 4, "rating": 4.8 }
+  ],
+  "activities": [
+    { "_id": "SLC-a-temple-square", "kind": "activity", "cityId": "SLC", "name": "Temple Square & Conference Center", "short": "Temple Square", "tags": ["history"], "lat": 40.7703, "lng": -111.892, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "SLC-a-ensign-peak", "kind": "activity", "cityId": "SLC", "name": "Ensign Peak sunset hike", "short": "Ensign Peak hike", "tags": ["nature"], "lat": 40.7917, "lng": -111.889, "durationMin": 75, "priceCents": 0, "startEarliest": "08:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "SLC-a-urban-lounge", "kind": "activity", "cityId": "SLC", "name": "Live show at Urban Lounge", "short": "Urban Lounge gig", "tags": ["music", "nightlife"], "lat": 40.763, "lng": -111.877, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "SLC-a-nhmu", "kind": "activity", "cityId": "SLC", "name": "Natural History Museum of Utah", "short": "Natural History museum", "tags": ["museums", "nature"], "lat": 40.764, "lng": -111.8225, "durationMin": 150, "priceCents": 2700, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SLC-a-antelope-island", "kind": "activity", "cityId": "SLC", "name": "Antelope Island & Great Salt Lake", "short": "Antelope Island", "tags": ["nature", "chill"], "lat": 41.04, "lng": -112.25, "durationMin": 360, "priceCents": 700, "startEarliest": "08:30", "startLatest": "11:00", "role": "pick" },
+    { "_id": "SLC-a-snowbird", "kind": "activity", "cityId": "SLC", "name": "Snowbird aerial tram", "short": "Snowbird tram", "tags": ["nature"], "lat": 40.583, "lng": -111.6556, "durationMin": 300, "priceCents": 5000, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "SLC-a-red-iguana", "kind": "activity", "cityId": "SLC", "name": "Red Iguana mole lunch", "short": "Red Iguana", "tags": ["food"], "lat": 40.7718, "lng": -111.912, "durationMin": 90, "priceCents": 2200, "startEarliest": "11:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SLC-a-capitol", "kind": "activity", "cityId": "SLC", "name": "Utah State Capitol tour", "short": "State Capitol", "tags": ["history"], "lat": 40.7774, "lng": -111.8882, "durationMin": 75, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SLC-h-peery", "toId": "SLC-a-antelope-island", "mode": "taxi", "minutes": 50, "note": "I-15 north & causeway; car needed" },
+    { "fromId": "SLC-h-peery", "toId": "SLC-a-snowbird", "mode": "taxi", "minutes": 45, "note": "Little Cottonwood Canyon; UTA ski bus in season" },
+    { "fromId": "SLC-h-monaco", "toId": "SLC-a-nhmu", "mode": "transit", "minutes": 25, "note": "TRAX Red Line + uphill walk" }
+  ],
+  "hilly": ["SLC-a-ensign-peak", "SLC-a-nhmu", "SLC-a-snowbird", "SLC-a-capitol", "SLC-h-avenues-hostel"]
+}

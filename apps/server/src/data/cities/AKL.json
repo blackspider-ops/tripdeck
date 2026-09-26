@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "AKL", "name": "Auckland", "country": "New Zealand", "region": "Oceania", "airport": { "code": "AKL", "lat": -37.0082, "lng": 174.785 }, "utcOffset": 12, "centerLat": -36.85, "centerLng": 174.762, "tileRadiusKm": 2.0, "publicFlags": ["long flight from the US (13 h from LAX/SFO)", "winter in Jun–Aug"] },
+  "hotels": [
+    { "_id": "AKL-h-queen-st-hostel", "kind": "hotel", "cityId": "AKL", "name": "Queen Street Hostel (3 beds)", "neighborhood": "CBD", "lat": -36.851, "lng": 174.764, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "AKL-h-parnell-guest", "kind": "hotel", "cityId": "AKL", "name": "Parnell Guesthouse", "neighborhood": "Parnell", "lat": -36.855, "lng": 174.78, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "AKL-h-ponsonby-flat", "kind": "hotel", "cityId": "AKL", "name": "Ponsonby Apartment", "neighborhood": "Ponsonby", "lat": -36.853, "lng": 174.744, "stayType": "apartment", "nightlyCents": 22000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "AKL-h-cbd-triple", "kind": "hotel", "cityId": "AKL", "name": "CBD Hotel (triple)", "neighborhood": "CBD", "lat": -36.848, "lng": 174.765, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "AKL-h-viaduct-triple", "kind": "hotel", "cityId": "AKL", "name": "Viaduct Harbour Hotel (triple)", "neighborhood": "Viaduct Harbour", "lat": -36.844, "lng": 174.758, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "AKL-a-sky-tower", "kind": "activity", "cityId": "AKL", "name": "Sky Tower & harbour walk", "short": "Sky Tower", "tags": ["chill"], "lat": -36.8485, "lng": 174.7622, "durationMin": 120, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "AKL-a-museum", "kind": "activity", "cityId": "AKL", "name": "Auckland War Memorial Museum", "short": "Auckland Museum", "tags": ["museums", "history"], "lat": -36.8604, "lng": 174.7778, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "AKL-a-ponsonby-food", "kind": "activity", "cityId": "AKL", "name": "Ponsonby Road dinner & bars", "short": "Ponsonby Road night", "tags": ["food", "nightlife"], "lat": -36.856, "lng": 174.747, "durationMin": 180, "priceCents": 5000, "startEarliest": "18:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "AKL-a-waiheke", "kind": "activity", "cityId": "AKL", "name": "Waiheke Island wine & beaches", "short": "Waiheke Island", "tags": ["beach", "food"], "lat": -36.7865, "lng": 175.009, "durationMin": 480, "priceCents": 9000, "startEarliest": "08:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "AKL-a-piha", "kind": "activity", "cityId": "AKL", "name": "Piha black-sand beach & Waitākere", "short": "Piha beach", "tags": ["beach", "nature"], "lat": -36.954, "lng": 174.47, "durationMin": 360, "priceCents": 0, "startEarliest": "08:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "AKL-a-rangitoto", "kind": "activity", "cityId": "AKL", "name": "Rangitoto Island summit hike", "short": "Rangitoto hike", "tags": ["nature"], "lat": -36.7865, "lng": 174.8605, "durationMin": 300, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "AKL-a-mt-eden", "kind": "activity", "cityId": "AKL", "name": "Mt Eden summit", "short": "Mt Eden", "tags": ["nature", "chill"], "lat": -36.877, "lng": 174.764, "durationMin": 90, "priceCents": 0, "startEarliest": "07:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "AKL-a-k-road", "kind": "activity", "cityId": "AKL", "name": "Live music on K Road", "short": "K Road live music", "tags": ["music", "nightlife"], "lat": -36.859, "lng": 174.756, "durationMin": 180, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "AKL-h-ponsonby-flat", "toId": "AKL-a-waiheke", "mode": "transit", "minutes": 55, "note": "bus to Downtown + 40 min ferry" },
+    { "fromId": "AKL-h-ponsonby-flat", "toId": "AKL-a-piha", "mode": "taxi", "minutes": 50, "note": "winding road over the Waitākere Ranges" },
+    { "fromId": "AKL-h-ponsonby-flat", "toId": "AKL-a-rangitoto", "mode": "transit", "minutes": 40, "note": "bus to Downtown + 25 min ferry" }
+  ],
+  "hilly": ["AKL-a-rangitoto", "AKL-a-mt-eden"]
+}

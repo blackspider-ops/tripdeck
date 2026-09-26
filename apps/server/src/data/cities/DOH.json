@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "DOH", "name": "Doha", "country": "Qatar", "region": "Middle East", "airport": { "code": "DOH", "lat": 25.2731, "lng": 51.6081 }, "utcOffset": 3, "centerLat": 25.3, "centerLng": 51.535, "tileRadiusKm": 3, "publicFlags": ["modest dress in public places", "strong midday sun"] },
+  "hotels": [
+    { "_id": "DOH-h-najada-hostel", "kind": "hotel", "cityId": "DOH", "name": "Al Najada Hostel (3 beds)", "neighborhood": "Al Najada", "lat": 25.2835, "lng": 51.5365, "stayType": "hostel", "nightlyCents": 7500, "sleeps": 3, "rating": 3.9 },
+    { "_id": "DOH-h-souq-guest", "kind": "hotel", "cityId": "DOH", "name": "Souq Waqif Boutique Guesthouse", "neighborhood": "Souq Waqif", "lat": 25.2865, "lng": 51.5325, "stayType": "guesthouse", "nightlyCents": 20000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "DOH-h-westbay-triple", "kind": "hotel", "cityId": "DOH", "name": "West Bay Hotel (triple)", "neighborhood": "West Bay", "lat": 25.324, "lng": 51.53, "stayType": "hotel", "nightlyCents": 18000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DOH-h-pearl-flat", "kind": "hotel", "cityId": "DOH", "name": "The Pearl Apartment", "neighborhood": "The Pearl", "lat": 25.37, "lng": 51.548, "stayType": "apartment", "nightlyCents": 22000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "DOH-h-msheireb-triple", "kind": "hotel", "cityId": "DOH", "name": "Msheireb Hotel (triple)", "neighborhood": "Msheireb", "lat": 25.286, "lng": 51.525, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "DOH-a-mia", "kind": "activity", "cityId": "DOH", "name": "Museum of Islamic Art", "short": "Islamic Art museum", "tags": ["museums", "history"], "lat": 25.2955, "lng": 51.539, "durationMin": 150, "priceCents": 1400, "startEarliest": "09:30", "startLatest": "17:00", "role": "group" },
+    { "_id": "DOH-a-souq-waqif", "kind": "activity", "cityId": "DOH", "name": "Souq Waqif evening & dinner", "short": "Souq Waqif dinner", "tags": ["food", "history"], "lat": 25.287, "lng": 51.533, "durationMin": 150, "priceCents": 3000, "startEarliest": "17:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "DOH-a-dhow", "kind": "activity", "cityId": "DOH", "name": "Dhow cruise off the Corniche", "short": "Dhow cruise", "tags": ["chill"], "lat": 25.2945, "lng": 51.534, "durationMin": 60, "priceCents": 1500, "startEarliest": "16:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "DOH-a-nmoq", "kind": "activity", "cityId": "DOH", "name": "National Museum of Qatar", "short": "National Museum", "tags": ["museums", "history"], "lat": 25.2875, "lng": 51.5485, "durationMin": 150, "priceCents": 1400, "startEarliest": "09:30", "startLatest": "16:30", "role": "pick" },
+    { "_id": "DOH-a-katara", "kind": "activity", "cityId": "DOH", "name": "Katara beach & cultural village", "short": "Katara beach", "tags": ["beach", "chill"], "lat": 25.3595, "lng": 51.5265, "durationMin": 180, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DOH-a-desert", "kind": "activity", "cityId": "DOH", "name": "Sealine dune safari", "short": "Dune safari", "tags": ["nature"], "lat": 24.94, "lng": 51.57, "durationMin": 300, "priceCents": 8000, "startEarliest": "14:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DOH-a-msheireb-museums", "kind": "activity", "cityId": "DOH", "name": "Msheireb Museums", "short": "Msheireb Museums", "tags": ["museums", "history"], "lat": 25.2855, "lng": 51.527, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "DOH-a-westbay-night", "kind": "activity", "cityId": "DOH", "name": "West Bay rooftop lounge", "short": "Rooftop lounge", "tags": ["nightlife", "music"], "lat": 25.323, "lng": 51.531, "durationMin": 150, "priceCents": 4000, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DOH-h-pearl-flat", "toId": "DOH-a-souq-waqif", "mode": "taxi", "minutes": 20 },
+    { "fromId": "DOH-h-pearl-flat", "toId": "DOH-a-desert", "mode": "taxi", "minutes": 60, "note": "about 50 km south; tour pickup usual" },
+    { "fromId": "DOH-h-pearl-flat", "toId": "DOH-a-mia", "mode": "taxi", "minutes": 18 }
+  ],
+  "hilly": []
+}

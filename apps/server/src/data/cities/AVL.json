@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "AVL", "name": "Asheville", "country": "United States", "state": "NC", "region": "United States", "airport": { "code": "AVL", "lat": 35.4362, "lng": -82.5418 }, "utcOffset": -5, "centerLat": 35.595, "centerLng": -82.556, "tileRadiusKm": 1.5, "publicFlags": ["hilly, winding streets", "some trails still closed after Hurricane Helene"] },
+  "hotels": [
+    { "_id": "AVL-h-west-asheville-guest", "kind": "hotel", "cityId": "AVL", "name": "West Asheville Guesthouse", "neighborhood": "West Asheville", "lat": 35.579, "lng": -82.586, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "AVL-h-montford-bungalow", "kind": "hotel", "cityId": "AVL", "name": "Montford Bungalow", "neighborhood": "Montford", "lat": 35.604, "lng": -82.56, "stayType": "apartment", "nightlyCents": 22000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "AVL-h-chestnut-inn", "kind": "hotel", "cityId": "AVL", "name": "Chestnut Street Inn", "neighborhood": "Chestnut Hill", "lat": 35.6025, "lng": -82.553, "stayType": "guesthouse", "nightlyCents": 26000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "AVL-h-arras", "kind": "hotel", "cityId": "AVL", "name": "Kimpton Hotel Arras (2 queens)", "neighborhood": "Downtown", "lat": 35.5951, "lng": -82.5522, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "AVL-h-grove-park", "kind": "hotel", "cityId": "AVL", "name": "Omni Grove Park Inn (2 queens)", "neighborhood": "Grove Park", "lat": 35.6205, "lng": -82.541, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "AVL-a-biltmore", "kind": "activity", "cityId": "AVL", "name": "Biltmore Estate", "short": "Biltmore", "tags": ["history", "nature"], "lat": 35.5401, "lng": -82.5522, "durationMin": 300, "priceCents": 9500, "startEarliest": "09:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "AVL-a-south-slope", "kind": "activity", "cityId": "AVL", "name": "South Slope brewery crawl", "short": "Brewery crawl", "tags": ["nightlife", "food"], "lat": 35.5905, "lng": -82.553, "durationMin": 180, "priceCents": 3500, "startEarliest": "17:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "AVL-a-jack-of-the-wood", "kind": "activity", "cityId": "AVL", "name": "Bluegrass jam at Jack of the Wood", "short": "Bluegrass jam", "tags": ["music", "nightlife"], "lat": 35.5947, "lng": -82.5545, "durationMin": 120, "priceCents": 1000, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "AVL-a-river-arts", "kind": "activity", "cityId": "AVL", "name": "River Arts District studios", "short": "River Arts District", "tags": ["museums", "chill"], "lat": 35.586, "lng": -82.567, "durationMin": 150, "priceCents": 0, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "AVL-a-botanical", "kind": "activity", "cityId": "AVL", "name": "Botanical Gardens at Asheville", "short": "Botanical Gardens", "tags": ["nature", "chill"], "lat": 35.613, "lng": -82.5655, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "AVL-a-art-museum", "kind": "activity", "cityId": "AVL", "name": "Asheville Art Museum", "short": "Art Museum", "tags": ["museums"], "lat": 35.595, "lng": -82.551, "durationMin": 90, "priceCents": 2300, "startEarliest": "11:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "AVL-a-nc-arboretum", "kind": "activity", "cityId": "AVL", "name": "North Carolina Arboretum trails", "short": "NC Arboretum", "tags": ["nature"], "lat": 35.4998, "lng": -82.6109, "durationMin": 180, "priceCents": 500, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "AVL-a-early-girl", "kind": "activity", "cityId": "AVL", "name": "Early Girl Eatery brunch", "short": "Early Girl brunch", "tags": ["food"], "lat": 35.5949, "lng": -82.553, "durationMin": 75, "priceCents": 2000, "startEarliest": "08:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "AVL-h-montford-bungalow", "toId": "AVL-a-biltmore", "mode": "taxi", "minutes": 15, "note": "~7 km; no convenient transit" },
+    { "fromId": "AVL-h-montford-bungalow", "toId": "AVL-a-nc-arboretum", "mode": "taxi", "minutes": 20, "note": "~13 km SW" },
+    { "fromId": "AVL-h-grove-park", "toId": "AVL-a-jack-of-the-wood", "mode": "taxi", "minutes": 10, "note": "steep 2.5 km walk" }
+  ],
+  "hilly": ["AVL-h-grove-park", "AVL-h-chestnut-inn", "AVL-a-nc-arboretum"]
+}

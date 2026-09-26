@@ -1,0 +1,24 @@
+{
+  "city": { "_id": "RIC", "name": "Richmond", "country": "United States", "state": "VA", "region": "United States", "airport": { "code": "RIC", "lat": 37.5052, "lng": -77.3197 }, "utcOffset": -5, "centerLat": 37.546, "centerLng": -77.455, "tileRadiusKm": 2.5, "publicFlags": ["hot, humid summers"] },
+  "hotels": [
+    { "_id": "RIC-h-carytown-guest", "kind": "hotel", "cityId": "RIC", "name": "Carytown Guesthouse", "neighborhood": "Carytown", "lat": 37.554, "lng": -77.487, "stayType": "guesthouse", "nightlyCents": 13000, "sleeps": 4, "rating": 4 },
+    { "_id": "RIC-h-linden-row", "kind": "hotel", "cityId": "RIC", "name": "Linden Row Inn", "neighborhood": "Downtown", "lat": 37.5438, "lng": -77.4455, "stayType": "guesthouse", "nightlyCents": 19000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "RIC-h-fan-flat", "kind": "hotel", "cityId": "RIC", "name": "The Fan Rowhouse Apartment", "neighborhood": "The Fan", "lat": 37.551, "lng": -77.46, "stayType": "apartment", "nightlyCents": 20000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "RIC-h-quirk", "kind": "hotel", "cityId": "RIC", "name": "Quirk Hotel (2 queens)", "neighborhood": "Arts District", "lat": 37.5448, "lng": -77.4412, "stayType": "hotel", "nightlyCents": 28000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "RIC-h-jefferson", "kind": "hotel", "cityId": "RIC", "name": "The Jefferson Hotel (2 queens)", "neighborhood": "Downtown", "lat": 37.546, "lng": -77.448, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "RIC-a-vmfa", "kind": "activity", "cityId": "RIC", "name": "Virginia Museum of Fine Arts", "short": "VMFA", "tags": ["museums"], "lat": 37.5566, "lng": -77.4745, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "RIC-a-scotts-addition", "kind": "activity", "cityId": "RIC", "name": "Scott's Addition brewery crawl", "short": "Scott's Addition", "tags": ["nightlife", "food"], "lat": 37.569, "lng": -77.471, "durationMin": 180, "priceCents": 3500, "startEarliest": "17:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "RIC-a-belle-isle", "kind": "activity", "cityId": "RIC", "name": "Belle Isle & James River rapids", "short": "Belle Isle", "tags": ["nature", "chill"], "lat": 37.531, "lng": -77.452, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "RIC-a-hollywood-cemetery", "kind": "activity", "cityId": "RIC", "name": "Hollywood Cemetery", "short": "Hollywood Cemetery", "tags": ["history", "nature"], "lat": 37.536, "lng": -77.456, "durationMin": 90, "priceCents": 0, "startEarliest": "08:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "RIC-a-civil-war-museum", "kind": "activity", "cityId": "RIC", "name": "American Civil War Museum, Tredegar", "short": "Civil War Museum", "tags": ["history", "museums"], "lat": 37.5352, "lng": -77.4455, "durationMin": 120, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "RIC-a-carytown", "kind": "activity", "cityId": "RIC", "name": "Carytown lunch & shops", "short": "Carytown", "tags": ["food", "chill"], "lat": 37.553, "lng": -77.488, "durationMin": 120, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "RIC-a-the-national", "kind": "activity", "cityId": "RIC", "name": "Live show at The National", "short": "The National show", "tags": ["music", "nightlife"], "lat": 37.5418, "lng": -77.4378, "durationMin": 180, "priceCents": 3500, "startEarliest": "19:30", "startLatest": "20:30", "role": "pick" },
+    { "_id": "RIC-a-st-johns", "kind": "activity", "cityId": "RIC", "name": "St. John's Church, Church Hill", "short": "St. John's Church", "tags": ["history"], "lat": 37.5313, "lng": -77.4185, "durationMin": 60, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "RIC-h-carytown-guest", "toId": "RIC-a-st-johns", "mode": "taxi", "minutes": 15, "note": "across town to Church Hill" }
+  ],
+  "hilly": ["RIC-a-hollywood-cemetery", "RIC-a-st-johns"]
+}

@@ -76,7 +76,7 @@ export abstract class HelmCore {
   abstract trip(tripId: string): TripRec;
   abstract tripByCode(code: string): TripRec;
   /** The shared snapshot to the trip room (replay.ts builds it). */
-  abstract broadcastState(t: TripRec): void;
+  abstract broadcastState(t: TripRec, full?: boolean): void;
 
   attachBus(bus: Bus) { this.bus = bus; }
   /** TR4-001: a removed member's sockets leave their member room. */

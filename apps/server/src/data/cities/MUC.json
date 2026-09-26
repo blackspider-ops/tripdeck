@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "MUC", "name": "Munich", "country": "Germany", "region": "Europe", "airport": {"code": "MUC", "lat": 48.3538, "lng": 11.7861}, "utcOffset": 1, "centerLat": 48.139, "centerLng": 11.575, "tileRadiusKm": 2, "publicFlags": ["cold in winter", "most shops closed Sundays"] },
+  "hotels": [
+    { "_id": "MUC-h-hbf-hostel", "kind": "hotel", "cityId": "MUC", "name": "Hauptbahnhof Hostel (3 beds)", "neighborhood": "Ludwigsvorstadt", "lat": 48.1395, "lng": 11.557, "stayType": "hostel", "nightlyCents": 10500, "sleeps": 3, "rating": 4 },
+    { "_id": "MUC-h-schwabing-guest", "kind": "hotel", "cityId": "MUC", "name": "Schwabing Guesthouse", "neighborhood": "Schwabing", "lat": 48.16, "lng": 11.582, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "MUC-h-haidhausen-triple", "kind": "hotel", "cityId": "MUC", "name": "Haidhausen Hotel (triple)", "neighborhood": "Haidhausen", "lat": 48.13, "lng": 11.593, "stayType": "hotel", "nightlyCents": 20000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "MUC-h-glockenbach-flat", "kind": "hotel", "cityId": "MUC", "name": "Glockenbach Apartment", "neighborhood": "Glockenbachviertel", "lat": 48.1305, "lng": 11.57, "stayType": "apartment", "nightlyCents": 22000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "MUC-h-altstadt-triple", "kind": "hotel", "cityId": "MUC", "name": "Altstadt Hotel (triple)", "neighborhood": "Altstadt", "lat": 48.1385, "lng": 11.572, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "MUC-a-hofbrauhaus", "kind": "activity", "cityId": "MUC", "name": "Hofbräuhaus beer hall", "short": "Hofbräuhaus", "tags": ["food", "music", "nightlife"], "lat": 48.1376, "lng": 11.5799, "durationMin": 150, "priceCents": 3500, "startEarliest": "11:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "MUC-a-marienplatz", "kind": "activity", "cityId": "MUC", "name": "Marienplatz & Old Town walk", "short": "Old Town walk", "tags": ["history"], "lat": 48.1372, "lng": 11.5755, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "MUC-a-viktualienmarkt", "kind": "activity", "cityId": "MUC", "name": "Viktualienmarkt food stroll", "short": "Viktualienmarkt", "tags": ["food"], "lat": 48.1351, "lng": 11.5762, "durationMin": 90, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MUC-a-deutsches-museum", "kind": "activity", "cityId": "MUC", "name": "Deutsches Museum", "short": "Deutsches Museum", "tags": ["museums"], "lat": 48.1299, "lng": 11.5834, "durationMin": 180, "priceCents": 2200, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "MUC-a-alte-pinakothek", "kind": "activity", "cityId": "MUC", "name": "Alte Pinakothek", "short": "Alte Pinakothek", "tags": ["museums"], "lat": 48.1483, "lng": 11.57, "durationMin": 120, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MUC-a-english-garden", "kind": "activity", "cityId": "MUC", "name": "English Garden & Eisbach surfers", "short": "English Garden", "tags": ["nature", "chill"], "lat": 48.143, "lng": 11.588, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MUC-a-nymphenburg", "kind": "activity", "cityId": "MUC", "name": "Nymphenburg Palace", "short": "Nymphenburg", "tags": ["history"], "lat": 48.1583, "lng": 11.5033, "durationMin": 150, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MUC-a-dachau", "kind": "activity", "cityId": "MUC", "name": "Dachau Concentration Camp Memorial", "short": "Dachau Memorial", "tags": ["history"], "lat": 48.27, "lng": 11.468, "durationMin": 240, "priceCents": 0, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MUC-h-glockenbach-flat", "toId": "MUC-a-dachau", "mode": "train", "minutes": 50, "note": "S2 to Dachau + bus 726" },
+    { "fromId": "MUC-h-glockenbach-flat", "toId": "MUC-a-nymphenburg", "mode": "transit", "minutes": 30, "note": "tram 17 to Schloss Nymphenburg" }
+  ],
+  "hilly": []
+}

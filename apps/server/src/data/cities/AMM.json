@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "AMM", "name": "Amman", "country": "Jordan", "region": "Middle East", "airport": { "code": "AMM", "lat": 31.7226, "lng": 35.9932 }, "utcOffset": 3, "centerLat": 31.953, "centerLng": 35.925, "tileRadiusKm": 2, "publicFlags": ["hilly city with many stairs", "chilly evenings in March"] },
+  "hotels": [
+    { "_id": "AMM-h-downtown-hostel", "kind": "hotel", "cityId": "AMM", "name": "Downtown Hostel (3 beds)", "neighborhood": "Downtown (Al-Balad)", "lat": 31.9515, "lng": 35.9325, "stayType": "hostel", "nightlyCents": 3600, "sleeps": 3, "rating": 4.1 },
+    { "_id": "AMM-h-rainbow-guest", "kind": "hotel", "cityId": "AMM", "name": "Rainbow Street Guesthouse", "neighborhood": "Jabal Amman", "lat": 31.9505, "lng": 35.9215, "stayType": "guesthouse", "nightlyCents": 8000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "AMM-h-weibdeh-flat", "kind": "hotel", "cityId": "AMM", "name": "Jabal al-Weibdeh Apartment", "neighborhood": "Jabal al-Weibdeh", "lat": 31.959, "lng": 35.9235, "stayType": "apartment", "nightlyCents": 9000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "AMM-h-jabal-amman-triple", "kind": "hotel", "cityId": "AMM", "name": "Jabal Amman Hotel (triple)", "neighborhood": "Jabal Amman", "lat": 31.95, "lng": 35.915, "stayType": "hotel", "nightlyCents": 14000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "AMM-h-abdali-triple", "kind": "hotel", "cityId": "AMM", "name": "Abdali Boulevard Hotel (triple)", "neighborhood": "Abdali", "lat": 31.9625, "lng": 35.911, "stayType": "hotel", "nightlyCents": 23000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "AMM-a-citadel", "kind": "activity", "cityId": "AMM", "name": "Amman Citadel", "short": "Citadel", "tags": ["history"], "lat": 31.954, "lng": 35.9345, "durationMin": 120, "priceCents": 500, "startEarliest": "08:30", "startLatest": "16:00", "role": "group" },
+    { "_id": "AMM-a-petra", "kind": "activity", "cityId": "AMM", "name": "Petra day trip", "short": "Petra", "tags": ["history", "nature"], "lat": 30.3285, "lng": 35.4444, "durationMin": 720, "priceCents": 12000, "startEarliest": "06:00", "startLatest": "06:30", "earlyStart": true, "role": "group" },
+    { "_id": "AMM-a-downtown-food", "kind": "activity", "cityId": "AMM", "name": "Downtown food walk (falafel & kunafa)", "short": "Downtown food walk", "tags": ["food"], "lat": 31.9525, "lng": 35.9335, "durationMin": 180, "priceCents": 3500, "startEarliest": "10:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "AMM-a-roman-theatre", "kind": "activity", "cityId": "AMM", "name": "Roman Theatre", "short": "Roman Theatre", "tags": ["history"], "lat": 31.9515, "lng": 35.9395, "durationMin": 90, "priceCents": 300, "startEarliest": "08:30", "startLatest": "16:00", "role": "pick" },
+    { "_id": "AMM-a-jordan-museum", "kind": "activity", "cityId": "AMM", "name": "Jordan Museum (Dead Sea Scrolls)", "short": "Jordan Museum", "tags": ["museums", "history"], "lat": 31.9465, "lng": 35.9285, "durationMin": 120, "priceCents": 700, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "AMM-a-jerash", "kind": "activity", "cityId": "AMM", "name": "Jerash Roman city", "short": "Jerash", "tags": ["history"], "lat": 32.2805, "lng": 35.891, "durationMin": 300, "priceCents": 1800, "startEarliest": "08:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "AMM-a-dead-sea", "kind": "activity", "cityId": "AMM", "name": "Dead Sea float (Amman Beach)", "short": "Dead Sea float", "tags": ["beach", "chill", "nature"], "lat": 31.7155, "lng": 35.5875, "durationMin": 360, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "AMM-a-rainbow-night", "kind": "activity", "cityId": "AMM", "name": "Rainbow Street cafés & rooftops", "short": "Rainbow St evening", "tags": ["nightlife", "chill"], "lat": 31.9505, "lng": 35.922, "durationMin": 150, "priceCents": 1500, "startEarliest": "19:00", "startLatest": "22:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "AMM-h-weibdeh-flat", "toId": "AMM-a-petra", "mode": "taxi", "minutes": 195, "note": "about 3 h each way on the Desert Highway (JETT bus or private driver)" },
+    { "fromId": "AMM-h-weibdeh-flat", "toId": "AMM-a-jerash", "mode": "taxi", "minutes": 50 },
+    { "fromId": "AMM-h-weibdeh-flat", "toId": "AMM-a-dead-sea", "mode": "taxi", "minutes": 60, "note": "downhill to 400 m below sea level" },
+    { "fromId": "AMM-h-weibdeh-flat", "toId": "AMM-a-citadel", "mode": "walk", "minutes": 20, "note": "steep stairs" }
+  ],
+  "hilly": ["AMM-a-citadel", "AMM-h-weibdeh-flat", "AMM-h-rainbow-guest", "AMM-h-jabal-amman-triple"]
+}

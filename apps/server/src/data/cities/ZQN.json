@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "ZQN", "name": "Queenstown", "country": "New Zealand", "region": "Oceania", "airport": { "code": "ZQN", "lat": -45.0211, "lng": 168.7392 }, "utcOffset": 12, "centerLat": -45.032, "centerLng": 168.66, "tileRadiusKm": 1.5, "publicFlags": ["long flight from the US + connection via Auckland", "winter in Jun–Aug (ski season)"] },
+  "hotels": [
+    { "_id": "ZQN-h-lakefront-hostel", "kind": "hotel", "cityId": "ZQN", "name": "Lakefront Hostel (3 beds)", "neighborhood": "Town Centre", "lat": -45.034, "lng": 168.656, "stayType": "hostel", "nightlyCents": 11000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "ZQN-h-arthurs-point-guest", "kind": "hotel", "cityId": "ZQN", "name": "Arthurs Point Guesthouse", "neighborhood": "Arthurs Point", "lat": -44.992, "lng": 168.676, "stayType": "guesthouse", "nightlyCents": 20000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ZQN-h-fernhill-flat", "kind": "hotel", "cityId": "ZQN", "name": "Fernhill Apartment", "neighborhood": "Fernhill", "lat": -45.04, "lng": 168.642, "stayType": "apartment", "nightlyCents": 28000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "ZQN-h-town-triple", "kind": "hotel", "cityId": "ZQN", "name": "Town Centre Hotel (triple)", "neighborhood": "Town Centre", "lat": -45.032, "lng": 168.661, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "ZQN-h-lakeside-triple", "kind": "hotel", "cityId": "ZQN", "name": "Lakeside Hotel (triple)", "neighborhood": "Frankton Road", "lat": -45.038, "lng": 168.674, "stayType": "hotel", "nightlyCents": 48000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "ZQN-a-skyline", "kind": "activity", "cityId": "ZQN", "name": "Skyline gondola & luge", "short": "Gondola & luge", "tags": ["nature", "chill"], "lat": -45.031, "lng": 168.657, "durationMin": 150, "priceCents": 6000, "startEarliest": "09:30", "startLatest": "20:00", "role": "group" },
+    { "_id": "ZQN-a-fergburger", "kind": "activity", "cityId": "ZQN", "name": "Fergburger & lakefront", "short": "Fergburger", "tags": ["food"], "lat": -45.0318, "lng": 168.6588, "durationMin": 60, "priceCents": 2000, "startEarliest": "08:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "ZQN-a-bars", "kind": "activity", "cityId": "ZQN", "name": "Queenstown bar night", "short": "Bar night", "tags": ["nightlife", "music"], "lat": -45.0315, "lng": 168.661, "durationMin": 180, "priceCents": 3500, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "ZQN-a-shotover-jet", "kind": "activity", "cityId": "ZQN", "name": "Shotover Jet boat", "short": "Shotover Jet", "tags": ["nature"], "lat": -44.9895, "lng": 168.6813, "durationMin": 60, "priceCents": 11000, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "ZQN-a-arrowtown", "kind": "activity", "cityId": "ZQN", "name": "Arrowtown & Lakes District Museum", "short": "Arrowtown", "tags": ["history", "museums"], "lat": -44.942, "lng": 168.834, "durationMin": 240, "priceCents": 1200, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "ZQN-a-onsen", "kind": "activity", "cityId": "ZQN", "name": "Onsen Hot Pools", "short": "Onsen Hot Pools", "tags": ["chill"], "lat": -44.996, "lng": 168.678, "durationMin": 60, "priceCents": 7000, "startEarliest": "10:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "ZQN-a-gibbston", "kind": "activity", "cityId": "ZQN", "name": "Gibbston Valley wine tasting", "short": "Gibbston wine", "tags": ["food"], "lat": -45.0198, "lng": 168.9628, "durationMin": 180, "priceCents": 5000, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ZQN-a-ben-lomond", "kind": "activity", "cityId": "ZQN", "name": "Tiki Trail & Ben Lomond hike", "short": "Ben Lomond hike", "tags": ["nature"], "lat": -45.029, "lng": 168.654, "durationMin": 360, "priceCents": 0, "startEarliest": "08:00", "startLatest": "10:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ZQN-h-fernhill-flat", "toId": "ZQN-a-arrowtown", "mode": "taxi", "minutes": 25, "note": "~20 km via Frankton" },
+    { "fromId": "ZQN-h-fernhill-flat", "toId": "ZQN-a-gibbston", "mode": "taxi", "minutes": 30, "note": "~25 km through Kawarau Gorge" },
+    { "fromId": "ZQN-h-fernhill-flat", "toId": "ZQN-a-shotover-jet", "mode": "taxi", "minutes": 15, "note": "up to Arthurs Point" },
+    { "fromId": "ZQN-h-fernhill-flat", "toId": "ZQN-a-onsen", "mode": "taxi", "minutes": 15, "note": "up to Arthurs Point" }
+  ],
+  "hilly": ["ZQN-h-fernhill-flat", "ZQN-a-skyline", "ZQN-a-ben-lomond"]
+}

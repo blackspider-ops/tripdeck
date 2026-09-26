@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "RAP", "name": "Rapid City", "country": "United States", "state": "SD", "region": "United States", "airport": { "code": "RAP", "lat": 44.0453, "lng": -103.0574 }, "utcOffset": -7, "centerLat": 44.08, "centerLng": -103.23, "tileRadiusKm": 2, "publicFlags": ["Mount Rushmore & state parks are 30–50 km away by car", "no public transit to the Black Hills sights"] },
+  "hotels": [
+    { "_id": "RAP-h-motor-inn", "kind": "hotel", "cityId": "RAP", "name": "Rapid City Motor Inn (2 queens)", "neighborhood": "North Rapid", "lat": 44.1, "lng": -103.22, "stayType": "guesthouse", "nightlyCents": 8500, "sleeps": 4, "rating": 3.8 },
+    { "_id": "RAP-h-west-blvd-guest", "kind": "hotel", "cityId": "RAP", "name": "West Boulevard Guesthouse", "neighborhood": "West Boulevard", "lat": 44.0775, "lng": -103.238, "stayType": "guesthouse", "nightlyCents": 12500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "RAP-h-downtown-flat", "kind": "hotel", "cityId": "RAP", "name": "Downtown Rapid City Apartment", "neighborhood": "Downtown", "lat": 44.079, "lng": -103.227, "stayType": "apartment", "nightlyCents": 15000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "RAP-h-rushmore-plaza", "kind": "hotel", "cityId": "RAP", "name": "Holiday Inn Rushmore Plaza (2 queens)", "neighborhood": "Downtown", "lat": 44.0842, "lng": -103.229, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 4, "rating": 4.2 },
+    { "_id": "RAP-h-alex-johnson", "kind": "hotel", "cityId": "RAP", "name": "Hotel Alex Johnson (2 queens)", "neighborhood": "Downtown", "lat": 44.081, "lng": -103.2305, "stayType": "hotel", "nightlyCents": 19500, "sleeps": 4, "rating": 4.3 }
+  ],
+  "activities": [
+    { "_id": "RAP-a-rushmore", "kind": "activity", "cityId": "RAP", "name": "Mount Rushmore & Presidential Trail", "short": "Mount Rushmore", "tags": ["history", "nature"], "lat": 43.8791, "lng": -103.4591, "durationMin": 180, "priceCents": 1000, "startEarliest": "08:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "RAP-a-main-street", "kind": "activity", "cityId": "RAP", "name": "City of Presidents & Main Street Square", "short": "City of Presidents", "tags": ["history", "chill"], "lat": 44.0812, "lng": -103.2308, "durationMin": 60, "priceCents": 0, "startEarliest": "10:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "RAP-a-firehouse", "kind": "activity", "cityId": "RAP", "name": "Firehouse Brewing Co. dinner", "short": "Firehouse Brewing", "tags": ["food", "nightlife"], "lat": 44.081, "lng": -103.2296, "durationMin": 90, "priceCents": 2500, "startEarliest": "17:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "RAP-a-custer", "kind": "activity", "cityId": "RAP", "name": "Custer State Park: Sylvan Lake & Needles Hwy", "short": "Custer State Park", "tags": ["nature"], "lat": 43.8457, "lng": -103.5594, "durationMin": 360, "priceCents": 1000, "startEarliest": "08:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "RAP-a-crazy-horse", "kind": "activity", "cityId": "RAP", "name": "Crazy Horse Memorial", "short": "Crazy Horse", "tags": ["history", "museums"], "lat": 43.8367, "lng": -103.6236, "durationMin": 120, "priceCents": 1500, "startEarliest": "08:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "RAP-a-reptile-gardens", "kind": "activity", "cityId": "RAP", "name": "Reptile Gardens", "short": "Reptile Gardens", "tags": ["nature"], "lat": 43.998, "lng": -103.2776, "durationMin": 150, "priceCents": 2800, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "RAP-a-journey-museum", "kind": "activity", "cityId": "RAP", "name": "The Journey Museum", "short": "Journey Museum", "tags": ["museums", "history"], "lat": 44.0845, "lng": -103.224, "durationMin": 90, "priceCents": 1400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "RAP-a-dinosaur-park", "kind": "activity", "cityId": "RAP", "name": "Dinosaur Park hilltop", "short": "Dinosaur Park", "tags": ["chill", "nature"], "lat": 44.0795, "lng": -103.2525, "durationMin": 45, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "RAP-h-alex-johnson", "toId": "RAP-a-rushmore", "mode": "taxi", "minutes": 35, "note": "US-16 via Keystone; drive or tour" },
+    { "fromId": "RAP-h-alex-johnson", "toId": "RAP-a-custer", "mode": "taxi", "minutes": 50, "note": "Needles Hwy closed in winter" },
+    { "fromId": "RAP-h-alex-johnson", "toId": "RAP-a-crazy-horse", "mode": "taxi", "minutes": 45, "note": "US-16 south" },
+    { "fromId": "RAP-h-alex-johnson", "toId": "RAP-a-reptile-gardens", "mode": "taxi", "minutes": 15 }
+  ],
+  "hilly": ["RAP-a-custer", "RAP-a-dinosaur-park", "RAP-a-rushmore"]
+}

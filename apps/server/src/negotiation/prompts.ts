@@ -43,8 +43,11 @@ const parsedHail = (hail?: HailNote) => (hail ? { wants: hail.tags, cheaper: hai
  * Facts for this member's own Advocate. Untrusted text (name, note, memory) is sanitised and amount-free; a hail
  * reaches the model only as its parsed wishes, never as raw text (SEC-023).
  */
-export function advocateFacts(ds: Dataset, c: PricingMember, d: Decision, p: Plan, watch: number, memory: string[], hail?: HailNote) {
+export function advocateFacts(
+  ds: Dataset, c: PricingMember, d: Decision, p: Plan, watch: number, memory: string[], hail?: HailNote, placeName: (entry: string) => string = (x) => x,
+) {
   const mine = view(p, c.memberId);
+  const places = (xs?: string[]) => (xs?.length ? xs.map(placeName) : undefined);
   return {
     // S2-002: no home airport — said aloud, it pins the member's flight price (and with it their share)
     you_represent: { name: promptName(c.name), role: c.role },
@@ -52,6 +55,8 @@ export function advocateFacts(ds: Dataset, c: PricingMember, d: Decision, p: Pla
       must_haves: c.brief.mustHaves, dealbreakers: c.brief.dealbreakers,
       // TR4-006: the private note, for this member's own Advocate only — paraphrase, never quote
       private_note: noteForPrompt(c.brief.note),
+      // the member's own "places I'd love / skip" (names only; absent when none, so older prompts are unchanged)
+      places_loved: places(c.brief.loves), places_skipped: places(c.brief.skips),
     },
     memory: memoryForPrompt(memory),
     watch_of_3: watch,
@@ -82,9 +87,10 @@ export function captainLineRequest(instruction: string, maxWords: number, noAmou
 }
 
 /** Captain OPEN: the dates everyone can do (or that there are none) and the ports. */
-export function openInstruction(datesLabel: string | null, cities: string[]): string {
+export function openInstruction(datesLabel: string | null, cities: string[], scope?: string): string {
   const dates = datesLabel ? `Dates everyone can do: ${datesLabel}.` : "No dates suit everyone; say the charts hold the closest.";
-  return `Open the meeting. ${dates} Ports on the chart: ${cities.join(", ")}. Invite proposals.`;
+  const asked = scope ? ` The crew asked for ${scope}; say so, then name the ports.` : "";
+  return `Open the meeting. ${dates}${asked} Ports on the chart: ${cities.join(", ")}. Invite proposals.`;
 }
 
 /**

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "CTG", "name": "Cartagena", "country": "Colombia", "region": "Latin America", "airport": { "code": "CTG", "lat": 10.4424, "lng": -75.513 }, "utcOffset": -5, "centerLat": 10.418, "centerLng": -75.549, "tileRadiusKm": 2.5, "publicFlags": ["very hot and humid year-round"] },
+  "hotels": [
+    { "_id": "CTG-h-getsemani-hostel", "kind": "hotel", "cityId": "CTG", "name": "Getsemaní Hostel (3 beds)", "neighborhood": "Getsemaní", "lat": 10.421, "lng": -75.5465, "stayType": "hostel", "nightlyCents": 7500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "CTG-h-getsemani-guest", "kind": "hotel", "cityId": "CTG", "name": "Casa Getsemaní", "neighborhood": "Getsemaní", "lat": 10.42, "lng": -75.5448, "stayType": "guesthouse", "nightlyCents": 11000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "CTG-h-bocagrande-triple", "kind": "hotel", "cityId": "CTG", "name": "Bocagrande Beach Hotel (triple)", "neighborhood": "Bocagrande", "lat": 10.3995, "lng": -75.5555, "stayType": "hotel", "nightlyCents": 14500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "CTG-h-walled-apt", "kind": "hotel", "cityId": "CTG", "name": "Walled City Apartment", "neighborhood": "Centro Histórico", "lat": 10.4245, "lng": -75.5505, "stayType": "apartment", "nightlyCents": 18000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "CTG-h-san-diego-triple", "kind": "hotel", "cityId": "CTG", "name": "San Diego Boutique (triple)", "neighborhood": "San Diego", "lat": 10.4275, "lng": -75.5475, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "CTG-a-castillo", "kind": "activity", "cityId": "CTG", "name": "Castillo San Felipe de Barajas", "short": "San Felipe fortress", "tags": ["history"], "lat": 10.4225, "lng": -75.539, "durationMin": 120, "priceCents": 900, "startEarliest": "08:00", "startLatest": "15:30", "role": "group" },
+    { "_id": "CTG-a-rosario", "kind": "activity", "cityId": "CTG", "name": "Rosario Islands boat day", "short": "Rosario Islands", "tags": ["beach", "chill"], "lat": 10.179, "lng": -75.744, "durationMin": 480, "priceCents": 7000, "startEarliest": "08:00", "startLatest": "09:00", "role": "group" },
+    { "_id": "CTG-a-cafe-havana", "kind": "activity", "cityId": "CTG", "name": "Salsa night at Café Havana", "short": "Café Havana salsa", "tags": ["music", "nightlife"], "lat": 10.4208, "lng": -75.5463, "durationMin": 180, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "23:00", "role": "group" },
+    { "_id": "CTG-a-street-food", "kind": "activity", "cityId": "CTG", "name": "Walled city street food & fruit walk", "short": "Street food walk", "tags": ["food"], "lat": 10.4235, "lng": -75.55, "durationMin": 180, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "CTG-a-museo-oro", "kind": "activity", "cityId": "CTG", "name": "Museo del Oro Zenú", "short": "Gold Museum", "tags": ["museums", "history"], "lat": 10.4231, "lng": -75.551, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CTG-a-totumo", "kind": "activity", "cityId": "CTG", "name": "El Totumo mud volcano", "short": "Mud volcano", "tags": ["nature", "chill"], "lat": 10.744, "lng": -75.2415, "durationMin": 360, "priceCents": 5000, "startEarliest": "08:00", "startLatest": "09:00", "role": "pick" },
+    { "_id": "CTG-a-cafe-del-mar", "kind": "activity", "cityId": "CTG", "name": "Sunset drinks on the walls (Café del Mar)", "short": "Sunset on the walls", "tags": ["chill"], "lat": 10.4262, "lng": -75.5525, "durationMin": 120, "priceCents": 2500, "startEarliest": "17:00", "startLatest": "17:45", "role": "pick" },
+    { "_id": "CTG-a-street-art", "kind": "activity", "cityId": "CTG", "name": "Getsemaní street art walk", "short": "Street art walk", "tags": ["history"], "lat": 10.4213, "lng": -75.5452, "durationMin": 120, "priceCents": 1500, "startEarliest": "16:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CTG-h-walled-apt", "toId": "CTG-a-rosario", "mode": "transit", "minutes": 75, "note": "walk to Muelle La Bodeguita + speedboat" },
+    { "fromId": "CTG-h-walled-apt", "toId": "CTG-a-totumo", "mode": "taxi", "minutes": 75, "note": "tour van up the coast road" },
+    { "fromId": "CTG-h-walled-apt", "toId": "CTG-a-castillo", "mode": "walk", "minutes": 25, "note": "across Getsemaní in the heat" }
+  ],
+  "hilly": []
+}

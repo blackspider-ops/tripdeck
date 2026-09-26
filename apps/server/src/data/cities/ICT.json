@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "ICT", "name": "Wichita", "country": "United States", "state": "KS", "region": "United States", "airport": { "code": "ICT", "lat": 37.6499, "lng": -97.4331 }, "utcOffset": -6, "centerLat": 37.69, "centerLng": -97.34, "tileRadiusKm": 2.5, "publicFlags": ["car-dependent, spread-out city", "windy, with a spring storm season"] },
+  "hotels": [
+    { "_id": "ICT-h-college-hill-guest", "kind": "hotel", "cityId": "ICT", "name": "College Hill Guest Room", "neighborhood": "College Hill", "lat": 37.688, "lng": -97.298, "stayType": "guesthouse", "nightlyCents": 9500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "ICT-h-delano-flat", "kind": "hotel", "cityId": "ICT", "name": "Delano District Apartment", "neighborhood": "Delano", "lat": 37.686, "lng": -97.3565, "stayType": "apartment", "nightlyCents": 14000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "ICT-h-hotel-old-town", "kind": "hotel", "cityId": "ICT", "name": "Hotel at Old Town (suite)", "neighborhood": "Old Town", "lat": 37.6897, "lng": -97.3303, "stayType": "hotel", "nightlyCents": 18000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "ICT-h-castle-inn", "kind": "hotel", "cityId": "ICT", "name": "Castle Inn Riverside", "neighborhood": "Riverside", "lat": 37.7052, "lng": -97.3552, "stayType": "guesthouse", "nightlyCents": 19500, "sleeps": 3, "rating": 4.7 },
+    { "_id": "ICT-h-ambassador", "kind": "hotel", "cityId": "ICT", "name": "Ambassador Hotel Wichita (2 queens)", "neighborhood": "Downtown", "lat": 37.6862, "lng": -97.3365, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "ICT-a-keeper", "kind": "activity", "cityId": "ICT", "name": "Keeper of the Plains & All-Indian Museum", "short": "Keeper of the Plains", "tags": ["history", "museums"], "lat": 37.6927, "lng": -97.3499, "durationMin": 90, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "ICT-a-old-town-bars", "kind": "activity", "cityId": "ICT", "name": "Old Town dinner & bars", "short": "Old Town night", "tags": ["nightlife", "food"], "lat": 37.689, "lng": -97.331, "durationMin": 180, "priceCents": 3000, "startEarliest": "19:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "ICT-a-wave", "kind": "activity", "cityId": "ICT", "name": "Live show at WAVE", "short": "WAVE live show", "tags": ["music", "nightlife"], "lat": 37.6904, "lng": -97.3286, "durationMin": 150, "priceCents": 2500, "startEarliest": "19:30", "startLatest": "21:00", "role": "group" },
+    { "_id": "ICT-a-botanica", "kind": "activity", "cityId": "ICT", "name": "Botanica Wichita gardens", "short": "Botanica", "tags": ["nature", "chill"], "lat": 37.6962, "lng": -97.3598, "durationMin": 120, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ICT-a-art-museum", "kind": "activity", "cityId": "ICT", "name": "Wichita Art Museum", "short": "Art Museum", "tags": ["museums"], "lat": 37.6969, "lng": -97.3575, "durationMin": 90, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ICT-a-exploration-place", "kind": "activity", "cityId": "ICT", "name": "Exploration Place", "short": "Exploration Place", "tags": ["museums"], "lat": 37.6893, "lng": -97.345, "durationMin": 150, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ICT-a-zoo", "kind": "activity", "cityId": "ICT", "name": "Sedgwick County Zoo", "short": "Zoo", "tags": ["nature"], "lat": 37.7187, "lng": -97.4065, "durationMin": 180, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "ICT-a-doo-dah", "kind": "activity", "cityId": "ICT", "name": "Brunch at Doo-Dah Diner", "short": "Doo-Dah Diner", "tags": ["food"], "lat": 37.6777, "lng": -97.3339, "durationMin": 60, "priceCents": 2000, "startEarliest": "08:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ICT-h-ambassador", "toId": "ICT-a-zoo", "mode": "taxi", "minutes": 15 },
+    { "fromId": "ICT-h-college-hill-guest", "toId": "ICT-a-zoo", "mode": "taxi", "minutes": 20 }
+  ],
+  "hilly": []
+}

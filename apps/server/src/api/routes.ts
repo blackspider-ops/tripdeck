@@ -11,11 +11,12 @@
  *   debug      debug.ts
  */
 import express, { type NextFunction, type Request, type Response, type Router } from "express";
-import { HAIL_MAX_CHARS, NOTE_MAX_CHARS, type Band, type CityId, type Origin } from "@all-ayes/shared";
+import { AIRPORTS, HAIL_MAX_CHARS, NOTE_MAX_CHARS, REGIONS, type Band, type CityId, type Destination, type Origin } from "@all-ayes/shared";
 import type { TripService } from "../trips/service.js";
 import { SPEND_PRIORITY_PHASES, VOICE_PHASES } from "../trips/records.js";
 import { audioFile, transcribe } from "../voice/voice.js";
-import { seedExpo } from "../demo/seed.js";
+import { seedExpo, seedRandom } from "../demo/seed.js";
+import { upcomingWindows } from "../trips/course.js";
 import { memoryHealth } from "../memory/memory.js";
 import { config, features } from "../config.js";
 import { dbConnected, dbHealth } from "../store/db.js";
@@ -25,8 +26,10 @@ import {
 } from "../util/limits.js";
 import { withTimeout } from "../util/timeout.js";
 import { devAllowed } from "./devAccess.js";
+import { routestackStatus } from "../providers/routestack/index.js";
 import { mountDebugRoutes } from "./debug.js";
 import { issuePasskeyClaim, mountPasskeyRoutes } from "./passkeyRoutes.js";
+import { worldRouter } from "./worldRoutes.js";
 import { asyncRoute, bearer, bearerMember, ipOf, jsonBody, param } from "./http.js";
 
 /** R2-WP-11 (S2-006): the IPv6 /48 of an address keyed on its /64 (`2001:db8:1:2::/64` → `2001:db8:1::/48`). */
@@ -88,6 +91,8 @@ export function apiRouter(helm: TripService) {
   mountPasskeyRoutes(r, helm); // PRD E2
   mountMiscRoutes(r, helm);
   mountDebugRoutes(r, helm);
+  // docs/11: search any city (curated first, then OpenStreetMap) and build a generated port's pack
+  r.use("/world", worldRouter(helm));
   // TR3-006: an unknown /api route is a JSON 404 (the router's last handler), never the SPA's HTML or "Cannot GET"
   r.use((_req, res) => void res.status(404).json({ code: "NOT_FOUND", message: "No such route." }));
   r.use(errorToJson);
@@ -129,10 +134,15 @@ function mountTripRoutes(r: Router, helm: TripService, lim: Limiters) {
 
   r.post("/trips", asyncRoute((req, res) => {
     limitCreate(req);
-    const b = jsonBody(req) as { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; crewKey?: string };
+    const b = jsonBody(req) as {
+      name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; destination?: Destination; windowIds?: string[]; crewKey?: string;
+    };
+    // the course is validated by the helm (trips/course.ts): named ports, regions / states or anywhere, 1–3 windows
     const { trip, member, token, crewKey } = helm.createTrip({
       name: b.name, organizerName: b.organizerName, band: Number(b.band) as Band, origin: b.origin,
-      cityIds: Array.isArray(b.cityIds) ? b.cityIds : undefined, crewKey: b.crewKey,
+      cityIds: Array.isArray(b.cityIds) ? b.cityIds : undefined,
+      destination: b.destination && typeof b.destination === "object" ? b.destination : undefined,
+      windowIds: Array.isArray(b.windowIds) ? b.windowIds : undefined, crewKey: b.crewKey,
     });
     issuePasskeyClaim(req, res, trip._id, member._id); // S2-009: only this phone may add the seat's passkey
     // crewKey: the phone's private memory identity (SEC-003), echoed or freshly minted; the phone keeps it
@@ -285,13 +295,34 @@ function mountMiscRoutes(r: Router, helm: TripService) {
     });
   });
 
+  // docs/09: a random voyage by default (?kind=random, optional &seed=<n> to replay one); ?kind=expo is the scripted
+  // Lisbon crew the tests and the pitch use
   r.post("/demo/seed", asyncRoute(async (req, res) => {
     if (!devAllowed(req)) throw new HelmError("FORBIDDEN", "Demo seeding is disabled here.");
-    res.json(await seedExpo(helm));
+    const kind = String(req.query.kind ?? "random");
+    if (kind !== "random" && kind !== "expo") throw new HelmError("BAD_INPUT", "kind is random or expo.");
+    const seed = Number(req.query.seed);
+    res.json(kind === "expo" ? await seedExpo(helm) : await seedRandom(helm, Number.isInteger(seed) && seed >= 0 ? seed : undefined));
   }));
 
   r.get("/cities", (_req, res) => {
-    res.json(helm.ds.cities.map((c) => ({ cityId: c._id, name: c.name, notes: c.publicFlags })));
+    res.json(helm.ds.cities.map((c) => ({
+      cityId: c._id, name: c.name, notes: c.publicFlags, country: c.country, region: c.region, state: c.state,
+      lat: c.centerLat, lng: c.centerLng,
+    })));
+  });
+
+  // The Create screen's catalog: every port (grouped by region on the phone), the regions that have ports, the date
+  // windows with the default two, and the home airports
+  r.get("/catalog", (_req, res) => {
+    const regions = REGIONS.filter((reg) => helm.ds.cities.some((c) => c.region === reg || (reg === "United States" && c.state)));
+    res.json({
+      cities: helm.ds.cities.map((c) => ({ cityId: c._id, name: c.name, country: c.country, region: c.region, state: c.state, notes: c.publicFlags })),
+      regions,
+      windows: [...helm.ds.dateWindows].sort((a, b) => a.start.localeCompare(b.start)),
+      defaultWindowIds: upcomingWindows(helm.ds).slice(0, 2).map((w) => w.id),
+      airports: AIRPORTS,
+    });
   });
 
   r.get("/health", (req, res) => {
@@ -307,6 +338,8 @@ function mountMiscRoutes(r: Router, helm: TripService) {
       gemini: features.gemini() ? config.gemini.model : false,
       eleven: features.eleven(),
       backboard: features.backboard(),
+      // RouteStack live inventory configured (docs/12-routestack.md); never the keys
+      routestack: routestackStatus().enabled,
       payments: helm.payments.mode,
       agentDecisions: config.agentDecisions,
       expoMode: config.expoMode,

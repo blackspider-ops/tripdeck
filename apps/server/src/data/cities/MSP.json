@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "MSP", "name": "Minneapolis", "country": "United States", "state": "MN", "region": "United States", "airport": { "code": "MSP", "lat": 44.8848, "lng": -93.2223 }, "utcOffset": -6, "centerLat": 44.975, "centerLng": -93.27, "tileRadiusKm": 3, "publicFlags": ["very cold winters (below −10 °C in January)", "lake beaches swimmable only in summer"] },
+  "hotels": [
+    { "_id": "MSP-h-wales-house", "kind": "hotel", "cityId": "MSP", "name": "Wales House", "neighborhood": "Marcy-Holmes", "lat": 44.98, "lng": -93.233, "stayType": "guesthouse", "nightlyCents": 12000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "MSP-h-loring-flat", "kind": "hotel", "cityId": "MSP", "name": "Loring Park Apartment", "neighborhood": "Loring Park", "lat": 44.9695, "lng": -93.2825, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "MSP-h-moxy-uptown", "kind": "hotel", "cityId": "MSP", "name": "Moxy Minneapolis Uptown (2 queens)", "neighborhood": "Uptown", "lat": 44.9493, "lng": -93.298, "stayType": "hotel", "nightlyCents": 18500, "sleeps": 4, "rating": 4.3 },
+    { "_id": "MSP-h-marquette", "kind": "hotel", "cityId": "MSP", "name": "The Marquette Hotel (2 queens)", "neighborhood": "Downtown", "lat": 44.976, "lng": -93.2723, "stayType": "hotel", "nightlyCents": 25500, "sleeps": 4, "rating": 4.5 },
+    { "_id": "MSP-h-hewing", "kind": "hotel", "cityId": "MSP", "name": "Hewing Hotel (2 queens)", "neighborhood": "North Loop", "lat": 44.9855, "lng": -93.2722, "stayType": "hotel", "nightlyCents": 28500, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "MSP-a-walker", "kind": "activity", "cityId": "MSP", "name": "Walker Art Center & Sculpture Garden", "short": "Walker Art Center", "tags": ["museums"], "lat": 44.9682, "lng": -93.2887, "durationMin": 150, "priceCents": 2000, "startEarliest": "11:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MSP-a-mill-city", "kind": "activity", "cityId": "MSP", "name": "Mill City Museum & Stone Arch Bridge", "short": "Mill City Museum", "tags": ["history", "museums"], "lat": 44.9787, "lng": -93.257, "durationMin": 120, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MSP-a-first-ave", "kind": "activity", "cityId": "MSP", "name": "Concert at First Avenue", "short": "First Avenue show", "tags": ["music", "nightlife"], "lat": 44.9785, "lng": -93.2762, "durationMin": 180, "priceCents": 3500, "startEarliest": "19:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "MSP-a-minnehaha", "kind": "activity", "cityId": "MSP", "name": "Minnehaha Falls", "short": "Minnehaha Falls", "tags": ["nature"], "lat": 44.9153, "lng": -93.211, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MSP-a-midtown-market", "kind": "activity", "cityId": "MSP", "name": "Midtown Global Market", "short": "Global Market", "tags": ["food"], "lat": 44.9485, "lng": -93.2606, "durationMin": 75, "priceCents": 2000, "startEarliest": "11:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "MSP-a-bde-maka-ska", "kind": "activity", "cityId": "MSP", "name": "Bde Maka Ska beach & lake loop", "short": "Bde Maka Ska", "tags": ["beach", "chill", "nature"], "lat": 44.942, "lng": -93.312, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "MSP-a-mia", "kind": "activity", "cityId": "MSP", "name": "Minneapolis Institute of Art", "short": "Mia", "tags": ["museums"], "lat": 44.9585, "lng": -93.2742, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MSP-a-ne-breweries", "kind": "activity", "cityId": "MSP", "name": "Northeast brewery crawl", "short": "NE brewery crawl", "tags": ["nightlife", "food"], "lat": 44.999, "lng": -93.264, "durationMin": 180, "priceCents": 3000, "startEarliest": "18:00", "startLatest": "21:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MSP-h-hewing", "toId": "MSP-a-minnehaha", "mode": "train", "minutes": 25, "note": "Blue Line light rail" },
+    { "fromId": "MSP-h-marquette", "toId": "MSP-a-minnehaha", "mode": "train", "minutes": 22, "note": "Blue Line light rail" }
+  ],
+  "hilly": []
+}

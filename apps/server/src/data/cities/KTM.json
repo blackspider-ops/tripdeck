@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "KTM", "name": "Kathmandu", "country": "Nepal", "region": "Asia", "airport": { "code": "KTM", "lat": 27.6966, "lng": 85.3591 }, "utcOffset": 5.75, "centerLat": 27.705, "centerLng": 85.315, "tileRadiusKm": 2.5, "publicFlags": ["altitude 1,400 m", "monsoon Jun–Sep; long flight from the US (two stops)"] },
+  "hotels": [
+    { "_id": "KTM-h-thamel-hostel", "kind": "hotel", "cityId": "KTM", "name": "Thamel Hostel (3 beds)", "neighborhood": "Thamel", "lat": 27.715, "lng": 85.311, "stayType": "hostel", "nightlyCents": 2400, "sleeps": 3, "rating": 4.1 },
+    { "_id": "KTM-h-jhamsikhel-flat", "kind": "hotel", "cityId": "KTM", "name": "Jhamsikhel Apartment", "neighborhood": "Jhamsikhel", "lat": 27.6822, "lng": 85.3065, "stayType": "apartment", "nightlyCents": 5500, "sleeps": 4, "rating": 4.3 },
+    { "_id": "KTM-h-patan-guest", "kind": "hotel", "cityId": "KTM", "name": "Patan Heritage Guesthouse", "neighborhood": "Patan", "lat": 27.673, "lng": 85.325, "stayType": "guesthouse", "nightlyCents": 6000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "KTM-h-thamel-triple", "kind": "hotel", "cityId": "KTM", "name": "Thamel Boutique (triple)", "neighborhood": "Thamel", "lat": 27.714, "lng": 85.31, "stayType": "hotel", "nightlyCents": 7500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "KTM-h-lazimpat-triple", "kind": "hotel", "cityId": "KTM", "name": "Lazimpat Hotel (triple)", "neighborhood": "Lazimpat", "lat": 27.723, "lng": 85.32, "stayType": "hotel", "nightlyCents": 16000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "KTM-a-swayambhunath", "kind": "activity", "cityId": "KTM", "name": "Swayambhunath (Monkey Temple)", "short": "Swayambhunath", "tags": ["history", "nature"], "lat": 27.7149, "lng": 85.2904, "durationMin": 120, "priceCents": 300, "startEarliest": "07:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "KTM-a-durbar", "kind": "activity", "cityId": "KTM", "name": "Kathmandu Durbar Square", "short": "Durbar Square", "tags": ["history", "museums"], "lat": 27.7045, "lng": 85.3073, "durationMin": 120, "priceCents": 800, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "KTM-a-momo-walk", "kind": "activity", "cityId": "KTM", "name": "Momo & dal bhat food walk (Asan)", "short": "Momo food walk", "tags": ["food"], "lat": 27.7075, "lng": 85.3113, "durationMin": 150, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "KTM-a-boudha", "kind": "activity", "cityId": "KTM", "name": "Boudhanath stupa at dusk", "short": "Boudhanath stupa", "tags": ["history", "chill"], "lat": 27.7215, "lng": 85.362, "durationMin": 120, "priceCents": 300, "startEarliest": "16:00", "startLatest": "17:30", "role": "pick" },
+    { "_id": "KTM-a-nagarkot", "kind": "activity", "cityId": "KTM", "name": "Nagarkot Himalaya sunrise", "short": "Nagarkot sunrise", "tags": ["nature"], "lat": 27.7153, "lng": 85.5206, "durationMin": 360, "priceCents": 4000, "startEarliest": "04:30", "startLatest": "05:00", "earlyStart": true, "role": "pick" },
+    { "_id": "KTM-a-thamel-music", "kind": "activity", "cityId": "KTM", "name": "Thamel live music bars", "short": "Thamel live music", "tags": ["music", "nightlife"], "lat": 27.7153, "lng": 85.3115, "durationMin": 180, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "KTM-a-patan-museum", "kind": "activity", "cityId": "KTM", "name": "Patan Museum & Durbar Square", "short": "Patan Museum", "tags": ["museums", "history"], "lat": 27.6737, "lng": 85.3252, "durationMin": 120, "priceCents": 800, "startEarliest": "10:30", "startLatest": "16:30", "role": "pick" },
+    { "_id": "KTM-a-garden-dreams", "kind": "activity", "cityId": "KTM", "name": "Garden of Dreams", "short": "Garden of Dreams", "tags": ["chill"], "lat": 27.7137, "lng": 85.315, "durationMin": 90, "priceCents": 300, "startEarliest": "09:00", "startLatest": "19:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "KTM-h-thamel-triple", "toId": "KTM-a-nagarkot", "mode": "taxi", "minutes": 75, "note": "~30 km uphill, winding road" },
+    { "fromId": "KTM-h-thamel-triple", "toId": "KTM-a-boudha", "mode": "taxi", "minutes": 30, "note": "Ring Road traffic" },
+    { "fromId": "KTM-h-thamel-triple", "toId": "KTM-a-patan-museum", "mode": "taxi", "minutes": 30, "note": "across the Bagmati" }
+  ],
+  "hilly": ["KTM-a-swayambhunath", "KTM-a-nagarkot"]
+}

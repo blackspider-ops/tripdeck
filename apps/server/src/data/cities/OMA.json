@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "OMA", "name": "Omaha", "country": "United States", "state": "NE", "region": "United States", "airport": { "code": "OMA", "lat": 41.3032, "lng": -95.8941 }, "utcOffset": -6, "centerLat": 41.257, "centerLng": -95.94, "tileRadiusKm": 3, "publicFlags": ["cold, windy winters", "car-dependent outside downtown"] },
+  "hotels": [
+    { "_id": "OMA-h-benson-guest", "kind": "hotel", "cityId": "OMA", "name": "Benson Guest Room", "neighborhood": "Benson", "lat": 41.284, "lng": -96.006, "stayType": "guesthouse", "nightlyCents": 9500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "OMA-h-old-market-flat", "kind": "hotel", "cityId": "OMA", "name": "Old Market Loft Apartment", "neighborhood": "Old Market", "lat": 41.2555, "lng": -95.9315, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "OMA-h-cornerstone", "kind": "hotel", "cityId": "OMA", "name": "Cornerstone Mansion Inn", "neighborhood": "Gold Coast", "lat": 41.2596, "lng": -95.9725, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "OMA-h-magnolia", "kind": "hotel", "cityId": "OMA", "name": "Magnolia Hotel Omaha (2 queens)", "neighborhood": "Downtown", "lat": 41.2598, "lng": -95.9365, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "OMA-h-cottonwood", "kind": "hotel", "cityId": "OMA", "name": "Kimpton Cottonwood (2 queens)", "neighborhood": "Blackstone", "lat": 41.2605, "lng": -95.966, "stayType": "hotel", "nightlyCents": 25000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "OMA-a-zoo", "kind": "activity", "cityId": "OMA", "name": "Henry Doorly Zoo & Aquarium", "short": "Henry Doorly Zoo", "tags": ["nature"], "lat": 41.2258, "lng": -95.9282, "durationMin": 240, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "OMA-a-old-market", "kind": "activity", "cityId": "OMA", "name": "Old Market dinner & drinks", "short": "Old Market evening", "tags": ["food", "nightlife"], "lat": 41.2556, "lng": -95.9305, "durationMin": 150, "priceCents": 3500, "startEarliest": "18:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "OMA-a-durham", "kind": "activity", "cityId": "OMA", "name": "The Durham Museum (Union Station)", "short": "Durham Museum", "tags": ["history", "museums"], "lat": 41.2532, "lng": -95.9285, "durationMin": 90, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "OMA-a-joslyn", "kind": "activity", "cityId": "OMA", "name": "Joslyn Art Museum", "short": "Joslyn Art Museum", "tags": ["museums"], "lat": 41.2601, "lng": -95.946, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "OMA-a-kerrey-bridge", "kind": "activity", "cityId": "OMA", "name": "Bob Kerrey Pedestrian Bridge & riverfront", "short": "Kerrey Bridge", "tags": ["nature", "chill"], "lat": 41.264, "lng": -95.923, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "OMA-a-benson-music", "kind": "activity", "cityId": "OMA", "name": "Benson bars & The Waiting Room", "short": "Benson live music", "tags": ["music", "nightlife"], "lat": 41.2842, "lng": -96.0066, "durationMin": 150, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" },
+    { "_id": "OMA-a-lauritzen", "kind": "activity", "cityId": "OMA", "name": "Lauritzen Gardens", "short": "Lauritzen Gardens", "tags": ["nature"], "lat": 41.233, "lng": -95.916, "durationMin": 120, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "OMA-a-gorats", "kind": "activity", "cityId": "OMA", "name": "Steak dinner at Gorat's", "short": "Gorat's steak", "tags": ["food"], "lat": 41.2413, "lng": -95.9895, "durationMin": 90, "priceCents": 6000, "startEarliest": "17:00", "startLatest": "20:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "OMA-h-magnolia", "toId": "OMA-a-benson-music", "mode": "taxi", "minutes": 12 },
+    { "fromId": "OMA-h-old-market-flat", "toId": "OMA-a-benson-music", "mode": "taxi", "minutes": 13 }
+  ],
+  "hilly": []
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "MVD", "name": "Montevideo", "country": "Uruguay", "region": "Latin America", "airport": {"code": "MVD", "lat": -34.8384, "lng": -56.0308}, "utcOffset": -3, "centerLat": -34.908, "centerLng": -56.18, "tileRadiusKm": 2.5, "publicFlags": ["few direct flights from the US", "quiet on Sundays"] },
+  "hotels": [
+    { "_id": "MVD-h-ciudadvieja-hostel", "kind": "hotel", "cityId": "MVD", "name": "Ciudad Vieja Hostel (3 beds)", "neighborhood": "Ciudad Vieja", "lat": -34.907, "lng": -56.205, "stayType": "hostel", "nightlyCents": 6000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "MVD-h-cordon-guest", "kind": "hotel", "cityId": "MVD", "name": "Cordón Guesthouse", "neighborhood": "Cordón", "lat": -34.903, "lng": -56.178, "stayType": "guesthouse", "nightlyCents": 8000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "MVD-h-ciudadvieja-flat", "kind": "hotel", "cityId": "MVD", "name": "Ciudad Vieja Apartment", "neighborhood": "Ciudad Vieja", "lat": -34.9065, "lng": -56.202, "stayType": "apartment", "nightlyCents": 10000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "MVD-h-centro-triple", "kind": "hotel", "cityId": "MVD", "name": "Centro Hotel (triple)", "neighborhood": "Centro", "lat": -34.906, "lng": -56.192, "stayType": "hotel", "nightlyCents": 12500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "MVD-h-pocitos-triple", "kind": "hotel", "cityId": "MVD", "name": "Pocitos Beach Hotel (triple)", "neighborhood": "Pocitos", "lat": -34.912, "lng": -56.152, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "MVD-a-mercado-puerto", "kind": "activity", "cityId": "MVD", "name": "Asado at Mercado del Puerto", "short": "Mercado del Puerto", "tags": ["food"], "lat": -34.9057, "lng": -56.2125, "durationMin": 120, "priceCents": 4000, "startEarliest": "12:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MVD-a-ciudad-vieja", "kind": "activity", "cityId": "MVD", "name": "Ciudad Vieja & Plaza Independencia", "short": "Old City walk", "tags": ["history"], "lat": -34.9066, "lng": -56.2003, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "MVD-a-candombe", "kind": "activity", "cityId": "MVD", "name": "Candombe drums & tango night", "short": "Candombe & tango", "tags": ["music", "nightlife"], "lat": -34.9115, "lng": -56.196, "durationMin": 150, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "MVD-a-pocitos-beach", "kind": "activity", "cityId": "MVD", "name": "Rambla bike ride to Pocitos beach", "short": "Rambla to Pocitos", "tags": ["beach", "chill"], "lat": -34.914, "lng": -56.15, "durationMin": 180, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MVD-a-andes-museum", "kind": "activity", "cityId": "MVD", "name": "Museo Andes 1972", "short": "Andes 1972 Museum", "tags": ["museums", "history"], "lat": -34.9075, "lng": -56.2035, "durationMin": 90, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "MVD-a-teatro-solis", "kind": "activity", "cityId": "MVD", "name": "Teatro Solís guided tour", "short": "Teatro Solís tour", "tags": ["history", "music"], "lat": -34.907, "lng": -56.201, "durationMin": 60, "priceCents": 1000, "startEarliest": "11:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MVD-a-bouza", "kind": "activity", "cityId": "MVD", "name": "Bodega Bouza winery lunch", "short": "Bouza winery", "tags": ["food"], "lat": -34.83, "lng": -56.252, "durationMin": 180, "priceCents": 7000, "startEarliest": "11:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "MVD-a-punta-carretas", "kind": "activity", "cityId": "MVD", "name": "Punta Carretas lighthouse sunset", "short": "Lighthouse sunset", "tags": ["nature", "chill"], "lat": -34.936, "lng": -56.16, "durationMin": 120, "priceCents": 0, "startEarliest": "16:00", "startLatest": "19:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MVD-h-ciudadvieja-flat", "toId": "MVD-a-bouza", "mode": "taxi", "minutes": 25, "note": "out to Melilla" },
+    { "fromId": "MVD-h-ciudadvieja-flat", "toId": "MVD-a-pocitos-beach", "mode": "transit", "minutes": 30, "note": "bus along the Rambla" },
+    { "fromId": "MVD-h-ciudadvieja-flat", "toId": "MVD-a-punta-carretas", "mode": "taxi", "minutes": 15 }
+  ],
+  "hilly": []
+}

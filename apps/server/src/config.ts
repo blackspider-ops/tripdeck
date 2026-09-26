@@ -92,6 +92,29 @@ export const config = {
     } as Record<string, string>,
   },
   backboard: { apiKey: env("BACKBOARD_API_KEY"), baseUrl: env("BACKBOARD_BASE_URL") },
+  /**
+   * RouteStack.ai live inventory (providers/routestack, docs/12-routestack.md). Read at call time so tests can switch
+   * them. ROUTESTACK_MODE: off | sandbox | live; unset = sandbox when both keys are present, else off. The base URL
+   * defaults to the sandbox gateway (production when the mode is live). Billable searches count against
+   * ROUTESTACK_DAILY_CAP / ROUTESTACK_TRIP_CAP (limits.spend below).
+   */
+  routestack: {
+    apiKey: () => env("ROUTESTACK_API_KEY"),
+    apiSecret: () => env("ROUTESTACK_API_SECRET"),
+    accountId: () => env("ROUTESTACK_ACCOUNT_ID"),
+    mode: (): "off" | "sandbox" | "live" => {
+      const keys = Boolean(env("ROUTESTACK_API_KEY") && env("ROUTESTACK_API_SECRET"));
+      const m = oneOf("ROUTESTACK_MODE", ["off", "sandbox", "live"] as const, keys ? "sandbox" : "off");
+      return keys ? m : "off";
+    },
+    baseUrl: () => env("ROUTESTACK_BASE_URL", env("ROUTESTACK_MODE").toLowerCase() === "live" ? "https://mcp.routestack.ai" : "https://evolvemcp.routestack.ai").replace(/\/+$/, ""),
+    /** Billable searches (hotel/flight): our UX waits at most this long (RouteStack's own default is 180 s). */
+    searchTimeoutMs: () => positive("ROUTESTACK_SEARCH_TIMEOUT_MS", 90_000),
+    /** Everything else (token, destinations, flight session). */
+    timeoutMs: () => positive("ROUTESTACK_TIMEOUT_MS", 30_000),
+    /** The same query within this window is answered from the cache (memory + DATA_DIR/routestack), never billed twice. */
+    cacheTtlMs: () => positive("ROUTESTACK_CACHE_HOURS", 6) * 3_600_000,
+  },
   payments: {
     mode: oneOf("PAYMENTS_MODE", ["sim", "visa_sandbox"] as const, "sim"),
     simDeclineMember: env("SIM_DECLINE_MEMBER"),
@@ -129,8 +152,8 @@ export const config = {
     hailAudioMaxBytes: Math.max(16_384, num("HAIL_AUDIO_MAX_BYTES", 524_288)),
     /** Paid calls allowed per UTC day (whole server) and per voyage. 0 switches that provider off. */
     spend: {
-      daily: { gemini: num("DAILY_CAP_GEMINI", 3000), tts: num("DAILY_CAP_TTS", 1500), stt: num("DAILY_CAP_STT", 500), backboard: num("DAILY_CAP_BACKBOARD", 3000) },
-      trip: { gemini: num("TRIP_CAP_GEMINI", 150), tts: num("TRIP_CAP_TTS", 100), stt: num("TRIP_CAP_STT", 30), backboard: num("TRIP_CAP_BACKBOARD", 60) },
+      daily: { gemini: num("DAILY_CAP_GEMINI", 3000), tts: num("DAILY_CAP_TTS", 1500), stt: num("DAILY_CAP_STT", 500), backboard: num("DAILY_CAP_BACKBOARD", 3000), routestack: num("ROUTESTACK_DAILY_CAP", 200) },
+      trip: { gemini: num("TRIP_CAP_GEMINI", 150), tts: num("TRIP_CAP_TTS", 100), stt: num("TRIP_CAP_STT", 30), backboard: num("TRIP_CAP_BACKBOARD", 60), routestack: num("ROUTESTACK_TRIP_CAP", 20) },
     },
     /**
      * R2-WP-12 (S2-014): the share (%) of each daily cap held back for voyages past the table (Dry Run, sealing,

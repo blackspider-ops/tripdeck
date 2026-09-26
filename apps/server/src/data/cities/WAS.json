@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "WAS", "name": "Washington", "country": "United States", "state": "DC", "region": "United States", "airport": { "code": "DCA", "lat": 38.8512, "lng": -77.0402 }, "utcOffset": -5, "centerLat": 38.897, "centerLng": -77.028, "tileRadiusKm": 2.5, "publicFlags": ["cherry-blossom crowds late Mar–early Apr", "humid summers"] },
+  "hotels": [
+    { "_id": "WAS-h-hi-dc", "kind": "hotel", "cityId": "WAS", "name": "HI Washington DC (4-bed private)", "neighborhood": "Mount Vernon Square", "lat": 38.902, "lng": -77.027, "stayType": "hostel", "nightlyCents": 15000, "sleeps": 4, "rating": 4.2 },
+    { "_id": "WAS-h-capitol-hill-guest", "kind": "hotel", "cityId": "WAS", "name": "Capitol Hill Rowhouse Guesthouse", "neighborhood": "Capitol Hill", "lat": 38.8867, "lng": -76.9975, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "WAS-h-dupont-flat", "kind": "hotel", "cityId": "WAS", "name": "Dupont Circle Apartment", "neighborhood": "Dupont Circle", "lat": 38.9097, "lng": -77.0434, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "WAS-h-monaco", "kind": "hotel", "cityId": "WAS", "name": "Kimpton Hotel Monaco (2 queens)", "neighborhood": "Penn Quarter", "lat": 38.8977, "lng": -77.0229, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "WAS-h-line-dc", "kind": "hotel", "cityId": "WAS", "name": "The LINE DC (2 queens)", "neighborhood": "Adams Morgan", "lat": 38.9215, "lng": -77.0428, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 4, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "WAS-a-mall", "kind": "activity", "cityId": "WAS", "name": "National Mall monuments walk", "short": "Monuments walk", "tags": ["history"], "lat": 38.8895, "lng": -77.0353, "durationMin": 180, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "WAS-a-air-space", "kind": "activity", "cityId": "WAS", "name": "National Air and Space Museum", "short": "Air & Space", "tags": ["museums"], "lat": 38.8882, "lng": -77.0199, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "WAS-a-blues-alley", "kind": "activity", "cityId": "WAS", "name": "Jazz at Blues Alley", "short": "Blues Alley jazz", "tags": ["music", "nightlife"], "lat": 38.9044, "lng": -77.0618, "durationMin": 120, "priceCents": 4500, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "WAS-a-nmaahc", "kind": "activity", "cityId": "WAS", "name": "African American History & Culture Museum", "short": "NMAAHC", "tags": ["museums", "history"], "lat": 38.891, "lng": -77.0326, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "WAS-a-capitol", "kind": "activity", "cityId": "WAS", "name": "US Capitol tour", "short": "Capitol tour", "tags": ["history"], "lat": 38.8899, "lng": -77.0091, "durationMin": 90, "priceCents": 0, "startEarliest": "08:50", "startLatest": "15:20", "role": "pick" },
+    { "_id": "WAS-a-union-market", "kind": "activity", "cityId": "WAS", "name": "Union Market food hall", "short": "Union Market", "tags": ["food"], "lat": 38.9082, "lng": -76.9975, "durationMin": 90, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "WAS-a-georgetown", "kind": "activity", "cityId": "WAS", "name": "Georgetown waterfront & C&O Canal", "short": "Georgetown canal", "tags": ["chill", "nature"], "lat": 38.9036, "lng": -77.06, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "WAS-a-u-street", "kind": "activity", "cityId": "WAS", "name": "U Street bars & Ben's Chili Bowl", "short": "U Street night", "tags": ["food", "nightlife"], "lat": 38.917, "lng": -77.0288, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "WAS-h-capitol-hill-guest", "toId": "WAS-a-blues-alley", "mode": "taxi", "minutes": 20, "note": "no Metro to Georgetown" },
+    { "fromId": "WAS-h-capitol-hill-guest", "toId": "WAS-a-georgetown", "mode": "taxi", "minutes": 20, "note": "no Metro to Georgetown" }
+  ],
+  "hilly": []
+}

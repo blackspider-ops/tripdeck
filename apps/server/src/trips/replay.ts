@@ -9,6 +9,7 @@ import {
   type Emit, type MemberRec, type TripRec,
 } from "./records.js";
 import type { Helm } from "./core.js";
+import { destinationPublic, tripWindows } from "./course.js";
 
 const SLOW = Symbol("slow");
 /** One macrotask: long enough for a recall served from memory, short enough not to hold a join back. */
@@ -26,7 +27,9 @@ export class Replayer {
         const c = cities.get(id);
         return c ? [{ cityId: id, name: c.name, lat: c.centerLat, lng: c.centerLng }] : [];
       }),
-      dateWindows: this.helm.ds.dateWindows,
+      // only the windows this voyage offers (older voyages: W1 and W2)
+      dateWindows: tripWindows(this.helm.ds, t),
+      destination: destinationPublic(this.helm.ds, t),
     };
   }
 

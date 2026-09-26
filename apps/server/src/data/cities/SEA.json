@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SEA", "name": "Seattle", "country": "United States", "state": "WA", "region": "United States", "airport": {"code": "SEA", "lat": 47.4502, "lng": -122.3088}, "utcOffset": -8, "centerLat": 47.609, "centerLng": -122.338, "tileRadiusKm": 2, "publicFlags": ["frequent drizzle Oct–May", "steep downtown hills"] },
+  "hotels": [
+    { "_id": "SEA-h-green-tortoise", "kind": "hotel", "cityId": "SEA", "name": "Green Tortoise Hostel (3 beds)", "neighborhood": "Pike Place", "lat": 47.6088, "lng": -122.3401, "stayType": "hostel", "nightlyCents": 16500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SEA-h-moore-triple", "kind": "hotel", "cityId": "SEA", "name": "Moore Hotel (triple)", "neighborhood": "Belltown", "lat": 47.6118, "lng": -122.3412, "stayType": "hotel", "nightlyCents": 19500, "sleeps": 3, "rating": 4 },
+    { "_id": "SEA-h-capitol-hill-flat", "kind": "hotel", "cityId": "SEA", "name": "Capitol Hill Flat", "neighborhood": "Capitol Hill", "lat": 47.6195, "lng": -122.3205, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "SEA-h-mayflower-park", "kind": "hotel", "cityId": "SEA", "name": "Mayflower Park Hotel (2 queens)", "neighborhood": "Downtown", "lat": 47.6121, "lng": -122.3378, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "SEA-h-edgewater", "kind": "hotel", "cityId": "SEA", "name": "The Edgewater (2 queens)", "neighborhood": "Waterfront", "lat": 47.6127, "lng": -122.3528, "stayType": "hotel", "nightlyCents": 52000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "SEA-a-pike-place", "kind": "activity", "cityId": "SEA", "name": "Pike Place Market food crawl", "short": "Pike Place food crawl", "tags": ["food"], "lat": 47.6097, "lng": -122.3422, "durationMin": 150, "priceCents": 4000, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "SEA-a-space-needle", "kind": "activity", "cityId": "SEA", "name": "Space Needle & Chihuly Garden and Glass", "short": "Space Needle & Chihuly", "tags": ["museums"], "lat": 47.6205, "lng": -122.3493, "durationMin": 150, "priceCents": 6500, "startEarliest": "10:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "SEA-a-crocodile", "kind": "activity", "cityId": "SEA", "name": "Live show at The Crocodile, Belltown", "short": "Crocodile gig", "tags": ["music", "nightlife"], "lat": 47.6148, "lng": -122.348, "durationMin": 150, "priceCents": 3500, "startEarliest": "20:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "SEA-a-mopop", "kind": "activity", "cityId": "SEA", "name": "Museum of Pop Culture (MoPOP)", "short": "MoPOP", "tags": ["museums", "music"], "lat": 47.6215, "lng": -122.3481, "durationMin": 150, "priceCents": 3500, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SEA-a-bainbridge", "kind": "activity", "cityId": "SEA", "name": "Bainbridge Island ferry & Winslow stroll", "short": "Bainbridge ferry", "tags": ["nature", "chill"], "lat": 47.6023, "lng": -122.3385, "durationMin": 240, "priceCents": 1100, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "SEA-a-discovery-park", "kind": "activity", "cityId": "SEA", "name": "Discovery Park loop & lighthouse", "short": "Discovery Park", "tags": ["nature"], "lat": 47.6573, "lng": -122.4057, "durationMin": 180, "priceCents": 0, "startEarliest": "08:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "SEA-a-underground", "kind": "activity", "cityId": "SEA", "name": "Underground Tour, Pioneer Square", "short": "Underground Tour", "tags": ["history"], "lat": 47.6023, "lng": -122.3343, "durationMin": 75, "priceCents": 2900, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "SEA-a-capitol-night", "kind": "activity", "cityId": "SEA", "name": "Capitol Hill bar night (Pike/Pine)", "short": "Capitol Hill night", "tags": ["nightlife"], "lat": 47.6145, "lng": -122.3197, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SEA-h-edgewater", "toId": "SEA-a-discovery-park", "mode": "taxi", "minutes": 15, "note": "Elliott Ave to Magnolia" },
+    { "fromId": "SEA-h-green-tortoise", "toId": "SEA-a-discovery-park", "mode": "transit", "minutes": 40, "note": "Route 33 bus" },
+    { "fromId": "SEA-h-capitol-hill-flat", "toId": "SEA-a-bainbridge", "mode": "transit", "minutes": 25, "note": "Link to Pioneer Square + walk to Colman Dock" }
+  ],
+  "hilly": ["SEA-h-capitol-hill-flat", "SEA-a-capitol-night", "SEA-a-pike-place"]
+}

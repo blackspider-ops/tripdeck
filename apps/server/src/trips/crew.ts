@@ -2,7 +2,7 @@
  * The crew (OPT-031): creating a voyage, joining, absent friends and their invites, sealed terms (briefs), and
  * "sail without them".
  */
-import type { Band, BriefInput, CityId, Dataset, Origin, Role } from "@all-ayes/shared";
+import type { Band, BriefInput, CityId, Dataset, Destination, Origin, Role } from "@all-ayes/shared";
 import {
   BANDS, CAP_MAX_CENTS, CAP_MIN_CENTS, DEALBREAKERS, MAX_CREW, MAX_DEALBREAKERS, MAX_MUST_HAVES, NAME_MAX_CHARS, NOTE_MAX_CHARS, ORIGINS,
   TAGS, TRIP_NAME_MAX_CHARS, formatDollars,
@@ -15,17 +15,26 @@ import { onJoinCodeClash } from "../store/hooks.js";
 import { HelmError } from "../util/errors.js";
 import { hash, newId, newJoinCode, newToken, nowIso, sameHash } from "../util/ids.js";
 import { clean } from "../util/text.js";
-import { DEFAULT_TRIP_NAME, OPEN_PHASES, briefOut, datasetHash, holdsSeat, type Actor, type BriefRec, type MemberRec, type TripRec } from "./records.js";
+import { DEFAULT_TRIP_NAME, OPEN_PHASES, briefOut, datasetHash, holdsSeat, tripWindowIds, type Actor, type BriefRec, type MemberRec, type TripRec } from "./records.js";
+import { cleanPlaces, resolveCourse, worldPacksFor } from "./course.js";
 import type { Helm } from "./core.js";
 import { storedStanding } from "./persistence.js";
 import { revokePasskeys } from "../passkeys/passkeys.js";
 
 const BAND_IDS = Object.keys(BANDS).map(Number);
 const TERMS_SEALED = "Terms are sealed once the table meets.";
-/** Organizers pick at least this many ports (A4). */
-const MIN_PORTS = 2;
 
 type Seat = { name: string; band: Band; origin: Origin; crewKey?: unknown };
+/** A new voyage: the organizer's seat and the course (see course.ts `resolveCourse`). */
+export interface CreateTrip {
+  name: string; organizerName: string; band: Band; origin: Origin; crewKey?: unknown;
+  /** Named ports (the older API; same as destination {kind:"cities"}). */
+  cityIds?: CityId[];
+  destination?: Destination;
+  windowIds?: string[];
+  /** The draw for "Surprise me" ports (seeded by the demo; Math.random otherwise). */
+  random?: () => number;
+}
 
 export class Crew {
   constructor(private helm: Helm) {
@@ -51,22 +60,22 @@ export class Crew {
     helm.broadcastState(t);
   }
 
-  createTrip(p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; crewKey?: unknown }) {
+  createTrip(p: CreateTrip) {
     const { helm } = this;
     const name = clean(p.name, TRIP_NAME_MAX_CHARS) || DEFAULT_TRIP_NAME;
-    // A4: the organizer picks the ports (2–3 from the dataset); default = all
-    const known = helm.ds.cities.map((c) => c._id);
-    const picked = (p.cityIds ?? []).filter((c, i, a) => known.includes(c) && a.indexOf(c) === i);
-    if (p.cityIds && picked.length < MIN_PORTS) throw new HelmError("BAD_INPUT", "Put at least two ports on the chart.");
-    const candidateCityIds = picked.length >= MIN_PORTS ? picked : known;
+    // A4: the organizer sets the course: 2–4 named ports, regions / states, or anywhere (default: 3 ports at random),
+    // and offers 1–3 date windows (default: the next 2)
+    const { destination, candidateCityIds, candidateWindowIds } = resolveCourse(helm.ds, p, p.random);
     let joinCode = newJoinCode();
     while (helm.findByCode(joinCode)) joinCode = newJoinCode();
     const now = nowIso();
     const t: TripRec = {
       _id: newId(), joinCode, name, status: "BRIEFING", version: 0, organizerId: "",
-      memberIds: [], removedMemberIds: [], candidateCityIds,
+      memberIds: [], removedMemberIds: [], candidateCityIds, candidateWindowIds, destination,
       negotiation: { watch: 0, running: false, seq: 0, round: 0, turns: [] }, votes: {}, attempt: 0, datasetHash: datasetHash(helm.ds), createdAt: now, updatedAt: now,
     };
+    const packs = worldPacksFor(t);
+    if (packs.length) t.worldPacks = packs;
     helm.addTrip(t);
     let added: ReturnType<Crew["addMember"]>;
     try {
@@ -213,7 +222,7 @@ export class Crew {
     // OPT-064: a removed seat can't (re)seal
     const { t, m } = helm.memberTrip(tripId, memberId, OPEN_PHASES, TERMS_SEALED);
     if (t.status === "VOIDED") this.assertCanReopen(t, memberId);
-    const b = validateBrief(input, helm.ds);
+    const b = validateBrief(input, helm.ds, t);
     const sealedAt = nowIso();
     // TR4-017: the provider call comes first, so a failure can't leave a half-committed brief. If it fails the brief
     // still seals, without a standing instruction: that member then seals live (doc 06 §6 P1).
@@ -303,14 +312,18 @@ export class Crew {
 const inviteOut = (t: TripRec, member: MemberRec, inviteKey: string) =>
   ({ memberId: member._id, inviteKey, invitePath: `/t/${t.joinCode}/brief#m=${member._id}&k=${inviteKey}` });
 
-/** Sealed terms as the helm keeps them: caps in range, known ids only, deduped and capped lists, a cleaned note. */
-export function validateBrief(input: BriefInput, ds: Dataset): BriefInput {
+/**
+ * Sealed terms as the helm keeps them: caps in range, known ids only, deduped and capped lists, a cleaned note. With
+ * the voyage: only its date windows count, and loved / skipped places must be in its scope.
+ */
+export function validateBrief(input: BriefInput, ds: Dataset, t?: TripRec): BriefInput {
   const cap = Math.round(Number(input.capCents));
   if (!Number.isFinite(cap) || cap < CAP_MIN_CENTS || cap > CAP_MAX_CENTS) {
     throw new HelmError("BAD_INPUT", `Set what you can do, between ${formatDollars(CAP_MIN_CENTS)} and ${formatDollars(CAP_MAX_CENTS)}.`);
   }
   const known = indexOf(ds).window;
-  const windows = (input.dateWindowIds ?? []).filter((id) => known.has(id));
+  const offered = t ? new Set(tripWindowIds(t)) : null;
+  const windows = [...new Set(input.dateWindowIds ?? [])].filter((id) => known.has(id) && (!offered || offered.has(id)));
   if (!windows.length) throw new HelmError("BAD_INPUT", "Pick at least one set of dates.");
   const tagIds = new Set(TAGS.map((x) => x.id));
   const dbIds = new Set(DEALBREAKERS.map((x) => x.id));
@@ -318,5 +331,6 @@ export function validateBrief(input: BriefInput, ds: Dataset): BriefInput {
   const dealbreakers = [...new Set(input.dealbreakers ?? [])].filter((x) => dbIds.has(x)).slice(0, MAX_DEALBREAKERS);
   const note = clean(input.note, NOTE_MAX_CHARS) || undefined;
   // TR4-006: the note reaches the member's own Advocate (filtered); its source only means something with a note
-  return { capCents: cap, dateWindowIds: windows, mustHaves, dealbreakers, note, noteSource: note ? (input.noteSource === "voice" ? "voice" : "typed") : undefined };
+  const places = t ? cleanPlaces(ds, t, input.loves, input.skips) : {};
+  return { capCents: cap, dateWindowIds: windows, mustHaves, dealbreakers, note, noteSource: note ? (input.noteSource === "voice" ? "voice" : "typed") : undefined, ...places };
 }

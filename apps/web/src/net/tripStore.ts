@@ -16,7 +16,11 @@ import type {
  */
 export function withStatic(s: TripStateUpdate, prev: TripState | null): TripState {
   const same = prev?.tripId === s.tripId ? prev : null;
-  return { ...s, candidateCities: s.candidateCities ?? same?.candidateCities ?? [], dateWindows: s.dateWindows ?? same?.dateWindows ?? [] };
+  const destination = s.destination ?? same?.destination;
+  return {
+    ...s, candidateCities: s.candidateCities ?? same?.candidateCities ?? [], dateWindows: s.dateWindows ?? same?.dateWindows ?? [],
+    ...(destination ? { destination } : {}),
+  };
 }
 
 interface SealPrivate { bookingId: string; amountCents: number; lines: ShareLine[]; fits: boolean; cardLast4: string; mode: "visa_sandbox" | "sim" }

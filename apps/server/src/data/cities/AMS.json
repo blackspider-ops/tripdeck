@@ -1,0 +1,24 @@
+{
+  "city": { "_id": "AMS", "name": "Amsterdam", "country": "Netherlands", "region": "Europe", "airport": { "code": "AMS", "lat": 52.3105, "lng": 4.7683 }, "utcOffset": 1, "centerLat": 52.37, "centerLng": 4.893, "tileRadiusKm": 2.0, "publicFlags": ["cold, windy and wet in March", "watch the bike lanes"] },
+  "hotels": [
+    { "_id": "AMS-h-nieuwmarkt-hostel", "kind": "hotel", "cityId": "AMS", "name": "Nieuwmarkt Hostel (3 beds)", "neighborhood": "Nieuwmarkt", "lat": 52.3725, "lng": 4.9005, "stayType": "hostel", "nightlyCents": 16500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "AMS-h-plantage-guest", "kind": "hotel", "cityId": "AMS", "name": "Plantage Guesthouse", "neighborhood": "Plantage", "lat": 52.3665, "lng": 4.911, "stayType": "guesthouse", "nightlyCents": 19000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "AMS-h-depijp-flat", "kind": "hotel", "cityId": "AMS", "name": "De Pijp Apartment", "neighborhood": "De Pijp", "lat": 52.3545, "lng": 4.894, "stayType": "apartment", "nightlyCents": 28000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "AMS-h-jordaan-triple", "kind": "hotel", "cityId": "AMS", "name": "Jordaan Canal Hotel (triple)", "neighborhood": "Jordaan", "lat": 52.375, "lng": 4.883, "stayType": "hotel", "nightlyCents": 33000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "AMS-h-canal-ring-triple", "kind": "hotel", "cityId": "AMS", "name": "Canal Ring Hotel (triple)", "neighborhood": "Grachtengordel", "lat": 52.3665, "lng": 4.889, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "AMS-a-rijksmuseum", "kind": "activity", "cityId": "AMS", "name": "Rijksmuseum", "short": "Rijksmuseum", "tags": ["museums", "history"], "lat": 52.36, "lng": 4.8852, "durationMin": 150, "priceCents": 2800, "startEarliest": "09:00", "startLatest": "15:30", "role": "group" },
+    { "_id": "AMS-a-canal-cruise", "kind": "activity", "cityId": "AMS", "name": "Canal boat cruise", "short": "Canal cruise", "tags": ["chill", "history"], "lat": 52.378, "lng": 4.899, "durationMin": 75, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "AMS-a-brown-cafe", "kind": "activity", "cityId": "AMS", "name": "Brown café night, Jordaan", "short": "Brown café night", "tags": ["nightlife"], "lat": 52.3765, "lng": 4.884, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "AMS-a-anne-frank", "kind": "activity", "cityId": "AMS", "name": "Anne Frank House", "short": "Anne Frank House", "tags": ["history", "museums"], "lat": 52.3752, "lng": 4.884, "durationMin": 75, "priceCents": 1800, "startEarliest": "09:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "AMS-a-van-gogh", "kind": "activity", "cityId": "AMS", "name": "Van Gogh Museum", "short": "Van Gogh Museum", "tags": ["museums"], "lat": 52.3584, "lng": 4.8811, "durationMin": 120, "priceCents": 2600, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "AMS-a-albert-cuyp", "kind": "activity", "cityId": "AMS", "name": "Albert Cuyp market & stroopwafels", "short": "Albert Cuyp market", "tags": ["food"], "lat": 52.3559, "lng": 4.895, "durationMin": 90, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "AMS-a-vondelpark", "kind": "activity", "cityId": "AMS", "name": "Vondelpark bike ride", "short": "Vondelpark by bike", "tags": ["nature", "chill"], "lat": 52.358, "lng": 4.8686, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "AMS-a-paradiso", "kind": "activity", "cityId": "AMS", "name": "Concert at Paradiso", "short": "Paradiso concert", "tags": ["music", "nightlife"], "lat": 52.3622, "lng": 4.8838, "durationMin": 180, "priceCents": 3500, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "AMS-h-plantage-guest", "toId": "AMS-a-anne-frank", "mode": "transit", "minutes": 20, "note": "tram 14 to Westermarkt" }
+  ],
+  "hilly": []
+}

@@ -6,7 +6,18 @@ Roles at Expo: **Person A = Narrator** (talks, hands the judge the headset — t
 
 ## 1. The 3‑minute Expo demo
 
-Setup before each judge: fresh seeded trip (`/demo` → *Seed the Expo voyage*; in production or through the tunnel open `/demo#key=<DEV_KEY>` once — the key moves to this tab's session storage and leaves the address bar; `?key=` doesn't work), headset iPhone paired via headset code (**Show headset code** on Rae's phone → Safari `<domain>/xr`), **aA → Hide Toolbar**, **Enter VR** tapped and motion allowed, phone in landscape clamped into the shell and the table recentered, laptop showing the Gallery **on the projector / turned to the judges**, Maya's phone + Rae's phone on the table. Set `EXPO_MODE=true` (≤ 20‑word lines, faster voices).
+**Two kinds of demo voyage.** `/demo` has two buttons:
+- **Seed a random voyage** (the default, `POST /api/demo/seed` or `?kind=random`): a fresh crew every time — 3–4
+  people drawn from a list of names, random home airports (any of the ~37), random budget bands and caps,
+  must‑haves, dealbreakers and notes, 3 random ports, 1–3 random date windows, and one member away with a standing
+  instruction. The table lands wherever that crew's terms lead. `?seed=<n>` replays one exactly
+  (`seedRandom(helm, seed)` is deterministic); the page shows the seed.
+- **Seed the scripted Expo voyage** (`?kind=expo`): Rae / Maya / Dev on Lisbon, Mexico City and Montréal in W1–W2.
+  Its terms lead to Lisbon **by design** — the pitch script below and the tests rely on its numbers ($1,038 / $868 /
+  $963; Lisbon $2,869, Mexico City $1,975). Use it for the scripted pitch; use a random voyage to show the engine is
+  generic.
+
+Setup before each judge: fresh seeded trip (`/demo` → *Seed the scripted Expo voyage* for this script; in production or through the tunnel open `/demo#key=<DEV_KEY>` once — the key moves to this tab's session storage and leaves the address bar; `?key=` doesn't work), headset iPhone paired via headset code (**Show headset code** on Rae's phone → Safari `<domain>/xr`), **aA → Hide Toolbar**, **Enter VR** tapped and motion allowed, phone in landscape clamped into the shell and the table recentered, laptop showing the Gallery **on the projector / turned to the judges**, Maya's phone + Rae's phone on the table. Set `EXPO_MODE=true` (≤ 20‑word lines, faster voices).
 
 | Time | Narrator (A) says | Operator (B) does | Judge sees |
 |---|---|---|---|
@@ -165,7 +176,7 @@ Trip inventory is curated sample data for three cities (prices are illustrative)
 3. Architecture diagram (from doc 04)
 4. Run locally: `npm install`, `cp .env.example .env`, `npm run dev` (localhost only). For the headset (iPhone in a Gear VR shell, or a Quest), tunnel a production-mode build: `npm run build`, `cloudflared tunnel --url http://localhost:8787`, then `APP_ENV=production SERVE_WEB=1 PUBLIC_BASE_URL=<tunnel URL> DEV_KEY=<32+ chars> npm run start:prod` (README *Run it*)
 5. Headset: `docs/10-gear-vr.md` (iPhone in a Gear VR shell: fit, iPhone prep, pairing, gaze controls, lens spacing, troubleshooting)
-6. Demo mode: `/demo` → *Seed* (`/demo#key=<DEV_KEY>` in production or from another machine; `?key=` is ignored)
+6. Demo mode: `/demo` → *Seed a random voyage* (default) or *Seed the scripted Expo voyage* (`/demo#key=<DEV_KEY>` in production or from another machine; `?key=` is ignored)
 7. Privacy & payments design (short, links to docs)
 8. Honesty notes (sample data, sandbox)
 9. Credits: libraries, fonts, CC0 sounds, Google tiles attribution

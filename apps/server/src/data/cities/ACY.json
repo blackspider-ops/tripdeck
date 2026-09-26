@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "ACY", "name": "Atlantic City", "country": "United States", "state": "NJ", "region": "United States", "airport": { "code": "ACY", "lat": 39.4576, "lng": -74.5772 }, "utcOffset": -5, "centerLat": 39.36, "centerLng": -74.432, "tileRadiusKm": 2.5, "publicFlags": ["cold, windy off-season", "casino-centric; some blocks feel rough at night"] },
+  "hotels": [
+    { "_id": "ACY-h-pacific-ave-motel", "kind": "hotel", "cityId": "ACY", "name": "Pacific Avenue Motel (2 doubles)", "neighborhood": "Midtown", "lat": 39.356, "lng": -74.436, "stayType": "guesthouse", "nightlyCents": 11000, "sleeps": 4, "rating": 3.5 },
+    { "_id": "ACY-h-hard-rock", "kind": "hotel", "cityId": "ACY", "name": "Hard Rock Atlantic City (2 queens)", "neighborhood": "Boardwalk", "lat": 39.3602, "lng": -74.4231, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 4, "rating": 4.2 },
+    { "_id": "ACY-h-ventnor-condo", "kind": "hotel", "cityId": "ACY", "name": "Ventnor Beach Condo", "neighborhood": "Ventnor", "lat": 39.34, "lng": -74.477, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "ACY-h-ocean", "kind": "hotel", "cityId": "ACY", "name": "Ocean Casino Resort (2 queens)", "neighborhood": "North Beach", "lat": 39.3643, "lng": -74.4185, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "ACY-h-borgata", "kind": "hotel", "cityId": "ACY", "name": "Borgata (2 queens)", "neighborhood": "Marina District", "lat": 39.3778, "lng": -74.4318, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 4, "rating": 4.4 }
+  ],
+  "activities": [
+    { "_id": "ACY-a-boardwalk", "kind": "activity", "cityId": "ACY", "name": "Boardwalk & beach stroll", "short": "Boardwalk stroll", "tags": ["beach", "chill"], "lat": 39.357, "lng": -74.43, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "ACY-a-white-house-subs", "kind": "activity", "cityId": "ACY", "name": "White House Subs", "short": "White House Subs", "tags": ["food"], "lat": 39.3632, "lng": -74.433, "durationMin": 60, "priceCents": 1600, "startEarliest": "11:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "ACY-a-casino-night", "kind": "activity", "cityId": "ACY", "name": "Casino night, Borgata", "short": "Casino night", "tags": ["nightlife"], "lat": 39.3778, "lng": -74.4318, "durationMin": 240, "priceCents": 5000, "startEarliest": "21:00", "startLatest": "23:00", "role": "group" },
+    { "_id": "ACY-a-absecon-lighthouse", "kind": "activity", "cityId": "ACY", "name": "Absecon Lighthouse climb", "short": "Absecon Lighthouse", "tags": ["history"], "lat": 39.3663, "lng": -74.4144, "durationMin": 60, "priceCents": 1000, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ACY-a-aquarium", "kind": "activity", "cityId": "ACY", "name": "Atlantic City Aquarium, Gardner's Basin", "short": "AC Aquarium", "tags": ["museums", "nature"], "lat": 39.373, "lng": -74.42, "durationMin": 90, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "ACY-a-concert", "kind": "activity", "cityId": "ACY", "name": "Concert at Hard Rock Etess Arena", "short": "Etess Arena show", "tags": ["music", "nightlife"], "lat": 39.36, "lng": -74.422, "durationMin": 150, "priceCents": 6000, "startEarliest": "20:00", "startLatest": "20:30", "role": "pick" },
+    { "_id": "ACY-a-forsythe", "kind": "activity", "cityId": "ACY", "name": "Forsythe Wildlife Refuge drive", "short": "Forsythe refuge", "tags": ["nature"], "lat": 39.466, "lng": -74.448, "durationMin": 150, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "ACY-a-docks", "kind": "activity", "cityId": "ACY", "name": "Dock's Oyster House dinner", "short": "Dock's Oyster House", "tags": ["food"], "lat": 39.355, "lng": -74.446, "durationMin": 120, "priceCents": 6000, "startEarliest": "17:00", "startLatest": "20:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ACY-h-ventnor-condo", "toId": "ACY-a-forsythe", "mode": "taxi", "minutes": 25, "note": "~15 km; car only" },
+    { "fromId": "ACY-h-hard-rock", "toId": "ACY-a-forsythe", "mode": "taxi", "minutes": 20, "note": "~12 km; car only" },
+    { "fromId": "ACY-h-ventnor-condo", "toId": "ACY-a-casino-night", "mode": "taxi", "minutes": 15, "note": "Jitney also runs, ~25 min" }
+  ],
+  "hilly": []
+}

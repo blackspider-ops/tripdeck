@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "IND", "name": "Indianapolis", "country": "United States", "state": "IN", "region": "United States", "airport": { "code": "IND", "lat": 39.7173, "lng": -86.2944 }, "utcOffset": -5, "centerLat": 39.772, "centerLng": -86.158, "tileRadiusKm": 2.5, "publicFlags": ["car-dependent outside downtown", "May (Indy 500 month) hotel prices spike"] },
+  "hotels": [
+    { "_id": "IND-h-indy-hostel", "kind": "hotel", "cityId": "IND", "name": "Indy Hostel (private room)", "neighborhood": "Meridian-Kessler", "lat": 39.8424, "lng": -86.1383, "stayType": "hostel", "nightlyCents": 9500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "IND-h-fountain-square-flat", "kind": "hotel", "cityId": "IND", "name": "Fountain Square Apartment", "neighborhood": "Fountain Square", "lat": 39.7521, "lng": -86.1398, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "IND-h-old-northside-bb", "kind": "hotel", "cityId": "IND", "name": "Old Northside Bed & Breakfast", "neighborhood": "Old Northside", "lat": 39.7853, "lng": -86.1545, "stayType": "guesthouse", "nightlyCents": 18500, "sleeps": 3, "rating": 4.6 },
+    { "_id": "IND-h-alexander", "kind": "hotel", "cityId": "IND", "name": "The Alexander (2 queens)", "neighborhood": "Wholesale District", "lat": 39.7627, "lng": -86.1545, "stayType": "hotel", "nightlyCents": 24500, "sleeps": 4, "rating": 4.5 },
+    { "_id": "IND-h-conrad", "kind": "hotel", "cityId": "IND", "name": "Conrad Indianapolis (2 queens)", "neighborhood": "Downtown", "lat": 39.7662, "lng": -86.1601, "stayType": "hotel", "nightlyCents": 33000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "IND-a-speedway", "kind": "activity", "cityId": "IND", "name": "Indianapolis Motor Speedway Museum", "short": "Speedway museum", "tags": ["museums", "history"], "lat": 39.7897, "lng": -86.234, "durationMin": 150, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "IND-a-mass-ave", "kind": "activity", "cityId": "IND", "name": "Mass Ave food & drinks", "short": "Mass Ave evening", "tags": ["food", "nightlife"], "lat": 39.7727, "lng": -86.1497, "durationMin": 150, "priceCents": 3500, "startEarliest": "18:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "IND-a-jazz-kitchen", "kind": "activity", "cityId": "IND", "name": "Live jazz at The Jazz Kitchen", "short": "Jazz Kitchen", "tags": ["music", "nightlife"], "lat": 39.8474, "lng": -86.1446, "durationMin": 150, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "IND-a-newfields", "kind": "activity", "cityId": "IND", "name": "Newfields art museum & gardens", "short": "Newfields", "tags": ["museums", "nature"], "lat": 39.826, "lng": -86.1856, "durationMin": 180, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "IND-a-canal-walk", "kind": "activity", "cityId": "IND", "name": "Canal Walk & White River State Park", "short": "Canal Walk", "tags": ["nature", "chill"], "lat": 39.768, "lng": -86.17, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "IND-a-eiteljorg", "kind": "activity", "cityId": "IND", "name": "Eiteljorg Museum", "short": "Eiteljorg Museum", "tags": ["museums", "history"], "lat": 39.7684, "lng": -86.1675, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "IND-a-war-memorial", "kind": "activity", "cityId": "IND", "name": "Monument Circle & Indiana War Memorial", "short": "War Memorial", "tags": ["history"], "lat": 39.7742, "lng": -86.1571, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:30", "role": "pick" },
+    { "_id": "IND-a-st-elmo", "kind": "activity", "cityId": "IND", "name": "Shrimp cocktail at St. Elmo Steak House", "short": "St. Elmo", "tags": ["food"], "lat": 39.7662, "lng": -86.1578, "durationMin": 90, "priceCents": 7500, "startEarliest": "16:00", "startLatest": "21:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "IND-h-conrad", "toId": "IND-a-speedway", "mode": "taxi", "minutes": 15 },
+    { "fromId": "IND-h-alexander", "toId": "IND-a-speedway", "mode": "taxi", "minutes": 15 },
+    { "fromId": "IND-h-conrad", "toId": "IND-a-newfields", "mode": "taxi", "minutes": 15 },
+    { "fromId": "IND-h-conrad", "toId": "IND-a-jazz-kitchen", "mode": "taxi", "minutes": 18, "note": "north to Meridian-Kessler" }
+  ],
+  "hilly": []
+}

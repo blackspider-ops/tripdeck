@@ -424,7 +424,7 @@ function client(join: Record<string, unknown>) {
 
 describe("Gallery at DRY_RUN (SEC-001 acceptance)", () => {
   it("no trip-room plan payload names a member or carries per-member schedule data; members get theirs privately", async () => {
-    const res = await fetch(base + "/api/demo/seed", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    const res = await fetch(base + "/api/demo/seed?kind=expo", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
     const seed = await res.json() as { tripId: string; joinCode: string; organizer: { memberId: string; memberToken: string }; maya: { memberId: string; memberToken: string }; dev: { memberId: string } };
     const rae = client({ tripId: seed.tripId, memberToken: seed.organizer.memberToken, surface: "phone" });
     const maya = client({ tripId: seed.tripId, memberToken: seed.maya.memberToken, surface: "phone" });

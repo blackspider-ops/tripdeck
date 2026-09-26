@@ -101,7 +101,7 @@ describe("OPT-068 / OPT-019: text helpers, shared formatters and validateBrief",
   it("validateBrief dedupes, drops unknown ids, caps lists, cleans the note and rejects a cap out of range", () => {
     const ds = new TripService().ds;
     const b = validateBrief({
-      capCents: 90_000.4, dateWindowIds: ["W1", "W9"], mustHaves: ["food", "food", "beach", "chill", "museums", "nope" as never],
+      capCents: 90_000.4, dateWindowIds: ["W1", "W99"], mustHaves: ["food", "food", "beach", "chill", "museums", "nope" as never],
       dealbreakers: ["hostel", "hostel", "early_start", "long_walks", "layovers_2plus"], note: "<b>hi</b>\u0000 " + "x".repeat(400),
     }, ds);
     expect(b.capCents).toBe(90_000);
@@ -112,7 +112,7 @@ describe("OPT-068 / OPT-019: text helpers, shared formatters and validateBrief",
     expect(b.note!.length).toBeLessThanOrEqual(NOTE_MAX_CHARS);
     expect(b.note).not.toMatch(/[<>\u0000]/);
     expect(() => validateBrief({ ...b, capCents: CAP_MAX_CENTS + 1 }, ds)).toThrow("between $300 and $3,000");
-    expect(() => validateBrief({ ...b, dateWindowIds: ["W9"] }, ds)).toThrow(expect.objectContaining({ code: "BAD_INPUT" }));
+    expect(() => validateBrief({ ...b, dateWindowIds: ["W99"] }, ds)).toThrow(expect.objectContaining({ code: "BAD_INPUT" }));
   });
 
   it("OPT-028: one no-lookalike alphabet for every human-facing code", () => {

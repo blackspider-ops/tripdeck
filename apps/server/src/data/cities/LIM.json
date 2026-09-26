@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "LIM", "name": "Lima", "country": "Peru", "region": "Latin America", "airport": { "code": "LIM", "lat": -12.0219, "lng": -77.1143 }, "utcOffset": -5, "centerLat": -12.13, "centerLng": -77.028, "tileRadiusKm": 2.5, "publicFlags": ["heavy traffic, allow extra taxi time"] },
+  "hotels": [
+    { "_id": "LIM-h-miraflores-hostel", "kind": "hotel", "cityId": "LIM", "name": "Miraflores Hostel (3 beds)", "neighborhood": "Miraflores", "lat": -12.123, "lng": -77.029, "stayType": "hostel", "nightlyCents": 5500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "LIM-h-barranco-guest", "kind": "hotel", "cityId": "LIM", "name": "Casa Barranco", "neighborhood": "Barranco", "lat": -12.15, "lng": -77.0225, "stayType": "guesthouse", "nightlyCents": 9500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "LIM-h-malecon-apt", "kind": "hotel", "cityId": "LIM", "name": "Miraflores Ocean-view Apartment", "neighborhood": "Miraflores (Malecón)", "lat": -12.1265, "lng": -77.0365, "stayType": "apartment", "nightlyCents": 13000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "LIM-h-miraflores-triple", "kind": "hotel", "cityId": "LIM", "name": "Miraflores Hotel (triple)", "neighborhood": "Miraflores", "lat": -12.12, "lng": -77.0335, "stayType": "hotel", "nightlyCents": 16000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "LIM-h-barranco-triple", "kind": "hotel", "cityId": "LIM", "name": "Barranco Boutique (triple)", "neighborhood": "Barranco", "lat": -12.1465, "lng": -77.021, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "LIM-a-ceviche-tour", "kind": "activity", "cityId": "LIM", "name": "Ceviche & Surquillo market food tour", "short": "Ceviche food tour", "tags": ["food"], "lat": -12.1135, "lng": -77.027, "durationMin": 180, "priceCents": 6500, "startEarliest": "10:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "LIM-a-centro", "kind": "activity", "cityId": "LIM", "name": "Historic centre & San Francisco catacombs", "short": "Historic centre", "tags": ["history"], "lat": -12.0457, "lng": -77.0275, "durationMin": 180, "priceCents": 600, "startEarliest": "09:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "LIM-a-pena", "kind": "activity", "cityId": "LIM", "name": "Criollo music night at a Barranco peña", "short": "Barranco peña", "tags": ["music", "nightlife"], "lat": -12.149, "lng": -77.0215, "durationMin": 180, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "LIM-a-larco", "kind": "activity", "cityId": "LIM", "name": "Museo Larco", "short": "Museo Larco", "tags": ["museums", "history"], "lat": -12.0724, "lng": -77.0705, "durationMin": 150, "priceCents": 1100, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "LIM-a-paragliding", "kind": "activity", "cityId": "LIM", "name": "Tandem paragliding off the Miraflores cliffs", "short": "Paragliding", "tags": ["nature"], "lat": -12.1255, "lng": -77.0375, "durationMin": 60, "priceCents": 8500, "startEarliest": "11:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "LIM-a-pucllana", "kind": "activity", "cityId": "LIM", "name": "Huaca Pucllana adobe pyramid", "short": "Huaca Pucllana", "tags": ["history", "museums"], "lat": -12.111, "lng": -77.0335, "durationMin": 90, "priceCents": 400, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "LIM-a-surf", "kind": "activity", "cityId": "LIM", "name": "Surf lesson at Playa Makaha", "short": "Surf lesson", "tags": ["beach", "nature"], "lat": -12.1275, "lng": -77.041, "durationMin": 120, "priceCents": 4000, "startEarliest": "08:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "LIM-a-malecon-sunset", "kind": "activity", "cityId": "LIM", "name": "Malecón sunset & Parque del Amor", "short": "Malecón sunset", "tags": ["chill"], "lat": -12.126, "lng": -77.0385, "durationMin": 90, "priceCents": 0, "startEarliest": "17:00", "startLatest": "18:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LIM-h-malecon-apt", "toId": "LIM-a-centro", "mode": "taxi", "minutes": 35, "note": "or the Metropolitano bus" },
+    { "fromId": "LIM-h-malecon-apt", "toId": "LIM-a-larco", "mode": "taxi", "minutes": 30, "note": "Miraflores → Pueblo Libre" },
+    { "fromId": "LIM-h-malecon-apt", "toId": "LIM-a-surf", "mode": "walk", "minutes": 15, "note": "stairs down the cliffs to the Costa Verde" }
+  ],
+  "hilly": []
+}

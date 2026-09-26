@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "CLE", "name": "Cleveland", "country": "United States", "state": "OH", "region": "United States", "airport": { "code": "CLE", "lat": 41.4117, "lng": -81.8498 }, "utcOffset": -5, "centerLat": 41.497, "centerLng": -81.69, "tileRadiusKm": 3, "publicFlags": ["cold, gray winters off Lake Erie", "art museum is 6 km out in University Circle"] },
+  "hotels": [
+    { "_id": "CLE-h-ohio-city-hostel", "kind": "hotel", "cityId": "CLE", "name": "Cleveland Hostel (private room)", "neighborhood": "Ohio City", "lat": 41.4827, "lng": -81.7045, "stayType": "hostel", "nightlyCents": 11000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "CLE-h-ohio-city-flat", "kind": "hotel", "cityId": "CLE", "name": "Ohio City Rowhouse Apartment", "neighborhood": "Ohio City", "lat": 41.4843, "lng": -81.7075, "stayType": "apartment", "nightlyCents": 18500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CLE-h-glidden-house", "kind": "hotel", "cityId": "CLE", "name": "Glidden House", "neighborhood": "University Circle", "lat": 41.5083, "lng": -81.609, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "CLE-h-hilton-downtown", "kind": "hotel", "cityId": "CLE", "name": "Hilton Cleveland Downtown (2 queens)", "neighborhood": "Downtown", "lat": 41.5035, "lng": -81.6936, "stayType": "hotel", "nightlyCents": 24500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CLE-h-schofield", "kind": "hotel", "cityId": "CLE", "name": "Kimpton Schofield (2 queens)", "neighborhood": "Downtown", "lat": 41.4995, "lng": -81.687, "stayType": "hotel", "nightlyCents": 27500, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "CLE-a-rock-hall", "kind": "activity", "cityId": "CLE", "name": "Rock & Roll Hall of Fame", "short": "Rock Hall", "tags": ["music", "museums"], "lat": 41.5085, "lng": -81.6954, "durationMin": 180, "priceCents": 3800, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "CLE-a-west-side-market", "kind": "activity", "cityId": "CLE", "name": "West Side Market food crawl", "short": "West Side Market", "tags": ["food"], "lat": 41.4847, "lng": -81.7031, "durationMin": 90, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "CLE-a-playhouse-square", "kind": "activity", "cityId": "CLE", "name": "Show at Playhouse Square", "short": "Playhouse Square", "tags": ["music", "nightlife"], "lat": 41.5016, "lng": -81.6813, "durationMin": 150, "priceCents": 6500, "startEarliest": "19:30", "startLatest": "20:00", "role": "group" },
+    { "_id": "CLE-a-cma", "kind": "activity", "cityId": "CLE", "name": "Cleveland Museum of Art", "short": "Art museum", "tags": ["museums"], "lat": 41.5079, "lng": -81.6119, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CLE-a-cvnp", "kind": "activity", "cityId": "CLE", "name": "Cuyahoga Valley NP & Brandywine Falls", "short": "Cuyahoga Valley", "tags": ["nature"], "lat": 41.2767, "lng": -81.539, "durationMin": 300, "priceCents": 0, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "CLE-a-edgewater", "kind": "activity", "cityId": "CLE", "name": "Edgewater Park beach", "short": "Edgewater beach", "tags": ["beach", "chill"], "lat": 41.4907, "lng": -81.7358, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "CLE-a-east-4th", "kind": "activity", "cityId": "CLE", "name": "East 4th Street night out", "short": "East 4th night out", "tags": ["nightlife", "food"], "lat": 41.499, "lng": -81.6905, "durationMin": 180, "priceCents": 3500, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "CLE-a-great-lakes-brewing", "kind": "activity", "cityId": "CLE", "name": "Great Lakes Brewing Co. tour", "short": "Brewery tour", "tags": ["food", "chill"], "lat": 41.4843, "lng": -81.7046, "durationMin": 90, "priceCents": 2000, "startEarliest": "12:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CLE-h-schofield", "toId": "CLE-a-cvnp", "mode": "taxi", "minutes": 40, "note": "no transit into the park" },
+    { "fromId": "CLE-h-ohio-city-flat", "toId": "CLE-a-cvnp", "mode": "taxi", "minutes": 40, "note": "no transit into the park" },
+    { "fromId": "CLE-h-schofield", "toId": "CLE-a-cma", "mode": "transit", "minutes": 20, "note": "HealthLine BRT up Euclid Ave" },
+    { "fromId": "CLE-h-glidden-house", "toId": "CLE-a-rock-hall", "mode": "transit", "minutes": 25, "note": "HealthLine BRT downtown" }
+  ],
+  "hilly": ["CLE-a-cvnp"]
+}

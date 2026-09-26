@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "RAK", "name": "Marrakech", "country": "Morocco", "region": "Africa", "airport": { "code": "RAK", "lat": 31.6069, "lng": -8.0363 }, "utcOffset": 1, "centerLat": 31.626, "centerLng": -7.989, "tileRadiusKm": 2.5, "publicFlags": ["pushy touts in the souks", "little alcohol inside the medina"] },
+  "hotels": [
+    { "_id": "RAK-h-medina-hostel", "kind": "hotel", "cityId": "RAK", "name": "Medina Hostel (3 beds)", "neighborhood": "Medina", "lat": 31.628, "lng": -7.987, "stayType": "hostel", "nightlyCents": 5500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "RAK-h-gueliz-flat", "kind": "hotel", "cityId": "RAK", "name": "Gueliz Apartment", "neighborhood": "Gueliz", "lat": 31.634, "lng": -8.01, "stayType": "apartment", "nightlyCents": 9500, "sleeps": 4, "rating": 4.3 },
+    { "_id": "RAK-h-kasbah-triple", "kind": "hotel", "cityId": "RAK", "name": "Kasbah Riad Hotel (triple)", "neighborhood": "Kasbah", "lat": 31.6195, "lng": -7.988, "stayType": "hotel", "nightlyCents": 13000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "RAK-h-mouassine-riad", "kind": "hotel", "cityId": "RAK", "name": "Riad Mouassine", "neighborhood": "Mouassine", "lat": 31.63, "lng": -7.99, "stayType": "guesthouse", "nightlyCents": 17000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "RAK-h-hivernage-triple", "kind": "hotel", "cityId": "RAK", "name": "Hivernage Hotel (triple)", "neighborhood": "Hivernage", "lat": 31.6225, "lng": -8.012, "stayType": "hotel", "nightlyCents": 20000, "sleeps": 3, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "RAK-a-jemaa", "kind": "activity", "cityId": "RAK", "name": "Jemaa el-Fna night food stalls", "short": "Jemaa el-Fna stalls", "tags": ["food", "nightlife", "music"], "lat": 31.6258, "lng": -7.9891, "durationMin": 150, "priceCents": 1500, "startEarliest": "18:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "RAK-a-majorelle", "kind": "activity", "cityId": "RAK", "name": "Jardin Majorelle & YSL Museum", "short": "Majorelle garden", "tags": ["nature", "museums"], "lat": 31.6417, "lng": -8.0033, "durationMin": 120, "priceCents": 2700, "startEarliest": "08:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "RAK-a-souks", "kind": "activity", "cityId": "RAK", "name": "Souks & medina guided walk", "short": "Souk walk", "tags": ["history"], "lat": 31.631, "lng": -7.987, "durationMin": 180, "priceCents": 2500, "startEarliest": "09:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "RAK-a-bahia", "kind": "activity", "cityId": "RAK", "name": "Bahia Palace", "short": "Bahia Palace", "tags": ["history"], "lat": 31.6216, "lng": -7.9831, "durationMin": 90, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "RAK-a-hammam", "kind": "activity", "cityId": "RAK", "name": "Traditional hammam & massage", "short": "Hammam", "tags": ["chill"], "lat": 31.629, "lng": -7.988, "durationMin": 120, "priceCents": 4500, "startEarliest": "10:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "RAK-a-cooking", "kind": "activity", "cityId": "RAK", "name": "Moroccan cooking class", "short": "Cooking class", "tags": ["food"], "lat": 31.628, "lng": -7.99, "durationMin": 240, "priceCents": 6000, "startEarliest": "09:30", "startLatest": "15:00", "role": "pick" },
+    { "_id": "RAK-a-ourika", "kind": "activity", "cityId": "RAK", "name": "Atlas foothills & Ourika Valley day trip", "short": "Ourika Valley", "tags": ["nature"], "lat": 31.227, "lng": -7.676, "durationMin": 540, "priceCents": 4500, "startEarliest": "08:00", "startLatest": "09:00", "role": "pick", "earlyStart": true },
+    { "_id": "RAK-a-agafay", "kind": "activity", "cityId": "RAK", "name": "Agafay desert sunset dinner", "short": "Agafay sunset", "tags": ["chill", "music"], "lat": 31.47, "lng": -8.2, "durationMin": 330, "priceCents": 7000, "startEarliest": "15:30", "startLatest": "16:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "RAK-h-medina-hostel", "toId": "RAK-a-ourika", "mode": "taxi", "minutes": 75, "note": "tour minibus up the Ourika road" },
+    { "fromId": "RAK-h-mouassine-riad", "toId": "RAK-a-agafay", "mode": "taxi", "minutes": 50, "note": "camp 4x4 transfer" },
+    { "fromId": "RAK-h-hivernage-triple", "toId": "RAK-a-souks", "mode": "taxi", "minutes": 15, "note": "drop at Jemaa el-Fna, then on foot" }
+  ],
+  "hilly": ["RAK-a-ourika"]
+}

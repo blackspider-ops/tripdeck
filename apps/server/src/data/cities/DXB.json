@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "DXB", "name": "Dubai", "country": "United Arab Emirates", "region": "Middle East", "airport": { "code": "DXB", "lat": 25.2532, "lng": 55.3657 }, "utcOffset": 4, "centerLat": 25.2, "centerLng": 55.27, "tileRadiusKm": 3, "publicFlags": ["modest dress in malls and heritage areas", "strong midday sun"] },
+  "hotels": [
+    { "_id": "DXB-h-deira-hostel", "kind": "hotel", "cityId": "DXB", "name": "Deira Hostel (3 beds)", "neighborhood": "Deira", "lat": 25.27, "lng": 55.305, "stayType": "hostel", "nightlyCents": 6000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "DXB-h-al-fahidi-guest", "kind": "hotel", "cityId": "DXB", "name": "Al Fahidi Heritage Guesthouse", "neighborhood": "Al Fahidi", "lat": 25.264, "lng": 55.3, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "DXB-h-business-bay-triple", "kind": "hotel", "cityId": "DXB", "name": "Business Bay Hotel (triple)", "neighborhood": "Business Bay", "lat": 25.1865, "lng": 55.272, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DXB-h-marina-flat", "kind": "hotel", "cityId": "DXB", "name": "Dubai Marina Apartment", "neighborhood": "Dubai Marina", "lat": 25.0805, "lng": 55.1405, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "DXB-h-downtown-triple", "kind": "hotel", "cityId": "DXB", "name": "Downtown Hotel (triple)", "neighborhood": "Downtown Dubai", "lat": 25.1945, "lng": 55.278, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "DXB-a-burj-khalifa", "kind": "activity", "cityId": "DXB", "name": "Burj Khalifa At the Top & Dubai Fountain", "short": "Burj Khalifa", "tags": ["chill", "music"], "lat": 25.1972, "lng": 55.2744, "durationMin": 120, "priceCents": 5500, "startEarliest": "10:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "DXB-a-old-dubai", "kind": "activity", "cityId": "DXB", "name": "Al Fahidi, abra ride & souks", "short": "Old Dubai & souks", "tags": ["history", "food"], "lat": 25.2635, "lng": 55.2995, "durationMin": 180, "priceCents": 800, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "DXB-a-desert", "kind": "activity", "cityId": "DXB", "name": "Desert safari & camp dinner", "short": "Desert safari", "tags": ["nature", "food"], "lat": 24.975, "lng": 55.62, "durationMin": 360, "priceCents": 7000, "startEarliest": "15:00", "startLatest": "15:30", "role": "group" },
+    { "_id": "DXB-a-kite-beach", "kind": "activity", "cityId": "DXB", "name": "Kite Beach", "short": "Kite Beach", "tags": ["beach", "chill"], "lat": 25.159, "lng": 55.237, "durationMin": 180, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "DXB-a-museum-future", "kind": "activity", "cityId": "DXB", "name": "Museum of the Future", "short": "Museum of the Future", "tags": ["museums"], "lat": 25.2193, "lng": 55.282, "durationMin": 120, "priceCents": 4100, "startEarliest": "10:00", "startLatest": "18:30", "role": "pick" },
+    { "_id": "DXB-a-etihad", "kind": "activity", "cityId": "DXB", "name": "Etihad Museum", "short": "Etihad Museum", "tags": ["museums", "history"], "lat": 25.24, "lng": 55.2715, "durationMin": 90, "priceCents": 1400, "startEarliest": "10:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "DXB-a-karama-food", "kind": "activity", "cityId": "DXB", "name": "Karama & Deira food walk", "short": "Food walk", "tags": ["food"], "lat": 25.244, "lng": 55.304, "durationMin": 210, "priceCents": 8000, "startEarliest": "17:30", "startLatest": "19:00", "role": "pick" },
+    { "_id": "DXB-a-marina-night", "kind": "activity", "cityId": "DXB", "name": "Dubai Marina night out", "short": "Marina night out", "tags": ["nightlife"], "lat": 25.079, "lng": 55.14, "durationMin": 180, "priceCents": 4000, "startEarliest": "21:00", "startLatest": "23:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DXB-h-downtown-triple", "toId": "DXB-a-desert", "mode": "taxi", "minutes": 50, "note": "tour pickup included" },
+    { "fromId": "DXB-h-deira-hostel", "toId": "DXB-a-marina-night", "mode": "transit", "minutes": 55, "note": "Metro Red Line" },
+    { "fromId": "DXB-h-business-bay-triple", "toId": "DXB-a-kite-beach", "mode": "taxi", "minutes": 15 },
+    { "fromId": "DXB-h-marina-flat", "toId": "DXB-a-old-dubai", "mode": "transit", "minutes": 55, "note": "Metro Red Line + short walk" }
+  ],
+  "hilly": []
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "PTY", "name": "Panama City", "country": "Panama", "region": "Latin America", "airport": {"code": "PTY", "lat": 9.0714, "lng": -79.3835}, "utcOffset": -5, "centerLat": 8.97, "centerLng": -79.54, "tileRadiusKm": 2.5, "publicFlags": ["hot and humid year-round"] },
+  "hotels": [
+    { "_id": "PTY-h-casco-hostel", "kind": "hotel", "cityId": "PTY", "name": "Casco Viejo Hostel (3 beds)", "neighborhood": "Casco Viejo", "lat": 8.9545, "lng": -79.5355, "stayType": "hostel", "nightlyCents": 7000, "sleeps": 3, "rating": 4 },
+    { "_id": "PTY-h-bellavista-guest", "kind": "hotel", "cityId": "PTY", "name": "Bella Vista Guesthouse", "neighborhood": "Bella Vista", "lat": 8.979, "lng": -79.526, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "PTY-h-cangrejo-triple", "kind": "hotel", "cityId": "PTY", "name": "El Cangrejo Hotel (triple)", "neighborhood": "El Cangrejo", "lat": 8.985, "lng": -79.527, "stayType": "hotel", "nightlyCents": 13000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "PTY-h-casco-flat", "kind": "hotel", "cityId": "PTY", "name": "Casco Viejo Apartment", "neighborhood": "Casco Viejo", "lat": 8.952, "lng": -79.5345, "stayType": "apartment", "nightlyCents": 16000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PTY-h-casco-triple", "kind": "hotel", "cityId": "PTY", "name": "Casco Viejo Boutique (triple)", "neighborhood": "Casco Viejo", "lat": 8.953, "lng": -79.5335, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "PTY-a-miraflores", "kind": "activity", "cityId": "PTY", "name": "Panama Canal, Miraflores Locks", "short": "Miraflores Locks", "tags": ["history", "museums"], "lat": 8.9965, "lng": -79.591, "durationMin": 120, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "PTY-a-casco-walk", "kind": "activity", "cityId": "PTY", "name": "Casco Viejo walk", "short": "Casco Viejo walk", "tags": ["history"], "lat": 8.9525, "lng": -79.534, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "PTY-a-rooftop-night", "kind": "activity", "cityId": "PTY", "name": "Casco rooftop bar night", "short": "Rooftop night", "tags": ["nightlife", "music"], "lat": 8.9535, "lng": -79.534, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "PTY-a-biomuseo", "kind": "activity", "cityId": "PTY", "name": "Biomuseo", "short": "Biomuseo", "tags": ["museums", "nature"], "lat": 8.932, "lng": -79.545, "durationMin": 120, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "PTY-a-fish-market", "kind": "activity", "cityId": "PTY", "name": "Ceviche at Mercado de Mariscos", "short": "Fish market ceviche", "tags": ["food"], "lat": 8.9575, "lng": -79.536, "durationMin": 60, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "PTY-a-amador", "kind": "activity", "cityId": "PTY", "name": "Amador Causeway bike ride", "short": "Amador Causeway", "tags": ["chill", "nature"], "lat": 8.917, "lng": -79.533, "durationMin": 150, "priceCents": 1500, "startEarliest": "08:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "PTY-a-metro-park", "kind": "activity", "cityId": "PTY", "name": "Parque Natural Metropolitano hike", "short": "Metropolitan Park", "tags": ["nature"], "lat": 8.995, "lng": -79.544, "durationMin": 150, "priceCents": 500, "startEarliest": "07:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "PTY-a-taboga", "kind": "activity", "cityId": "PTY", "name": "Taboga Island beach day (ferry)", "short": "Taboga Island", "tags": ["beach", "chill"], "lat": 8.795, "lng": -79.554, "durationMin": 420, "priceCents": 3000, "startEarliest": "08:00", "startLatest": "10:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PTY-h-casco-flat", "toId": "PTY-a-taboga", "mode": "transit", "minutes": 50, "note": "taxi to Amador ferry terminal + 30-min ferry" },
+    { "fromId": "PTY-h-casco-flat", "toId": "PTY-a-miraflores", "mode": "taxi", "minutes": 25 },
+    { "fromId": "PTY-h-cangrejo-triple", "toId": "PTY-a-miraflores", "mode": "taxi", "minutes": 25 }
+  ],
+  "hilly": ["PTY-a-metro-park"]
+}

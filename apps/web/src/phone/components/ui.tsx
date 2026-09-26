@@ -1,5 +1,5 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { BANDS, ORIGIN_COORDS, ORIGINS, SIGNAL_LOST, type Band, type Origin } from "@all-ayes/shared";
+import { useId, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode } from "react";
+import { BANDS, ORIGIN_COORDS, SIGNAL_LOST, searchAirports, type Band, type Origin } from "@all-ayes/shared";
 import { Dividers } from "./icons";
 import "../../styles/phone.css";
 
@@ -80,13 +80,52 @@ export function BandSwatches({ value, onChange, taken = [], label = "Your color 
   );
 }
 
+/** How many matches the home-airport picker lists at once. */
+const ORIGIN_MATCHES = 8;
+const originLabel = (o: Origin) => (ORIGIN_COORDS[o] ? `${ORIGIN_COORDS[o].name} (${o})` : o);
+
+/**
+ * The home airport, searchable (type a code or a city: "sea", "Seattle", "YYZ"). A combobox: arrow keys move through
+ * the matches, Enter picks, Escape puts the current airport back.
+ */
 export function OriginSelect({ value, onChange }: { value: Origin; onChange: (o: Origin) => void }) {
+  const [q, setQ] = useState<string | null>(null); // null = not searching: show the chosen airport
+  const [active, setActive] = useState(0);
+  const listId = useId();
+  const matches = q === null ? [] : searchAirports(q).slice(0, ORIGIN_MATCHES);
+  const choose = (code: string) => { onChange(code); setQ(null); setActive(0); };
+  const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") { setQ(null); return; }
+    if (!matches.length) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => (i + 1) % matches.length); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setActive((i) => (i <= 0 ? matches.length - 1 : i - 1)); }
+    else if (e.key === "Enter") { e.preventDefault(); choose(matches[Math.min(active, matches.length - 1)].code); }
+  };
   return (
-    <select className="input" value={value} onChange={(e) => onChange(e.target.value as Origin)} aria-label="Flying from">
-      {ORIGINS.map((o) => (
-        <option key={o} value={o}>{ORIGIN_COORDS[o].name} ({o})</option>
-      ))}
-    </select>
+    <div className="origin-picker">
+      <input
+        className="input" type="text" aria-label="Flying from" role="combobox" aria-autocomplete="list"
+        aria-expanded={matches.length > 0} aria-controls={listId} autoComplete="off" spellCheck={false}
+        aria-activedescendant={matches.length ? `${listId}-${active}` : undefined}
+        placeholder="Type a city or airport code"
+        value={q ?? originLabel(value)}
+        onFocus={(e) => { setQ(""); e.currentTarget.select(); }}
+        onChange={(e) => { setQ(e.target.value); setActive(0); }}
+        onBlur={() => setTimeout(() => setQ(null), 150)}
+        onKeyDown={onKey}
+      />
+      {matches.length ? (
+        <ul className="origin-results" id={listId} role="listbox" aria-label="Home airports">
+          {matches.map((a, i) => (
+            <li key={a.code} id={`${listId}-${i}`} role="option" aria-selected={i === active}>
+              <button type="button" className={`city-row${i === active ? " active" : ""}`} onMouseDown={(e) => e.preventDefault()} onClick={() => choose(a.code)}>
+                <span className="city-name">{a.city}</span> <span className="mono small">{a.code}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
   );
 }
 

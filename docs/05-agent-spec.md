@@ -17,6 +17,22 @@ Model: a fast Gemini Flash‑class model via `@google/genai`, `temperature 0.7` 
 
 ---
 
+## 2.0 Pre-rank (regions / anywhere voyages)
+
+A voyage set to regions, US states or "anywhere" has no ports until the table meets. At `table:start` the helm scores
+every curated port in scope for this crew (`fit/prerank.ts`) and keeps the **top 4** as the ports on the chart, so
+the chart book stays at ≤ 60 candidates and 12 plans. Per member: must‑have coverage among the port's activities
+(40 pts), a rough all‑in share (cheapest route option from their home airport + the cheapest stay that sleeps the
+crew split evenly + group moments + two picks) against their cap (+25 well under … −70 far over), −25 per dealbreaker
+the best flight breaks, −30 when only hostels are left for a no‑hostel member, −8 for hills when long walks are out,
++18 for a loved place (the port, its region or state) and −35 for a skipped one, −6 for beach / outdoors wishes in the
+port's cold months. A port's score is the crew's mean + half its lowest member, plus a hash of (voyage id, port) × 6 to
+break near‑ties. Only the ranking leaves the helm. The Captain's OPEN then says what was asked for: "We're looking at
+Europe. Barcelona, Lisbon, Prague and Athens are on the chart. Let's hear it."
+
+A member's loved / skipped places also nudge their own mate's Watch‑1 proposal (+8 / −15 preference points on a
+fitting plan) and reach its prompt as `wishes.places_loved` / `places_skipped` (names only).
+
 ## 2. Candidate plan space (deterministic, before any LLM call)
 
 `fit/pricing.ts` builds a finite set of **candidate Plans** so agents can only reference real, priced options:
@@ -174,7 +190,7 @@ One `PrivacyContext` per table (`privacy/context.ts`), built by the service from
 Before extraction, text is NFKC-normalised, zero-width/bidi characters are removed, digits from any script become ASCII and `9_0_0` → `900`. Extraction also reads space-grouped thousands (`$1 100`), `1.1k`, joined words (`ninehundred`), slang (`hundo`, `grand`), spoken zeros (`nine-oh-oh`), digit-by-digit words (`eight six eight`), and simple arithmetic (`450 plus 450`, `a grand minus a hundred`, `2869 split three ways`).
 1. **Sensitive set:** every member's cap, every member's share, every member's headroom (cap−share), each as dollars; plus common spoken forms ("750", "seven fifty", "7.5k", "under 800").
 2. **Extract numbers** from text: digits with/without `$`/`,`/`k`; spelled numbers (words→number); ranges ("700 to 800").
-3. **Allowed set:** exact public values in the chart book (listing prices, the ends of each public group-total range), dates, times, durations, counts ≤ 10, walking minutes. Each chart's exact group total is in the *sensitive* set (S2-002).
+3. **Allowed set:** exact public values in the chart book (listing prices, the ends of each public group-total range), dates, times, durations, counts ≤ 10, walking minutes. Each chart's exact group total is in the *sensitive* set (S2-002). Listing prices are those of the ports and windows on this table — stays, activities, and every home airport's flights there (curated or modelled). With ~40 home airports those are dense, so any public value within $1 of a secret is dropped from the allowed set (the secret wins). Modelled fares never sit on a round $50 and range bounds sit on $25 / $75, so neither can read as a cap.
 4. **Rule:** a number within ±5% of any sensitive value that isn't an *exact* allowed value → **leak**. Also leak if limit talk (`budget|cap|limit|afford|spend|max|tops…`) or per-member share talk (`each|apiece|per person|my share…`) comes with any non-public number ≥ 100.
 5. **On leak:** regenerate once with an added instruction ("Do not state any amount; say it doesn't fit"). If still leaking → the act's template; if even that fails → a neutral safe line for that act (`safeLine`: OPEN "The ports are on the chart…", PROPOSE "<city> would suit my friend.", OBJECT "<city> doesn't work for my friend.", SUPPORT "I'll back <city>.", CONCEDE "I'll come round to <city>.", DECIDE "Two charts, then. Let's run them dry."). Count redactions (rejected attempts, stripped amounts, rewrites) in `turn.redactions`.
 6. **Name + affordability** ("Maya can't afford", "Maya simply cannot afford") → rewrite to "one of us".

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BNA", "name": "Nashville", "country": "United States", "state": "TN", "region": "United States", "airport": {"code": "BNA", "lat": 36.1263, "lng": -86.6774}, "utcOffset": -6, "centerLat": 36.158, "centerLng": -86.785, "tileRadiusKm": 3, "publicFlags": ["hot and humid in summer", "Broadway packed with bachelorette parties"] },
+  "hotels": [
+    { "_id": "BNA-h-gulch", "kind": "hotel", "cityId": "BNA", "name": "The Gulch Apartment", "neighborhood": "The Gulch", "lat": 36.1525, "lng": -86.7845, "stayType": "apartment", "nightlyCents": 34000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BNA-h-broadway-triple", "kind": "hotel", "cityId": "BNA", "name": "Broadway Hotel (triple)", "neighborhood": "Downtown", "lat": 36.161, "lng": -86.7775, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "BNA-h-sobro-triple", "kind": "hotel", "cityId": "BNA", "name": "SoBro Hotel (triple)", "neighborhood": "SoBro", "lat": 36.156, "lng": -86.7725, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "BNA-h-east-guest", "kind": "hotel", "cityId": "BNA", "name": "East Nashville Guesthouse", "neighborhood": "East Nashville", "lat": 36.172, "lng": -86.758, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "BNA-h-midtown-hostel", "kind": "hotel", "cityId": "BNA", "name": "Midtown Hostel (3 beds)", "neighborhood": "Midtown", "lat": 36.151, "lng": -86.794, "stayType": "hostel", "nightlyCents": 15000, "sleeps": 3, "rating": 4.1 }
+  ],
+  "activities": [
+    { "_id": "BNA-a-honky-tonk", "kind": "activity", "cityId": "BNA", "name": "Honky-tonk crawl, Lower Broadway", "short": "Honky-tonk crawl", "tags": ["music", "nightlife"], "lat": 36.1612, "lng": -86.776, "durationMin": 180, "priceCents": 3000, "startEarliest": "19:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "BNA-a-ryman", "kind": "activity", "cityId": "BNA", "name": "Ryman Auditorium tour", "short": "Ryman tour", "tags": ["history", "music"], "lat": 36.1612, "lng": -86.7785, "durationMin": 75, "priceCents": 3800, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "BNA-a-hot-chicken", "kind": "activity", "cityId": "BNA", "name": "Hattie B's hot chicken", "short": "Hot chicken", "tags": ["food"], "lat": 36.151, "lng": -86.796, "durationMin": 75, "priceCents": 1800, "startEarliest": "11:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BNA-a-hall-of-fame", "kind": "activity", "cityId": "BNA", "name": "Country Music Hall of Fame", "short": "CMHOF", "tags": ["museums", "history"], "lat": 36.1582, "lng": -86.776, "durationMin": 150, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BNA-a-opry", "kind": "activity", "cityId": "BNA", "name": "Grand Ole Opry show", "short": "Grand Ole Opry", "tags": ["music"], "lat": 36.2066, "lng": -86.6922, "durationMin": 150, "priceCents": 8500, "startEarliest": "19:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "BNA-a-radnor", "kind": "activity", "cityId": "BNA", "name": "Radnor Lake hike", "short": "Radnor Lake hike", "tags": ["nature"], "lat": 36.062, "lng": -86.81, "durationMin": 150, "priceCents": 0, "startEarliest": "08:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "BNA-a-parthenon", "kind": "activity", "cityId": "BNA", "name": "The Parthenon, Centennial Park", "short": "Parthenon", "tags": ["museums", "chill"], "lat": 36.1497, "lng": -86.8133, "durationMin": 90, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "15:30", "role": "pick" },
+    { "_id": "BNA-a-bridge-rooftop", "kind": "activity", "cityId": "BNA", "name": "Pedestrian bridge & rooftop drinks", "short": "Bridge & rooftop", "tags": ["chill", "nightlife"], "lat": 36.162, "lng": -86.7715, "durationMin": 120, "priceCents": 2500, "startEarliest": "17:00", "startLatest": "19:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BNA-h-gulch", "toId": "BNA-a-opry", "mode": "taxi", "minutes": 20 },
+    { "fromId": "BNA-h-gulch", "toId": "BNA-a-radnor", "mode": "taxi", "minutes": 20 },
+    { "fromId": "BNA-h-east-guest", "toId": "BNA-a-honky-tonk", "mode": "walk", "minutes": 25, "note": "across the pedestrian bridge" }
+  ],
+  "hilly": []
+}

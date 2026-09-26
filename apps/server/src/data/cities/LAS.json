@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "LAS", "name": "Las Vegas", "country": "United States", "state": "NV", "region": "United States", "airport": {"code": "LAS", "lat": 36.084, "lng": -115.1537}, "utcOffset": -8, "centerLat": 36.125, "centerLng": -115.168, "tileRadiusKm": 3, "publicFlags": ["desert heat May–Sep (40 °C+)", "long walks between Strip casinos"] },
+  "hotels": [
+    { "_id": "LAS-h-sin-city-hostel", "kind": "hotel", "cityId": "LAS", "name": "Sin City Hostel (private 3-bed)", "neighborhood": "Strip North", "lat": 36.157, "lng": -115.152, "stayType": "hostel", "nightlyCents": 7500, "sleeps": 3, "rating": 3.6 },
+    { "_id": "LAS-h-downtown-grand", "kind": "hotel", "cityId": "LAS", "name": "Downtown Grand (2 queens)", "neighborhood": "Downtown / Fremont", "lat": 36.172, "lng": -115.1415, "stayType": "hotel", "nightlyCents": 13000, "sleeps": 4, "rating": 4.1 },
+    { "_id": "LAS-h-flamingo", "kind": "hotel", "cityId": "LAS", "name": "Flamingo Las Vegas (2 queens)", "neighborhood": "Center Strip", "lat": 36.1162, "lng": -115.1708, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 4, "rating": 4 },
+    { "_id": "LAS-h-vdara", "kind": "hotel", "cityId": "LAS", "name": "Vdara suite (kitchenette)", "neighborhood": "CityCenter", "lat": 36.1098, "lng": -115.1778, "stayType": "apartment", "nightlyCents": 29000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "LAS-h-cosmopolitan", "kind": "hotel", "cityId": "LAS", "name": "The Cosmopolitan (2 queens)", "neighborhood": "Center Strip", "lat": 36.1097, "lng": -115.1745, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "LAS-a-bellagio-fountains", "kind": "activity", "cityId": "LAS", "name": "Bellagio fountains & Conservatory", "short": "Bellagio fountains", "tags": ["chill"], "lat": 36.1126, "lng": -115.1767, "durationMin": 60, "priceCents": 0, "startEarliest": "11:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "LAS-a-cirque-o", "kind": "activity", "cityId": "LAS", "name": "Cirque du Soleil 'O' at Bellagio", "short": "Cirque 'O'", "tags": ["music", "nightlife"], "lat": 36.1129, "lng": -115.176, "durationMin": 90, "priceCents": 16500, "startEarliest": "19:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "LAS-a-red-rock", "kind": "activity", "cityId": "LAS", "name": "Red Rock Canyon scenic drive & hike", "short": "Red Rock Canyon", "tags": ["nature"], "lat": 36.1354, "lng": -115.4275, "durationMin": 240, "priceCents": 500, "startEarliest": "08:00", "startLatest": "11:00", "role": "group" },
+    { "_id": "LAS-a-fremont", "kind": "activity", "cityId": "LAS", "name": "Fremont Street Experience", "short": "Fremont Street", "tags": ["nightlife"], "lat": 36.1707, "lng": -115.144, "durationMin": 180, "priceCents": 0, "startEarliest": "19:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "LAS-a-mob-museum", "kind": "activity", "cityId": "LAS", "name": "The Mob Museum", "short": "Mob Museum", "tags": ["history", "museums"], "lat": 36.1728, "lng": -115.141, "durationMin": 150, "priceCents": 3800, "startEarliest": "09:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "LAS-a-neon-museum", "kind": "activity", "cityId": "LAS", "name": "Neon Museum boneyard", "short": "Neon Museum", "tags": ["history"], "lat": 36.177, "lng": -115.1352, "durationMin": 60, "priceCents": 3400, "startEarliest": "16:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "LAS-a-bacchanal", "kind": "activity", "cityId": "LAS", "name": "Bacchanal Buffet, Caesars Palace", "short": "Bacchanal Buffet", "tags": ["food"], "lat": 36.1162, "lng": -115.1745, "durationMin": 120, "priceCents": 8500, "startEarliest": "08:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "LAS-a-hoover-dam", "kind": "activity", "cityId": "LAS", "name": "Hoover Dam tour", "short": "Hoover Dam", "tags": ["history", "nature"], "lat": 36.016, "lng": -114.7377, "durationMin": 240, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LAS-h-flamingo", "toId": "LAS-a-red-rock", "mode": "taxi", "minutes": 30, "note": "timed-entry reservation Oct–May" },
+    { "fromId": "LAS-h-flamingo", "toId": "LAS-a-hoover-dam", "mode": "taxi", "minutes": 45, "note": "I-11 to Boulder City" },
+    { "fromId": "LAS-h-flamingo", "toId": "LAS-a-fremont", "mode": "transit", "minutes": 30, "note": "Deuce bus up the Strip" },
+    { "fromId": "LAS-h-sin-city-hostel", "toId": "LAS-a-red-rock", "mode": "taxi", "minutes": 30 }
+  ],
+  "hilly": []
+}

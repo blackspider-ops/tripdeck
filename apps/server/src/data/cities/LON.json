@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "LON", "name": "London", "country": "United Kingdom", "region": "Europe", "airport": { "code": "LHR", "lat": 51.47, "lng": -0.4543 }, "utcOffset": 0, "centerLat": 51.51, "centerLng": -0.11, "tileRadiusKm": 3.0, "publicFlags": ["expensive rooms and meals", "rain likely in March"] },
+  "hotels": [
+    { "_id": "LON-h-kings-cross-hostel", "kind": "hotel", "cityId": "LON", "name": "King's Cross Hostel (3 beds)", "neighborhood": "King's Cross", "lat": 51.53, "lng": -0.123, "stayType": "hostel", "nightlyCents": 16500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "LON-h-bloomsbury-guest", "kind": "hotel", "cityId": "LON", "name": "Bloomsbury Guesthouse", "neighborhood": "Bloomsbury", "lat": 51.522, "lng": -0.126, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "LON-h-shoreditch-flat", "kind": "hotel", "cityId": "LON", "name": "Shoreditch Apartment", "neighborhood": "Shoreditch", "lat": 51.526, "lng": -0.079, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "LON-h-southbank-triple", "kind": "hotel", "cityId": "LON", "name": "Southwark Hotel (triple)", "neighborhood": "Southwark", "lat": 51.5045, "lng": -0.1, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "LON-h-covent-triple", "kind": "hotel", "cityId": "LON", "name": "Covent Garden Hotel (triple)", "neighborhood": "Covent Garden", "lat": 51.5117, "lng": -0.124, "stayType": "hotel", "nightlyCents": 45000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "LON-a-british-museum", "kind": "activity", "cityId": "LON", "name": "British Museum", "short": "British Museum", "tags": ["museums", "history"], "lat": 51.5194, "lng": -0.127, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:30", "role": "group" },
+    { "_id": "LON-a-west-end", "kind": "activity", "cityId": "LON", "name": "West End musical", "short": "West End musical", "tags": ["music", "nightlife"], "lat": 51.5115, "lng": -0.13, "durationMin": 165, "priceCents": 8000, "startEarliest": "19:00", "startLatest": "19:30", "role": "group" },
+    { "_id": "LON-a-borough", "kind": "activity", "cityId": "LON", "name": "Borough Market grazing", "short": "Borough Market", "tags": ["food"], "lat": 51.5055, "lng": -0.091, "durationMin": 120, "priceCents": 3500, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "LON-a-tower", "kind": "activity", "cityId": "LON", "name": "Tower of London & Crown Jewels", "short": "Tower of London", "tags": ["history"], "lat": 51.5081, "lng": -0.0759, "durationMin": 180, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "14:30", "role": "pick" },
+    { "_id": "LON-a-tate", "kind": "activity", "cityId": "LON", "name": "Tate Modern", "short": "Tate Modern", "tags": ["museums"], "lat": 51.5076, "lng": -0.0994, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "LON-a-hampstead", "kind": "activity", "cityId": "LON", "name": "Hampstead Heath & Parliament Hill", "short": "Hampstead Heath", "tags": ["nature", "chill"], "lat": 51.5608, "lng": -0.1513, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "LON-a-camden", "kind": "activity", "cityId": "LON", "name": "Camden Market & Regent's Canal walk", "short": "Camden & canal", "tags": ["food", "chill"], "lat": 51.5413, "lng": -0.1462, "durationMin": 150, "priceCents": 2000, "startEarliest": "11:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "LON-a-ronnie-scotts", "kind": "activity", "cityId": "LON", "name": "Jazz at Ronnie Scott's", "short": "Ronnie Scott's", "tags": ["music", "nightlife"], "lat": 51.5133, "lng": -0.1318, "durationMin": 150, "priceCents": 5000, "startEarliest": "19:00", "startLatest": "22:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LON-h-covent-triple", "toId": "LON-a-hampstead", "mode": "transit", "minutes": 35, "note": "Northern line to Hampstead + walk" },
+    { "fromId": "LON-h-shoreditch-flat", "toId": "LON-a-camden", "mode": "transit", "minutes": 25, "note": "Overground to Camden Road" }
+  ],
+  "hilly": ["LON-a-hampstead"]
+}

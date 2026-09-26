@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "STL", "name": "St. Louis", "country": "United States", "state": "MO", "region": "United States", "airport": { "code": "STL", "lat": 38.7487, "lng": -90.37 }, "utcOffset": -6, "centerLat": 38.63, "centerLng": -90.215, "tileRadiusKm": 3, "publicFlags": ["hot, humid summers", "Forest Park & the Garden are best reached by rideshare"] },
+  "hotels": [
+    { "_id": "STL-h-drury-union", "kind": "hotel", "cityId": "STL", "name": "Drury Inn & Suites at Union Station (2 queens)", "neighborhood": "Downtown West", "lat": 38.63, "lng": -90.209, "stayType": "hotel", "nightlyCents": 15000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "STL-h-lehmann-house", "kind": "hotel", "cityId": "STL", "name": "Lehmann House B&B", "neighborhood": "Lafayette Square", "lat": 38.615, "lng": -90.217, "stayType": "guesthouse", "nightlyCents": 17000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "STL-h-cwe-flat", "kind": "hotel", "cityId": "STL", "name": "Central West End Apartment", "neighborhood": "Central West End", "lat": 38.6445, "lng": -90.261, "stayType": "apartment", "nightlyCents": 18000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "STL-h-union-station", "kind": "hotel", "cityId": "STL", "name": "St. Louis Union Station Hotel (2 queens)", "neighborhood": "Downtown West", "lat": 38.6292, "lng": -90.2079, "stayType": "hotel", "nightlyCents": 23000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "STL-h-hotel-saint-louis", "kind": "hotel", "cityId": "STL", "name": "Hotel Saint Louis (2 queens)", "neighborhood": "Downtown", "lat": 38.6275, "lng": -90.1905, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "STL-a-gateway-arch", "kind": "activity", "cityId": "STL", "name": "Gateway Arch tram to the top", "short": "Gateway Arch", "tags": ["history"], "lat": 38.6247, "lng": -90.1848, "durationMin": 120, "priceCents": 2000, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "STL-a-city-museum", "kind": "activity", "cityId": "STL", "name": "City Museum", "short": "City Museum", "tags": ["chill", "museums"], "lat": 38.6336, "lng": -90.2006, "durationMin": 180, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "STL-a-bb-blues", "kind": "activity", "cityId": "STL", "name": "Blues at BB's Jazz, Blues & Soups", "short": "BB's blues night", "tags": ["music", "nightlife"], "lat": 38.6233, "lng": -90.192, "durationMin": 150, "priceCents": 1500, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "STL-a-forest-park", "kind": "activity", "cityId": "STL", "name": "Forest Park & Saint Louis Art Museum", "short": "Forest Park & SLAM", "tags": ["museums", "nature"], "lat": 38.6393, "lng": -90.2944, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "STL-a-botanical-garden", "kind": "activity", "cityId": "STL", "name": "Missouri Botanical Garden", "short": "Botanical Garden", "tags": ["nature"], "lat": 38.6128, "lng": -90.2594, "durationMin": 120, "priceCents": 1600, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "STL-a-anheuser-busch", "kind": "activity", "cityId": "STL", "name": "Anheuser-Busch Brewery tour", "short": "Budweiser brewery", "tags": ["history", "food"], "lat": 38.599, "lng": -90.2126, "durationMin": 75, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:30", "role": "pick" },
+    { "_id": "STL-a-pappys", "kind": "activity", "cityId": "STL", "name": "Pappy's Smokehouse BBQ", "short": "Pappy's BBQ", "tags": ["food"], "lat": 38.6352, "lng": -90.232, "durationMin": 60, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "STL-a-soulard-bars", "kind": "activity", "cityId": "STL", "name": "Soulard bar night", "short": "Soulard bars", "tags": ["nightlife"], "lat": 38.6089, "lng": -90.202, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "STL-h-hotel-saint-louis", "toId": "STL-a-forest-park", "mode": "train", "minutes": 20, "note": "MetroLink to Forest Park–DeBaliviere" },
+    { "fromId": "STL-h-lehmann-house", "toId": "STL-a-forest-park", "mode": "taxi", "minutes": 15 },
+    { "fromId": "STL-h-hotel-saint-louis", "toId": "STL-a-botanical-garden", "mode": "taxi", "minutes": 15 }
+  ],
+  "hilly": []
+}

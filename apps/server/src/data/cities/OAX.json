@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "OAX", "name": "Oaxaca", "country": "Mexico", "region": "Latin America", "airport": { "code": "OAX", "lat": 16.9999, "lng": -96.7266 }, "utcOffset": -6, "centerLat": 17.064, "centerLng": -96.724, "tileRadiusKm": 1.5, "publicFlags": ["moderate altitude (1,550 m)"] },
+  "hotels": [
+    { "_id": "OAX-h-centro-hostel", "kind": "hotel", "cityId": "OAX", "name": "Centro Hostel (3 beds)", "neighborhood": "Centro", "lat": 17.062, "lng": -96.727, "stayType": "hostel", "nightlyCents": 4500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "OAX-h-xochimilco-guest", "kind": "hotel", "cityId": "OAX", "name": "Casa Xochimilco", "neighborhood": "Barrio de Xochimilco", "lat": 17.0715, "lng": -96.722, "stayType": "guesthouse", "nightlyCents": 7500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "OAX-h-zocalo-triple", "kind": "hotel", "cityId": "OAX", "name": "Zócalo Hotel (triple)", "neighborhood": "Centro", "lat": 17.061, "lng": -96.726, "stayType": "hotel", "nightlyCents": 9500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "OAX-h-jalatlaco-apt", "kind": "hotel", "cityId": "OAX", "name": "Jalatlaco Casita", "neighborhood": "Jalatlaco", "lat": 17.0655, "lng": -96.7165, "stayType": "apartment", "nightlyCents": 10500, "sleeps": 4, "rating": 4.6 },
+    { "_id": "OAX-h-santo-domingo-triple", "kind": "hotel", "cityId": "OAX", "name": "Santo Domingo Hotel (triple)", "neighborhood": "Centro (Santo Domingo)", "lat": 17.0655, "lng": -96.7245, "stayType": "hotel", "nightlyCents": 16000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "OAX-a-monte-alban", "kind": "activity", "cityId": "OAX", "name": "Monte Albán ruins", "short": "Monte Albán", "tags": ["history", "nature"], "lat": 17.0436, "lng": -96.7678, "durationMin": 180, "priceCents": 1000, "startEarliest": "08:30", "startLatest": "13:00", "role": "group" },
+    { "_id": "OAX-a-mercado-20", "kind": "activity", "cityId": "OAX", "name": "Smoke-hall lunch at Mercado 20 de Noviembre", "short": "Mercado 20 de Nov.", "tags": ["food"], "lat": 17.059, "lng": -96.727, "durationMin": 90, "priceCents": 1200, "startEarliest": "12:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "OAX-a-mezcal", "kind": "activity", "cityId": "OAX", "name": "Mezcal tasting at In Situ", "short": "Mezcal tasting", "tags": ["nightlife", "food"], "lat": 17.0625, "lng": -96.7285, "durationMin": 120, "priceCents": 3000, "startEarliest": "19:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "OAX-a-hierve-el-agua", "kind": "activity", "cityId": "OAX", "name": "Hierve el Agua petrified waterfalls", "short": "Hierve el Agua", "tags": ["nature", "chill"], "lat": 16.8655, "lng": -96.276, "durationMin": 540, "priceCents": 3500, "startEarliest": "08:00", "startLatest": "09:00", "role": "pick" },
+    { "_id": "OAX-a-culturas", "kind": "activity", "cityId": "OAX", "name": "Santo Domingo & Museo de las Culturas", "short": "Museo de las Culturas", "tags": ["museums", "history"], "lat": 17.0659, "lng": -96.7235, "durationMin": 150, "priceCents": 600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "OAX-a-cooking", "kind": "activity", "cityId": "OAX", "name": "Mole cooking class & market visit", "short": "Cooking class", "tags": ["food"], "lat": 17.064, "lng": -96.723, "durationMin": 300, "priceCents": 8000, "startEarliest": "09:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "OAX-a-etnobotanico", "kind": "activity", "cityId": "OAX", "name": "Jardín Etnobotánico guided tour", "short": "Ethnobotanical garden", "tags": ["nature", "chill"], "lat": 17.0665, "lng": -96.723, "durationMin": 120, "priceCents": 1100, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "OAX-a-guelaguetza", "kind": "activity", "cityId": "OAX", "name": "Guelaguetza folk dance show", "short": "Guelaguetza show", "tags": ["music", "history"], "lat": 17.0613, "lng": -96.7262, "durationMin": 120, "priceCents": 1500, "startEarliest": "20:30", "startLatest": "20:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "OAX-h-jalatlaco-apt", "toId": "OAX-a-monte-alban", "mode": "taxi", "minutes": 25, "note": "up the hill to the ruins" },
+    { "fromId": "OAX-h-jalatlaco-apt", "toId": "OAX-a-hierve-el-agua", "mode": "taxi", "minutes": 110, "note": "shared tour van via Mitla" }
+  ],
+  "hilly": ["OAX-a-monte-alban"]
+}

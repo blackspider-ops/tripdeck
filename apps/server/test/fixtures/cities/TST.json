@@ -1,0 +1,15 @@
+{
+  "city": { "_id": "TST", "name": "Testport", "country": "Portugal", "region": "Europe", "airport": { "code": "TST", "lat": 41.2481, "lng": -8.6814 }, "utcOffset": 0, "centerLat": 41.1496, "centerLng": -8.611, "tileRadiusKm": 1.5, "publicFlags": ["a fixture port"] },
+  "hotels": [
+    { "_id": "TST-h-river-flat", "kind": "hotel", "cityId": "TST", "name": "River Flat", "neighborhood": "Ribeira", "lat": 41.1408, "lng": -8.6131, "stayType": "apartment", "nightlyCents": 18000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "TST-h-bunk", "kind": "hotel", "cityId": "TST", "name": "Bunk House (3 beds)", "neighborhood": "Baixa", "lat": 41.1466, "lng": -8.6107, "stayType": "hostel", "nightlyCents": 7000, "sleeps": 4, "rating": 4.1 }
+  ],
+  "activities": [
+    { "_id": "TST-a-cellars", "kind": "activity", "cityId": "TST", "name": "Port cellars tour", "short": "Cellars tour", "tags": ["food", "history"], "lat": 41.1373, "lng": -8.6129, "durationMin": 120, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "TST-a-fado", "kind": "activity", "cityId": "TST", "name": "Fado evening", "short": "Fado evening", "tags": ["music", "nightlife"], "lat": 41.1421, "lng": -8.6122, "durationMin": 120, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "TST-a-beach", "kind": "activity", "cityId": "TST", "name": "Foz beach afternoon", "short": "Foz beach", "tags": ["beach", "chill"], "lat": 41.1523, "lng": -8.6766, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "TST-a-museum", "kind": "activity", "cityId": "TST", "name": "Serralves museum", "short": "Serralves", "tags": ["museums", "nature"], "lat": 41.1597, "lng": -8.6597, "durationMin": 150, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [ { "fromId": "TST-h-river-flat", "toId": "TST-a-beach", "mode": "transit", "minutes": 35, "note": "tram 1" } ],
+  "hilly": ["TST-h-river-flat", "TST-a-fado"]
+}

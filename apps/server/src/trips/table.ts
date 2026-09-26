@@ -3,9 +3,11 @@
  * and hails.
  */
 import type { Plan, PlanPublic, TripStatus, Turn } from "@all-ayes/shared";
-import { HAIL_MAX_CHARS, MAX_WATCHES, MIN_TABLE_CREW, monthDayLabel } from "@all-ayes/shared";
+import { HAIL_MAX_CHARS, MAX_WATCHES, MIN_TABLE_CREW, monthDayLabel, stateName } from "@all-ayes/shared";
 import { cityName, indexOf } from "../data/loader.js";
 import { buildChartBook, toPrivate, toPublic, type PricingMember } from "../fit/pricing.js";
+import { pickPorts } from "../fit/prerank.js";
+import { destinationLabel, scopeOf } from "./course.js";
 import { NegotiationEngine, type EngineIO } from "../negotiation/engine.js";
 import type { PrivacyContext } from "../privacy/filter.js";
 import { buildPrivacyContext } from "../privacy/context.js";
@@ -17,12 +19,15 @@ import { HelmError, slow } from "../util/errors.js";
 import { newId, nowIso } from "../util/ids.js";
 import { RIBBON_MAX_WORDS, clampWords, clean } from "../util/text.js";
 import {
-  FIRST_HAIL_WATCH, HAIL_MIN_INTERVAL_MS, REASON_TABLE_FAILED, REASON_TABLE_RESTART, datasetHash,
+  FIRST_HAIL_WATCH, HAIL_MIN_INTERVAL_MS, REASON_TABLE_FAILED, REASON_TABLE_RESTART, datasetHash, tripWindowIds,
   type Actor, type TripRec,
 } from "./records.js";
 import type { Helm } from "./core.js";
 
-/** The chart book is the top 12 plans (doc 05 §2.6); at most 30 candidates exist (2 windows × 3 cities × 5 hotels). */
+/**
+ * The chart book is the top 12 plans (doc 05 §2.6); at most 60 candidates exist (3 windows × 4 ports × 5 stays; a
+ * region / anywhere voyage is pre-ranked down to 4 ports first).
+ */
 const CHART_BOOK_LIMIT = 12;
 
 export class Table {
@@ -157,7 +162,13 @@ export class Table {
     // WP-07 follow-up: every meeting costs model and voice calls, so a voyage gets a bounded number of them
     const runsMax = config.helm.tableRunsMax();
     if ((t.tableRuns ?? 0) >= runsMax) throw new HelmError("TOO_MANY_RUNS", `This voyage has met ${runsMax} times already. Start a new voyage to meet again.`);
+    // A region / anywhere voyage: every port in scope is pre-ranked for this crew and the top 4 go on the chart
+    // (fit/prerank.ts). Only the ranking leaves the helm, never anyone's terms.
+    const scoped = t.destination && t.destination.kind !== "cities";
+    const ports = scoped ? pickPorts(helm.ds, this.pricingCrew(t), scopeOf(helm.ds, t.destination!).map((c) => c._id), tripWindowIds(t), t._id) : null;
+    if (ports && !ports.length) throw new HelmError("BAD_INPUT", "No port in range can sleep the whole crew. Start a voyage with more ports.");
     helm.transition(t, "AT_TABLE", { from: ["BRIEFING"] });
+    if (ports) t.candidateCityIds = ports; // (regions / anywhere take curated ports only, so no world packs to add)
     this.clearCharts(t);
     t.tableRuns = (t.tableRuns ?? 0) + 1;
     // a new meeting = a new round: turns of an earlier (interrupted) meeting are never re-attached (TR5-012)
@@ -171,7 +182,7 @@ export class Table {
     const crew = this.pricingCrew(t);
     const plans = this.chartBook(t, crew);
     helm.save(t);
-    helm.broadcastState(t);
+    helm.broadcastState(t, Boolean(ports)); // new ports: the snapshot carries them (a static field)
 
     const memories = new Map<string, string[]>();
     await Promise.all(members.map(async (m) => memories.set(m._id, await helm.memoryFor(m))));
@@ -179,6 +190,7 @@ export class Table {
     const engine = new NegotiationEngine(
       helm.ds, crew.map((c) => ({ ...c, band: bands.get(c.memberId) ?? 1 })), plans, t.candidateCityIds, this.datesLabel(t, crew),
       this.engineHooks(t, memories), helm.privacy.get(t._id),
+      { scopeLabel: scoped ? destinationLabel(helm.ds, t.destination!) : undefined, placeNames: (id) => this.placeName(id) },
     );
     // TR4-002: the two-argument form, so an error in the success handler isn't taken for an engine failure
     const round = t.negotiation.round;
@@ -286,6 +298,11 @@ export class Table {
     });
     list.push({ memberId, text: safe.text });
     helm.pendingHails.set(tripId, list);
+  }
+
+  /** A love/skip entry as said aloud: a port's name, a region, or a US state's name. */
+  placeName(entry: string): string {
+    return indexOf(this.helm.ds).city.get(entry)?.name ?? (entry.length === 2 ? stateName(entry) : entry);
   }
 
   /** "voyage: Lisbon, Mar 12 to 16" — the head of a memory note. */

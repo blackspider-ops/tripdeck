@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "STO", "name": "Stockholm", "country": "Sweden", "region": "Europe", "airport": {"code": "ARN", "lat": 59.6519, "lng": 17.9186}, "utcOffset": 1, "centerLat": 59.327, "centerLng": 18.072, "tileRadiusKm": 2, "publicFlags": ["very expensive", "short, dark days in winter"] },
+  "hotels": [
+    { "_id": "STO-h-slussen-hostel", "kind": "hotel", "cityId": "STO", "name": "Slussen Hostel (3 beds)", "neighborhood": "Södermalm", "lat": 59.3195, "lng": 18.0715, "stayType": "hostel", "nightlyCents": 13000, "sleeps": 3, "rating": 4 },
+    { "_id": "STO-h-kungsholmen-guest", "kind": "hotel", "cityId": "STO", "name": "Kungsholmen Guesthouse", "neighborhood": "Kungsholmen", "lat": 59.331, "lng": 18.04, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "STO-h-sodermalm-flat", "kind": "hotel", "cityId": "STO", "name": "Södermalm Apartment", "neighborhood": "Södermalm", "lat": 59.316, "lng": 18.072, "stayType": "apartment", "nightlyCents": 25000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "STO-h-gamla-triple", "kind": "hotel", "cityId": "STO", "name": "Gamla Stan Hotel (triple)", "neighborhood": "Gamla Stan", "lat": 59.325, "lng": 18.071, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "STO-h-ostermalm-triple", "kind": "hotel", "cityId": "STO", "name": "Östermalm Hotel (triple)", "neighborhood": "Östermalm", "lat": 59.338, "lng": 18.08, "stayType": "hotel", "nightlyCents": 40000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "STO-a-vasa", "kind": "activity", "cityId": "STO", "name": "Vasa Museum", "short": "Vasa Museum", "tags": ["museums", "history"], "lat": 59.328, "lng": 18.0914, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "STO-a-gamla-stan", "kind": "activity", "cityId": "STO", "name": "Gamla Stan & Royal Palace", "short": "Gamla Stan", "tags": ["history"], "lat": 59.3268, "lng": 18.0717, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "STO-a-fika", "kind": "activity", "cityId": "STO", "name": "Fika café crawl, SoFo", "short": "Fika crawl", "tags": ["food", "chill"], "lat": 59.3135, "lng": 18.077, "durationMin": 90, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "STO-a-fotografiska", "kind": "activity", "cityId": "STO", "name": "Fotografiska", "short": "Fotografiska", "tags": ["museums"], "lat": 59.3178, "lng": 18.0855, "durationMin": 120, "priceCents": 2400, "startEarliest": "10:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "STO-a-skansen", "kind": "activity", "cityId": "STO", "name": "Skansen open-air museum", "short": "Skansen", "tags": ["history", "nature"], "lat": 59.3262, "lng": 18.1036, "durationMin": 180, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "STO-a-saluhall", "kind": "activity", "cityId": "STO", "name": "Östermalms Saluhall lunch", "short": "Östermalm food hall", "tags": ["food"], "lat": 59.336, "lng": 18.079, "durationMin": 90, "priceCents": 3500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "STO-a-sodermalm-night", "kind": "activity", "cityId": "STO", "name": "Södermalm bars & live music", "short": "Söder night out", "tags": ["nightlife", "music"], "lat": 59.315, "lng": 18.073, "durationMin": 180, "priceCents": 3500, "startEarliest": "21:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "STO-a-vaxholm", "kind": "activity", "cityId": "STO", "name": "Archipelago boat to Vaxholm", "short": "Vaxholm by boat", "tags": ["nature", "chill"], "lat": 59.4025, "lng": 18.352, "durationMin": 300, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "12:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "STO-h-gamla-triple", "toId": "STO-a-vaxholm", "mode": "transit", "minutes": 75, "note": "Waxholmsbolaget ferry from Strömkajen" },
+    { "fromId": "STO-h-sodermalm-flat", "toId": "STO-a-vaxholm", "mode": "transit", "minutes": 85, "note": "metro to Slussen + walk to Strömkajen + ferry" }
+  ],
+  "hilly": ["STO-h-sodermalm-flat", "STO-a-fika"]
+}

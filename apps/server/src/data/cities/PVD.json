@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "PVD", "name": "Providence", "country": "United States", "state": "RI", "region": "United States", "airport": { "code": "PVD", "lat": 41.724, "lng": -71.4283 }, "utcOffset": -5, "centerLat": 41.824, "centerLng": -71.41, "tileRadiusKm": 1.5, "publicFlags": ["cold, snowy winters", "WaterFire only runs May–Nov"] },
+  "hotels": [
+    { "_id": "PVD-h-federal-hill-guest", "kind": "hotel", "cityId": "PVD", "name": "Federal Hill Guesthouse", "neighborhood": "Federal Hill", "lat": 41.82, "lng": -71.426, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "PVD-h-dean-bunk", "kind": "hotel", "cityId": "PVD", "name": "The Dean Hotel (bunk room)", "neighborhood": "Downcity", "lat": 41.824, "lng": -71.417, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 4, "rating": 4.2 },
+    { "_id": "PVD-h-college-hill-flat", "kind": "hotel", "cityId": "PVD", "name": "College Hill Apartment", "neighborhood": "College Hill", "lat": 41.826, "lng": -71.402, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PVD-h-hotel-providence", "kind": "hotel", "cityId": "PVD", "name": "Hotel Providence (2 queens)", "neighborhood": "Downcity", "lat": 41.8248, "lng": -71.414, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PVD-h-graduate", "kind": "hotel", "cityId": "PVD", "name": "Graduate Providence (2 queens)", "neighborhood": "Downcity", "lat": 41.8235, "lng": -71.413, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 4, "rating": 4.4 }
+  ],
+  "activities": [
+    { "_id": "PVD-a-benefit-street", "kind": "activity", "cityId": "PVD", "name": "Benefit Street & College Hill walk", "short": "Benefit Street walk", "tags": ["history"], "lat": 41.827, "lng": -71.4065, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "PVD-a-risd-museum", "kind": "activity", "cityId": "PVD", "name": "RISD Museum", "short": "RISD Museum", "tags": ["museums"], "lat": 41.826, "lng": -71.4075, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "PVD-a-federal-hill-dinner", "kind": "activity", "cityId": "PVD", "name": "Federal Hill Italian dinner", "short": "Federal Hill dinner", "tags": ["food"], "lat": 41.8195, "lng": -71.4265, "durationMin": 120, "priceCents": 5000, "startEarliest": "18:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "PVD-a-zoo", "kind": "activity", "cityId": "PVD", "name": "Roger Williams Park Zoo", "short": "Roger Williams Zoo", "tags": ["nature"], "lat": 41.787, "lng": -71.414, "durationMin": 180, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "14:30", "role": "pick" },
+    { "_id": "PVD-a-india-point", "kind": "activity", "cityId": "PVD", "name": "India Point Park & Fox Point", "short": "India Point Park", "tags": ["chill", "nature"], "lat": 41.819, "lng": -71.394, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "PVD-a-as220", "kind": "activity", "cityId": "PVD", "name": "Live music at AS220", "short": "AS220 show", "tags": ["music", "nightlife"], "lat": 41.824, "lng": -71.4145, "durationMin": 150, "priceCents": 1500, "startEarliest": "20:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "PVD-a-thayer", "kind": "activity", "cityId": "PVD", "name": "Thayer Street bars", "short": "Thayer St bars", "tags": ["nightlife"], "lat": 41.829, "lng": -71.401, "durationMin": 150, "priceCents": 2500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "PVD-a-newport", "kind": "activity", "cityId": "PVD", "name": "Newport mansions day trip", "short": "Newport mansions", "tags": ["history", "chill"], "lat": 41.4697, "lng": -71.2986, "durationMin": 360, "priceCents": 3300, "startEarliest": "09:30", "startLatest": "11:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PVD-h-hotel-providence", "toId": "PVD-a-newport", "mode": "taxi", "minutes": 45, "note": "~40 km; RIPTA bus 60 takes ~1 h" },
+    { "fromId": "PVD-h-hotel-providence", "toId": "PVD-a-zoo", "mode": "taxi", "minutes": 15, "note": "~4 km south" },
+    { "fromId": "PVD-h-federal-hill-guest", "toId": "PVD-a-newport", "mode": "taxi", "minutes": 45, "note": "~40 km" }
+  ],
+  "hilly": ["PVD-h-college-hill-flat", "PVD-a-benefit-street"]
+}

@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "SIN", "name": "Singapore", "country": "Singapore", "region": "Asia", "airport": { "code": "SIN", "lat": 1.3644, "lng": 103.9915 }, "utcOffset": 8, "centerLat": 1.29, "centerLng": 103.85, "tileRadiusKm": 2.5, "publicFlags": ["very long flight from the US (18+ h)", "hot and humid year-round, afternoon storms"] },
+  "hotels": [
+    { "_id": "SIN-h-chinatown-hostel", "kind": "hotel", "cityId": "SIN", "name": "Chinatown Hostel (3 beds)", "neighborhood": "Chinatown", "lat": 1.283, "lng": 103.8445, "stayType": "hostel", "nightlyCents": 13500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "SIN-h-kampong-glam-inn", "kind": "hotel", "cityId": "SIN", "name": "Kampong Glam Shophouse Inn", "neighborhood": "Kampong Glam", "lat": 1.3022, "lng": 103.8588, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SIN-h-tiong-bahru-flat", "kind": "hotel", "cityId": "SIN", "name": "Tiong Bahru Apartment", "neighborhood": "Tiong Bahru", "lat": 1.2856, "lng": 103.832, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "SIN-h-clarke-quay-triple", "kind": "hotel", "cityId": "SIN", "name": "Clarke Quay Hotel (triple)", "neighborhood": "Clarke Quay", "lat": 1.2893, "lng": 103.8465, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "SIN-h-marina-bay-triple", "kind": "hotel", "cityId": "SIN", "name": "Marina Bay Hotel (triple)", "neighborhood": "Marina Bay", "lat": 1.29, "lng": 103.856, "stayType": "hotel", "nightlyCents": 55000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "SIN-a-gardens-bay", "kind": "activity", "cityId": "SIN", "name": "Gardens by the Bay & Supertrees", "short": "Gardens by the Bay", "tags": ["nature", "chill"], "lat": 1.2816, "lng": 103.8636, "durationMin": 180, "priceCents": 4000, "startEarliest": "10:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "SIN-a-hawker", "kind": "activity", "cityId": "SIN", "name": "Hawker centre crawl (Maxwell)", "short": "Hawker crawl", "tags": ["food"], "lat": 1.2803, "lng": 103.8448, "durationMin": 120, "priceCents": 1500, "startEarliest": "11:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "SIN-a-rooftop-bars", "kind": "activity", "cityId": "SIN", "name": "Clarke Quay & rooftop bars", "short": "Rooftop bars", "tags": ["nightlife"], "lat": 1.2906, "lng": 103.8465, "durationMin": 180, "priceCents": 4500, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "SIN-a-natl-museum", "kind": "activity", "cityId": "SIN", "name": "National Museum of Singapore", "short": "National Museum", "tags": ["museums", "history"], "lat": 1.2966, "lng": 103.8485, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "16:30", "role": "pick" },
+    { "_id": "SIN-a-sentosa", "kind": "activity", "cityId": "SIN", "name": "Sentosa beach day (Palawan)", "short": "Sentosa beach day", "tags": ["beach", "chill"], "lat": 1.2494, "lng": 103.8185, "durationMin": 300, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "SIN-a-night-safari", "kind": "activity", "cityId": "SIN", "name": "Night Safari", "short": "Night Safari", "tags": ["nature"], "lat": 1.4022, "lng": 103.788, "durationMin": 180, "priceCents": 4400, "startEarliest": "19:15", "startLatest": "21:00", "role": "pick" },
+    { "_id": "SIN-a-esplanade", "kind": "activity", "cityId": "SIN", "name": "Concert at the Esplanade", "short": "Esplanade concert", "tags": ["music"], "lat": 1.2898, "lng": 103.8555, "durationMin": 120, "priceCents": 4000, "startEarliest": "19:30", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SIN-a-little-india", "kind": "activity", "cityId": "SIN", "name": "Little India & Kampong Glam walk", "short": "Little India walk", "tags": ["history", "food"], "lat": 1.3066, "lng": 103.8518, "durationMin": 150, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SIN-h-tiong-bahru-flat", "toId": "SIN-a-sentosa", "mode": "transit", "minutes": 30, "note": "MRT to HarbourFront + Sentosa Express" },
+    { "fromId": "SIN-h-tiong-bahru-flat", "toId": "SIN-a-night-safari", "mode": "taxi", "minutes": 30, "note": "north via CTE" },
+    { "fromId": "SIN-h-chinatown-hostel", "toId": "SIN-a-sentosa", "mode": "transit", "minutes": 25, "note": "MRT to HarbourFront + Sentosa Express" },
+    { "fromId": "SIN-h-chinatown-hostel", "toId": "SIN-a-night-safari", "mode": "taxi", "minutes": 30, "note": "north via CTE" }
+  ],
+  "hilly": []
+}

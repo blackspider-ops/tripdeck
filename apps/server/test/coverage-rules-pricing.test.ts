@@ -160,8 +160,9 @@ const withBrief = (id: string, patch: Partial<PricingMember["brief"]>): PricingM
 
 describe("O2-065: pricing failure paths", () => {
   it("no_flight: a member with no flight from their origin has no flight line and doesn't fit", () => {
-    const noAtl = { ...ds, flights: ds.flights.filter((f) => !(f.origin === "ATL" && f.cityId === "LIS")) };
-    const p = buildPlan(noAtl, EXPO_CREW, "LIS", "W1", hotel("LIS-h-casa-alfama"));
+    // no curated flight and no modelled one either: an airport the flight model doesn't know
+    const crew = EXPO_CREW.map((m) => (m.memberId === "rae" ? { ...m, origin: "ZZZ" } : m));
+    const p = buildPlan(ds, crew, "LIS", "W1", hotel("LIS-h-casa-alfama"));
     const rae = seat(p, "rae");
     expect(rae.reasons).toContain("no_flight");
     expect(rae).toMatchObject({ fits: false, flightId: "", satisfaction: 0 });

@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "LOU", "name": "Louisville", "country": "United States", "state": "KY", "region": "United States", "airport": { "code": "SDF", "lat": 38.1744, "lng": -85.736 }, "utcOffset": -5, "centerLat": 38.253, "centerLng": -85.757, "tileRadiusKm": 2, "publicFlags": ["hot, humid summers", "Derby week (early May) prices soar"] },
+  "hotels": [
+    { "_id": "LOU-h-old-louisville-guest", "kind": "hotel", "cityId": "LOU", "name": "Old Louisville Guest Room", "neighborhood": "Old Louisville", "lat": 38.232, "lng": -85.758, "stayType": "guesthouse", "nightlyCents": 9500, "sleeps": 3, "rating": 4.2 },
+    { "_id": "LOU-h-nulu-flat", "kind": "hotel", "cityId": "LOU", "name": "NuLu Apartment", "neighborhood": "NuLu", "lat": 38.253, "lng": -85.74, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "LOU-h-inn-at-the-park", "kind": "hotel", "cityId": "LOU", "name": "Inn at the Park", "neighborhood": "Old Louisville", "lat": 38.2356, "lng": -85.7605, "stayType": "guesthouse", "nightlyCents": 18500, "sleeps": 3, "rating": 4.6 },
+    { "_id": "LOU-h-brown-hotel", "kind": "hotel", "cityId": "LOU", "name": "The Brown Hotel (2 queens)", "neighborhood": "Downtown", "lat": 38.2466, "lng": -85.7577, "stayType": "hotel", "nightlyCents": 25000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "LOU-h-21c", "kind": "hotel", "cityId": "LOU", "name": "21c Museum Hotel (2 queens)", "neighborhood": "Whiskey Row", "lat": 38.2573, "lng": -85.7625, "stayType": "hotel", "nightlyCents": 29500, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "LOU-a-churchill-downs", "kind": "activity", "cityId": "LOU", "name": "Churchill Downs & Kentucky Derby Museum", "short": "Churchill Downs", "tags": ["history", "museums"], "lat": 38.2033, "lng": -85.7702, "durationMin": 150, "priceCents": 2200, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "LOU-a-evan-williams", "kind": "activity", "cityId": "LOU", "name": "Evan Williams Bourbon Experience", "short": "Bourbon tasting", "tags": ["food", "history"], "lat": 38.2575, "lng": -85.755, "durationMin": 75, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "LOU-a-mercury-ballroom", "kind": "activity", "cityId": "LOU", "name": "Concert at Mercury Ballroom", "short": "Mercury Ballroom", "tags": ["music", "nightlife"], "lat": 38.2505, "lng": -85.7578, "durationMin": 150, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "LOU-a-slugger", "kind": "activity", "cityId": "LOU", "name": "Louisville Slugger Museum & Factory", "short": "Slugger Museum", "tags": ["museums", "history"], "lat": 38.2572, "lng": -85.7635, "durationMin": 90, "priceCents": 2200, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "LOU-a-ali-center", "kind": "activity", "cityId": "LOU", "name": "Muhammad Ali Center", "short": "Ali Center", "tags": ["museums", "history"], "lat": 38.2583, "lng": -85.7597, "durationMin": 120, "priceCents": 2400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "LOU-a-whiskey-row-bars", "kind": "activity", "cityId": "LOU", "name": "NuLu & Whiskey Row bars", "short": "Whiskey Row bars", "tags": ["nightlife"], "lat": 38.2565, "lng": -85.752, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "LOU-a-waterfront", "kind": "activity", "cityId": "LOU", "name": "Waterfront Park & Big Four Bridge", "short": "Big Four Bridge", "tags": ["nature", "chill"], "lat": 38.2615, "lng": -85.739, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "LOU-a-hot-brown", "kind": "activity", "cityId": "LOU", "name": "Hot Brown at The Brown Hotel", "short": "Hot Brown lunch", "tags": ["food"], "lat": 38.2466, "lng": -85.7577, "durationMin": 60, "priceCents": 2800, "startEarliest": "11:30", "startLatest": "20:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LOU-h-21c", "toId": "LOU-a-churchill-downs", "mode": "taxi", "minutes": 15 },
+    { "fromId": "LOU-h-nulu-flat", "toId": "LOU-a-churchill-downs", "mode": "taxi", "minutes": 15 }
+  ],
+  "hilly": []
+}

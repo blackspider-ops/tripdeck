@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SYD", "name": "Sydney", "country": "Australia", "region": "Oceania", "airport": { "code": "SYD", "lat": -33.9399, "lng": 151.1753 }, "utcOffset": 10, "centerLat": -33.866, "centerLng": 151.21, "tileRadiusKm": 2.5, "publicFlags": ["long flight from the US (15 h from LAX)", "winter in Jun–Aug"] },
+  "hotels": [
+    { "_id": "SYD-h-potts-point-hostel", "kind": "hotel", "cityId": "SYD", "name": "Kings Cross Hostel (3 beds)", "neighborhood": "Potts Point", "lat": -33.874, "lng": 151.223, "stayType": "hostel", "nightlyCents": 14000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "SYD-h-bondi-guest", "kind": "hotel", "cityId": "SYD", "name": "Bondi Beach Guesthouse", "neighborhood": "Bondi Beach", "lat": -33.8915, "lng": 151.2767, "stayType": "guesthouse", "nightlyCents": 30000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SYD-h-surry-hills-flat", "kind": "hotel", "cityId": "SYD", "name": "Surry Hills Apartment", "neighborhood": "Surry Hills", "lat": -33.886, "lng": 151.211, "stayType": "apartment", "nightlyCents": 34000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "SYD-h-darling-triple", "kind": "hotel", "cityId": "SYD", "name": "Darling Harbour Hotel (triple)", "neighborhood": "Darling Harbour", "lat": -33.874, "lng": 151.2, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "SYD-h-rocks-triple", "kind": "hotel", "cityId": "SYD", "name": "The Rocks Hotel (triple)", "neighborhood": "The Rocks", "lat": -33.859, "lng": 151.208, "stayType": "hotel", "nightlyCents": 52000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "SYD-a-opera-house", "kind": "activity", "cityId": "SYD", "name": "Evening show at the Opera House", "short": "Opera House show", "tags": ["music"], "lat": -33.8568, "lng": 151.2153, "durationMin": 150, "priceCents": 8500, "startEarliest": "19:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "SYD-a-bondi-coogee", "kind": "activity", "cityId": "SYD", "name": "Bondi to Coogee coastal walk", "short": "Bondi–Coogee walk", "tags": ["nature", "beach"], "lat": -33.8915, "lng": 151.2767, "durationMin": 180, "priceCents": 0, "startEarliest": "07:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "SYD-a-rocks-pubs", "kind": "activity", "cityId": "SYD", "name": "The Rocks markets & pubs", "short": "The Rocks & pubs", "tags": ["food", "history"], "lat": -33.8587, "lng": 151.2087, "durationMin": 150, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "SYD-a-agnsw", "kind": "activity", "cityId": "SYD", "name": "Art Gallery of New South Wales", "short": "Art Gallery NSW", "tags": ["museums"], "lat": -33.8688, "lng": 151.2173, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SYD-a-manly", "kind": "activity", "cityId": "SYD", "name": "Manly ferry & beach day", "short": "Manly beach day", "tags": ["beach", "chill"], "lat": -33.797, "lng": 151.288, "durationMin": 300, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "SYD-a-newtown", "kind": "activity", "cityId": "SYD", "name": "Newtown bars & live music", "short": "Newtown night", "tags": ["nightlife", "music"], "lat": -33.897, "lng": 151.179, "durationMin": 180, "priceCents": 4000, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "SYD-a-taronga", "kind": "activity", "cityId": "SYD", "name": "Taronga Zoo (ferry)", "short": "Taronga Zoo", "tags": ["nature"], "lat": -33.8436, "lng": 151.2411, "durationMin": 240, "priceCents": 4000, "startEarliest": "09:30", "startLatest": "13:00", "role": "pick" },
+    { "_id": "SYD-a-bridgeclimb", "kind": "activity", "cityId": "SYD", "name": "Harbour BridgeClimb", "short": "BridgeClimb", "tags": ["history"], "lat": -33.8574, "lng": 151.2073, "durationMin": 210, "priceCents": 23000, "startEarliest": "07:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SYD-h-surry-hills-flat", "toId": "SYD-a-bondi-coogee", "mode": "transit", "minutes": 30, "note": "bus 333 to Bondi Beach" },
+    { "fromId": "SYD-h-surry-hills-flat", "toId": "SYD-a-manly", "mode": "transit", "minutes": 45, "note": "train to Circular Quay + ferry" },
+    { "fromId": "SYD-h-surry-hills-flat", "toId": "SYD-a-taronga", "mode": "transit", "minutes": 35, "note": "train to Circular Quay + ferry" }
+  ],
+  "hilly": []
+}

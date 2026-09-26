@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "CPH", "name": "Copenhagen", "country": "Denmark", "region": "Europe", "airport": {"code": "CPH", "lat": 55.618, "lng": 12.6508}, "utcOffset": 1, "centerLat": 55.679, "centerLng": 12.575, "tileRadiusKm": 1.8, "publicFlags": ["very expensive", "cold and dark in winter"] },
+  "hotels": [
+    { "_id": "CPH-h-city-hostel", "kind": "hotel", "cityId": "CPH", "name": "City Hostel (3 beds)", "neighborhood": "Vesterbro", "lat": 55.672, "lng": 12.564, "stayType": "hostel", "nightlyCents": 15000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "CPH-h-norrebro-guest", "kind": "hotel", "cityId": "CPH", "name": "Nørrebro Guesthouse", "neighborhood": "Nørrebro", "lat": 55.692, "lng": 12.554, "stayType": "guesthouse", "nightlyCents": 19000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "CPH-h-vesterbro-flat", "kind": "hotel", "cityId": "CPH", "name": "Vesterbro Apartment", "neighborhood": "Vesterbro", "lat": 55.669, "lng": 12.552, "stayType": "apartment", "nightlyCents": 27000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "CPH-h-christianshavn-triple", "kind": "hotel", "cityId": "CPH", "name": "Christianshavn Canal Hotel (triple)", "neighborhood": "Christianshavn", "lat": 55.673, "lng": 12.593, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "CPH-h-indre-triple", "kind": "hotel", "cityId": "CPH", "name": "Indre By Hotel (triple)", "neighborhood": "Indre By", "lat": 55.6795, "lng": 12.578, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "CPH-a-canal-tour", "kind": "activity", "cityId": "CPH", "name": "Nyhavn canal boat tour", "short": "Canal tour", "tags": ["history", "chill"], "lat": 55.6797, "lng": 12.5901, "durationMin": 60, "priceCents": 1700, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "CPH-a-rosenborg", "kind": "activity", "cityId": "CPH", "name": "Rosenborg Castle & crown jewels", "short": "Rosenborg Castle", "tags": ["history", "museums"], "lat": 55.6858, "lng": 12.5773, "durationMin": 90, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "CPH-a-torvehallerne", "kind": "activity", "cityId": "CPH", "name": "Torvehallerne food market", "short": "Torvehallerne", "tags": ["food"], "lat": 55.6838, "lng": 12.5698, "durationMin": 90, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "CPH-a-louisiana", "kind": "activity", "cityId": "CPH", "name": "Louisiana Museum of Modern Art", "short": "Louisiana Museum", "tags": ["museums", "nature"], "lat": 55.969, "lng": 12.543, "durationMin": 240, "priceCents": 2600, "startEarliest": "11:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "CPH-a-smk", "kind": "activity", "cityId": "CPH", "name": "SMK – National Gallery", "short": "SMK gallery", "tags": ["museums"], "lat": 55.6888, "lng": 12.5783, "durationMin": 120, "priceCents": 2100, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CPH-a-christiania", "kind": "activity", "cityId": "CPH", "name": "Christiania & Christianshavn walk", "short": "Christiania walk", "tags": ["history", "chill"], "lat": 55.6737, "lng": 12.599, "durationMin": 120, "priceCents": 0, "startEarliest": "11:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CPH-a-la-fontaine", "kind": "activity", "cityId": "CPH", "name": "Jazz at La Fontaine", "short": "Jazz night", "tags": ["music", "nightlife"], "lat": 55.6773, "lng": 12.572, "durationMin": 150, "priceCents": 1500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "CPH-a-norrebro-bars", "kind": "activity", "cityId": "CPH", "name": "Nørrebro bar night", "short": "Nørrebro bars", "tags": ["nightlife"], "lat": 55.6895, "lng": 12.553, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CPH-h-indre-triple", "toId": "CPH-a-louisiana", "mode": "train", "minutes": 50, "note": "Kystbanen from Nørreport to Humlebæk + 10-min walk" },
+    { "fromId": "CPH-h-vesterbro-flat", "toId": "CPH-a-louisiana", "mode": "train", "minutes": 55, "note": "Kystbanen from Central Station to Humlebæk + walk" }
+  ],
+  "hilly": []
+}

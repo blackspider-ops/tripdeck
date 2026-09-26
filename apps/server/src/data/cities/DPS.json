@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "DPS", "name": "Bali", "country": "Indonesia", "region": "Asia", "airport": { "code": "DPS", "lat": -8.7482, "lng": 115.167 }, "utcOffset": 8, "centerLat": -8.688, "centerLng": 115.162, "tileRadiusKm": 2.0, "publicFlags": ["rainy season Nov–Mar", "long flight from the US (20+ h, one stop)"] },
+  "hotels": [
+    { "_id": "DPS-h-seminyak-hostel", "kind": "hotel", "cityId": "DPS", "name": "Seminyak Surf Hostel (3 beds)", "neighborhood": "Seminyak", "lat": -8.688, "lng": 115.165, "stayType": "hostel", "nightlyCents": 5400, "sleeps": 3, "rating": 4.1 },
+    { "_id": "DPS-h-oberoi-guest", "kind": "hotel", "cityId": "DPS", "name": "Jalan Oberoi Guesthouse", "neighborhood": "Seminyak", "lat": -8.683, "lng": 115.164, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "DPS-h-legian-triple", "kind": "hotel", "cityId": "DPS", "name": "Legian Hotel (triple)", "neighborhood": "Legian", "lat": -8.704, "lng": 115.168, "stayType": "hotel", "nightlyCents": 12000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "DPS-h-petitenget-villa", "kind": "hotel", "cityId": "DPS", "name": "Petitenget Pool Villa", "neighborhood": "Petitenget", "lat": -8.6795, "lng": 115.156, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.7 },
+    { "_id": "DPS-h-beach-resort-triple", "kind": "hotel", "cityId": "DPS", "name": "Seminyak Beach Resort (triple)", "neighborhood": "Seminyak", "lat": -8.692, "lng": 115.16, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "DPS-a-sunset", "kind": "activity", "cityId": "DPS", "name": "Seminyak Beach sunset & beanbags", "short": "Beach sunset", "tags": ["beach", "chill"], "lat": -8.6912, "lng": 115.1597, "durationMin": 150, "priceCents": 1500, "startEarliest": "16:30", "startLatest": "17:30", "role": "group" },
+    { "_id": "DPS-a-eat-street", "kind": "activity", "cityId": "DPS", "name": "Warung crawl on Eat Street", "short": "Warung crawl", "tags": ["food"], "lat": -8.6835, "lng": 115.1645, "durationMin": 150, "priceCents": 3000, "startEarliest": "12:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "DPS-a-tanah-lot", "kind": "activity", "cityId": "DPS", "name": "Tanah Lot sea temple at sunset", "short": "Tanah Lot", "tags": ["history"], "lat": -8.6212, "lng": 115.0868, "durationMin": 180, "priceCents": 1200, "startEarliest": "15:30", "startLatest": "16:30", "role": "group" },
+    { "_id": "DPS-a-ubud", "kind": "activity", "cityId": "DPS", "name": "Ubud day trip: Monkey Forest & rice terraces", "short": "Ubud day trip", "tags": ["nature", "history"], "lat": -8.5188, "lng": 115.2585, "durationMin": 600, "priceCents": 4500, "startEarliest": "07:30", "startLatest": "08:30", "earlyStart": true, "role": "pick" },
+    { "_id": "DPS-a-beach-club", "kind": "activity", "cityId": "DPS", "name": "Potato Head beach club", "short": "Beach club", "tags": ["nightlife", "music"], "lat": -8.6795, "lng": 115.1535, "durationMin": 240, "priceCents": 4000, "startEarliest": "15:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "DPS-a-surf", "kind": "activity", "cityId": "DPS", "name": "Canggu surf lesson (Batu Bolong)", "short": "Surf lesson", "tags": ["beach"], "lat": -8.6594, "lng": 115.1303, "durationMin": 150, "priceCents": 4000, "startEarliest": "07:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "DPS-a-spa", "kind": "activity", "cityId": "DPS", "name": "Balinese massage & spa", "short": "Balinese spa", "tags": ["chill"], "lat": -8.686, "lng": 115.1665, "durationMin": 120, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "DPS-a-kecak", "kind": "activity", "cityId": "DPS", "name": "Uluwatu temple & Kecak fire dance", "short": "Kecak at Uluwatu", "tags": ["music", "history"], "lat": -8.8291, "lng": 115.0849, "durationMin": 150, "priceCents": 1500, "startEarliest": "17:00", "startLatest": "17:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DPS-h-petitenget-villa", "toId": "DPS-a-ubud", "mode": "taxi", "minutes": 80, "note": "~35 km, slow traffic through Denpasar" },
+    { "fromId": "DPS-h-petitenget-villa", "toId": "DPS-a-tanah-lot", "mode": "taxi", "minutes": 50, "note": "north via Canggu, heavy traffic" },
+    { "fromId": "DPS-h-petitenget-villa", "toId": "DPS-a-kecak", "mode": "taxi", "minutes": 75, "note": "south via bypass, heavy traffic" },
+    { "fromId": "DPS-h-petitenget-villa", "toId": "DPS-a-surf", "mode": "taxi", "minutes": 30, "note": "Canggu shortcut road" }
+  ],
+  "hilly": []
+}

@@ -1,7 +1,7 @@
 // OPT-059 / SEC-021: compile the helm to one ESM file (dist/index.js) so production runs plain `node`, without tsx.
 // Runtime npm dependencies stay external (installed with `npm ci --omit=dev`); the TypeScript workspace package
 // @all-ayes/shared is bundled in. esbuild comes with tsx/vite (dev tooling).
-import { copyFileSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 
@@ -24,3 +24,5 @@ await build({
 // data/loader.ts reads dataset.json next to itself (import.meta.url); in the bundle that's dist/
 mkdirSync(new URL("dist/", root), { recursive: true });
 copyFileSync(new URL("src/data/dataset.json", root), new URL("dist/dataset.json", root));
+// ... and every city file in data/cities/ (dist/cities/)
+if (existsSync(new URL("src/data/cities/", root))) cpSync(new URL("src/data/cities/", root), new URL("dist/cities/", root), { recursive: true });

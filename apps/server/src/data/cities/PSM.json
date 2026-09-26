@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "PSM", "name": "Portsmouth", "country": "United States", "state": "NH", "region": "United States", "airport": { "code": "BOS", "lat": 42.3656, "lng": -71.0096 }, "utcOffset": -5, "centerLat": 43.076, "centerLng": -70.758, "tileRadiusKm": 1.2, "publicFlags": ["cold, snowy winters", "small town — fly into Boston, ~1 h drive"] },
+  "hotels": [
+    { "_id": "PSM-h-port-inn", "kind": "hotel", "cityId": "PSM", "name": "Port Inn (2 queens)", "neighborhood": "Route 1 Bypass", "lat": 43.058, "lng": -70.78, "stayType": "guesthouse", "nightlyCents": 15000, "sleeps": 4, "rating": 3.9 },
+    { "_id": "PSM-h-martin-hill", "kind": "hotel", "cityId": "PSM", "name": "Martin Hill Inn", "neighborhood": "Middle Street", "lat": 43.069, "lng": -70.768, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "PSM-h-south-end-flat", "kind": "hotel", "cityId": "PSM", "name": "South End Apartment", "neighborhood": "South End", "lat": 43.075, "lng": -70.752, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "PSM-h-hotel-portsmouth", "kind": "hotel", "cityId": "PSM", "name": "Hotel Portsmouth (2 queens)", "neighborhood": "Downtown", "lat": 43.0745, "lng": -70.7635, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PSM-h-wentworth", "kind": "hotel", "cityId": "PSM", "name": "Wentworth by the Sea (2 queens)", "neighborhood": "New Castle", "lat": 43.059, "lng": -70.722, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 4, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "PSM-a-market-square", "kind": "activity", "cityId": "PSM", "name": "Market Square & harbor walk", "short": "Harbor walk", "tags": ["history", "chill"], "lat": 43.077, "lng": -70.757, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "PSM-a-ceres-seafood", "kind": "activity", "cityId": "PSM", "name": "Ceres Street seafood dinner", "short": "Seafood dinner", "tags": ["food"], "lat": 43.0795, "lng": -70.7565, "durationMin": 120, "priceCents": 5500, "startEarliest": "17:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "PSM-a-music-hall", "kind": "activity", "cityId": "PSM", "name": "Show at The Music Hall", "short": "Music Hall show", "tags": ["music", "nightlife"], "lat": 43.0752, "lng": -70.7598, "durationMin": 150, "priceCents": 4500, "startEarliest": "19:30", "startLatest": "20:00", "role": "group" },
+    { "_id": "PSM-a-strawbery-banke", "kind": "activity", "cityId": "PSM", "name": "Strawbery Banke Museum", "short": "Strawbery Banke", "tags": ["history", "museums"], "lat": 43.0752, "lng": -70.753, "durationMin": 150, "priceCents": 2400, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "PSM-a-prescott-park", "kind": "activity", "cityId": "PSM", "name": "Prescott Park waterfront", "short": "Prescott Park", "tags": ["nature", "chill"], "lat": 43.0775, "lng": -70.752, "durationMin": 60, "priceCents": 0, "startEarliest": "08:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "PSM-a-hampton-beach", "kind": "activity", "cityId": "PSM", "name": "Hampton Beach", "short": "Hampton Beach", "tags": ["beach", "chill"], "lat": 42.911, "lng": -70.811, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "PSM-a-odiorne", "kind": "activity", "cityId": "PSM", "name": "Odiorne Point & Seacoast Science Center", "short": "Odiorne Point", "tags": ["nature", "museums"], "lat": 43.043, "lng": -70.716, "durationMin": 120, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "PSM-a-press-room", "kind": "activity", "cityId": "PSM", "name": "Jazz at The Press Room", "short": "Press Room jazz", "tags": ["music", "nightlife"], "lat": 43.079, "lng": -70.759, "durationMin": 150, "priceCents": 1000, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PSM-h-hotel-portsmouth", "toId": "PSM-a-hampton-beach", "mode": "taxi", "minutes": 25, "note": "~19 km south on Route 1A" },
+    { "fromId": "PSM-h-hotel-portsmouth", "toId": "PSM-a-odiorne", "mode": "taxi", "minutes": 15, "note": "Rye; no transit" },
+    { "fromId": "PSM-h-south-end-flat", "toId": "PSM-a-hampton-beach", "mode": "taxi", "minutes": 25, "note": "~19 km south on Route 1A" }
+  ],
+  "hilly": []
+}

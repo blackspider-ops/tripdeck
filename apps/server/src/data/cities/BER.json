@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BER", "name": "Berlin", "country": "Germany", "region": "Europe", "airport": { "code": "BER", "lat": 52.3667, "lng": 13.5033 }, "utcOffset": 1, "centerLat": 52.514, "centerLng": 13.41, "tileRadiusKm": 3.0, "publicFlags": ["grey and cold in March", "many places are cash-only"] },
+  "hotels": [
+    { "_id": "BER-h-friedrichshain-hostel", "kind": "hotel", "cityId": "BER", "name": "Friedrichshain Hostel (3 beds)", "neighborhood": "Friedrichshain", "lat": 52.51, "lng": 13.45, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "BER-h-prenzlauer-guest", "kind": "hotel", "cityId": "BER", "name": "Prenzlauer Berg Guesthouse", "neighborhood": "Prenzlauer Berg", "lat": 52.538, "lng": 13.418, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "BER-h-kreuzberg-flat", "kind": "hotel", "cityId": "BER", "name": "Kreuzberg Apartment", "neighborhood": "Kreuzberg", "lat": 52.499, "lng": 13.418, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "BER-h-mitte-triple", "kind": "hotel", "cityId": "BER", "name": "Mitte Hotel (triple)", "neighborhood": "Mitte", "lat": 52.525, "lng": 13.4, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "BER-h-gendarmenmarkt-triple", "kind": "hotel", "cityId": "BER", "name": "Gendarmenmarkt Hotel (triple)", "neighborhood": "Gendarmenmarkt", "lat": 52.5136, "lng": 13.3927, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "BER-a-reichstag", "kind": "activity", "cityId": "BER", "name": "Reichstag dome & Brandenburg Gate", "short": "Reichstag & Gate", "tags": ["history"], "lat": 52.5186, "lng": 13.3761, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "BER-a-museum-island", "kind": "activity", "cityId": "BER", "name": "Neues Museum, Museum Island", "short": "Museum Island", "tags": ["museums", "history"], "lat": 52.52, "lng": 13.3977, "durationMin": 180, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BER-a-kreuzberg-food", "kind": "activity", "cityId": "BER", "name": "Kreuzberg street food walk", "short": "Kreuzberg food walk", "tags": ["food"], "lat": 52.499, "lng": 13.418, "durationMin": 180, "priceCents": 7000, "startEarliest": "11:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "BER-a-east-side", "kind": "activity", "cityId": "BER", "name": "East Side Gallery walk", "short": "East Side Gallery", "tags": ["history", "chill"], "lat": 52.505, "lng": 13.4397, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "BER-a-philharmonie", "kind": "activity", "cityId": "BER", "name": "Concert at the Philharmonie", "short": "Philharmonie concert", "tags": ["music"], "lat": 52.51, "lng": 13.3698, "durationMin": 150, "priceCents": 6000, "startEarliest": "19:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "BER-a-neukolln-bars", "kind": "activity", "cityId": "BER", "name": "Neukölln bar crawl, Weserstraße", "short": "Neukölln bars", "tags": ["nightlife"], "lat": 52.4883, "lng": 13.434, "durationMin": 180, "priceCents": 3500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "BER-a-tempelhof", "kind": "activity", "cityId": "BER", "name": "Tempelhofer Feld bike ride", "short": "Tempelhof by bike", "tags": ["nature", "chill"], "lat": 52.473, "lng": 13.403, "durationMin": 120, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "BER-a-ddr-museum", "kind": "activity", "cityId": "BER", "name": "DDR Museum", "short": "DDR Museum", "tags": ["museums"], "lat": 52.5194, "lng": 13.4027, "durationMin": 90, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "20:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BER-h-prenzlauer-guest", "toId": "BER-a-tempelhof", "mode": "transit", "minutes": 30, "note": "U8 + U6 to Paradestraße" },
+    { "fromId": "BER-h-friedrichshain-hostel", "toId": "BER-a-reichstag", "mode": "transit", "minutes": 25, "note": "S-Bahn to Brandenburger Tor" },
+    { "fromId": "BER-h-mitte-triple", "toId": "BER-a-neukolln-bars", "mode": "transit", "minutes": 25, "note": "U8 to Schönleinstraße + walk" }
+  ],
+  "hilly": []
+}

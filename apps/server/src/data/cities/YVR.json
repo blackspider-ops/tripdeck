@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "YVR", "name": "Vancouver", "country": "Canada", "region": "Canada", "airport": { "code": "YVR", "lat": 49.1947, "lng": -123.1792 }, "utcOffset": -8, "centerLat": 49.284, "centerLng": -123.12, "tileRadiusKm": 2.5, "publicFlags": ["rainy in March"] },
+  "hotels": [
+    { "_id": "YVR-h-gastown-hostel", "kind": "hotel", "cityId": "YVR", "name": "Gastown Hostel (3 beds)", "neighborhood": "Gastown", "lat": 49.283, "lng": -123.1045, "stayType": "hostel", "nightlyCents": 12500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "YVR-h-kits-guest", "kind": "hotel", "cityId": "YVR", "name": "Kitsilano Guesthouse", "neighborhood": "Kitsilano", "lat": 49.2685, "lng": -123.155, "stayType": "guesthouse", "nightlyCents": 15500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "YVR-h-west-end-triple", "kind": "hotel", "cityId": "YVR", "name": "West End Hotel (triple)", "neighborhood": "West End", "lat": 49.2865, "lng": -123.1365, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "YVR-h-yaletown-apt", "kind": "hotel", "cityId": "YVR", "name": "Yaletown Apartment", "neighborhood": "Yaletown", "lat": 49.2755, "lng": -123.121, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "YVR-h-coal-harbour-triple", "kind": "hotel", "cityId": "YVR", "name": "Coal Harbour Hotel (triple)", "neighborhood": "Coal Harbour", "lat": 49.289, "lng": -123.1225, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "YVR-a-seawall", "kind": "activity", "cityId": "YVR", "name": "Stanley Park seawall bike ride", "short": "Seawall bike ride", "tags": ["nature", "chill"], "lat": 49.3, "lng": -123.14, "durationMin": 180, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "YVR-a-granville", "kind": "activity", "cityId": "YVR", "name": "Granville Island Public Market lunch", "short": "Granville Island", "tags": ["food"], "lat": 49.2721, "lng": -123.1347, "durationMin": 120, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "YVR-a-gastown", "kind": "activity", "cityId": "YVR", "name": "Gastown & Chinatown walk", "short": "Gastown walk", "tags": ["history"], "lat": 49.2844, "lng": -123.1089, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "YVR-a-capilano", "kind": "activity", "cityId": "YVR", "name": "Capilano Suspension Bridge", "short": "Capilano Bridge", "tags": ["nature"], "lat": 49.3429, "lng": -123.1149, "durationMin": 150, "priceCents": 5200, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "YVR-a-moa", "kind": "activity", "cityId": "YVR", "name": "Museum of Anthropology at UBC", "short": "Anthropology museum", "tags": ["museums", "history"], "lat": 49.2694, "lng": -123.2593, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "YVR-a-kits-beach", "kind": "activity", "cityId": "YVR", "name": "Kitsilano Beach walk & sunset", "short": "Kits Beach sunset", "tags": ["beach", "chill"], "lat": 49.2733, "lng": -123.154, "durationMin": 120, "priceCents": 0, "startEarliest": "15:00", "startLatest": "17:30", "role": "pick" },
+    { "_id": "YVR-a-commodore", "kind": "activity", "cityId": "YVR", "name": "Concert at the Commodore Ballroom", "short": "Commodore concert", "tags": ["music", "nightlife"], "lat": 49.2808, "lng": -123.1215, "durationMin": 180, "priceCents": 4500, "startEarliest": "19:30", "startLatest": "20:30", "role": "pick" },
+    { "_id": "YVR-a-grouse", "kind": "activity", "cityId": "YVR", "name": "Grouse Mountain Skyride", "short": "Grouse Mountain", "tags": ["nature"], "lat": 49.3714, "lng": -123.099, "durationMin": 240, "priceCents": 7000, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "YVR-h-yaletown-apt", "toId": "YVR-a-capilano", "mode": "transit", "minutes": 35, "note": "free shuttle from Canada Place" },
+    { "fromId": "YVR-h-yaletown-apt", "toId": "YVR-a-moa", "mode": "transit", "minutes": 45, "note": "bus 4 or 14 to UBC" },
+    { "fromId": "YVR-h-yaletown-apt", "toId": "YVR-a-grouse", "mode": "transit", "minutes": 50, "note": "SeaBus + bus 236" }
+  ],
+  "hilly": ["YVR-a-grouse"]
+}

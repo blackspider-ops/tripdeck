@@ -4,13 +4,7 @@ import { indexOf } from "../data/loader.js";
 
 export interface Point { id: string; lat: number; lng: number }
 
-/**
- * Places in Lisbon on the hills (doc 07 §7 hillFactor). O2-033: this belongs in dataset.json with each place; moving
- * it changes the dataset's hash (TR5-022 drift warnings for every stored voyage), so it waits for the next dataset change.
- */
-const HILLY = new Set(["LIS-h-casa-alfama", "LIS-a-tram-castle", "LIS-a-fado", "LIS-a-bairro-night", "LIS-h-bairro-hostel"]);
-
-function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+export function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
   const R = 6371;
   const dLat = ((b.lat - a.lat) * Math.PI) / 180;
   const dLng = ((b.lng - a.lng) * Math.PI) / 180;
@@ -20,7 +14,8 @@ function haversineKm(a: { lat: number; lng: number }, b: { lat: number; lng: num
 
 /** Travel time between two places: dataset override first, then the doc 07 §7 model. */
 export function travel(ds: Dataset, from: Point, to: Point): TravelLeg {
-  const ov = indexOf(ds).override(from.id, to.id); // either direction, first listed wins (O(1))
+  const ix = indexOf(ds);
+  const ov = ix.override(from.id, to.id); // either direction, first listed wins (O(1))
   let mode: TravelMode;
   let minutes: number;
   if (ov) {
@@ -30,7 +25,8 @@ export function travel(ds: Dataset, from: Point, to: Point): TravelLeg {
     const km = haversineKm(from, to);
     if (km <= 2.0) {
       mode = "walk";
-      const hill = HILLY.has(from.id) || HILLY.has(to.id) ? 1.4 : 1.0;
+      // doc 07 §7 hillFactor: places on hills come from each port's `hilly` list in the dataset
+      const hill = ix.hilly.has(from.id) || ix.hilly.has(to.id) ? 1.4 : 1.0;
       minutes = Math.max(1, Math.round(((km * 1.3) / 4.8) * 60 * hill));
     } else if (km <= 8) {
       mode = "taxi";

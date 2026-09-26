@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SEL", "name": "Seoul", "country": "South Korea", "region": "Asia", "airport": { "code": "ICN", "lat": 37.4602, "lng": 126.4407 }, "utcOffset": 9, "centerLat": 37.556, "centerLng": 126.975, "tileRadiusKm": 3.0, "publicFlags": ["long flight from the US (14 h)", "freezing winters, humid monsoon July"] },
+  "hotels": [
+    { "_id": "SEL-h-hongdae-hostel", "kind": "hotel", "cityId": "SEL", "name": "Hongdae Hostel (3 beds)", "neighborhood": "Hongdae", "lat": 37.5563, "lng": 126.9236, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "SEL-h-bukchon-hanok", "kind": "hotel", "cityId": "SEL", "name": "Bukchon Hanok Guesthouse", "neighborhood": "Bukchon", "lat": 37.5826, "lng": 126.9831, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "SEL-h-itaewon-flat", "kind": "hotel", "cityId": "SEL", "name": "Itaewon Apartment", "neighborhood": "Itaewon", "lat": 37.5345, "lng": 126.9946, "stayType": "apartment", "nightlyCents": 19000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "SEL-h-myeongdong-triple", "kind": "hotel", "cityId": "SEL", "name": "Myeongdong Hotel (triple)", "neighborhood": "Myeongdong", "lat": 37.5636, "lng": 126.9834, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "SEL-h-insadong-triple", "kind": "hotel", "cityId": "SEL", "name": "Insadong Boutique (triple)", "neighborhood": "Insadong", "lat": 37.574, "lng": 126.985, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "SEL-a-gyeongbokgung", "kind": "activity", "cityId": "SEL", "name": "Gyeongbokgung Palace & guard change", "short": "Gyeongbokgung Palace", "tags": ["history"], "lat": 37.5796, "lng": 126.977, "durationMin": 150, "priceCents": 300, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "SEL-a-gwangjang", "kind": "activity", "cityId": "SEL", "name": "Gwangjang Market food crawl", "short": "Gwangjang Market", "tags": ["food"], "lat": 37.57, "lng": 126.9996, "durationMin": 120, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "SEL-a-hongdae-live", "kind": "activity", "cityId": "SEL", "name": "Hongdae live music night", "short": "Hongdae live music", "tags": ["music", "nightlife"], "lat": 37.553, "lng": 126.9225, "durationMin": 180, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "SEL-a-natl-museum", "kind": "activity", "cityId": "SEL", "name": "National Museum of Korea", "short": "National Museum", "tags": ["museums", "history"], "lat": 37.524, "lng": 126.9803, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SEL-a-namsan", "kind": "activity", "cityId": "SEL", "name": "Namsan hike & N Seoul Tower", "short": "Namsan & Seoul Tower", "tags": ["nature", "chill"], "lat": 37.5512, "lng": 126.9882, "durationMin": 150, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SEL-a-dragon-hill-spa", "kind": "activity", "cityId": "SEL", "name": "Dragon Hill Spa jjimjilbang", "short": "Jjimjilbang spa", "tags": ["chill"], "lat": 37.5292, "lng": 126.9648, "durationMin": 240, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "SEL-a-itaewon-bars", "kind": "activity", "cityId": "SEL", "name": "Itaewon bar hop", "short": "Itaewon bars", "tags": ["nightlife"], "lat": 37.5345, "lng": 126.994, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "SEL-a-dmz", "kind": "activity", "cityId": "SEL", "name": "DMZ tour (Imjingak & 3rd Tunnel)", "short": "DMZ tour", "tags": ["history"], "lat": 37.8894, "lng": 126.74, "durationMin": 480, "priceCents": 9000, "startEarliest": "07:00", "startLatest": "08:00", "earlyStart": true, "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SEL-h-bukchon-hanok", "toId": "SEL-a-dmz", "mode": "taxi", "minutes": 75, "note": "tour coach from Gwanghwamun" },
+    { "fromId": "SEL-h-bukchon-hanok", "toId": "SEL-a-hongdae-live", "mode": "transit", "minutes": 35, "note": "Line 3 + Line 2 to Hongik Univ." },
+    { "fromId": "SEL-h-hongdae-hostel", "toId": "SEL-a-natl-museum", "mode": "transit", "minutes": 35, "note": "Line 2 + Line 4 to Ichon" }
+  ],
+  "hilly": ["SEL-h-bukchon-hanok", "SEL-a-namsan"]
+}

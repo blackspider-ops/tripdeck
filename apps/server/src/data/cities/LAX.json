@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "LAX", "name": "Los Angeles", "country": "United States", "state": "CA", "region": "United States", "airport": {"code": "LAX", "lat": 33.9416, "lng": -118.4085}, "utcOffset": -8, "centerLat": 34, "centerLng": -118.478, "tileRadiusKm": 3, "publicFlags": ["car-dependent sprawl", "expensive hotels"] },
+  "hotels": [
+    { "_id": "LAX-h-canals", "kind": "hotel", "cityId": "LAX", "name": "Venice Canals Bungalow", "neighborhood": "Venice", "lat": 33.985, "lng": -118.4665, "stayType": "apartment", "nightlyCents": 40000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "LAX-h-santa-monica-triple", "kind": "hotel", "cityId": "LAX", "name": "Santa Monica Hotel (triple)", "neighborhood": "Santa Monica", "lat": 34.0155, "lng": -118.496, "stayType": "hotel", "nightlyCents": 45000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "LAX-h-ocean-park-triple", "kind": "hotel", "cityId": "LAX", "name": "Ocean Park Inn (triple)", "neighborhood": "Ocean Park", "lat": 34.002, "lng": -118.483, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "LAX-h-abbot-guest", "kind": "hotel", "cityId": "LAX", "name": "Abbot Kinney Guesthouse", "neighborhood": "Venice", "lat": 33.9915, "lng": -118.466, "stayType": "guesthouse", "nightlyCents": 28000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "LAX-h-venice-hostel", "kind": "hotel", "cityId": "LAX", "name": "Venice Beach Hostel (3 beds)", "neighborhood": "Venice", "lat": 33.989, "lng": -118.473, "stayType": "hostel", "nightlyCents": 16000, "sleeps": 3, "rating": 4 }
+  ],
+  "activities": [
+    { "_id": "LAX-a-venice-beach", "kind": "activity", "cityId": "LAX", "name": "Venice Beach & boardwalk", "short": "Venice Beach", "tags": ["beach", "chill"], "lat": 33.985, "lng": -118.4725, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "LAX-a-getty", "kind": "activity", "cityId": "LAX", "name": "Getty Center", "short": "Getty Center", "tags": ["museums"], "lat": 34.078, "lng": -118.4741, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "LAX-a-griffith", "kind": "activity", "cityId": "LAX", "name": "Griffith Observatory sunset", "short": "Griffith Observatory", "tags": ["nature", "history"], "lat": 34.1184, "lng": -118.3004, "durationMin": 150, "priceCents": 0, "startEarliest": "16:00", "startLatest": "18:30", "role": "group" },
+    { "_id": "LAX-a-pier", "kind": "activity", "cityId": "LAX", "name": "Santa Monica Pier & bike path", "short": "Santa Monica Pier", "tags": ["chill", "beach"], "lat": 34.0092, "lng": -118.4973, "durationMin": 150, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "LAX-a-gcm", "kind": "activity", "cityId": "LAX", "name": "Grand Central Market & Arts District", "short": "Grand Central Market", "tags": ["food"], "lat": 34.0508, "lng": -118.2489, "durationMin": 180, "priceCents": 4000, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "LAX-a-bowl", "kind": "activity", "cityId": "LAX", "name": "Hollywood Bowl concert", "short": "Hollywood Bowl", "tags": ["music"], "lat": 34.1122, "lng": -118.3391, "durationMin": 180, "priceCents": 7000, "startEarliest": "19:30", "startLatest": "20:00", "role": "pick" },
+    { "_id": "LAX-a-abbot-bars", "kind": "activity", "cityId": "LAX", "name": "Abbot Kinney bar hop", "short": "Abbot Kinney bars", "tags": ["nightlife"], "lat": 33.991, "lng": -118.465, "durationMin": 180, "priceCents": 3500, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "LAX-a-malibu", "kind": "activity", "cityId": "LAX", "name": "El Matador State Beach, Malibu", "short": "Malibu beach", "tags": ["beach", "nature"], "lat": 34.0383, "lng": -118.8747, "durationMin": 300, "priceCents": 0, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "LAX-h-canals", "toId": "LAX-a-getty", "mode": "taxi", "minutes": 25, "note": "I-405 traffic" },
+    { "fromId": "LAX-h-canals", "toId": "LAX-a-griffith", "mode": "taxi", "minutes": 55, "note": "cross-town traffic" },
+    { "fromId": "LAX-h-canals", "toId": "LAX-a-bowl", "mode": "taxi", "minutes": 50, "note": "leave early for Bowl traffic" },
+    { "fromId": "LAX-h-canals", "toId": "LAX-a-malibu", "mode": "taxi", "minutes": 50, "note": "PCH" }
+  ],
+  "hilly": []
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "JNB", "name": "Johannesburg", "country": "South Africa", "region": "Africa", "airport": { "code": "JNB", "lat": -26.1337, "lng": 28.2423 }, "utcOffset": 2, "centerLat": -26.18, "centerLng": 28.03, "tileRadiusKm": 3, "publicFlags": ["high altitude (1,750 m)", "rideshare recommended after dark"] },
+  "hotels": [
+    { "_id": "JNB-h-melville-hostel", "kind": "hotel", "cityId": "JNB", "name": "Melville Hostel (3 beds)", "neighborhood": "Melville", "lat": -26.1755, "lng": 28.009, "stayType": "hostel", "nightlyCents": 4500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "JNB-h-maboneng-loft", "kind": "hotel", "cityId": "JNB", "name": "Maboneng Loft", "neighborhood": "Maboneng", "lat": -26.2045, "lng": 28.0595, "stayType": "apartment", "nightlyCents": 8500, "sleeps": 4, "rating": 4.2 },
+    { "_id": "JNB-h-parkhurst-guest", "kind": "hotel", "cityId": "JNB", "name": "Parkhurst Guesthouse", "neighborhood": "Parkhurst", "lat": -26.1405, "lng": 28.018, "stayType": "guesthouse", "nightlyCents": 11000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "JNB-h-rosebank-triple", "kind": "hotel", "cityId": "JNB", "name": "Rosebank Hotel (triple)", "neighborhood": "Rosebank", "lat": -26.146, "lng": 28.0425, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "JNB-h-sandton-triple", "kind": "hotel", "cityId": "JNB", "name": "Sandton Hotel (triple)", "neighborhood": "Sandton", "lat": -26.1075, "lng": 28.055, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "JNB-a-apartheid-museum", "kind": "activity", "cityId": "JNB", "name": "Apartheid Museum", "short": "Apartheid Museum", "tags": ["museums", "history"], "lat": -26.2375, "lng": 28.0085, "durationMin": 180, "priceCents": 1400, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "JNB-a-soweto", "kind": "activity", "cityId": "JNB", "name": "Soweto & Vilakazi Street tour", "short": "Soweto tour", "tags": ["history", "food"], "lat": -26.2385, "lng": 27.908, "durationMin": 240, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "JNB-a-constitution-hill", "kind": "activity", "cityId": "JNB", "name": "Constitution Hill", "short": "Constitution Hill", "tags": ["history", "museums"], "lat": -26.1895, "lng": 28.0425, "durationMin": 120, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "JNB-a-market-on-main", "kind": "activity", "cityId": "JNB", "name": "Market on Main, Maboneng", "short": "Market on Main", "tags": ["food", "music"], "lat": -26.2047, "lng": 28.059, "durationMin": 150, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "JNB-a-cradle", "kind": "activity", "cityId": "JNB", "name": "Cradle of Humankind (Maropeng & Sterkfontein)", "short": "Cradle of Humankind", "tags": ["museums", "nature"], "lat": -25.9667, "lng": 27.6622, "durationMin": 360, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "JNB-a-braamfontein-night", "kind": "activity", "cityId": "JNB", "name": "Braamfontein bars & live music", "short": "Braamfontein night out", "tags": ["nightlife", "music"], "lat": -26.193, "lng": 28.034, "durationMin": 180, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "JNB-a-botanical-garden", "kind": "activity", "cityId": "JNB", "name": "Joburg Botanical Garden & Emmarentia Dam", "short": "Botanical Garden", "tags": ["nature", "chill"], "lat": -26.157, "lng": 27.999, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "JNB-a-wits-art", "kind": "activity", "cityId": "JNB", "name": "Wits Art Museum", "short": "Wits Art Museum", "tags": ["museums"], "lat": -26.1925, "lng": 28.031, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "JNB-h-parkhurst-guest", "toId": "JNB-a-soweto", "mode": "taxi", "minutes": 35 },
+    { "fromId": "JNB-h-parkhurst-guest", "toId": "JNB-a-cradle", "mode": "taxi", "minutes": 60, "note": "about 45 km northwest" },
+    { "fromId": "JNB-h-parkhurst-guest", "toId": "JNB-a-apartheid-museum", "mode": "taxi", "minutes": 25 }
+  ],
+  "hilly": ["JNB-a-constitution-hill"]
+}

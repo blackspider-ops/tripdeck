@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BUE", "name": "Buenos Aires", "country": "Argentina", "region": "Latin America", "airport": { "code": "EZE", "lat": -34.8222, "lng": -58.5358 }, "utcOffset": -3, "centerLat": -34.598, "centerLng": -58.41, "tileRadiusKm": 3.0, "publicFlags": ["overnight flights from the US (~11 h)", "peso exchange rates change fast"] },
+  "hotels": [
+    { "_id": "BUE-h-san-telmo-hostel", "kind": "hotel", "cityId": "BUE", "name": "San Telmo Hostel (3 beds)", "neighborhood": "San Telmo", "lat": -34.62, "lng": -58.373, "stayType": "hostel", "nightlyCents": 5500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "BUE-h-villa-crespo-guest", "kind": "hotel", "cityId": "BUE", "name": "Casa Villa Crespo", "neighborhood": "Villa Crespo", "lat": -34.598, "lng": -58.439, "stayType": "guesthouse", "nightlyCents": 8500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "BUE-h-palermo-apt", "kind": "hotel", "cityId": "BUE", "name": "Palermo Soho Apartment", "neighborhood": "Palermo Soho", "lat": -34.589, "lng": -58.429, "stayType": "apartment", "nightlyCents": 11000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BUE-h-hollywood-triple", "kind": "hotel", "cityId": "BUE", "name": "Palermo Hollywood Boutique (triple)", "neighborhood": "Palermo Hollywood", "lat": -34.5835, "lng": -58.4365, "stayType": "hotel", "nightlyCents": 14000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "BUE-h-recoleta-triple", "kind": "hotel", "cityId": "BUE", "name": "Recoleta Hotel (triple)", "neighborhood": "Recoleta", "lat": -34.5905, "lng": -58.392, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "BUE-a-recoleta-cemetery", "kind": "activity", "cityId": "BUE", "name": "Recoleta Cemetery", "short": "Recoleta Cemetery", "tags": ["history"], "lat": -34.5875, "lng": -58.393, "durationMin": 90, "priceCents": 1400, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "BUE-a-milonga", "kind": "activity", "cityId": "BUE", "name": "Milonga night at La Catedral Club", "short": "Tango milonga", "tags": ["music", "nightlife"], "lat": -34.6036, "lng": -58.4205, "durationMin": 180, "priceCents": 1500, "startEarliest": "21:30", "startLatest": "23:00", "role": "group" },
+    { "_id": "BUE-a-parrilla", "kind": "activity", "cityId": "BUE", "name": "Parrilla steak dinner, Palermo", "short": "Parrilla dinner", "tags": ["food"], "lat": -34.5864, "lng": -58.4255, "durationMin": 120, "priceCents": 6500, "startEarliest": "20:30", "startLatest": "22:30", "role": "group" },
+    { "_id": "BUE-a-san-telmo-market", "kind": "activity", "cityId": "BUE", "name": "San Telmo Sunday fair & Plaza Dorrego", "short": "San Telmo fair", "tags": ["history", "chill"], "lat": -34.6205, "lng": -58.3715, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "BUE-a-malba", "kind": "activity", "cityId": "BUE", "name": "MALBA (Latin American art museum)", "short": "MALBA", "tags": ["museums"], "lat": -34.577, "lng": -58.4035, "durationMin": 120, "priceCents": 1400, "startEarliest": "12:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "BUE-a-tigre", "kind": "activity", "cityId": "BUE", "name": "Tigre Delta boat day", "short": "Tigre Delta", "tags": ["nature", "chill"], "lat": -34.426, "lng": -58.5797, "durationMin": 420, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "10:30", "role": "pick" },
+    { "_id": "BUE-a-floreria", "kind": "activity", "cityId": "BUE", "name": "Speakeasy night at Florería Atlántico", "short": "Florería Atlántico", "tags": ["nightlife"], "lat": -34.5924, "lng": -58.3776, "durationMin": 150, "priceCents": 3000, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "BUE-a-la-boca", "kind": "activity", "cityId": "BUE", "name": "La Boca & Caminito", "short": "Caminito", "tags": ["history"], "lat": -34.6393, "lng": -58.3625, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BUE-h-palermo-apt", "toId": "BUE-a-tigre", "mode": "train", "minutes": 70, "note": "Subte D + Mitre line from Retiro" },
+    { "fromId": "BUE-h-palermo-apt", "toId": "BUE-a-san-telmo-market", "mode": "taxi", "minutes": 25, "note": "Palermo → San Telmo" },
+    { "fromId": "BUE-h-palermo-apt", "toId": "BUE-a-la-boca", "mode": "taxi", "minutes": 30, "note": "Palermo → La Boca" }
+  ],
+  "hilly": []
+}

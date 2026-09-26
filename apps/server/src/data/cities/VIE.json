@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "VIE", "name": "Vienna", "country": "Austria", "region": "Europe", "airport": {"code": "VIE", "lat": 48.1103, "lng": 16.5697}, "utcOffset": 1, "centerLat": 48.205, "centerLng": 16.366, "tileRadiusKm": 1.8, "publicFlags": ["cold, grey winters"] },
+  "hotels": [
+    { "_id": "VIE-h-mariahilf-hostel", "kind": "hotel", "cityId": "VIE", "name": "Mariahilf Hostel (3 beds)", "neighborhood": "Mariahilf", "lat": 48.1965, "lng": 16.35, "stayType": "hostel", "nightlyCents": 9500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "VIE-h-leopold-guest", "kind": "hotel", "cityId": "VIE", "name": "Leopoldstadt Guesthouse", "neighborhood": "Leopoldstadt", "lat": 48.216, "lng": 16.383, "stayType": "guesthouse", "nightlyCents": 13000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "VIE-h-neubau-flat", "kind": "hotel", "cityId": "VIE", "name": "Neubau Apartment", "neighborhood": "Neubau", "lat": 48.202, "lng": 16.349, "stayType": "apartment", "nightlyCents": 19000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "VIE-h-wieden-triple", "kind": "hotel", "cityId": "VIE", "name": "Naschmarkt Hotel (triple)", "neighborhood": "Wieden", "lat": 48.197, "lng": 16.364, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "VIE-h-innere-triple", "kind": "hotel", "cityId": "VIE", "name": "Innere Stadt Hotel (triple)", "neighborhood": "Innere Stadt", "lat": 48.209, "lng": 16.371, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "VIE-a-schonbrunn", "kind": "activity", "cityId": "VIE", "name": "Schönbrunn Palace", "short": "Schönbrunn", "tags": ["history"], "lat": 48.1845, "lng": 16.3122, "durationMin": 180, "priceCents": 3200, "startEarliest": "08:30", "startLatest": "14:00", "role": "group" },
+    { "_id": "VIE-a-opera", "kind": "activity", "cityId": "VIE", "name": "Vienna State Opera performance", "short": "State Opera", "tags": ["music"], "lat": 48.203, "lng": 16.369, "durationMin": 180, "priceCents": 4500, "startEarliest": "19:00", "startLatest": "19:30", "role": "group" },
+    { "_id": "VIE-a-kaffeehaus", "kind": "activity", "cityId": "VIE", "name": "Kaffeehaus & Sachertorte, Café Central", "short": "Café Central", "tags": ["food", "chill"], "lat": 48.2104, "lng": 16.3655, "durationMin": 75, "priceCents": 1800, "startEarliest": "08:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "VIE-a-khm", "kind": "activity", "cityId": "VIE", "name": "Kunsthistorisches Museum", "short": "Kunsthistorisches", "tags": ["museums"], "lat": 48.2038, "lng": 16.3617, "durationMin": 180, "priceCents": 2400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "VIE-a-belvedere", "kind": "activity", "cityId": "VIE", "name": "Upper Belvedere (Klimt)", "short": "Belvedere", "tags": ["museums", "history"], "lat": 48.1914, "lng": 16.3809, "durationMin": 120, "priceCents": 2300, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "VIE-a-naschmarkt", "kind": "activity", "cityId": "VIE", "name": "Naschmarkt food walk", "short": "Naschmarkt", "tags": ["food"], "lat": 48.1985, "lng": 16.363, "durationMin": 120, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "VIE-a-heuriger", "kind": "activity", "cityId": "VIE", "name": "Heuriger wine evening, Grinzing", "short": "Grinzing Heuriger", "tags": ["food", "nightlife", "nature"], "lat": 48.257, "lng": 16.354, "durationMin": 180, "priceCents": 4000, "startEarliest": "16:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "VIE-a-prater", "kind": "activity", "cityId": "VIE", "name": "Prater & Giant Ferris Wheel", "short": "Prater Ferris wheel", "tags": ["chill"], "lat": 48.2166, "lng": 16.3959, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "19:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "VIE-h-neubau-flat", "toId": "VIE-a-schonbrunn", "mode": "transit", "minutes": 20, "note": "U3 + U4 to Schönbrunn" },
+    { "fromId": "VIE-h-neubau-flat", "toId": "VIE-a-heuriger", "mode": "transit", "minutes": 40, "note": "U2 to Schottentor + tram 38 to Grinzing" }
+  ],
+  "hilly": ["VIE-a-heuriger"]
+}

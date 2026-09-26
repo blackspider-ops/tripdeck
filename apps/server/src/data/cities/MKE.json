@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "MKE", "name": "Milwaukee", "country": "United States", "state": "WI", "region": "United States", "airport": { "code": "MKE", "lat": 42.9472, "lng": -87.8966 }, "utcOffset": -6, "centerLat": 43.042, "centerLng": -87.905, "tileRadiusKm": 2.5, "publicFlags": ["cold, windy winters off Lake Michigan", "beach season only June–August"] },
+  "hotels": [
+    { "_id": "MKE-h-ambassador", "kind": "hotel", "cityId": "MKE", "name": "Ambassador Hotel (2 queens)", "neighborhood": "Marquette", "lat": 43.0386, "lng": -87.9428, "stayType": "hotel", "nightlyCents": 14000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "MKE-h-brady-flat", "kind": "hotel", "cityId": "MKE", "name": "Brady Street Apartment", "neighborhood": "Lower East Side", "lat": 43.0527, "lng": -87.892, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "MKE-h-brumder", "kind": "hotel", "cityId": "MKE", "name": "Brumder Mansion B&B", "neighborhood": "Near West Side", "lat": 43.0386, "lng": -87.9529, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "MKE-h-pfister", "kind": "hotel", "cityId": "MKE", "name": "The Pfister Hotel (2 queens)", "neighborhood": "Downtown", "lat": 43.0388, "lng": -87.907, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "MKE-h-journeyman", "kind": "hotel", "cityId": "MKE", "name": "Kimpton Journeyman (2 queens)", "neighborhood": "Historic Third Ward", "lat": 43.0336, "lng": -87.9081, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "MKE-a-art-museum", "kind": "activity", "cityId": "MKE", "name": "Milwaukee Art Museum", "short": "Art Museum", "tags": ["museums"], "lat": 43.04, "lng": -87.897, "durationMin": 120, "priceCents": 2700, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "MKE-a-lakefront-brewery", "kind": "activity", "cityId": "MKE", "name": "Lakefront Brewery tour", "short": "Lakefront Brewery", "tags": ["food", "nightlife"], "lat": 43.0548, "lng": -87.9056, "durationMin": 75, "priceCents": 2400, "startEarliest": "12:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "MKE-a-pabst-theater", "kind": "activity", "cityId": "MKE", "name": "Show at the Pabst Theater", "short": "Pabst Theater show", "tags": ["music", "nightlife"], "lat": 43.0433, "lng": -87.9111, "durationMin": 150, "priceCents": 5000, "startEarliest": "19:30", "startLatest": "20:00", "role": "group" },
+    { "_id": "MKE-a-harley", "kind": "activity", "cityId": "MKE", "name": "Harley-Davidson Museum", "short": "Harley museum", "tags": ["museums", "history"], "lat": 43.0317, "lng": -87.9165, "durationMin": 120, "priceCents": 2600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MKE-a-public-market", "kind": "activity", "cityId": "MKE", "name": "Milwaukee Public Market", "short": "Public Market", "tags": ["food"], "lat": 43.035, "lng": -87.9087, "durationMin": 60, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "MKE-a-bradford-beach", "kind": "activity", "cityId": "MKE", "name": "Bradford Beach", "short": "Bradford Beach", "tags": ["beach", "chill"], "lat": 43.0621, "lng": -87.8735, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "MKE-a-brady-bars", "kind": "activity", "cityId": "MKE", "name": "Brady Street bars", "short": "Brady St bars", "tags": ["nightlife"], "lat": 43.0535, "lng": -87.8985, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "MKE-a-lake-park", "kind": "activity", "cityId": "MKE", "name": "Lake Park & lakefront bluffs walk", "short": "Lake Park walk", "tags": ["nature", "chill"], "lat": 43.0655, "lng": -87.871, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MKE-h-brumder", "toId": "MKE-a-bradford-beach", "mode": "taxi", "minutes": 15 },
+    { "fromId": "MKE-h-ambassador", "toId": "MKE-a-bradford-beach", "mode": "taxi", "minutes": 13 }
+  ],
+  "hilly": ["MKE-a-lake-park"]
+}

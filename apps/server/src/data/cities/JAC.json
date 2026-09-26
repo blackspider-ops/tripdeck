@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "JAC", "name": "Jackson", "country": "United States", "state": "WY", "region": "United States", "airport": {"code": "JAC", "lat": 43.6073, "lng": -110.7377}, "utcOffset": -7, "centerLat": 43.48, "centerLng": -110.762, "tileRadiusKm": 1.5, "publicFlags": ["high altitude (1,900 m)", "remote; pricey flights"] },
+  "hotels": [
+    { "_id": "JAC-h-the-hostel", "kind": "hotel", "cityId": "JAC", "name": "The Hostel, Teton Village (private 4-bed)", "neighborhood": "Teton Village", "lat": 43.587, "lng": -110.8275, "stayType": "hostel", "nightlyCents": 15500, "sleeps": 4, "rating": 4.2 },
+    { "_id": "JAC-h-cowboy-village", "kind": "hotel", "cityId": "JAC", "name": "Cowboy Village Resort (cabin)", "neighborhood": "Downtown", "lat": 43.4775, "lng": -110.768, "stayType": "guesthouse", "nightlyCents": 27000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "JAC-h-anvil", "kind": "hotel", "cityId": "JAC", "name": "The Anvil Hotel (triple)", "neighborhood": "Downtown", "lat": 43.4818, "lng": -110.762, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "JAC-h-east-jackson-condo", "kind": "hotel", "cityId": "JAC", "name": "East Jackson Condo", "neighborhood": "East Jackson", "lat": 43.482, "lng": -110.753, "stayType": "apartment", "nightlyCents": 38000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "JAC-h-wort", "kind": "hotel", "cityId": "JAC", "name": "The Wort Hotel (2 queens)", "neighborhood": "Town Square", "lat": 43.48, "lng": -110.7637, "stayType": "hotel", "nightlyCents": 55000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "JAC-a-jenny-lake", "kind": "activity", "cityId": "JAC", "name": "Grand Teton: Jenny Lake & Hidden Falls", "short": "Jenny Lake, Tetons", "tags": ["nature"], "lat": 43.7524, "lng": -110.7232, "durationMin": 360, "priceCents": 3000, "startEarliest": "08:00", "startLatest": "10:00", "role": "group" },
+    { "_id": "JAC-a-cowboy-bar", "kind": "activity", "cityId": "JAC", "name": "Million Dollar Cowboy Bar", "short": "Cowboy Bar", "tags": ["nightlife", "music"], "lat": 43.4803, "lng": -110.7616, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "JAC-a-town-square", "kind": "activity", "cityId": "JAC", "name": "Town Square & elk-antler arches", "short": "Town Square arches", "tags": ["history", "chill"], "lat": 43.4799, "lng": -110.7624, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "JAC-a-wildlife-art", "kind": "activity", "cityId": "JAC", "name": "National Museum of Wildlife Art", "short": "Wildlife Art museum", "tags": ["museums"], "lat": 43.5098, "lng": -110.7545, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "JAC-a-elk-refuge", "kind": "activity", "cityId": "JAC", "name": "National Elk Refuge sleigh ride", "short": "Elk Refuge sleigh", "tags": ["nature"], "lat": 43.4885, "lng": -110.7602, "durationMin": 90, "priceCents": 3800, "startEarliest": "10:00", "startLatest": "15:30", "role": "pick" },
+    { "_id": "JAC-a-snow-king", "kind": "activity", "cityId": "JAC", "name": "Snow King Mountain gondola", "short": "Snow King gondola", "tags": ["nature", "chill"], "lat": 43.4735, "lng": -110.756, "durationMin": 120, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "JAC-a-aerial-tram", "kind": "activity", "cityId": "JAC", "name": "Teton Village aerial tram", "short": "Aerial tram", "tags": ["nature"], "lat": 43.5875, "lng": -110.8278, "durationMin": 180, "priceCents": 6500, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "JAC-a-snake-river-brewing", "kind": "activity", "cityId": "JAC", "name": "Snake River Brewing dinner", "short": "Snake River Brewing", "tags": ["food", "nightlife"], "lat": 43.4763, "lng": -110.7666, "durationMin": 120, "priceCents": 3500, "startEarliest": "17:00", "startLatest": "20:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "JAC-h-anvil", "toId": "JAC-a-jenny-lake", "mode": "taxi", "minutes": 40, "note": "US-89 & Teton Park Rd; park entry per car" },
+    { "fromId": "JAC-h-the-hostel", "toId": "JAC-a-jenny-lake", "mode": "taxi", "minutes": 35, "note": "Moose-Wilson Rd (summer)" },
+    { "fromId": "JAC-h-anvil", "toId": "JAC-a-aerial-tram", "mode": "transit", "minutes": 40, "note": "START bus to Teton Village" },
+    { "fromId": "JAC-h-the-hostel", "toId": "JAC-a-cowboy-bar", "mode": "transit", "minutes": 40, "note": "START bus into town" }
+  ],
+  "hilly": ["JAC-a-aerial-tram", "JAC-a-snow-king"]
+}

@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "WIL", "name": "Wilmington", "country": "United States", "state": "DE", "region": "United States", "airport": { "code": "PHL", "lat": 39.8744, "lng": -75.2424 }, "utcOffset": -5, "centerLat": 39.75, "centerLng": -75.558, "tileRadiusKm": 2, "publicFlags": ["small city — quiet downtown after dark", "nearest big airport is Philadelphia (~35 min)"] },
+  "hotels": [
+    { "_id": "WIL-h-concord-pike-motel", "kind": "hotel", "cityId": "WIL", "name": "Concord Pike Motel (2 doubles)", "neighborhood": "Brandywine Hundred", "lat": 39.794, "lng": -75.547, "stayType": "guesthouse", "nightlyCents": 12000, "sleeps": 4, "rating": 3.6 },
+    { "_id": "WIL-h-trolley-square-flat", "kind": "hotel", "cityId": "WIL", "name": "Trolley Square Apartment", "neighborhood": "Trolley Square", "lat": 39.756, "lng": -75.564, "stayType": "apartment", "nightlyCents": 18000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "WIL-h-westin", "kind": "hotel", "cityId": "WIL", "name": "Westin Wilmington (2 queens)", "neighborhood": "Riverfront", "lat": 39.7348, "lng": -75.5616, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "WIL-h-quoin", "kind": "hotel", "cityId": "WIL", "name": "The Quoin (triple)", "neighborhood": "Market Street", "lat": 39.7432, "lng": -75.5497, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "WIL-h-du-pont", "kind": "hotel", "cityId": "WIL", "name": "Hotel du Pont (2 queens)", "neighborhood": "Downtown", "lat": 39.7456, "lng": -75.5485, "stayType": "hotel", "nightlyCents": 34000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "WIL-a-winterthur", "kind": "activity", "cityId": "WIL", "name": "Winterthur Museum & Gardens", "short": "Winterthur", "tags": ["museums", "nature"], "lat": 39.8057, "lng": -75.6011, "durationMin": 180, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "13:30", "role": "group" },
+    { "_id": "WIL-a-hagley", "kind": "activity", "cityId": "WIL", "name": "Hagley Museum (du Pont powder mills)", "short": "Hagley Museum", "tags": ["history", "museums"], "lat": 39.7797, "lng": -75.5717, "durationMin": 150, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "WIL-a-riverfront", "kind": "activity", "cityId": "WIL", "name": "Riverfront walk & brewpub lunch", "short": "Riverfront lunch", "tags": ["food", "chill"], "lat": 39.734, "lng": -75.562, "durationMin": 120, "priceCents": 3000, "startEarliest": "12:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "WIL-a-delaware-art", "kind": "activity", "cityId": "WIL", "name": "Delaware Art Museum", "short": "Delaware Art Museum", "tags": ["museums"], "lat": 39.765, "lng": -75.565, "durationMin": 120, "priceCents": 1400, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "WIL-a-brandywine-park", "kind": "activity", "cityId": "WIL", "name": "Brandywine Park trail", "short": "Brandywine Park", "tags": ["nature", "chill"], "lat": 39.755, "lng": -75.551, "durationMin": 90, "priceCents": 0, "startEarliest": "08:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "WIL-a-the-queen", "kind": "activity", "cityId": "WIL", "name": "Live music at The Queen", "short": "The Queen show", "tags": ["music", "nightlife"], "lat": 39.7427, "lng": -75.5494, "durationMin": 150, "priceCents": 3000, "startEarliest": "19:30", "startLatest": "21:00", "role": "pick" },
+    { "_id": "WIL-a-trolley-bars", "kind": "activity", "cityId": "WIL", "name": "Trolley Square bars", "short": "Trolley Sq bars", "tags": ["nightlife"], "lat": 39.757, "lng": -75.5645, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:30", "startLatest": "23:00", "role": "pick" },
+    { "_id": "WIL-a-longwood", "kind": "activity", "cityId": "WIL", "name": "Longwood Gardens", "short": "Longwood Gardens", "tags": ["nature"], "lat": 39.871, "lng": -75.675, "durationMin": 240, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "WIL-h-du-pont", "toId": "WIL-a-winterthur", "mode": "taxi", "minutes": 15, "note": "~9 km NW; no convenient transit" },
+    { "fromId": "WIL-h-du-pont", "toId": "WIL-a-longwood", "mode": "taxi", "minutes": 30, "note": "~20 km into PA" },
+    { "fromId": "WIL-h-trolley-square-flat", "toId": "WIL-a-longwood", "mode": "taxi", "minutes": 30, "note": "~19 km into PA" }
+  ],
+  "hilly": []
+}

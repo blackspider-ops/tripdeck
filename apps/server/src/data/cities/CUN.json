@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "CUN", "name": "Cancún", "country": "Mexico", "region": "Latin America", "airport": { "code": "CUN", "lat": 21.0365, "lng": -86.8771 }, "utcOffset": -5, "centerLat": 21.137, "centerLng": -86.765, "tileRadiusKm": 3.0, "publicFlags": ["spring-break crowds in March", "sargassum seaweed possible from spring"] },
+  "hotels": [
+    { "_id": "CUN-h-linda-hostel", "kind": "hotel", "cityId": "CUN", "name": "Playa Linda Hostel (3 beds)", "neighborhood": "Zona Hotelera (km 4)", "lat": 21.1438, "lng": -86.7905, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "CUN-h-tortugas-condo", "kind": "hotel", "cityId": "CUN", "name": "Playa Tortugas Condo", "neighborhood": "Zona Hotelera (km 6)", "lat": 21.1395, "lng": -86.7735, "stayType": "apartment", "nightlyCents": 17500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CUN-h-pok-ta-pok-guest", "kind": "hotel", "cityId": "CUN", "name": "Casa Laguna Guesthouse", "neighborhood": "Pok-Ta-Pok", "lat": 21.1385, "lng": -86.7625, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "CUN-h-langosta-triple", "kind": "hotel", "cityId": "CUN", "name": "Playa Langosta Hotel (triple)", "neighborhood": "Zona Hotelera (km 5)", "lat": 21.1405, "lng": -86.7815, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "CUN-h-punta-triple", "kind": "hotel", "cityId": "CUN", "name": "Punta Cancún Beach Resort (triple)", "neighborhood": "Punta Cancún", "lat": 21.1335, "lng": -86.7445, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "CUN-a-chac-mool", "kind": "activity", "cityId": "CUN", "name": "Playa Chac Mool beach day", "short": "Chac Mool beach", "tags": ["beach", "chill"], "lat": 21.1318, "lng": -86.7466, "durationMin": 240, "priceCents": 0, "startEarliest": "09:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "CUN-a-coco-bongo", "kind": "activity", "cityId": "CUN", "name": "Coco Bongo show night", "short": "Coco Bongo", "tags": ["nightlife", "music"], "lat": 21.1333, "lng": -86.7467, "durationMin": 240, "priceCents": 9500, "startEarliest": "22:30", "startLatest": "23:00", "role": "group" },
+    { "_id": "CUN-a-isla-mujeres", "kind": "activity", "cityId": "CUN", "name": "Isla Mujeres ferry & Playa Norte", "short": "Isla Mujeres", "tags": ["beach", "chill"], "lat": 21.2585, "lng": -86.7497, "durationMin": 420, "priceCents": 4000, "startEarliest": "09:00", "startLatest": "11:00", "role": "group" },
+    { "_id": "CUN-a-museo-maya", "kind": "activity", "cityId": "CUN", "name": "Museo Maya & San Miguelito ruins", "short": "Museo Maya", "tags": ["museums", "history"], "lat": 21.0747, "lng": -86.7772, "durationMin": 120, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CUN-a-cenotes", "kind": "activity", "cityId": "CUN", "name": "Ruta de los Cenotes swim (Puerto Morelos)", "short": "Cenote swim", "tags": ["nature"], "lat": 20.8605, "lng": -87.0415, "durationMin": 360, "priceCents": 6000, "startEarliest": "08:30", "startLatest": "10:00", "role": "pick" },
+    { "_id": "CUN-a-musa-snorkel", "kind": "activity", "cityId": "CUN", "name": "MUSA underwater museum snorkel", "short": "MUSA snorkel", "tags": ["nature", "museums"], "lat": 21.0366, "lng": -86.7766, "durationMin": 180, "priceCents": 6500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "CUN-a-palapas", "kind": "activity", "cityId": "CUN", "name": "Parque de las Palapas street food", "short": "Palapas street food", "tags": ["food"], "lat": 21.161, "lng": -86.8265, "durationMin": 150, "priceCents": 2500, "startEarliest": "18:30", "startLatest": "20:30", "role": "pick" },
+    { "_id": "CUN-a-party-center", "kind": "activity", "cityId": "CUN", "name": "Hotel Zone bar crawl (Party Center)", "short": "Party Center crawl", "tags": ["nightlife"], "lat": 21.1335, "lng": -86.747, "durationMin": 180, "priceCents": 3500, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CUN-h-tortugas-condo", "toId": "CUN-a-isla-mujeres", "mode": "transit", "minutes": 40, "note": "walk to Playa Tortugas pier + Ultramar ferry" },
+    { "fromId": "CUN-h-tortugas-condo", "toId": "CUN-a-cenotes", "mode": "taxi", "minutes": 45, "note": "via Hwy 307 south" },
+    { "fromId": "CUN-h-tortugas-condo", "toId": "CUN-a-musa-snorkel", "mode": "taxi", "minutes": 25, "note": "down the Hotel Zone to Punta Nizuc" },
+    { "fromId": "CUN-h-tortugas-condo", "toId": "CUN-a-palapas", "mode": "taxi", "minutes": 20, "note": "Hotel Zone → downtown" }
+  ],
+  "hilly": []
+}

@@ -1,5 +1,5 @@
 // REST client (docs/04-technical-design.md §6). All paths are relative; Vite proxies /api in dev.
-import type { Band, CrewPublic, Origin, TripStatus } from "@all-ayes/shared";
+import type { Airport, Band, CityPack, CrewPublic, DateWindow, Destination, Origin, Region, TripStatus } from "@all-ayes/shared";
 // type-only: the WebAuthn helper itself still loads lazily at seal time (OPT-057)
 import type {
   AuthenticationResponseJSON, PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON, RegistrationResponseJSON,
@@ -60,6 +60,14 @@ async function request<T>(method: string, path: string, body: unknown, token: st
   return data as T;
 }
 
+export interface CatalogCity { cityId: string; name: string; notes: string[]; country?: string; region?: Region; state?: string; lat?: number; lng?: number }
+export interface Catalog { cities: CatalogCity[]; regions: Region[]; windows: DateWindow[]; defaultWindowIds: string[]; airports: Airport[] }
+export interface DemoSeat { name: string; role: "organizer" | "member" | "absent"; band: Band; memberId: string; memberToken: string; handoff: string }
+export interface DemoSeed {
+  kind: "random" | "expo"; seed?: number; tripId: string; joinCode: string; tripName: string;
+  organizer: DemoSeat; crew: DemoSeat[]; ports: string[]; headsetCode: string; maya?: DemoSeat; dev?: DemoSeat;
+}
+
 export class ApiError extends Error {
   constructor(public status: number, message: string, public code?: string) { super(message); }
 }
@@ -72,9 +80,15 @@ async function withCrewKey<T extends { crewKey?: string }>(p: Promise<T>): Promi
 }
 
 export const api = {
-  cities: (opts?: CallOpts) => call<{ cityId: string; name: string; notes: string[] }[]>("GET", "/cities", undefined, undefined, undefined, opts),
+  cities: (opts?: CallOpts) => call<CatalogCity[]>("GET", "/cities", undefined, undefined, undefined, opts),
 
-  createTrip: (p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: string[] }) =>
+  /** The Create screen's catalog: every port, the regions that have ports, the date windows (+ the default two), home airports. */
+  catalog: (opts?: CallOpts) => call<Catalog>("GET", "/catalog", undefined, undefined, undefined, opts),
+
+  /** docs/11: build (or fetch) a generated port from OpenStreetMap; 503 LOADING while the map is busy, 409 TOO_FEW. */
+  worldPack: (osmId: string) => call<{ pack: CityPack; cached: boolean; registered: boolean }>("POST", "/world/packs", { osmId }, undefined, undefined, { timeoutMs: 90_000 }),
+
+  createTrip: (p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: string[]; destination?: Destination; windowIds?: string[] }) =>
     withCrewKey(call<{ tripId: string; joinCode: string; memberId: string; memberToken: string; crewKey?: string }>("POST", "/trips", { ...p, crewKey: loadCrewKey() })),
 
   tripByCode: (code: string, opts?: CallOpts) =>
@@ -121,14 +135,9 @@ export const api = {
   hailAudio: (tripId: string, token: string, audio: Blob, kind: "hail" | "note" = "hail") =>
     call<{ transcript: string }>("POST", `/trips/${tripId}/hail-audio${kind === "note" ? "?kind=note" : ""}`, audio, token, undefined, { timeoutMs: 60_000 }),
 
-  seedDemo: () =>
-    call<{
-      tripId: string; joinCode: string;
-      organizer: { memberId: string; memberToken: string; handoff: string };
-      maya: { memberId: string; memberToken: string; handoff: string };
-      dev: { memberId: string; memberToken: string; handoff: string };
-      headsetCode: string;
-    }>("POST", "/demo/seed", {}, undefined, devKeyHeader()),
+  /** docs/09: a random voyage by default; "expo" is the scripted Lisbon crew. */
+  seedDemo: (kind: "random" | "expo" = "random") =>
+    call<DemoSeed>("POST", `/demo/seed?kind=${kind}`, {}, undefined, devKeyHeader()),
 
   health: () => call<Record<string, unknown>>("GET", "/health"),
 

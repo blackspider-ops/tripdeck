@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SCL", "name": "Santiago", "country": "Chile", "region": "Latin America", "airport": {"code": "SCL", "lat": -33.393, "lng": -70.7858}, "utcOffset": -4, "centerLat": -33.433, "centerLng": -70.632, "tileRadiusKm": 2.5, "publicFlags": ["long overnight flights from the US", "earthquake country"] },
+  "hotels": [
+    { "_id": "SCL-h-brasil-hostel", "kind": "hotel", "cityId": "SCL", "name": "Barrio Brasil Hostel (3 beds)", "neighborhood": "Barrio Brasil", "lat": -33.443, "lng": -70.669, "stayType": "hostel", "nightlyCents": 5000, "sleeps": 3, "rating": 4 },
+    { "_id": "SCL-h-bellavista-guest", "kind": "hotel", "cityId": "SCL", "name": "Bellavista Guesthouse", "neighborhood": "Bellavista", "lat": -33.433, "lng": -70.633, "stayType": "guesthouse", "nightlyCents": 9000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SCL-h-lastarria-flat", "kind": "hotel", "cityId": "SCL", "name": "Lastarria Apartment", "neighborhood": "Barrio Lastarria", "lat": -33.4375, "lng": -70.64, "stayType": "apartment", "nightlyCents": 11000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "SCL-h-providencia-triple", "kind": "hotel", "cityId": "SCL", "name": "Providencia Hotel (triple)", "neighborhood": "Providencia", "lat": -33.426, "lng": -70.615, "stayType": "hotel", "nightlyCents": 15000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "SCL-h-elgolf-triple", "kind": "hotel", "cityId": "SCL", "name": "El Golf Tower Hotel (triple)", "neighborhood": "Las Condes", "lat": -33.415, "lng": -70.597, "stayType": "hotel", "nightlyCents": 23000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "SCL-a-san-cristobal", "kind": "activity", "cityId": "SCL", "name": "Cerro San Cristóbal funicular", "short": "San Cristóbal", "tags": ["nature"], "lat": -33.425, "lng": -70.633, "durationMin": 120, "priceCents": 500, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "SCL-a-centro-walk", "kind": "activity", "cityId": "SCL", "name": "La Moneda & Plaza de Armas walk", "short": "Centro walk", "tags": ["history"], "lat": -33.443, "lng": -70.654, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "SCL-a-concha-toro", "kind": "activity", "cityId": "SCL", "name": "Concha y Toro winery tour", "short": "Winery tour", "tags": ["food"], "lat": -33.6437, "lng": -70.57, "durationMin": 240, "priceCents": 5000, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "SCL-a-memory-museum", "kind": "activity", "cityId": "SCL", "name": "Museum of Memory & Human Rights", "short": "Memory Museum", "tags": ["museums", "history"], "lat": -33.4396, "lng": -70.6795, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "SCL-a-la-vega", "kind": "activity", "cityId": "SCL", "name": "La Vega & Mercado Central", "short": "La Vega market", "tags": ["food"], "lat": -33.429, "lng": -70.649, "durationMin": 120, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "SCL-a-bellavista-night", "kind": "activity", "cityId": "SCL", "name": "Bellavista bars & live music", "short": "Bellavista night", "tags": ["nightlife", "music"], "lat": -33.433, "lng": -70.634, "durationMin": 180, "priceCents": 3000, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "SCL-a-cajon-maipo", "kind": "activity", "cityId": "SCL", "name": "Cajón del Maipo day trip", "short": "Cajón del Maipo", "tags": ["nature"], "lat": -33.642, "lng": -70.353, "durationMin": 540, "priceCents": 6000, "startEarliest": "07:30", "startLatest": "08:30", "role": "pick", "earlyStart": true },
+    { "_id": "SCL-a-sky-costanera", "kind": "activity", "cityId": "SCL", "name": "Sky Costanera observation deck", "short": "Sky Costanera", "tags": ["chill"], "lat": -33.417, "lng": -70.606, "durationMin": 60, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "21:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SCL-h-lastarria-flat", "toId": "SCL-a-concha-toro", "mode": "taxi", "minutes": 50, "note": "or metro L4 to Puente Alto + taxi" },
+    { "fromId": "SCL-h-lastarria-flat", "toId": "SCL-a-cajon-maipo", "mode": "taxi", "minutes": 80, "note": "tour van pickup up the Maipo canyon" },
+    { "fromId": "SCL-h-providencia-triple", "toId": "SCL-a-cajon-maipo", "mode": "taxi", "minutes": 75, "note": "tour van pickup" }
+  ],
+  "hilly": ["SCL-a-san-cristobal"]
+}

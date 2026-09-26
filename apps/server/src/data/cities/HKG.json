@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "HKG", "name": "Hong Kong", "country": "Hong Kong", "region": "Asia", "airport": { "code": "HKG", "lat": 22.308, "lng": 113.9185 }, "utcOffset": 8, "centerLat": 22.29, "centerLng": 114.165, "tileRadiusKm": 2.5, "publicFlags": ["long flight from the US (15–16 h)", "typhoon season Jul–Sep"] },
+  "hotels": [
+    { "_id": "HKG-h-tst-hostel", "kind": "hotel", "cityId": "HKG", "name": "Tsim Sha Tsui Hostel (3 beds)", "neighborhood": "Tsim Sha Tsui", "lat": 22.2966, "lng": 114.1722, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 3.9 },
+    { "_id": "HKG-h-mong-kok-guest", "kind": "hotel", "cityId": "HKG", "name": "Mong Kok Guesthouse", "neighborhood": "Mong Kok", "lat": 22.319, "lng": 114.169, "stayType": "guesthouse", "nightlyCents": 12000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "HKG-h-causeway-triple", "kind": "hotel", "cityId": "HKG", "name": "Causeway Bay Hotel (triple)", "neighborhood": "Causeway Bay", "lat": 22.28, "lng": 114.184, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "HKG-h-sheung-wan-flat", "kind": "hotel", "cityId": "HKG", "name": "Sheung Wan Apartment", "neighborhood": "Sheung Wan", "lat": 22.2865, "lng": 114.15, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "HKG-h-central-triple", "kind": "hotel", "cityId": "HKG", "name": "Central Harbourview Hotel (triple)", "neighborhood": "Central", "lat": 22.282, "lng": 114.158, "stayType": "hotel", "nightlyCents": 48000, "sleeps": 3, "rating": 4.8 }
+  ],
+  "activities": [
+    { "_id": "HKG-a-peak", "kind": "activity", "cityId": "HKG", "name": "Victoria Peak via the Peak Tram", "short": "Victoria Peak", "tags": ["nature", "chill"], "lat": 22.2711, "lng": 114.1497, "durationMin": 150, "priceCents": 1200, "startEarliest": "08:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "HKG-a-dim-sum", "kind": "activity", "cityId": "HKG", "name": "Dim sum breakfast, Sheung Wan", "short": "Dim sum", "tags": ["food"], "lat": 22.2851, "lng": 114.152, "durationMin": 90, "priceCents": 2000, "startEarliest": "07:00", "startLatest": "11:00", "role": "group" },
+    { "_id": "HKG-a-star-ferry", "kind": "activity", "cityId": "HKG", "name": "Star Ferry & Symphony of Lights", "short": "Star Ferry & lights", "tags": ["chill"], "lat": 22.2936, "lng": 114.1686, "durationMin": 60, "priceCents": 100, "startEarliest": "19:30", "startLatest": "20:00", "role": "group" },
+    { "_id": "HKG-a-temple-st", "kind": "activity", "cityId": "HKG", "name": "Temple Street night market", "short": "Temple St market", "tags": ["food", "nightlife"], "lat": 22.3059, "lng": 114.1697, "durationMin": 120, "priceCents": 1500, "startEarliest": "19:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "HKG-a-lkf", "kind": "activity", "cityId": "HKG", "name": "Lan Kwai Fong bars", "short": "Lan Kwai Fong", "tags": ["nightlife", "music"], "lat": 22.2809, "lng": 114.1556, "durationMin": 180, "priceCents": 4000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "HKG-a-m-plus", "kind": "activity", "cityId": "HKG", "name": "M+ museum, West Kowloon", "short": "M+ museum", "tags": ["museums"], "lat": 22.3015, "lng": 114.1595, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "HKG-a-dragons-back", "kind": "activity", "cityId": "HKG", "name": "Dragon's Back hike to Big Wave Bay", "short": "Dragon's Back hike", "tags": ["nature", "beach"], "lat": 22.235, "lng": 114.239, "durationMin": 300, "priceCents": 500, "startEarliest": "08:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "HKG-a-big-buddha", "kind": "activity", "cityId": "HKG", "name": "Big Buddha & Ngong Ping cable car", "short": "Big Buddha", "tags": ["history", "nature"], "lat": 22.254, "lng": 113.905, "durationMin": 360, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "12:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "HKG-h-sheung-wan-flat", "toId": "HKG-a-big-buddha", "mode": "transit", "minutes": 60, "note": "MTR to Tung Chung + cable car" },
+    { "fromId": "HKG-h-sheung-wan-flat", "toId": "HKG-a-dragons-back", "mode": "transit", "minutes": 60, "note": "MTR to Shau Kei Wan + bus 9" },
+    { "fromId": "HKG-h-tst-hostel", "toId": "HKG-a-big-buddha", "mode": "transit", "minutes": 55, "note": "MTR to Tung Chung + cable car" }
+  ],
+  "hilly": ["HKG-a-peak", "HKG-a-dragons-back", "HKG-h-sheung-wan-flat"]
+}

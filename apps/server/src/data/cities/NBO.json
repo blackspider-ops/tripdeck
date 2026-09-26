@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "NBO", "name": "Nairobi", "country": "Kenya", "region": "Africa", "airport": { "code": "NBO", "lat": -1.3192, "lng": 36.9278 }, "utcOffset": 3, "centerLat": -1.285, "centerLng": 36.8, "tileRadiusKm": 3, "publicFlags": ["high altitude (1,795 m)", "taxis or rideshare recommended after dark"] },
+  "hotels": [
+    { "_id": "NBO-h-westlands-hostel", "kind": "hotel", "cityId": "NBO", "name": "Westlands Hostel (3 beds)", "neighborhood": "Westlands", "lat": -1.2655, "lng": 36.806, "stayType": "hostel", "nightlyCents": 4500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "NBO-h-kilimani-flat", "kind": "hotel", "cityId": "NBO", "name": "Kilimani Apartment", "neighborhood": "Kilimani", "lat": -1.2915, "lng": 36.786, "stayType": "apartment", "nightlyCents": 11000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "NBO-h-karen-guest", "kind": "hotel", "cityId": "NBO", "name": "Karen Guesthouse", "neighborhood": "Karen", "lat": -1.3195, "lng": 36.7075, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "NBO-h-westlands-triple", "kind": "hotel", "cityId": "NBO", "name": "Westlands Hotel (triple)", "neighborhood": "Westlands", "lat": -1.2668, "lng": 36.8095, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "NBO-h-gigiri-triple", "kind": "hotel", "cityId": "NBO", "name": "Gigiri Garden Hotel (triple)", "neighborhood": "Gigiri", "lat": -1.2345, "lng": 36.8055, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "NBO-a-national-park", "kind": "activity", "cityId": "NBO", "name": "Nairobi National Park game drive", "short": "Game drive", "tags": ["nature"], "lat": -1.3186, "lng": 36.8285, "durationMin": 240, "priceCents": 11000, "startEarliest": "06:30", "startLatest": "09:00", "earlyStart": true, "role": "group" },
+    { "_id": "NBO-a-sheldrick", "kind": "activity", "cityId": "NBO", "name": "Sheldrick Elephant Orphanage", "short": "Baby elephants", "tags": ["nature"], "lat": -1.3776, "lng": 36.7736, "durationMin": 60, "priceCents": 1500, "startEarliest": "11:00", "startLatest": "11:00", "role": "group" },
+    { "_id": "NBO-a-national-museum", "kind": "activity", "cityId": "NBO", "name": "Nairobi National Museum", "short": "National Museum", "tags": ["museums", "history"], "lat": -1.2745, "lng": 36.8145, "durationMin": 150, "priceCents": 1200, "startEarliest": "09:30", "startLatest": "15:30", "role": "group" },
+    { "_id": "NBO-a-giraffe-centre", "kind": "activity", "cityId": "NBO", "name": "Giraffe Centre", "short": "Giraffe Centre", "tags": ["nature"], "lat": -1.3757, "lng": 36.7447, "durationMin": 90, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "16:30", "role": "pick" },
+    { "_id": "NBO-a-karen-blixen", "kind": "activity", "cityId": "NBO", "name": "Karen Blixen Museum", "short": "Karen Blixen house", "tags": ["museums", "history"], "lat": -1.3505, "lng": 36.7123, "durationMin": 90, "priceCents": 1200, "startEarliest": "09:30", "startLatest": "17:00", "role": "pick" },
+    { "_id": "NBO-a-nyama-choma", "kind": "activity", "cityId": "NBO", "name": "Nyama choma lunch, Langata", "short": "Nyama choma", "tags": ["food"], "lat": -1.3265, "lng": 36.8045, "durationMin": 150, "priceCents": 5000, "startEarliest": "12:00", "startLatest": "20:30", "role": "pick" },
+    { "_id": "NBO-a-karura", "kind": "activity", "cityId": "NBO", "name": "Karura Forest walk", "short": "Karura Forest", "tags": ["nature", "chill"], "lat": -1.243, "lng": 36.833, "durationMin": 150, "priceCents": 700, "startEarliest": "08:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "NBO-a-westlands-night", "kind": "activity", "cityId": "NBO", "name": "Westlands live music night", "short": "Westlands night out", "tags": ["nightlife", "music"], "lat": -1.2645, "lng": 36.8035, "durationMin": 180, "priceCents": 2500, "startEarliest": "21:00", "startLatest": "23:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "NBO-h-kilimani-flat", "toId": "NBO-a-national-park", "mode": "taxi", "minutes": 30, "note": "Langata Road main gate" },
+    { "fromId": "NBO-h-kilimani-flat", "toId": "NBO-a-sheldrick", "mode": "taxi", "minutes": 35, "note": "via Magadi Road gate" },
+    { "fromId": "NBO-h-kilimani-flat", "toId": "NBO-a-giraffe-centre", "mode": "taxi", "minutes": 35 },
+    { "fromId": "NBO-h-westlands-triple", "toId": "NBO-a-karen-blixen", "mode": "taxi", "minutes": 45, "note": "Ngong Road traffic" }
+  ],
+  "hilly": []
+}

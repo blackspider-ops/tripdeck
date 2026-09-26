@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "IST", "name": "Istanbul", "country": "Türkiye", "region": "Europe", "airport": { "code": "IST", "lat": 41.2753, "lng": 28.7519 }, "utcOffset": 3, "centerLat": 41.018, "centerLng": 28.978, "tileRadiusKm": 2.5, "publicFlags": ["hilly neighborhoods", "modest dress in mosques"] },
+  "hotels": [
+    { "_id": "IST-h-sultanahmet-hostel", "kind": "hotel", "cityId": "IST", "name": "Sultanahmet Hostel (3 beds)", "neighborhood": "Sultanahmet", "lat": 41.006, "lng": 28.9765, "stayType": "hostel", "nightlyCents": 5000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "IST-h-balat-guest", "kind": "hotel", "cityId": "IST", "name": "Balat Guesthouse", "neighborhood": "Balat", "lat": 41.0295, "lng": 28.9485, "stayType": "guesthouse", "nightlyCents": 9500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "IST-h-cihangir-flat", "kind": "hotel", "cityId": "IST", "name": "Cihangir Apartment", "neighborhood": "Cihangir", "lat": 41.0315, "lng": 28.983, "stayType": "apartment", "nightlyCents": 16000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "IST-h-sultanahmet-triple", "kind": "hotel", "cityId": "IST", "name": "Sultanahmet Hotel (triple)", "neighborhood": "Sultanahmet", "lat": 41.0065, "lng": 28.9745, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "IST-h-karakoy-triple", "kind": "hotel", "cityId": "IST", "name": "Karaköy Boutique Hotel (triple)", "neighborhood": "Karaköy", "lat": 41.0245, "lng": 28.977, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "IST-a-hagia-sophia", "kind": "activity", "cityId": "IST", "name": "Hagia Sophia & Blue Mosque", "short": "Hagia Sophia", "tags": ["history"], "lat": 41.0086, "lng": 28.9802, "durationMin": 150, "priceCents": 2800, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "IST-a-bosphorus", "kind": "activity", "cityId": "IST", "name": "Bosphorus ferry cruise from Eminönü", "short": "Bosphorus cruise", "tags": ["chill", "nature"], "lat": 41.0175, "lng": 28.9745, "durationMin": 120, "priceCents": 1200, "startEarliest": "10:30", "startLatest": "14:30", "role": "group" },
+    { "_id": "IST-a-meyhane", "kind": "activity", "cityId": "IST", "name": "Meyhane dinner with fasıl music, Beyoğlu", "short": "Meyhane dinner", "tags": ["food", "music", "nightlife"], "lat": 41.0355, "lng": 28.9785, "durationMin": 180, "priceCents": 4500, "startEarliest": "19:30", "startLatest": "21:00", "role": "group" },
+    { "_id": "IST-a-topkapi", "kind": "activity", "cityId": "IST", "name": "Topkapı Palace & Harem", "short": "Topkapı Palace", "tags": ["museums", "history"], "lat": 41.0115, "lng": 28.9834, "durationMin": 180, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "IST-a-bazaars", "kind": "activity", "cityId": "IST", "name": "Grand Bazaar & Spice Bazaar", "short": "Grand Bazaar", "tags": ["food", "history"], "lat": 41.0107, "lng": 28.9681, "durationMin": 150, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "IST-a-kadikoy", "kind": "activity", "cityId": "IST", "name": "Kadıköy food walk (Asian side)", "short": "Kadıköy food walk", "tags": ["food"], "lat": 40.9905, "lng": 29.0255, "durationMin": 180, "priceCents": 6500, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "IST-a-hammam", "kind": "activity", "cityId": "IST", "name": "Çemberlitaş Hamamı", "short": "Hammam", "tags": ["chill", "history"], "lat": 41.0085, "lng": 28.9715, "durationMin": 90, "priceCents": 6000, "startEarliest": "09:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "IST-a-istanbul-modern", "kind": "activity", "cityId": "IST", "name": "Istanbul Modern", "short": "Istanbul Modern", "tags": ["museums"], "lat": 41.0265, "lng": 28.983, "durationMin": 120, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "IST-h-cihangir-flat", "toId": "IST-a-kadikoy", "mode": "transit", "minutes": 35, "note": "walk + ferry from Karaköy" },
+    { "fromId": "IST-h-cihangir-flat", "toId": "IST-a-hagia-sophia", "mode": "transit", "minutes": 25, "note": "T1 tram from Kabataş" },
+    { "fromId": "IST-h-cihangir-flat", "toId": "IST-a-meyhane", "mode": "walk", "minutes": 15, "note": "uphill" },
+    { "fromId": "IST-h-balat-guest", "toId": "IST-a-hagia-sophia", "mode": "taxi", "minutes": 20 }
+  ],
+  "hilly": ["IST-h-cihangir-flat", "IST-h-balat-guest", "IST-a-meyhane"]
+}

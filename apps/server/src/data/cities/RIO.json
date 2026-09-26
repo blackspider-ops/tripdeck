@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "RIO", "name": "Rio de Janeiro", "country": "Brazil", "region": "Latin America", "airport": { "code": "GIG", "lat": -22.809, "lng": -43.2506 }, "utcOffset": -3, "centerLat": -22.97, "centerLng": -43.19, "tileRadiusKm": 3.0, "publicFlags": ["hot, humid late summer in March", "overnight flights from the US"] },
+  "hotels": [
+    { "_id": "RIO-h-ipanema-hostel", "kind": "hotel", "cityId": "RIO", "name": "Ipanema Hostel (3 beds)", "neighborhood": "Ipanema", "lat": -22.984, "lng": -43.2, "stayType": "hostel", "nightlyCents": 8500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "RIO-h-santa-teresa-guest", "kind": "hotel", "cityId": "RIO", "name": "Santa Teresa Guesthouse", "neighborhood": "Santa Teresa", "lat": -22.9185, "lng": -43.186, "stayType": "guesthouse", "nightlyCents": 13000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "RIO-h-copacabana-apt", "kind": "hotel", "cityId": "RIO", "name": "Copacabana Apartment", "neighborhood": "Copacabana", "lat": -22.97, "lng": -43.186, "stayType": "apartment", "nightlyCents": 15500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "RIO-h-copacabana-triple", "kind": "hotel", "cityId": "RIO", "name": "Copacabana Hotel (triple)", "neighborhood": "Copacabana (Posto 5)", "lat": -22.978, "lng": -43.19, "stayType": "hotel", "nightlyCents": 20000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "RIO-h-ipanema-triple", "kind": "hotel", "cityId": "RIO", "name": "Ipanema Beach Hotel (triple)", "neighborhood": "Ipanema", "lat": -22.986, "lng": -43.208, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "RIO-a-christ", "kind": "activity", "cityId": "RIO", "name": "Christ the Redeemer via Corcovado train", "short": "Christ the Redeemer", "tags": ["history", "nature"], "lat": -22.9519, "lng": -43.2105, "durationMin": 180, "priceCents": 2000, "startEarliest": "08:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "RIO-a-ipanema-beach", "kind": "activity", "cityId": "RIO", "name": "Ipanema beach day (Posto 9)", "short": "Ipanema beach", "tags": ["beach", "chill"], "lat": -22.9867, "lng": -43.204, "durationMin": 240, "priceCents": 0, "startEarliest": "09:30", "startLatest": "13:00", "role": "group" },
+    { "_id": "RIO-a-lapa-samba", "kind": "activity", "cityId": "RIO", "name": "Samba night in Lapa", "short": "Lapa samba", "tags": ["music", "nightlife"], "lat": -22.9131, "lng": -43.18, "durationMin": 240, "priceCents": 2500, "startEarliest": "22:00", "startLatest": "23:30", "role": "group" },
+    { "_id": "RIO-a-sugarloaf", "kind": "activity", "cityId": "RIO", "name": "Sugarloaf Mountain cable car", "short": "Sugarloaf", "tags": ["nature"], "lat": -22.9549, "lng": -43.1654, "durationMin": 150, "priceCents": 3800, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "RIO-a-selaron", "kind": "activity", "cityId": "RIO", "name": "Selarón Steps & Santa Teresa walk", "short": "Selarón Steps", "tags": ["history"], "lat": -22.9153, "lng": -43.179, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "RIO-a-museum-tomorrow", "kind": "activity", "cityId": "RIO", "name": "Museum of Tomorrow", "short": "Museum of Tomorrow", "tags": ["museums"], "lat": -22.8944, "lng": -43.1794, "durationMin": 120, "priceCents": 600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "RIO-a-boteco-tour", "kind": "activity", "cityId": "RIO", "name": "Botafogo boteco & feijoada food tour", "short": "Boteco food tour", "tags": ["food"], "lat": -22.951, "lng": -43.184, "durationMin": 180, "priceCents": 5500, "startEarliest": "12:00", "startLatest": "13:30", "role": "pick" },
+    { "_id": "RIO-a-arpoador", "kind": "activity", "cityId": "RIO", "name": "Sunset at Arpoador rock", "short": "Arpoador sunset", "tags": ["chill", "beach"], "lat": -22.9885, "lng": -43.192, "durationMin": 90, "priceCents": 0, "startEarliest": "16:30", "startLatest": "17:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "RIO-h-copacabana-apt", "toId": "RIO-a-christ", "mode": "taxi", "minutes": 30, "note": "taxi to the Cosme Velho train station" },
+    { "fromId": "RIO-h-copacabana-apt", "toId": "RIO-a-lapa-samba", "mode": "taxi", "minutes": 20, "note": "Copacabana → Lapa" },
+    { "fromId": "RIO-h-copacabana-apt", "toId": "RIO-a-selaron", "mode": "taxi", "minutes": 25, "note": "Copacabana → Lapa steps" },
+    { "fromId": "RIO-h-copacabana-apt", "toId": "RIO-a-museum-tomorrow", "mode": "transit", "minutes": 40, "note": "Metro Line 1 + VLT tram" }
+  ],
+  "hilly": ["RIO-h-santa-teresa-guest", "RIO-a-christ", "RIO-a-selaron"]
+}

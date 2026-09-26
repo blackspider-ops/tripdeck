@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "MSY", "name": "New Orleans", "country": "United States", "state": "LA", "region": "United States", "airport": {"code": "MSY", "lat": 29.9934, "lng": -90.258}, "utcOffset": -6, "centerLat": 29.953, "centerLng": -90.072, "tileRadiusKm": 3, "publicFlags": ["hot and humid in summer", "hurricane season Jun–Nov"] },
+  "hotels": [
+    { "_id": "MSY-h-marigny", "kind": "hotel", "cityId": "MSY", "name": "Marigny Shotgun House", "neighborhood": "Faubourg Marigny", "lat": 29.9645, "lng": -90.0555, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "MSY-h-quarter-triple", "kind": "hotel", "cityId": "MSY", "name": "French Quarter Hotel (triple)", "neighborhood": "French Quarter", "lat": 29.959, "lng": -90.0655, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "MSY-h-warehouse-triple", "kind": "hotel", "cityId": "MSY", "name": "Warehouse District Hotel (triple)", "neighborhood": "Warehouse District", "lat": 29.9455, "lng": -90.069, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "MSY-h-garden-guest", "kind": "hotel", "cityId": "MSY", "name": "Garden District Guesthouse", "neighborhood": "Garden District", "lat": 29.9285, "lng": -90.084, "stayType": "guesthouse", "nightlyCents": 19000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "MSY-h-midcity-hostel", "kind": "hotel", "cityId": "MSY", "name": "Mid-City Hostel (3 beds)", "neighborhood": "Mid-City", "lat": 29.9685, "lng": -90.093, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 4 }
+  ],
+  "activities": [
+    { "_id": "MSY-a-frenchmen", "kind": "activity", "cityId": "MSY", "name": "Frenchmen Street live jazz", "short": "Frenchmen St jazz", "tags": ["music", "nightlife"], "lat": 29.9642, "lng": -90.0577, "durationMin": 180, "priceCents": 2000, "startEarliest": "20:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "MSY-a-beignets", "kind": "activity", "cityId": "MSY", "name": "Café du Monde & French Quarter walk", "short": "Beignets & Quarter", "tags": ["food", "history"], "lat": 29.9575, "lng": -90.0618, "durationMin": 150, "priceCents": 1500, "startEarliest": "08:30", "startLatest": "14:00", "role": "group" },
+    { "_id": "MSY-a-ww2", "kind": "activity", "cityId": "MSY", "name": "National WWII Museum", "short": "WWII Museum", "tags": ["museums", "history"], "lat": 29.943, "lng": -90.0705, "durationMin": 180, "priceCents": 3600, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "MSY-a-swamp", "kind": "activity", "cityId": "MSY", "name": "Bayou swamp boat tour", "short": "Swamp tour", "tags": ["nature"], "lat": 29.787, "lng": -90.1125, "durationMin": 240, "priceCents": 6500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "MSY-a-cemetery", "kind": "activity", "cityId": "MSY", "name": "Garden District & Lafayette Cemetery", "short": "Garden District walk", "tags": ["history"], "lat": 29.9287, "lng": -90.0853, "durationMin": 120, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MSY-a-cooking", "kind": "activity", "cityId": "MSY", "name": "Creole cooking class", "short": "Creole cooking", "tags": ["food"], "lat": 29.9565, "lng": -90.0655, "durationMin": 150, "priceCents": 4500, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "MSY-a-preservation", "kind": "activity", "cityId": "MSY", "name": "Preservation Hall set", "short": "Preservation Hall", "tags": ["music"], "lat": 29.9582, "lng": -90.0654, "durationMin": 45, "priceCents": 3500, "startEarliest": "18:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "MSY-a-natchez", "kind": "activity", "cityId": "MSY", "name": "Steamboat Natchez river cruise", "short": "Riverboat cruise", "tags": ["chill", "music"], "lat": 29.9551, "lng": -90.062, "durationMin": 120, "priceCents": 4800, "startEarliest": "11:30", "startLatest": "14:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MSY-h-marigny", "toId": "MSY-a-swamp", "mode": "taxi", "minutes": 40, "note": "tour van pickup, Barataria Preserve" },
+    { "fromId": "MSY-h-midcity-hostel", "toId": "MSY-a-frenchmen", "mode": "transit", "minutes": 30, "note": "Canal St streetcar" },
+    { "fromId": "MSY-h-garden-guest", "toId": "MSY-a-ww2", "mode": "transit", "minutes": 15, "note": "St. Charles streetcar" }
+  ],
+  "hilly": []
+}

@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "PHX", "name": "Phoenix", "country": "United States", "state": "AZ", "region": "United States", "airport": {"code": "PHX", "lat": 33.4343, "lng": -112.0116}, "utcOffset": -7, "centerLat": 33.465, "centerLng": -112.03, "tileRadiusKm": 3, "publicFlags": ["extreme desert heat May–Sep", "spread-out; rideshare needed"] },
+  "hotels": [
+    { "_id": "PHX-h-hostel", "kind": "hotel", "cityId": "PHX", "name": "Phoenix Hostel & Cultural Center (3 beds)", "neighborhood": "Garfield", "lat": 33.4588, "lng": -112.0634, "stayType": "hostel", "nightlyCents": 8500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "PHX-h-roosevelt-casita", "kind": "hotel", "cityId": "PHX", "name": "Roosevelt Row Casita", "neighborhood": "Roosevelt Row", "lat": 33.4585, "lng": -112.069, "stayType": "apartment", "nightlyCents": 17000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "PHX-h-found-re", "kind": "hotel", "cityId": "PHX", "name": "FOUND:RE Phoenix (triple)", "neighborhood": "Midtown", "lat": 33.4598, "lng": -112.0741, "stayType": "hotel", "nightlyCents": 19000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "PHX-h-valley-ho", "kind": "hotel", "cityId": "PHX", "name": "Hotel Valley Ho (2 queens)", "neighborhood": "Old Town Scottsdale", "lat": 33.493, "lng": -111.933, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "PHX-h-biltmore", "kind": "hotel", "cityId": "PHX", "name": "Arizona Biltmore (2 queens)", "neighborhood": "Biltmore", "lat": 33.522, "lng": -112.028, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "PHX-a-camelback", "kind": "activity", "cityId": "PHX", "name": "Camelback Mountain, Echo Canyon Trail", "short": "Camelback hike", "tags": ["nature"], "lat": 33.521, "lng": -111.974, "durationMin": 180, "priceCents": 0, "startEarliest": "06:00", "startLatest": "10:00", "earlyStart": true, "role": "group" },
+    { "_id": "PHX-a-botanical-garden", "kind": "activity", "cityId": "PHX", "name": "Desert Botanical Garden", "short": "Botanical Garden", "tags": ["nature", "chill"], "lat": 33.4616, "lng": -111.9446, "durationMin": 150, "priceCents": 3500, "startEarliest": "08:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "PHX-a-heard", "kind": "activity", "cityId": "PHX", "name": "Heard Museum", "short": "Heard Museum", "tags": ["museums", "history"], "lat": 33.4725, "lng": -112.0723, "durationMin": 150, "priceCents": 2800, "startEarliest": "09:30", "startLatest": "14:30", "role": "group" },
+    { "_id": "PHX-a-papago", "kind": "activity", "cityId": "PHX", "name": "Papago Park Hole-in-the-Rock", "short": "Hole-in-the-Rock", "tags": ["nature", "chill"], "lat": 33.456, "lng": -111.947, "durationMin": 60, "priceCents": 0, "startEarliest": "07:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "PHX-a-mim", "kind": "activity", "cityId": "PHX", "name": "Musical Instrument Museum", "short": "Instrument museum", "tags": ["museums", "music"], "lat": 33.668, "lng": -111.978, "durationMin": 180, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "PHX-a-pizzeria-bianco", "kind": "activity", "cityId": "PHX", "name": "Pizzeria Bianco, Heritage Square", "short": "Pizzeria Bianco", "tags": ["food"], "lat": 33.4494, "lng": -112.0654, "durationMin": 90, "priceCents": 2500, "startEarliest": "11:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "PHX-a-scottsdale-night", "kind": "activity", "cityId": "PHX", "name": "Old Town Scottsdale bar night", "short": "Scottsdale night out", "tags": ["nightlife"], "lat": 33.4945, "lng": -111.926, "durationMin": 180, "priceCents": 3500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "PHX-a-taliesin", "kind": "activity", "cityId": "PHX", "name": "Taliesin West tour", "short": "Taliesin West", "tags": ["history"], "lat": 33.606, "lng": -111.845, "durationMin": 120, "priceCents": 5500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "PHX-h-found-re", "toId": "PHX-a-camelback", "mode": "taxi", "minutes": 20, "note": "trailhead lot fills by 7am" },
+    { "fromId": "PHX-h-found-re", "toId": "PHX-a-mim", "mode": "taxi", "minutes": 30, "note": "SR-51 north" },
+    { "fromId": "PHX-h-found-re", "toId": "PHX-a-taliesin", "mode": "taxi", "minutes": 35, "note": "Loop 101 to north Scottsdale" },
+    { "fromId": "PHX-h-found-re", "toId": "PHX-a-botanical-garden", "mode": "taxi", "minutes": 20, "note": "Papago Park; light rail + bus ~45 min" }
+  ],
+  "hilly": ["PHX-a-camelback"]
+}

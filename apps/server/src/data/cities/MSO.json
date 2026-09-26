@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "MSO", "name": "Missoula", "country": "United States", "state": "MT", "region": "United States", "airport": {"code": "MSO", "lat": 46.9163, "lng": -114.0906}, "utcOffset": -7, "centerLat": 46.871, "centerLng": -113.994, "tileRadiusKm": 1.5, "publicFlags": ["cold, snowy winters", "few direct flights"] },
+  "hotels": [
+    { "_id": "MSO-h-broadway-motel", "kind": "hotel", "cityId": "MSO", "name": "East Broadway Budget Motel (2 queens)", "neighborhood": "East Broadway", "lat": 46.8735, "lng": -113.9855, "stayType": "guesthouse", "nightlyCents": 12500, "sleeps": 4, "rating": 3.6 },
+    { "_id": "MSO-h-wren", "kind": "hotel", "cityId": "MSO", "name": "The Wren Hotel (triple)", "neighborhood": "Downtown", "lat": 46.8714, "lng": -113.9918, "stayType": "hotel", "nightlyCents": 18500, "sleeps": 3, "rating": 4.6 },
+    { "_id": "MSO-h-university-house", "kind": "hotel", "cityId": "MSO", "name": "University District House", "neighborhood": "University District", "lat": 46.864, "lng": -113.99, "stayType": "apartment", "nightlyCents": 19500, "sleeps": 4, "rating": 4.7 },
+    { "_id": "MSO-h-holiday-inn", "kind": "hotel", "cityId": "MSO", "name": "Holiday Inn Missoula Downtown (2 queens)", "neighborhood": "Riverfront", "lat": 46.8697, "lng": -113.9928, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 4, "rating": 4.2 },
+    { "_id": "MSO-h-residence-inn", "kind": "hotel", "cityId": "MSO", "name": "Residence Inn Missoula Downtown (suite)", "neighborhood": "Riverfront", "lat": 46.8703, "lng": -113.9934, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 4, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "MSO-a-m-trail", "kind": "activity", "cityId": "MSO", "name": "Hike the 'M' on Mount Sentinel", "short": "M trail hike", "tags": ["nature"], "lat": 46.8608, "lng": -113.98, "durationMin": 90, "priceCents": 0, "startEarliest": "08:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "MSO-a-caras-park", "kind": "activity", "cityId": "MSO", "name": "Caras Park carousel & Riverfront Trail", "short": "Carousel & river walk", "tags": ["chill"], "lat": 46.872, "lng": -113.9975, "durationMin": 60, "priceCents": 300, "startEarliest": "11:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "MSO-a-top-hat", "kind": "activity", "cityId": "MSO", "name": "Live music at the Top Hat", "short": "Top Hat gig", "tags": ["music", "nightlife"], "lat": 46.8707, "lng": -113.9955, "durationMin": 180, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "MSO-a-art-museum", "kind": "activity", "cityId": "MSO", "name": "Missoula Art Museum", "short": "Art museum", "tags": ["museums"], "lat": 46.8737, "lng": -113.9935, "durationMin": 75, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MSO-a-smokejumper", "kind": "activity", "cityId": "MSO", "name": "Smokejumper Visitor Center", "short": "Smokejumper center", "tags": ["history", "museums"], "lat": 46.9227, "lng": -114.0773, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "MSO-a-fort-missoula", "kind": "activity", "cityId": "MSO", "name": "Historical Museum at Fort Missoula", "short": "Fort Missoula", "tags": ["history"], "lat": 46.833, "lng": -114.047, "durationMin": 120, "priceCents": 400, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MSO-a-big-dipper", "kind": "activity", "cityId": "MSO", "name": "Big Dipper Ice Cream & Hip Strip", "short": "Big Dipper & Hip Strip", "tags": ["food"], "lat": 46.864, "lng": -113.9947, "durationMin": 45, "priceCents": 700, "startEarliest": "12:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "MSO-a-snowbowl", "kind": "activity", "cityId": "MSO", "name": "Montana Snowbowl mountain day", "short": "Snowbowl", "tags": ["nature"], "lat": 46.953, "lng": -113.999, "durationMin": 360, "priceCents": 6500, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MSO-h-wren", "toId": "MSO-a-snowbowl", "mode": "taxi", "minutes": 25, "note": "Grant Creek Rd, steep last miles" },
+    { "fromId": "MSO-h-broadway-motel", "toId": "MSO-a-snowbowl", "mode": "taxi", "minutes": 25 },
+    { "fromId": "MSO-h-wren", "toId": "MSO-a-smokejumper", "mode": "taxi", "minutes": 15, "note": "out by the airport" },
+    { "fromId": "MSO-h-wren", "toId": "MSO-a-fort-missoula", "mode": "taxi", "minutes": 12, "note": "South Ave west" }
+  ],
+  "hilly": ["MSO-a-m-trail", "MSO-a-snowbowl"]
+}

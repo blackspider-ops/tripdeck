@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "NHV", "name": "New Haven", "country": "United States", "state": "CT", "region": "United States", "airport": { "code": "HVN", "lat": 41.2637, "lng": -72.8868 }, "utcOffset": -5, "centerLat": 41.31, "centerLng": -72.926, "tileRadiusKm": 1.2, "publicFlags": ["cold winters"] },
+  "hotels": [
+    { "_id": "NHV-h-wooster-guest", "kind": "hotel", "cityId": "NHV", "name": "Wooster Square Guesthouse", "neighborhood": "Wooster Square", "lat": 41.304, "lng": -72.915, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 3, "rating": 4 },
+    { "_id": "NHV-h-east-rock-flat", "kind": "hotel", "cityId": "NHV", "name": "East Rock Apartment", "neighborhood": "East Rock", "lat": 41.325, "lng": -72.915, "stayType": "apartment", "nightlyCents": 20000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "NHV-h-farnam", "kind": "hotel", "cityId": "NHV", "name": "Farnam Guest House", "neighborhood": "Prospect Hill", "lat": 41.328, "lng": -72.923, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "NHV-h-graduate", "kind": "hotel", "cityId": "NHV", "name": "Graduate New Haven (2 queens)", "neighborhood": "Downtown", "lat": 41.307, "lng": -72.934, "stayType": "hotel", "nightlyCents": 28000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "NHV-h-study", "kind": "hotel", "cityId": "NHV", "name": "The Study at Yale (triple)", "neighborhood": "Chapel West", "lat": 41.31, "lng": -72.931, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "NHV-a-pizza", "kind": "activity", "cityId": "NHV", "name": "Pepe's vs Sally's apizza", "short": "Apizza showdown", "tags": ["food"], "lat": 41.3031, "lng": -72.9165, "durationMin": 90, "priceCents": 2200, "startEarliest": "11:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "NHV-a-yuag", "kind": "activity", "cityId": "NHV", "name": "Yale Art Gallery & British Art Center", "short": "Yale art museums", "tags": ["museums"], "lat": 41.3085, "lng": -72.931, "durationMin": 150, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "NHV-a-yale-walk", "kind": "activity", "cityId": "NHV", "name": "Yale campus & Beinecke Library", "short": "Yale & Beinecke", "tags": ["history"], "lat": 41.3115, "lng": -72.9275, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:30", "role": "group" },
+    { "_id": "NHV-a-peabody", "kind": "activity", "cityId": "NHV", "name": "Yale Peabody Museum", "short": "Peabody Museum", "tags": ["museums", "nature"], "lat": 41.316, "lng": -72.9205, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "NHV-a-east-rock", "kind": "activity", "cityId": "NHV", "name": "East Rock Park summit", "short": "East Rock summit", "tags": ["nature", "chill"], "lat": 41.331, "lng": -72.906, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "NHV-a-toads", "kind": "activity", "cityId": "NHV", "name": "Show at Toad's Place", "short": "Toad's Place", "tags": ["music", "nightlife"], "lat": 41.3115, "lng": -72.9305, "durationMin": 180, "priceCents": 3000, "startEarliest": "20:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "NHV-a-lighthouse-point", "kind": "activity", "cityId": "NHV", "name": "Lighthouse Point Park beach", "short": "Lighthouse Point", "tags": ["beach", "chill"], "lat": 41.2485, "lng": -72.904, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "NHV-a-college-street", "kind": "activity", "cityId": "NHV", "name": "College Street bars", "short": "College St bars", "tags": ["nightlife"], "lat": 41.3063, "lng": -72.9305, "durationMin": 150, "priceCents": 2500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "NHV-h-graduate", "toId": "NHV-a-lighthouse-point", "mode": "taxi", "minutes": 15, "note": "~7 km SE" },
+    { "fromId": "NHV-h-wooster-guest", "toId": "NHV-a-lighthouse-point", "mode": "taxi", "minutes": 15, "note": "~6 km SE" }
+  ],
+  "hilly": ["NHV-a-east-rock"]
+}

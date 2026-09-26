@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "DEN", "name": "Denver", "country": "United States", "state": "CO", "region": "United States", "airport": {"code": "DEN", "lat": 39.8561, "lng": -104.6737}, "utcOffset": -7, "centerLat": 39.748, "centerLng": -104.985, "tileRadiusKm": 3, "publicFlags": ["high altitude (1,609 m)", "snow possible Oct–May"] },
+  "hotels": [
+    { "_id": "DEN-h-rino-loft", "kind": "hotel", "cityId": "DEN", "name": "RiNo Loft", "neighborhood": "RiNo", "lat": 39.765, "lng": -104.982, "stayType": "apartment", "nightlyCents": 26000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "DEN-h-union-triple", "kind": "hotel", "cityId": "DEN", "name": "Union Station Hotel (triple)", "neighborhood": "LoDo", "lat": 39.753, "lng": -105.0003, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "DEN-h-downtown-triple", "kind": "hotel", "cityId": "DEN", "name": "Downtown Hotel (triple)", "neighborhood": "Downtown", "lat": 39.7445, "lng": -104.991, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "DEN-h-lohi-guest", "kind": "hotel", "cityId": "DEN", "name": "Highlands Guesthouse", "neighborhood": "LoHi", "lat": 39.76, "lng": -105.011, "stayType": "guesthouse", "nightlyCents": 20000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DEN-h-capitol-hostel", "kind": "hotel", "cityId": "DEN", "name": "Capitol Hill Hostel (3 beds)", "neighborhood": "Capitol Hill", "lat": 39.738, "lng": -104.98, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 4 }
+  ],
+  "activities": [
+    { "_id": "DEN-a-red-rocks", "kind": "activity", "cityId": "DEN", "name": "Red Rocks Amphitheatre concert", "short": "Red Rocks concert", "tags": ["music", "nature"], "lat": 39.6654, "lng": -105.2057, "durationMin": 240, "priceCents": 8500, "startEarliest": "18:30", "startLatest": "19:30", "role": "group" },
+    { "_id": "DEN-a-breweries", "kind": "activity", "cityId": "DEN", "name": "RiNo brewery crawl", "short": "Brewery crawl", "tags": ["nightlife", "food"], "lat": 39.762, "lng": -104.984, "durationMin": 180, "priceCents": 4000, "startEarliest": "15:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "DEN-a-dam", "kind": "activity", "cityId": "DEN", "name": "Denver Art Museum", "short": "Art museum", "tags": ["museums"], "lat": 39.7372, "lng": -104.9893, "durationMin": 150, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "DEN-a-flatirons", "kind": "activity", "cityId": "DEN", "name": "Flatirons hike at Chautauqua, Boulder", "short": "Flatirons hike", "tags": ["nature"], "lat": 39.999, "lng": -105.281, "durationMin": 360, "priceCents": 0, "startEarliest": "08:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "DEN-a-larimer", "kind": "activity", "cityId": "DEN", "name": "Union Station & Larimer Square walk", "short": "Larimer Square", "tags": ["history", "food"], "lat": 39.748, "lng": -104.999, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "DEN-a-history-co", "kind": "activity", "cityId": "DEN", "name": "History Colorado Center", "short": "History Colorado", "tags": ["museums", "history"], "lat": 39.7359, "lng": -104.9873, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DEN-a-botanic", "kind": "activity", "cityId": "DEN", "name": "Denver Botanic Gardens", "short": "Botanic Gardens", "tags": ["nature", "chill"], "lat": 39.732, "lng": -104.9594, "durationMin": 120, "priceCents": 1800, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "DEN-a-comedy", "kind": "activity", "cityId": "DEN", "name": "Comedy Works show", "short": "Comedy Works", "tags": ["nightlife"], "lat": 39.7475, "lng": -104.999, "durationMin": 120, "priceCents": 3000, "startEarliest": "19:00", "startLatest": "21:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DEN-h-union-triple", "toId": "DEN-a-red-rocks", "mode": "taxi", "minutes": 35, "note": "shuttle or rideshare to Morrison" },
+    { "fromId": "DEN-h-union-triple", "toId": "DEN-a-flatirons", "mode": "taxi", "minutes": 40, "note": "US-36 to Boulder" },
+    { "fromId": "DEN-h-rino-loft", "toId": "DEN-a-red-rocks", "mode": "taxi", "minutes": 40 }
+  ],
+  "hilly": ["DEN-a-flatirons", "DEN-a-red-rocks"]
+}

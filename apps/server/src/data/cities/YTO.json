@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "YTO", "name": "Toronto", "country": "Canada", "region": "Canada", "airport": { "code": "YYZ", "lat": 43.6777, "lng": -79.6248 }, "utcOffset": -5, "centerLat": 43.652, "centerLng": -79.387, "tileRadiusKm": 2.5, "publicFlags": ["near or below freezing in March"] },
+  "hotels": [
+    { "_id": "YTO-h-kensington-hostel", "kind": "hotel", "cityId": "YTO", "name": "Kensington Hostel (3 beds)", "neighborhood": "Kensington Market", "lat": 43.6545, "lng": -79.4005, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "YTO-h-cabbagetown-guest", "kind": "hotel", "cityId": "YTO", "name": "Cabbagetown Guesthouse", "neighborhood": "Cabbagetown", "lat": 43.666, "lng": -79.365, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "YTO-h-king-west-apt", "kind": "hotel", "cityId": "YTO", "name": "King West Apartment", "neighborhood": "King West", "lat": 43.644, "lng": -79.4, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "YTO-h-financial-triple", "kind": "hotel", "cityId": "YTO", "name": "Financial District Hotel (triple)", "neighborhood": "Financial District", "lat": 43.648, "lng": -79.382, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "YTO-h-yorkville-triple", "kind": "hotel", "cityId": "YTO", "name": "Yorkville Hotel (triple)", "neighborhood": "Yorkville", "lat": 43.671, "lng": -79.393, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "YTO-a-cn-tower", "kind": "activity", "cityId": "YTO", "name": "CN Tower lookout", "short": "CN Tower", "tags": ["chill"], "lat": 43.6426, "lng": -79.3871, "durationMin": 120, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "YTO-a-st-lawrence", "kind": "activity", "cityId": "YTO", "name": "St. Lawrence Market food walk", "short": "St. Lawrence Market", "tags": ["food"], "lat": 43.6487, "lng": -79.3715, "durationMin": 120, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "YTO-a-horseshoe", "kind": "activity", "cityId": "YTO", "name": "Live music at the Horseshoe Tavern", "short": "Horseshoe Tavern", "tags": ["music", "nightlife"], "lat": 43.649, "lng": -79.3955, "durationMin": 180, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "YTO-a-rom", "kind": "activity", "cityId": "YTO", "name": "Royal Ontario Museum", "short": "ROM", "tags": ["museums", "history"], "lat": 43.6677, "lng": -79.3948, "durationMin": 180, "priceCents": 1900, "startEarliest": "10:00", "startLatest": "14:30", "role": "pick" },
+    { "_id": "YTO-a-islands", "kind": "activity", "cityId": "YTO", "name": "Toronto Islands ferry walk", "short": "Toronto Islands", "tags": ["nature", "chill"], "lat": 43.6205, "lng": -79.378, "durationMin": 180, "priceCents": 700, "startEarliest": "10:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "YTO-a-kensington-food", "kind": "activity", "cityId": "YTO", "name": "Kensington Market & Chinatown food crawl", "short": "Kensington food crawl", "tags": ["food"], "lat": 43.6545, "lng": -79.4005, "durationMin": 150, "priceCents": 3500, "startEarliest": "11:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "YTO-a-distillery", "kind": "activity", "cityId": "YTO", "name": "Distillery District stroll", "short": "Distillery District", "tags": ["history", "chill"], "lat": 43.6503, "lng": -79.3596, "durationMin": 120, "priceCents": 0, "startEarliest": "11:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "YTO-a-leafs", "kind": "activity", "cityId": "YTO", "name": "Maple Leafs hockey game", "short": "Leafs game", "tags": ["nightlife"], "lat": 43.6435, "lng": -79.3791, "durationMin": 180, "priceCents": 15000, "startEarliest": "19:00", "startLatest": "19:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "YTO-h-king-west-apt", "toId": "YTO-a-islands", "mode": "transit", "minutes": 35, "note": "streetcar to Jack Layton Ferry Terminal + 15-min ferry" },
+    { "fromId": "YTO-h-king-west-apt", "toId": "YTO-a-rom", "mode": "transit", "minutes": 20, "note": "Line 1 subway to Museum" },
+    { "fromId": "YTO-h-king-west-apt", "toId": "YTO-a-distillery", "mode": "transit", "minutes": 25, "note": "504 King streetcar" }
+  ],
+  "hilly": []
+}

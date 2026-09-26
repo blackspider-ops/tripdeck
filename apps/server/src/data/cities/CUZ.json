@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "CUZ", "name": "Cusco", "country": "Peru", "region": "Latin America", "airport": { "code": "CUZ", "lat": -13.5357, "lng": -71.9388 }, "utcOffset": -5, "centerLat": -13.517, "centerLng": -71.979, "tileRadiusKm": 1.5, "publicFlags": ["high altitude (3,400 m)", "rainy season until late March"] },
+  "hotels": [
+    { "_id": "CUZ-h-plaza-hostel", "kind": "hotel", "cityId": "CUZ", "name": "Plaza de Armas Hostel (3 beds)", "neighborhood": "Centro Histórico", "lat": -13.517, "lng": -71.98, "stayType": "hostel", "nightlyCents": 5000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "CUZ-h-san-cristobal-guest", "kind": "hotel", "cityId": "CUZ", "name": "Casa San Cristóbal", "neighborhood": "San Cristóbal", "lat": -13.5135, "lng": -71.9815, "stayType": "guesthouse", "nightlyCents": 8000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "CUZ-h-san-pedro-triple", "kind": "hotel", "cityId": "CUZ", "name": "San Pedro Hotel (triple)", "neighborhood": "San Pedro", "lat": -13.521, "lng": -71.9845, "stayType": "hotel", "nightlyCents": 10000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "CUZ-h-san-blas-apt", "kind": "hotel", "cityId": "CUZ", "name": "San Blas Apartment", "neighborhood": "San Blas", "lat": -13.514, "lng": -71.9745, "stayType": "apartment", "nightlyCents": 11000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "CUZ-h-centro-triple", "kind": "hotel", "cityId": "CUZ", "name": "Centro Colonial Hotel (triple)", "neighborhood": "Centro Histórico", "lat": -13.5185, "lng": -71.977, "stayType": "hotel", "nightlyCents": 14500, "sleeps": 3, "rating": 4.4 }
+  ],
+  "activities": [
+    { "_id": "CUZ-a-sacsayhuaman", "kind": "activity", "cityId": "CUZ", "name": "Sacsayhuamán ruins", "short": "Sacsayhuamán", "tags": ["history", "nature"], "lat": -13.5086, "lng": -71.9817, "durationMin": 150, "priceCents": 1900, "startEarliest": "08:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "CUZ-a-qorikancha", "kind": "activity", "cityId": "CUZ", "name": "Qorikancha & Santo Domingo", "short": "Qorikancha", "tags": ["history", "museums"], "lat": -13.5202, "lng": -71.9752, "durationMin": 90, "priceCents": 700, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "CUZ-a-san-pedro-market", "kind": "activity", "cityId": "CUZ", "name": "Mercado San Pedro lunch", "short": "San Pedro market", "tags": ["food"], "lat": -13.5215, "lng": -71.9845, "durationMin": 90, "priceCents": 800, "startEarliest": "09:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "CUZ-a-sacred-valley", "kind": "activity", "cityId": "CUZ", "name": "Sacred Valley day tour (Pisac & Ollantaytambo)", "short": "Sacred Valley", "tags": ["history", "nature"], "lat": -13.416, "lng": -71.849, "durationMin": 600, "priceCents": 4500, "startEarliest": "07:30", "startLatest": "08:30", "role": "pick", "earlyStart": true },
+    { "_id": "CUZ-a-maras-moray", "kind": "activity", "cityId": "CUZ", "name": "Maras salt pans & Moray terraces", "short": "Maras & Moray", "tags": ["nature", "history"], "lat": -13.329, "lng": -72.197, "durationMin": 360, "priceCents": 3500, "startEarliest": "08:30", "startLatest": "09:30", "role": "pick" },
+    { "_id": "CUZ-a-chocomuseo", "kind": "activity", "cityId": "CUZ", "name": "ChocoMuseo chocolate workshop", "short": "Chocolate workshop", "tags": ["food"], "lat": -13.517, "lng": -71.9805, "durationMin": 120, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CUZ-a-precolombino", "kind": "activity", "cityId": "CUZ", "name": "Museo de Arte Precolombino", "short": "Pre-Columbian art", "tags": ["museums"], "lat": -13.5155, "lng": -71.978, "durationMin": 90, "priceCents": 700, "startEarliest": "09:00", "startLatest": "18:30", "role": "pick" },
+    { "_id": "CUZ-a-ukukus", "kind": "activity", "cityId": "CUZ", "name": "Live Andean rock night at Ukukus", "short": "Ukukus live music", "tags": ["music", "nightlife"], "lat": -13.5155, "lng": -71.9795, "durationMin": 180, "priceCents": 1500, "startEarliest": "21:00", "startLatest": "22:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CUZ-h-san-blas-apt", "toId": "CUZ-a-sacred-valley", "mode": "taxi", "minutes": 50, "note": "tour van over the pass to Pisac" },
+    { "fromId": "CUZ-h-san-blas-apt", "toId": "CUZ-a-maras-moray", "mode": "taxi", "minutes": 75, "note": "tour van via Chinchero" },
+    { "fromId": "CUZ-h-san-blas-apt", "toId": "CUZ-a-sacsayhuaman", "mode": "walk", "minutes": 35, "note": "steep climb at altitude" }
+  ],
+  "hilly": ["CUZ-h-san-blas-apt", "CUZ-h-san-cristobal-guest", "CUZ-a-sacsayhuaman"]
+}

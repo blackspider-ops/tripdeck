@@ -297,7 +297,7 @@ describe("over HTTP + Socket.io", () => {
     expect([refused.status, refused.json.code]).toEqual([403, "CREW_CLOSED"]);
     rae.s.close();
 
-    const seed = (await call("POST", "/demo/seed")).json;
+    const seed = (await call("POST", "/demo/seed?kind=expo")).json;
     const ok = await call("POST", `/trips/${seed.tripId}/members/${seed.maya.memberId}/handoff`, { code: seed.maya.handoff });
     expect(ok.json.memberToken).toBe(seed.maya.memberToken);
     const again = await call("POST", `/trips/${seed.tripId}/members/${seed.maya.memberId}/handoff`, { code: seed.maya.handoff });
@@ -339,7 +339,7 @@ describe("over HTTP + Socket.io", () => {
     const errors = (c: { events: { ev: string; p: any }[] }) => c.events.filter((e) => e.ev === "error").map((e) => e.p);
 
     it("member, spectator (Gallery) and a bad member token: ack role + TOKEN_REJECTED before the replay", async () => {
-      const seed = (await call("POST", "/demo/seed")).json;
+      const seed = (await call("POST", "/demo/seed?kind=expo")).json;
       const maya = joiner({ tripId: seed.tripId, memberToken: seed.maya.memberToken, surface: "phone" });
       const gallery = joiner({ joinCode: seed.joinCode, surface: "gallery" });
       const stale = joiner({ tripId: seed.tripId, memberToken: "nope", surface: "phone" });
@@ -359,7 +359,7 @@ describe("over HTTP + Socket.io", () => {
     });
 
     it("a replaced or unpaired headset: its next action and its next join say DEVICE_EXPIRED", async () => {
-      const seed = (await call("POST", "/demo/seed")).json;
+      const seed = (await call("POST", "/demo/seed?kind=expo")).json;
       const pairA = (await call("POST", "/xr/pair", { code: seed.headsetCode })).json;
       const a = joiner({ tripId: seed.tripId, deviceToken: pairA.deviceToken, surface: "xr" });
       expect(await a.ack).toEqual({ ok: true, as: "device" });
@@ -393,7 +393,7 @@ describe("over HTTP + Socket.io", () => {
     });
 
     it("once BOOKED a headset rejoins quietly as a spectator (nothing to re-pair for)", async () => {
-      const seed = (await call("POST", "/demo/seed")).json;
+      const seed = (await call("POST", "/demo/seed?kind=expo")).json;
       const pair = (await call("POST", "/xr/pair", { code: seed.headsetCode })).json;
       h.trip(seed.tripId).status = "BOOKED";
       const x = joiner({ tripId: seed.tripId, deviceToken: pair.deviceToken, surface: "xr" });

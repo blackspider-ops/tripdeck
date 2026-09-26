@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "ZRH", "name": "Zurich", "country": "Switzerland", "region": "Europe", "airport": {"code": "ZRH", "lat": 47.4582, "lng": 8.5555}, "utcOffset": 1, "centerLat": 47.373, "centerLng": 8.54, "tileRadiusKm": 1.5, "publicFlags": ["very expensive"] },
+  "hotels": [
+    { "_id": "ZRH-h-oldtown-hostel", "kind": "hotel", "cityId": "ZRH", "name": "Oldtown Hostel (3 beds)", "neighborhood": "Niederdorf", "lat": 47.3745, "lng": 8.5445, "stayType": "hostel", "nightlyCents": 17000, "sleeps": 3, "rating": 4 },
+    { "_id": "ZRH-h-west-guest", "kind": "hotel", "cityId": "ZRH", "name": "Zürich-West Guesthouse", "neighborhood": "Zürich-West", "lat": 47.388, "lng": 8.52, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ZRH-h-kreis4-flat", "kind": "hotel", "cityId": "ZRH", "name": "Kreis 4 Apartment", "neighborhood": "Langstrasse", "lat": 47.378, "lng": 8.528, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "ZRH-h-niederdorf-triple", "kind": "hotel", "cityId": "ZRH", "name": "Niederdorf Hotel (triple)", "neighborhood": "Altstadt", "lat": 47.373, "lng": 8.544, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "ZRH-h-seefeld-triple", "kind": "hotel", "cityId": "ZRH", "name": "Seefeld Lakeside Hotel (triple)", "neighborhood": "Seefeld", "lat": 47.36, "lng": 8.552, "stayType": "hotel", "nightlyCents": 48000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "ZRH-a-old-town", "kind": "activity", "cityId": "ZRH", "name": "Old Town & Lindenhof walk", "short": "Old Town walk", "tags": ["history"], "lat": 47.373, "lng": 8.541, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "ZRH-a-lake-cruise", "kind": "activity", "cityId": "ZRH", "name": "Lake Zurich boat cruise", "short": "Lake cruise", "tags": ["chill", "nature"], "lat": 47.3665, "lng": 8.541, "durationMin": 90, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "ZRH-a-fondue", "kind": "activity", "cityId": "ZRH", "name": "Cheese fondue dinner", "short": "Fondue dinner", "tags": ["food"], "lat": 47.3727, "lng": 8.544, "durationMin": 120, "priceCents": 6500, "startEarliest": "18:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "ZRH-a-kunsthaus", "kind": "activity", "cityId": "ZRH", "name": "Kunsthaus Zürich", "short": "Kunsthaus", "tags": ["museums"], "lat": 47.3702, "lng": 8.548, "durationMin": 150, "priceCents": 2800, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ZRH-a-landesmuseum", "kind": "activity", "cityId": "ZRH", "name": "Swiss National Museum", "short": "National Museum", "tags": ["museums", "history"], "lat": 47.379, "lng": 8.5405, "durationMin": 120, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ZRH-a-uetliberg", "kind": "activity", "cityId": "ZRH", "name": "Uetliberg hike & views", "short": "Uetliberg hike", "tags": ["nature"], "lat": 47.3497, "lng": 8.4914, "durationMin": 180, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "ZRH-a-west-night", "kind": "activity", "cityId": "ZRH", "name": "Zürich-West bars & live music", "short": "Zürich-West night", "tags": ["nightlife", "music"], "lat": 47.389, "lng": 8.517, "durationMin": 180, "priceCents": 4500, "startEarliest": "21:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "ZRH-a-lindt", "kind": "activity", "cityId": "ZRH", "name": "Lindt Home of Chocolate", "short": "Lindt chocolate", "tags": ["food"], "lat": 47.318, "lng": 8.554, "durationMin": 120, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ZRH-h-niederdorf-triple", "toId": "ZRH-a-uetliberg", "mode": "train", "minutes": 30, "note": "S10 from Hauptbahnhof + short uphill walk" },
+    { "fromId": "ZRH-h-niederdorf-triple", "toId": "ZRH-a-lindt", "mode": "train", "minutes": 25, "note": "S8 to Kilchberg + walk" },
+    { "fromId": "ZRH-h-kreis4-flat", "toId": "ZRH-a-uetliberg", "mode": "train", "minutes": 25, "note": "S10 from Hauptbahnhof" }
+  ],
+  "hilly": ["ZRH-a-uetliberg"]
+}

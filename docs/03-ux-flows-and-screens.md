@@ -103,7 +103,26 @@ All phone screens: ruled logbook paper, red margin line, Caslon headings, Plex M
 States: default · offline ("Lost the signal. Holding your place.")
 
 ### P1 — Create voyage (`/new`)
-Fields: Voyage name ("Spring Break '27"), your name, your color band (4 swatches), preset (default: *Three Ports* — Lisbon / Mexico City / Montréal, Mar 12–16, 2027, 3 origins).
+Fields: Voyage name ("Spring Break '27"), your name, your color band (4 swatches), **flying from** (a searchable
+home‑airport picker over ~37 US / Canada airports: type a code — "sea" — or a city — "Seattle"), then the course:
+
+- **Where** — three ways (segmented chips):
+  - **Pick ports**: a searchable list of every port (`GET /api/catalog`), grouped by region; choose **2–4**.
+    **Surprise me** picks 3 at random. **Add any city** (CitySearch, docs/11) finds a curated port or builds a
+    generated one from OpenStreetMap (attribution shown).
+  - **Regions**: one or more of Europe, Latin America, Caribbean, United States, Canada, Asia, Oceania, Africa,
+    Middle East, and/or US states ("somewhere in California"). The ports are chosen when the table meets: the helm
+    pre‑ranks every port in scope for the crew's sealed terms (must‑have coverage, a rough per‑person cost from each
+    member's home airport vs their cap, dealbreakers, places they'd love / skip, season) and puts the top 4 on the
+    chart (doc 05 §2.0). Until then the Muster says "Ports are chosen when the table meets".
+  - **Anywhere**: the same, over every curated port.
+- **When** — the date windows on offer (1–3 of W1–W10: Memorial Day, July 4th week, a summer week, Labor Day, fall
+  break, Thanksgiving, winter holidays, spring break '28, …). Default: the next two that haven't started.
+- "Sample listings; flights are modelled. No real bookings are made."
+
+Sending nothing leaves it to the helm: 3 random ports and the next 2 windows (never every port — the chart book holds
+12 plans). The helm validates everything (unknown ids dropped; < 2 or > 4 ports, unknown regions, 0 or > 3 windows
+refused).
 Primary: **Set sail** → creates trip (`BRIEFING`), goes to P2.
 
 ### P2 — Muster (invite) (`/t/:code/muster`)
@@ -147,7 +166,7 @@ Name, color band (taken bands disabled), **Join the crew** → P4.
 │   [−50]           [+50]    │
 │                            │
 │ I can travel               │
-│ [Mar 12–16 ✓] [Mar 13–16]  │
+│ [Mar 12–16 ✓] [Mar 13–16]  │  (only this voyage's windows)
 │                            │
 │ Must have (up to 3)        │
 │ (beach)(food)(nightlife)   │
@@ -167,6 +186,12 @@ Name, color band (taken bands disabled), **Join the crew** → P4.
 └────────────────────────────┘
 ```
 - Dial range $300–$3,000, step $50; ± buttons; tap numeral to type.
+- **I can travel** shows only the windows the organizer offered (with their label, e.g. "Thanksgiving · Nov 24–28");
+  the helm drops any other window from the sealed terms.
+- **Places I'd love / Places I'd skip** (optional, up to 3 each; a place can't be on both): chips from the voyage's
+  scope — its ports for named ports, its regions / states and ports for a region or "anywhere" voyage. Private like
+  the rest of the terms: they feed the pre‑rank (+ for a loved port, region or state; − for a skipped one) and the
+  member's own mate (it proposes a loved port first and may mention it, never anyone's numbers).
 - Chip ↔ code mapping (doc 04 §4.3): overnight flights = `red_eye`, hostels = `hostel`, 2+ layovers = `layovers_2plus`, starts before 8am = `early_start` (any activity start **or flight departure** before 08:00), long walks = `long_walks` (any walk > 25 min).
 - If memory exists (P1 feature): banner "Remembered from your last voyage" + pre‑fill; each pre‑filled chip shows a tiny pencil mark.
 - Validation: cap required; ≥ 1 date option.

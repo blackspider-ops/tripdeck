@@ -1,0 +1,22 @@
+{
+  "city": { "_id": "DSM", "name": "Des Moines", "country": "United States", "state": "IA", "region": "United States", "airport": { "code": "DSM", "lat": 41.534, "lng": -93.6631 }, "utcOffset": -6, "centerLat": 41.586, "centerLng": -93.63, "tileRadiusKm": 2.5, "publicFlags": ["farmers' market is Saturdays May–Oct only", "cold winters"] },
+  "hotels": [
+    { "_id": "DSM-h-drake-guest", "kind": "hotel", "cityId": "DSM", "name": "Drake Neighborhood Guest Room", "neighborhood": "Drake", "lat": 41.601, "lng": -93.653, "stayType": "guesthouse", "nightlyCents": 8500, "sleeps": 3, "rating": 4.1 },
+    { "_id": "DSM-h-east-village-flat", "kind": "hotel", "cityId": "DSM", "name": "East Village Apartment", "neighborhood": "East Village", "lat": 41.5903, "lng": -93.61, "stayType": "apartment", "nightlyCents": 15000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "DSM-h-butler-house", "kind": "hotel", "cityId": "DSM", "name": "Butler House on Grand", "neighborhood": "Waterbury", "lat": 41.581, "lng": -93.6815, "stayType": "guesthouse", "nightlyCents": 17000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "DSM-h-fort-des-moines", "kind": "hotel", "cityId": "DSM", "name": "Hotel Fort Des Moines (2 queens)", "neighborhood": "Downtown", "lat": 41.5868, "lng": -93.6292, "stayType": "hotel", "nightlyCents": 19000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "DSM-h-surety", "kind": "hotel", "cityId": "DSM", "name": "The Surety Hotel (2 queens)", "neighborhood": "Downtown", "lat": 41.5863, "lng": -93.6255, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "DSM-a-capitol", "kind": "activity", "cityId": "DSM", "name": "Iowa State Capitol tour", "short": "State Capitol", "tags": ["history"], "lat": 41.5912, "lng": -93.6036, "durationMin": 75, "priceCents": 0, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "DSM-a-farmers-market", "kind": "activity", "cityId": "DSM", "name": "Downtown Farmers' Market", "short": "Farmers' Market", "tags": ["food"], "lat": 41.5859, "lng": -93.62, "durationMin": 120, "priceCents": 1500, "startEarliest": "07:30", "startLatest": "11:30", "role": "group" },
+    { "_id": "DSM-a-woolys", "kind": "activity", "cityId": "DSM", "name": "Live show at Wooly's", "short": "Wooly's show", "tags": ["music", "nightlife"], "lat": 41.5902, "lng": -93.6122, "durationMin": 150, "priceCents": 2500, "startEarliest": "19:30", "startLatest": "21:00", "role": "group" },
+    { "_id": "DSM-a-sculpture-park", "kind": "activity", "cityId": "DSM", "name": "Pappajohn Sculpture Park", "short": "Sculpture Park", "tags": ["chill", "museums"], "lat": 41.585, "lng": -93.636, "durationMin": 45, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "DSM-a-art-center", "kind": "activity", "cityId": "DSM", "name": "Des Moines Art Center", "short": "Art Center", "tags": ["museums"], "lat": 41.5815, "lng": -93.681, "durationMin": 90, "priceCents": 0, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DSM-a-botanical", "kind": "activity", "cityId": "DSM", "name": "Greater Des Moines Botanical Garden", "short": "Botanical Garden", "tags": ["nature"], "lat": 41.595, "lng": -93.612, "durationMin": 90, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DSM-a-grays-lake", "kind": "activity", "cityId": "DSM", "name": "Gray's Lake Park loop", "short": "Gray's Lake loop", "tags": ["nature", "chill"], "lat": 41.57, "lng": -93.642, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "DSM-a-court-ave", "kind": "activity", "cityId": "DSM", "name": "Court Avenue bars", "short": "Court Ave bars", "tags": ["nightlife"], "lat": 41.585, "lng": -93.62, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [],
+  "hilly": []
+}

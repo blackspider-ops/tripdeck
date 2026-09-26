@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BCN", "name": "Barcelona", "country": "Spain", "region": "Europe", "airport": { "code": "BCN", "lat": 41.2974, "lng": 2.0833 }, "utcOffset": 1, "centerLat": 41.39, "centerLng": 2.17, "tileRadiusKm": 3.0, "publicFlags": ["pickpockets on La Rambla & the metro", "sea too cold to swim in March"] },
+  "hotels": [
+    { "_id": "BCN-h-gotic-hostel", "kind": "hotel", "cityId": "BCN", "name": "Gòtic Hostel (3 beds)", "neighborhood": "Barri Gòtic", "lat": 41.3825, "lng": 2.177, "stayType": "hostel", "nightlyCents": 13500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "BCN-h-gracia-guest", "kind": "hotel", "cityId": "BCN", "name": "Casa Gràcia Guesthouse", "neighborhood": "Gràcia", "lat": 41.402, "lng": 2.156, "stayType": "guesthouse", "nightlyCents": 17000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "BCN-h-eixample-flat", "kind": "hotel", "cityId": "BCN", "name": "Eixample Apartment", "neighborhood": "Eixample", "lat": 41.3935, "lng": 2.165, "stayType": "apartment", "nightlyCents": 24000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BCN-h-born-triple", "kind": "hotel", "cityId": "BCN", "name": "El Born Boutique (triple)", "neighborhood": "El Born", "lat": 41.385, "lng": 2.182, "stayType": "hotel", "nightlyCents": 27000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "BCN-h-barceloneta-triple", "kind": "hotel", "cityId": "BCN", "name": "Barceloneta Seafront Hotel (triple)", "neighborhood": "Barceloneta", "lat": 41.38, "lng": 2.189, "stayType": "hotel", "nightlyCents": 34000, "sleeps": 3, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "BCN-a-sagrada", "kind": "activity", "cityId": "BCN", "name": "Sagrada Família (with tower)", "short": "Sagrada Família", "tags": ["history"], "lat": 41.4036, "lng": 2.1744, "durationMin": 120, "priceCents": 4500, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "BCN-a-tapas", "kind": "activity", "cityId": "BCN", "name": "Tapas & vermut crawl, El Born", "short": "Tapas crawl", "tags": ["food", "nightlife"], "lat": 41.3845, "lng": 2.181, "durationMin": 180, "priceCents": 4500, "startEarliest": "19:30", "startLatest": "21:00", "role": "group" },
+    { "_id": "BCN-a-park-guell", "kind": "activity", "cityId": "BCN", "name": "Park Güell", "short": "Park Güell", "tags": ["history", "nature"], "lat": 41.4145, "lng": 2.1527, "durationMin": 120, "priceCents": 2000, "startEarliest": "09:30", "startLatest": "16:30", "role": "group" },
+    { "_id": "BCN-a-barceloneta", "kind": "activity", "cityId": "BCN", "name": "Barceloneta beach & chiringuito", "short": "Barceloneta beach", "tags": ["beach", "chill"], "lat": 41.3784, "lng": 2.1925, "durationMin": 180, "priceCents": 1500, "startEarliest": "11:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BCN-a-picasso", "kind": "activity", "cityId": "BCN", "name": "Museu Picasso", "short": "Picasso Museum", "tags": ["museums"], "lat": 41.3852, "lng": 2.1808, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "BCN-a-palau-musica", "kind": "activity", "cityId": "BCN", "name": "Concert at Palau de la Música Catalana", "short": "Palau de la Música", "tags": ["music", "history"], "lat": 41.3875, "lng": 2.1753, "durationMin": 120, "priceCents": 4500, "startEarliest": "20:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "BCN-a-montjuic", "kind": "activity", "cityId": "BCN", "name": "Montjuïc cable car & castle", "short": "Montjuïc", "tags": ["nature", "history"], "lat": 41.3636, "lng": 2.1661, "durationMin": 180, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BCN-a-boqueria", "kind": "activity", "cityId": "BCN", "name": "La Boqueria market tasting", "short": "Boqueria market", "tags": ["food"], "lat": 41.3817, "lng": 2.1716, "durationMin": 90, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BCN-h-barceloneta-triple", "toId": "BCN-a-park-guell", "mode": "transit", "minutes": 40, "note": "metro L4 + L3 to Vallcarca, then uphill walk" },
+    { "fromId": "BCN-h-gracia-guest", "toId": "BCN-a-barceloneta", "mode": "transit", "minutes": 30, "note": "metro L3 + L4 to Barceloneta" },
+    { "fromId": "BCN-h-eixample-flat", "toId": "BCN-a-montjuic", "mode": "transit", "minutes": 30, "note": "metro to Paral·lel + funicular" }
+  ],
+  "hilly": ["BCN-a-park-guell", "BCN-a-montjuic"]
+}

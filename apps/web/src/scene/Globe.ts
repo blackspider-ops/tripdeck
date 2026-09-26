@@ -21,6 +21,16 @@ export const HOME_PORT = {
 };
 
 const GLOBE_R = 0.16;
+/** Flag height above a pin, the extra step per nearby earlier pin, and what "nearby" means (degrees of arc). */
+const FLAG_Y = 0.017;
+const FLAG_STEP = 0.013;
+const FLAG_NEAR_DEG = 18;
+/** Great-circle angle between two points, in degrees. */
+function angleDeg(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+  const r = Math.PI / 180;
+  const c = Math.sin(a.lat * r) * Math.sin(b.lat * r) + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.cos((a.lng - b.lng) * r);
+  return Math.acos(Math.min(1, Math.max(-1, c))) / r;
+}
 const GLOBE_CENTER_Y = 0.052 + GLOBE_R;
 
 /** Designed at 2048×1024 (1024×512 on a headset, same drawing); painted once per page. */
@@ -143,7 +153,7 @@ export class Globe {
       g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
       // paper flag with the city name (Caslon)
       const { group: flag } = paperFlag({ text: p.name, font: "heading", size: 0.0095 }, 0.014, { pad: 0.004, guessPerChar: 0.0056 });
-      flag.position.set(0.001, 0.017, 0);
+      flag.position.set(0.001, FLAG_Y, 0);
       const ring = new THREE.Mesh(RING_GEO, M.ink());
       ring.rotation.x = Math.PI / 2;
       ring.position.y = 0.0006;
@@ -152,7 +162,20 @@ export class Globe {
       this.spin.add(g);
       this.pins.set(p.id, { group: g, ring, flag, lat: p.lat, lng: p.lng });
     }
-    if (changed) this.buildPinHeads();
+    if (changed) { this.staggerFlags(); this.buildPinHeads(); }
+  }
+
+  /**
+   * Neighbouring ports (Lisbon, Madrid, Barcelona…) would print their flags on top of each other: a pin within
+   * FLAG_NEAR_DEG of an earlier one raises its flag one step per such neighbour, so 3–4 names stay readable.
+   */
+  private staggerFlags() {
+    const placed: { lat: number; lng: number }[] = [];
+    for (const p of this.pins.values()) {
+      const k = placed.filter((q) => angleDeg(p, q) < FLAG_NEAR_DEG).length;
+      p.flag.position.y = FLAG_Y + k * FLAG_STEP;
+      placed.push(p);
+    }
   }
 
   /** One instanced needle + one instanced head mesh for every pin (was two meshes per pin). */

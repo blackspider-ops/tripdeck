@@ -97,7 +97,7 @@ function client(join: Record<string, unknown>) {
 
 describe("OPT-067: the event contract", () => {
   it("a full voyage + replay emits only contract events; private ones and `error` never reach the trip room", async () => {
-    const seed = (await postJson("/demo/seed", {})).json as unknown as Seed;
+    const seed = (await postJson("/demo/seed?kind=expo", {})).json as unknown as Seed;
     const rae = client({ tripId: seed.tripId, memberToken: seed.organizer.memberToken, surface: "phone" });
     const maya = client({ tripId: seed.tripId, memberToken: seed.maya.memberToken, surface: "phone" });
     const gallery = client({ joinCode: seed.joinCode, surface: "gallery" });
@@ -141,7 +141,7 @@ describe("OPT-067: the event contract", () => {
   it("TR3-007: a failed table is a public table:failed, never a room-wide error", async () => {
     vi.spyOn(NegotiationEngine.prototype, "run").mockRejectedValue(new Error("model down"));
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    const seed = (await postJson("/demo/seed", {})).json as unknown as Seed;
+    const seed = (await postJson("/demo/seed?kind=expo", {})).json as unknown as Seed;
     const gallery = client({ joinCode: seed.joinCode, surface: "gallery" });
     const rae = client({ tripId: seed.tripId, memberToken: seed.organizer.memberToken, surface: "phone" });
     await gallery.joined; await rae.joined;
@@ -174,7 +174,7 @@ describe("OPT-067: the event contract", () => {
 describe("TR3-007 / SEC-020: socket refusals", () => {
   it("answer the ack and name the event; bad payloads are BAD_INPUT without a stack in the log", async () => {
     const err = vi.spyOn(console, "error");
-    const seed = (await postJson("/demo/seed", {})).json as unknown as Seed;
+    const seed = (await postJson("/demo/seed?kind=expo", {})).json as unknown as Seed;
     const loner = client({ joinCode: "NOPE00", surface: "gallery" });
     expect(await loner.joined).toMatchObject({ ok: false, code: "NO_TRIP" });
     expect(await loner.ask("plan:pick", { planId: "x" })).toMatchObject({ ok: false, code: "NOT_JOINED" });
@@ -237,7 +237,7 @@ describe("TR3-005 / TR3-006 / TR3-013: REST errors", () => {
 
 describe("R2-WP-08: join handshake and socket loose ends", () => {
   it("L3-002: the join ack doesn't wait for a slow memory recall; an action sent on the ack is answered before the memory lines", async () => {
-    const seed = (await postJson("/demo/seed", {})).json as unknown as Seed;
+    const seed = (await postJson("/demo/seed?kind=expo", {})).json as unknown as Seed;
     // O2-062: the recall is held open until the test releases it (was a 1.5 s timer), so "doesn't wait" is exact
     let recall!: () => void;
     const recalled = new Promise<string[]>((r) => { recall = () => r(["voyage: Lisbon · booked"]); });
@@ -259,7 +259,7 @@ describe("R2-WP-08: join handshake and socket loose ends", () => {
   });
 
   it("L3-004: crew:setOpen needs a boolean; client:log is never acked; an unknown event's ack is answered; headset:unpair is gone", async () => {
-    const seed = (await postJson("/demo/seed", {})).json as unknown as Seed;
+    const seed = (await postJson("/demo/seed?kind=expo", {})).json as unknown as Seed;
     const rae = client({ tripId: seed.tripId, memberToken: seed.organizer.memberToken, surface: "phone" });
     await rae.joined;
     expect(await rae.ask("crew:setOpen", { open: "true" })).toMatchObject({ ok: false, code: "BAD_INPUT" });

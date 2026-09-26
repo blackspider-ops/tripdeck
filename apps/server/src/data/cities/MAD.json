@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "MAD", "name": "Madrid", "country": "Spain", "region": "Europe", "airport": { "code": "MAD", "lat": 40.4983, "lng": -3.5676 }, "utcOffset": 1, "centerLat": 40.416, "centerLng": -3.699, "tileRadiusKm": 2.0, "publicFlags": ["dinner starts around 9–10 pm", "cold nights in March"] },
+  "hotels": [
+    { "_id": "MAD-h-malasana-hostel", "kind": "hotel", "cityId": "MAD", "name": "Malasaña Hostel (3 beds)", "neighborhood": "Malasaña", "lat": 40.4255, "lng": -3.7045, "stayType": "hostel", "nightlyCents": 10500, "sleeps": 3, "rating": 4.0 },
+    { "_id": "MAD-h-lavapies-guest", "kind": "hotel", "cityId": "MAD", "name": "Lavapiés Guesthouse", "neighborhood": "Lavapiés", "lat": 40.4088, "lng": -3.701, "stayType": "guesthouse", "nightlyCents": 13000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "MAD-h-latina-flat", "kind": "hotel", "cityId": "MAD", "name": "La Latina Apartment", "neighborhood": "La Latina", "lat": 40.4115, "lng": -3.711, "stayType": "apartment", "nightlyCents": 19000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "MAD-h-letras-triple", "kind": "hotel", "cityId": "MAD", "name": "Barrio de las Letras Hotel (triple)", "neighborhood": "Barrio de las Letras", "lat": 40.4145, "lng": -3.6985, "stayType": "hotel", "nightlyCents": 22500, "sleeps": 3, "rating": 4.5 },
+    { "_id": "MAD-h-salamanca-triple", "kind": "hotel", "cityId": "MAD", "name": "Salamanca Hotel (triple)", "neighborhood": "Salamanca", "lat": 40.4255, "lng": -3.6835, "stayType": "hotel", "nightlyCents": 31000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "MAD-a-prado", "kind": "activity", "cityId": "MAD", "name": "Museo del Prado", "short": "Prado", "tags": ["museums", "history"], "lat": 40.4138, "lng": -3.6921, "durationMin": 180, "priceCents": 1700, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "MAD-a-cava-baja", "kind": "activity", "cityId": "MAD", "name": "Tapas along Cava Baja", "short": "Cava Baja tapas", "tags": ["food", "nightlife"], "lat": 40.412, "lng": -3.709, "durationMin": 180, "priceCents": 4000, "startEarliest": "20:30", "startLatest": "22:00", "role": "group" },
+    { "_id": "MAD-a-retiro", "kind": "activity", "cityId": "MAD", "name": "Retiro Park & rowboats", "short": "Retiro rowboats", "tags": ["nature", "chill"], "lat": 40.4185, "lng": -3.6825, "durationMin": 120, "priceCents": 400, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "MAD-a-palacio", "kind": "activity", "cityId": "MAD", "name": "Royal Palace of Madrid", "short": "Royal Palace", "tags": ["history"], "lat": 40.418, "lng": -3.7143, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "MAD-a-reina-sofia", "kind": "activity", "cityId": "MAD", "name": "Museo Reina Sofía (Guernica)", "short": "Reina Sofía", "tags": ["museums"], "lat": 40.408, "lng": -3.6945, "durationMin": 150, "priceCents": 1400, "startEarliest": "10:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "MAD-a-flamenco", "kind": "activity", "cityId": "MAD", "name": "Flamenco at Corral de la Morería", "short": "Flamenco show", "tags": ["music", "nightlife"], "lat": 40.4125, "lng": -3.714, "durationMin": 90, "priceCents": 6000, "startEarliest": "19:00", "startLatest": "22:00", "role": "pick" },
+    { "_id": "MAD-a-san-miguel", "kind": "activity", "cityId": "MAD", "name": "Mercado de San Miguel", "short": "San Miguel market", "tags": ["food"], "lat": 40.4154, "lng": -3.709, "durationMin": 90, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "MAD-a-escorial", "kind": "activity", "cityId": "MAD", "name": "El Escorial monastery day trip (train)", "short": "El Escorial", "tags": ["history", "nature"], "lat": 40.589, "lng": -4.1476, "durationMin": 360, "priceCents": 2800, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MAD-h-latina-flat", "toId": "MAD-a-escorial", "mode": "train", "minutes": 75, "note": "Cercanías C-8 from Sol/Atocha + uphill walk" },
+    { "fromId": "MAD-h-malasana-hostel", "toId": "MAD-a-retiro", "mode": "transit", "minutes": 20, "note": "metro L2 to Retiro" }
+  ],
+  "hilly": []
+}

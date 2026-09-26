@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  DEALBREAKERS, MAX_DEALBREAKERS, MAX_MUST_HAVES, NOTE_MAX_CHARS, TAGS, type Brief as SealedBrief, type Dealbreaker, type Tag,
+  DEALBREAKERS, MAX_DEALBREAKERS, MAX_MUST_HAVES, MAX_PLACES, NOTE_MAX_CHARS, TAGS, stateName,
+  type Brief as SealedBrief, type Dealbreaker, type DestinationPublic, type Tag,
 } from "@all-ayes/shared";
 import { useCrew, useSendGuard, useTripSelector } from "../TripContext";
 import { formatWindow } from "../format";
@@ -27,6 +28,8 @@ function useBriefDraft(existing: SealedBrief | null, memory: string[], firstWind
   const [must, setMust] = useState<Tag[]>(existing?.mustHaves ?? []);
   const [wont, setWont] = useState<Dealbreaker[]>(existing?.dealbreakers ?? []);
   const [note, setNote] = useState(existing?.note ?? "");
+  const [loves, setLoves] = useState<string[]>(existing?.loves ?? []);
+  const [skips, setSkips] = useState<string[]>(existing?.skips ?? []);
   const [noteSource, setNoteSource] = useState<"typed" | "voice">(existing?.noteSource ?? "typed");
   const lastTranscript = useRef<string | null>(existing?.noteSource === "voice" ? existing.note ?? null : null);
   // TR1-013: values pencilled in from memory, until the member changes them
@@ -39,6 +42,7 @@ function useBriefDraft(existing: SealedBrief | null, memory: string[], firstWind
     if (adopted || !existing) return;
     setCap(existing.capCents); setDates(existing.dateWindowIds); setMust(existing.mustHaves);
     setWont(existing.dealbreakers); setNote(existing.note ?? ""); setNoteSource(existing.noteSource ?? "typed");
+    setLoves(existing.loves ?? []); setSkips(existing.skips ?? []);
     lastTranscript.current = existing.noteSource === "voice" ? existing.note ?? null : null;
     setPencilled(new Set()); setAdopted(true);
   }, [existing, adopted]);
@@ -58,7 +62,10 @@ function useBriefDraft(existing: SealedBrief | null, memory: string[], firstWind
   }, [memory, existing, prefilled, adopted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
-    cap, dates, must, wont, note, noteSource, pencilled,
+    cap, dates, must, wont, note, noteSource, pencilled, loves, skips,
+    /** A place is loved or skipped, never both. */
+    setLoves: (v: string[], touched: string) => { setLoves(v); setSkips((s) => s.filter((x) => x !== touched)); },
+    setSkips: (v: string[], touched: string) => { setSkips(v); setLoves((l) => l.filter((x) => x !== touched)); },
     setCap: (v: number) => { setCap(v); unpencil("cap"); },
     setDates,
     setMust: (v: Tag[], touched: Tag) => { setMust(v); unpencil(touched); },
@@ -87,6 +94,49 @@ function ChipGroup<T extends string>({ options, value, max, disabled, onChange, 
         </button>
       ))}
     </div>
+  );
+}
+
+/** How many ports the places lists offer at once (a region / anywhere scope can hold dozens: search narrows them). */
+const PLACE_PORTS_SHOWN = 12;
+
+/**
+ * "Places I'd love" / "Places I'd skip" (optional, private like the rest): the voyage's ports, and for a region /
+ * anywhere voyage its regions and states too. Up to MAX_PLACES each; a place is on one list at most.
+ */
+function Places({ destination, loves, skips, disabled, onLoves, onSkips }: {
+  destination: DestinationPublic; loves: string[]; skips: string[]; disabled: boolean;
+  onLoves: (v: string[], touched: string) => void; onSkips: (v: string[], touched: string) => void;
+}) {
+  const [q, setQ] = useState("");
+  const scope = destination.scope;
+  const named = destination.kind === "cities";
+  const areas = named ? [] : [
+    ...new Set(scope.flatMap((c) => (c.region ? [c.region] : []))),
+    ...(destination.states ?? []),
+  ].map((id) => ({ id, label: id.length === 2 ? stateName(id) : id }));
+  const f = q.trim().toLowerCase();
+  const chosen = new Set([...loves, ...skips]);
+  // named ports: all of them; a wide scope: the ones already chosen, then the first matches of the search
+  const shown = named ? scope : [
+    ...scope.filter((c) => chosen.has(c.cityId)),
+    ...scope.filter((c) => !chosen.has(c.cityId) && (!f || c.name.toLowerCase().includes(f))).slice(0, PLACE_PORTS_SHOWN),
+  ];
+  const ports = shown.map((c) => ({ id: c.cityId, label: c.name }));
+  const options = [...areas, ...ports];
+  return (
+    <section aria-label="Places">
+      <h2 className="h2 mt-l">Places <span className="small">(optional, up to {MAX_PLACES} each)</span></h2>
+      {!named ? (
+        <label className="field"><span>Find a port</span>
+          <input className="input" type="search" value={q} disabled={disabled} placeholder="Name a port" onChange={(e) => setQ(e.target.value)} />
+        </label>
+      ) : null}
+      <p className="small">I'd love</p>
+      <ChipGroup options={options} value={loves} max={MAX_PLACES} disabled={disabled} onChange={onLoves} />
+      <p className="small">I'd skip</p>
+      <ChipGroup options={options} value={skips} max={MAX_PLACES} disabled={disabled} onChange={onSkips} />
+    </section>
   );
 }
 
@@ -124,12 +174,14 @@ export default function Brief() {
     markSubmitted({
       capCents: d.cap, dateWindowIds: d.dates, mustHaves: d.must, dealbreakers: d.wont,
       note: text || undefined, noteSource: text ? d.noteSource : "typed",
+      ...(d.loves.length ? { loves: d.loves } : {}), ...(d.skips.length ? { skips: d.skips } : {}),
     }, sealedAt);
   };
 
   // L4-002 (R2-WP-10): after a void only the organizer's new terms reopen the briefing; everyone else reads.
   const locked = status === "VOIDED" ? !isOrganizer : status !== "BRIEFING";
-  const windows = dateWindows.map((w) => ({ id: w.id, label: formatWindow(w.start, w.end) }));
+  const windows = dateWindows.map((w) => ({ id: w.id, label: `${w.label ? `${w.label} · ` : ""}${formatWindow(w.start, w.end)}` }));
+  const destination = useTripSelector((s) => s.trip!.destination);
 
   return (
     <Page>
@@ -164,6 +216,10 @@ export default function Brief() {
         <h2 className="h2 mt-l">Won't do <span className="small">(up to {MAX_DEALBREAKERS})</span></h2>
         <ChipGroup options={DEALBREAKERS} value={d.wont} max={MAX_DEALBREAKERS} disabled={locked} onChange={d.setWont} />
       </section>
+
+      {destination && destination.scope.length ? (
+        <Places destination={destination} loves={d.loves} skips={d.skips} disabled={locked} onLoves={d.setLoves} onSkips={d.setSkips} />
+      ) : null}
 
       <label className="field mt-l">
         <span>Anything else?</span>

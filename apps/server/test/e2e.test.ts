@@ -68,7 +68,7 @@ function client(join: Record<string, unknown>) {
 
 describe("Expo run over the wire", () => {
   it("seed → table → dry run → pick Lisbon → seals → booked, with privacy intact", async () => {
-    const seed = await post<Seed>("/demo/seed");
+    const seed = await post<Seed>("/demo/seed?kind=expo");
     const pair = await post<{ deviceToken: string }>("/xr/pair", { code: seed.headsetCode });
 
     const rae = client({ tripId: seed.tripId, memberToken: seed.organizer.memberToken, surface: "phone" });
@@ -145,7 +145,7 @@ describe("Expo run over the wire", () => {
   }, 30000);
 
   it("a lifted seal voids everyone; retry books on the second attempt", async () => {
-    const seed = await post<Seed>("/demo/seed");
+    const seed = await post<Seed>("/demo/seed?kind=expo");
     const rae = client({ tripId: seed.tripId, memberToken: seed.organizer.memberToken, surface: "phone" });
     const maya = client({ tripId: seed.tripId, memberToken: seed.maya.memberToken, surface: "phone" });
     await rae.waitFor((e) => e.ev === "trip:state");
@@ -177,7 +177,7 @@ describe("Expo run over the wire", () => {
   }, 30000);
 
   it("rejects non-organizers and bad phases", async () => {
-    const seed = await post<Seed>("/demo/seed");
+    const seed = await post<Seed>("/demo/seed?kind=expo");
     const maya = client({ tripId: seed.tripId, memberToken: seed.maya.memberToken, surface: "phone" });
     await maya.waitFor((e) => e.ev === "trip:state");
     maya.s.emit("table:start", {});
@@ -200,7 +200,7 @@ describe("REST guards", () => {
   });
 
   it("a token holder can't add a second passkey to get around the owner's (PRD E2)", async () => {
-    const seed = await post<Seed>("/demo/seed");
+    const seed = await post<Seed>("/demo/seed?kind=expo");
     const origin = "http://localhost";
     // S2-009: Maya's own phone holds her seat's passkey claim (a demo phone gets it when it redeems its handoff)
     const cookie = `aa_pk_${seed.maya.memberId}=${mintPasskeyClaim(seed.maya.memberId)}`;

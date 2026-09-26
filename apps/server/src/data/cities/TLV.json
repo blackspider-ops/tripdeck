@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "TLV", "name": "Tel Aviv", "country": "Israel", "region": "Middle East", "airport": { "code": "TLV", "lat": 32.0055, "lng": 34.8854 }, "utcOffset": 2, "centerLat": 32.068, "centerLng": 34.77, "tileRadiusKm": 2, "publicFlags": ["check travel advisories before booking", "limited public transport Fri evening–Sat"] },
+  "hotels": [
+    { "_id": "TLV-h-florentin-hostel", "kind": "hotel", "cityId": "TLV", "name": "Florentin Hostel (3 beds)", "neighborhood": "Florentin", "lat": 32.0565, "lng": 34.769, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "TLV-h-jaffa-guest", "kind": "hotel", "cityId": "TLV", "name": "Old Jaffa Guesthouse", "neighborhood": "Jaffa", "lat": 32.053, "lng": 34.7545, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "TLV-h-dizengoff-triple", "kind": "hotel", "cityId": "TLV", "name": "Dizengoff Hotel (triple)", "neighborhood": "City Center", "lat": 32.08, "lng": 34.774, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "TLV-h-neve-tzedek-flat", "kind": "hotel", "cityId": "TLV", "name": "Neve Tzedek Apartment", "neighborhood": "Neve Tzedek", "lat": 32.0605, "lng": 34.766, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "TLV-h-beachfront-triple", "kind": "hotel", "cityId": "TLV", "name": "Beachfront Hotel (triple)", "neighborhood": "Tayelet", "lat": 32.079, "lng": 34.767, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "TLV-a-jaffa", "kind": "activity", "cityId": "TLV", "name": "Old Jaffa & flea market", "short": "Old Jaffa", "tags": ["history"], "lat": 32.0545, "lng": 34.7525, "durationMin": 150, "priceCents": 0, "startEarliest": "09:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "TLV-a-carmel", "kind": "activity", "cityId": "TLV", "name": "Carmel Market & Yemenite Quarter food tour", "short": "Carmel Market tour", "tags": ["food"], "lat": 32.0685, "lng": 34.769, "durationMin": 180, "priceCents": 7500, "startEarliest": "10:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "TLV-a-gordon-beach", "kind": "activity", "cityId": "TLV", "name": "Gordon Beach afternoon", "short": "Gordon Beach", "tags": ["beach", "chill"], "lat": 32.083, "lng": 34.7675, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "TLV-a-museum-art", "kind": "activity", "cityId": "TLV", "name": "Tel Aviv Museum of Art", "short": "Museum of Art", "tags": ["museums"], "lat": 32.0775, "lng": 34.7865, "durationMin": 150, "priceCents": 2000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "TLV-a-anu", "kind": "activity", "cityId": "TLV", "name": "ANU Museum of the Jewish People", "short": "ANU Museum", "tags": ["museums", "history"], "lat": 32.1135, "lng": 34.804, "durationMin": 150, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "TLV-a-bauhaus", "kind": "activity", "cityId": "TLV", "name": "White City Bauhaus walk", "short": "Bauhaus walk", "tags": ["history"], "lat": 32.064, "lng": 34.7745, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "TLV-a-florentin-night", "kind": "activity", "cityId": "TLV", "name": "Florentin & Rothschild bars", "short": "Bar night", "tags": ["nightlife", "music"], "lat": 32.06, "lng": 34.77, "durationMin": 180, "priceCents": 3500, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "TLV-a-jerusalem", "kind": "activity", "cityId": "TLV", "name": "Jerusalem Old City day trip (train)", "short": "Jerusalem day trip", "tags": ["history"], "lat": 31.7767, "lng": 35.2345, "durationMin": 480, "priceCents": 3500, "startEarliest": "08:00", "startLatest": "09:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "TLV-h-neve-tzedek-flat", "toId": "TLV-a-jerusalem", "mode": "train", "minutes": 70, "note": "train from HaHagana + light rail to the Old City" },
+    { "fromId": "TLV-h-neve-tzedek-flat", "toId": "TLV-a-anu", "mode": "taxi", "minutes": 20 },
+    { "fromId": "TLV-h-florentin-hostel", "toId": "TLV-a-jerusalem", "mode": "train", "minutes": 65, "note": "train from HaHagana + light rail to the Old City" }
+  ],
+  "hilly": []
+}

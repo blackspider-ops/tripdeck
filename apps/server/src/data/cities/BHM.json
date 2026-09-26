@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "BHM", "name": "Birmingham", "country": "United States", "state": "AL", "region": "United States", "airport": {"code": "BHM", "lat": 33.5629, "lng": -86.7535}, "utcOffset": -6, "centerLat": 33.512, "centerLng": -86.8, "tileRadiusKm": 2, "publicFlags": ["hot, humid summers", "car helpful beyond downtown"] },
+  "hotels": [
+    { "_id": "BHM-h-southside-motel", "kind": "hotel", "cityId": "BHM", "name": "Southside Budget Motel (2 queens)", "neighborhood": "Southside / UAB", "lat": 33.504, "lng": -86.803, "stayType": "guesthouse", "nightlyCents": 9500, "sleeps": 4, "rating": 3.5 },
+    { "_id": "BHM-h-avondale-bungalow", "kind": "hotel", "cityId": "BHM", "name": "Avondale Bungalow", "neighborhood": "Avondale", "lat": 33.5245, "lng": -86.776, "stayType": "apartment", "nightlyCents": 16500, "sleeps": 4, "rating": 4.6 },
+    { "_id": "BHM-h-redmont", "kind": "hotel", "cityId": "BHM", "name": "The Redmont Hotel (2 queens)", "neighborhood": "Downtown", "lat": 33.5165, "lng": -86.8065, "stayType": "hotel", "nightlyCents": 21000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BHM-h-elyton", "kind": "hotel", "cityId": "BHM", "name": "Elyton Hotel (triple)", "neighborhood": "Downtown", "lat": 33.5145, "lng": -86.8095, "stayType": "hotel", "nightlyCents": 27000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "BHM-h-grand-bohemian", "kind": "hotel", "cityId": "BHM", "name": "Grand Bohemian Mountain Brook (2 queens)", "neighborhood": "Mountain Brook", "lat": 33.4871, "lng": -86.7735, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "BHM-a-civil-rights", "kind": "activity", "cityId": "BHM", "name": "Birmingham Civil Rights Institute & 16th St Baptist", "short": "Civil Rights Institute", "tags": ["history", "museums"], "lat": 33.516, "lng": -86.8145, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BHM-a-vulcan", "kind": "activity", "cityId": "BHM", "name": "Vulcan Park & Museum", "short": "Vulcan Park", "tags": ["history", "nature"], "lat": 33.4916, "lng": -86.796, "durationMin": 90, "priceCents": 800, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "BHM-a-avondale-brewing", "kind": "activity", "cityId": "BHM", "name": "Avondale Brewing beer garden night", "short": "Avondale Brewing", "tags": ["nightlife", "music"], "lat": 33.5237, "lng": -86.7745, "durationMin": 180, "priceCents": 2500, "startEarliest": "18:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "BHM-a-sloss", "kind": "activity", "cityId": "BHM", "name": "Sloss Furnaces", "short": "Sloss Furnaces", "tags": ["history"], "lat": 33.521, "lng": -86.791, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BHM-a-bma", "kind": "activity", "cityId": "BHM", "name": "Birmingham Museum of Art", "short": "Museum of Art", "tags": ["museums"], "lat": 33.5225, "lng": -86.81, "durationMin": 120, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BHM-a-saws", "kind": "activity", "cityId": "BHM", "name": "Saw's Soul Kitchen BBQ, Avondale", "short": "Saw's BBQ", "tags": ["food"], "lat": 33.5233, "lng": -86.7747, "durationMin": 60, "priceCents": 2000, "startEarliest": "11:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "BHM-a-oak-mountain", "kind": "activity", "cityId": "BHM", "name": "Oak Mountain State Park hike", "short": "Oak Mountain", "tags": ["nature"], "lat": 33.327, "lng": -86.755, "durationMin": 300, "priceCents": 500, "startEarliest": "08:00", "startLatest": "12:00", "role": "pick" },
+    { "_id": "BHM-a-railroad-park", "kind": "activity", "cityId": "BHM", "name": "Railroad Park stroll", "short": "Railroad Park", "tags": ["chill", "nature"], "lat": 33.5085, "lng": -86.8105, "durationMin": 60, "priceCents": 0, "startEarliest": "08:00", "startLatest": "18:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BHM-h-redmont", "toId": "BHM-a-oak-mountain", "mode": "taxi", "minutes": 30, "note": "I-65 south to Pelham" },
+    { "fromId": "BHM-h-redmont", "toId": "BHM-a-vulcan", "mode": "taxi", "minutes": 10, "note": "steep drive up Red Mountain" }
+  ],
+  "hilly": ["BHM-a-vulcan", "BHM-a-oak-mountain"]
+}

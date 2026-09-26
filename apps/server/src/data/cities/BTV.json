@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "BTV", "name": "Burlington", "country": "United States", "state": "VT", "region": "United States", "airport": { "code": "BTV", "lat": 44.4719, "lng": -73.1533 }, "utcOffset": -5, "centerLat": 44.476, "centerLng": -73.213, "tileRadiusKm": 1.5, "publicFlags": ["cold, snowy winters", "small city — few late-night options"] },
+  "hotels": [
+    { "_id": "BTV-h-shelburne-rd-motel", "kind": "hotel", "cityId": "BTV", "name": "Shelburne Road Motel (2 doubles)", "neighborhood": "South End", "lat": 44.45, "lng": -73.208, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 4, "rating": 3.8 },
+    { "_id": "BTV-h-old-north-end-flat", "kind": "hotel", "cityId": "BTV", "name": "Old North End Apartment", "neighborhood": "Old North End", "lat": 44.485, "lng": -73.214, "stayType": "apartment", "nightlyCents": 22000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BTV-h-willard-street", "kind": "hotel", "cityId": "BTV", "name": "Willard Street Inn", "neighborhood": "Hill Section", "lat": 44.47, "lng": -73.203, "stayType": "guesthouse", "nightlyCents": 24000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "BTV-h-courtyard-harbor", "kind": "hotel", "cityId": "BTV", "name": "Courtyard Burlington Harbor (2 queens)", "neighborhood": "Waterfront", "lat": 44.477, "lng": -73.2185, "stayType": "hotel", "nightlyCents": 28000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "BTV-h-hotel-vermont", "kind": "hotel", "cityId": "BTV", "name": "Hotel Vermont (2 queens)", "neighborhood": "Downtown", "lat": 44.479, "lng": -73.217, "stayType": "hotel", "nightlyCents": 36000, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "BTV-a-church-street", "kind": "activity", "cityId": "BTV", "name": "Church Street Marketplace", "short": "Church Street", "tags": ["food", "chill"], "lat": 44.4775, "lng": -73.2125, "durationMin": 120, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "BTV-a-bike-path", "kind": "activity", "cityId": "BTV", "name": "Waterfront & Island Line bike path", "short": "Bike path", "tags": ["nature", "chill"], "lat": 44.477, "lng": -73.221, "durationMin": 120, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BTV-a-nectars", "kind": "activity", "cityId": "BTV", "name": "Live music at Nectar's", "short": "Nectar's", "tags": ["music", "nightlife"], "lat": 44.4765, "lng": -73.212, "durationMin": 180, "priceCents": 1000, "startEarliest": "21:00", "startLatest": "22:30", "role": "group" },
+    { "_id": "BTV-a-echo", "kind": "activity", "cityId": "BTV", "name": "ECHO Leahy Center for Lake Champlain", "short": "ECHO center", "tags": ["museums", "nature"], "lat": 44.476, "lng": -73.221, "durationMin": 120, "priceCents": 2300, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BTV-a-fleming", "kind": "activity", "cityId": "BTV", "name": "Fleming Museum of Art", "short": "Fleming Museum", "tags": ["museums", "history"], "lat": 44.479, "lng": -73.199, "durationMin": 90, "priceCents": 500, "startEarliest": "12:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "BTV-a-zero-gravity", "kind": "activity", "cityId": "BTV", "name": "Zero Gravity beer hall, Pine St", "short": "Zero Gravity", "tags": ["nightlife", "food"], "lat": 44.462, "lng": -73.213, "durationMin": 120, "priceCents": 2500, "startEarliest": "14:00", "startLatest": "20:00", "role": "pick" },
+    { "_id": "BTV-a-ben-jerrys", "kind": "activity", "cityId": "BTV", "name": "Ben & Jerry's factory tour, Waterbury", "short": "Ben & Jerry's tour", "tags": ["food", "chill"], "lat": 44.353, "lng": -72.74, "durationMin": 90, "priceCents": 600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "BTV-a-red-rocks", "kind": "activity", "cityId": "BTV", "name": "Red Rocks Park trail", "short": "Red Rocks Park", "tags": ["nature"], "lat": 44.439, "lng": -73.223, "durationMin": 90, "priceCents": 0, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BTV-h-hotel-vermont", "toId": "BTV-a-ben-jerrys", "mode": "taxi", "minutes": 35, "note": "~40 km on I-89" },
+    { "fromId": "BTV-h-old-north-end-flat", "toId": "BTV-a-ben-jerrys", "mode": "taxi", "minutes": 35, "note": "~40 km on I-89" },
+    { "fromId": "BTV-h-hotel-vermont", "toId": "BTV-a-red-rocks", "mode": "taxi", "minutes": 10, "note": "~4.5 km south" }
+  ],
+  "hilly": ["BTV-h-willard-street", "BTV-a-fleming"]
+}

@@ -2,8 +2,9 @@
  * The helm's records, the bus contract, and the pure helpers the trips/* modules share (OPT-031).
  */
 import { createHash } from "node:crypto";
-import type { Brief, CityId, Dataset, Plan, Role, S2CPayload, ServerToClient, TripRoomEvent, TripStatus, Turn, Band, Origin } from "@all-ayes/shared";
+import type { Brief, CityId, Dataset, Destination, Plan, Role, S2CPayload, ServerToClient, TripRoomEvent, TripStatus, Turn, Band, Origin } from "@all-ayes/shared";
 import type { BookingRec, StoredStanding } from "../payments/orchestrator.js";
+import { datasetRev } from "../data/loader.js";
 import type { BookingDoc } from "../store/db.js";
 
 // ---------- records ----------
@@ -20,7 +21,21 @@ export interface MemberRec {
 }
 export interface TripRec {
   _id: string; joinCode: string; name: string; status: TripStatus; version: number;
-  organizerId: string; memberIds: string[]; removedMemberIds: string[]; candidateCityIds: CityId[];
+  organizerId: string; memberIds: string[]; removedMemberIds: string[];
+  /**
+   * The ports on the chart. Named ports: the organizer's 2–4. Regions / anywhere: empty until the table meets, then
+   * the top 4 of the pre-rank (fit/prerank.ts) for this crew.
+   */
+  candidateCityIds: CityId[];
+  /** The date windows on offer (1–3). Absent on voyages from older builds: W1 and W2 (`tripWindowIds`). */
+  candidateWindowIds?: string[];
+  /** How the course was set. Absent on voyages from older builds: the named ports in candidateCityIds. */
+  destination?: Destination;
+  /**
+   * The packs of generated ports on the chart (docs/11-world-cities.md, ~8 kB each), stored with the voyage so a
+   * restore on a fresh disk re-adds the ports without the network (persistence.ts adopts them before any plan).
+   */
+  worldPacks?: unknown[];
   /**
    * `turns` live in memory only; they are persisted one document each in the `turns` collection (TR5-012), keyed by
    * (tripId, round, seq). `round` counts table meetings, so a restore attaches only the current meeting's turns.
@@ -162,10 +177,19 @@ export function briefOut(rec: BriefRec | undefined): Brief | null {
   return brief;
 }
 
-let dsHashCache: { ds: Dataset; hash: string } | null = null;
+let dsHashCache: { ds: Dataset; rev: number; hash: string } | null = null;
+/** The voyage's date windows (older voyages offered W1 and W2). */
+export const LEGACY_WINDOW_IDS = ["W1", "W2"];
+export function tripWindowIds(t: TripRec): string[] {
+  return t.candidateWindowIds?.length ? t.candidateWindowIds : LEGACY_WINDOW_IDS;
+}
+
 /** A stable fingerprint of the loaded dataset (TR5-022). */
 export function datasetHash(ds: Dataset): string {
-  if (dsHashCache?.ds !== ds) dsHashCache = { ds, hash: createHash("sha256").update(JSON.stringify(ds)).digest("hex").slice(0, 16) };
+  // a runtime-added port (loader addCityPack) bumps the dataset's revision, and with it the hash
+  if (dsHashCache?.ds !== ds || dsHashCache.rev !== datasetRev(ds)) {
+    dsHashCache = { ds, rev: datasetRev(ds), hash: createHash("sha256").update(JSON.stringify(ds)).digest("hex").slice(0, 16) };
+  }
   return dsHashCache.hash;
 }
 

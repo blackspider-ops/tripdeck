@@ -1,4 +1,5 @@
-import type { Band, Dealbreaker, Tag } from "./types.js";
+import type { Band, Dealbreaker, Region, Tag } from "./types.js";
+import airportsJson from "./data/airports.json" with { type: "json" };
 
 export const MAX_CREW = 4;
 export const MAX_WATCHES = 3;
@@ -69,12 +70,52 @@ export const PALETTE = {
   room: "#221C17",
 } as const;
 
-export const ORIGINS = ["ATL", "ORD", "JFK"] as const;
-export const ORIGIN_COORDS: Record<(typeof ORIGINS)[number], { name: string; lat: number; lng: number }> = {
-  ATL: { name: "Atlanta", lat: 33.6407, lng: -84.4277 },
-  ORD: { name: "Chicago", lat: 41.9742, lng: -87.9073 },
-  JFK: { name: "New York", lat: 40.6413, lng: -73.7781 },
+/** A home airport a crew member can fly from (data/airports.json: US and Canada). */
+export interface Airport { code: string; name: string; city: string; country: string; lat: number; lng: number; utcOffset: number }
+/** Every home airport, ATL / ORD / JFK first (the original three, and the Expo crew's). */
+export const AIRPORTS: readonly Airport[] = airportsJson as Airport[];
+export const ORIGINS: readonly string[] = AIRPORTS.map((a) => a.code);
+/** code → { name (the city), lat, lng } for every home airport. */
+export const ORIGIN_COORDS: Readonly<Record<string, { name: string; lat: number; lng: number }>> =
+  Object.fromEntries(AIRPORTS.map((a) => [a.code, { name: a.city, lat: a.lat, lng: a.lng }]));
+/** Home airports matching what someone typed: the code, the city or the airport's name (case- and accent-blind). */
+export function searchAirports(q: string): Airport[] {
+  const fold = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const n = fold(q.trim());
+  if (!n) return [...AIRPORTS];
+  const code = AIRPORTS.filter((a) => fold(a.code) === n);
+  const rest = AIRPORTS.filter((a) => !code.includes(a) && (fold(a.code).startsWith(n) || fold(a.city).includes(n) || fold(a.name).includes(n)));
+  return [...code, ...rest];
+}
+
+/** The regions ports belong to, in the order the Create screen lists them. */
+export const REGIONS: readonly Region[] = [
+  "Europe", "Latin America", "Caribbean", "United States", "Canada", "Asia", "Oceania", "Africa", "Middle East",
+];
+/** US state codes → names (city files carry `state` for US ports; organizers can pick a state). */
+export const US_STATES: Readonly<Record<string, string>> = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California", CO: "Colorado", CT: "Connecticut",
+  DE: "Delaware", DC: "Washington, D.C.", FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho", IL: "Illinois",
+  IN: "Indiana", IA: "Iowa", KS: "Kansas", KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
+  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi", MO: "Missouri", MT: "Montana",
+  NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York",
+  NC: "North Carolina", ND: "North Dakota", OH: "Ohio", OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania",
+  RI: "Rhode Island", SC: "South Carolina", SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah",
+  VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
 };
+/** "CA" → "California" (an unknown code as given). */
+export const stateName = (code: string) => US_STATES[code] ?? code;
+
+/** An organizer names 2–4 ports (A4); "Surprise me" and the helm's default put 3 on the chart. */
+export const MIN_PORTS = 2;
+export const MAX_PORTS = 4;
+export const DEFAULT_PORTS = 3;
+/** A voyage offers 1–3 date windows (the Brief's date chips); the default is the next 2. */
+export const MIN_WINDOWS = 1;
+export const MAX_WINDOWS = 3;
+export const DEFAULT_WINDOWS = 2;
+/** "Places I'd love" / "Places I'd skip" on the Brief: up to this many each. */
+export const MAX_PLACES = 3;
 
 export function formatCents(cents: number): string {
   const sign = cents < 0 ? "-" : "";

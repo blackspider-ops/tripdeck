@@ -3,23 +3,45 @@
 export type TripStatus = "BRIEFING" | "AT_TABLE" | "DRY_RUN" | "SEALING" | "BOOKED" | "VOIDED";
 export type Role = "organizer" | "member" | "absent";
 export type Band = 1 | 2 | 3 | 4;
-export type Origin = "ATL" | "ORD" | "JFK";
-export type CityId = "LIS" | "MEX" | "YUL";
+/** A home airport's IATA code (ORIGINS in constants.ts lists the ones a crew can fly from). */
+export type Origin = string;
+/** A port's id (its three-letter code in the dataset: "LIS", "BCN", "NYC", …). */
+export type CityId = string;
+/** The regions a port belongs to (a city file's `region`). */
+export type Region =
+  | "Europe" | "Latin America" | "Caribbean" | "United States" | "Canada" | "Asia" | "Oceania" | "Africa" | "Middle East";
 export type Tag = "beach" | "food" | "nightlife" | "museums" | "nature" | "chill" | "history" | "music";
 export type Dealbreaker = "red_eye" | "hostel" | "early_start" | "long_walks" | "layovers_2plus";
 export type Surface = "phone" | "xr" | "gallery";
 
-export interface DateWindow { id: string; start: string; end: string; nights: number }
+export interface DateWindow {
+  id: string; start: string; end: string; nights: number;
+  /** "Memorial Day weekend", "Thanksgiving week" (absent on the original two windows). */
+  label?: string;
+}
 
 // ---------- dataset ----------
 export interface City {
   _id: CityId; name: string; centerLat: number; centerLng: number;
   tileRadiusKm: number; publicFlags: string[];
+  country?: string; region?: Region;
+  /** US ports: the state (two-letter code), so an organizer can pick "somewhere in California". */
+  state?: string;
+  /** The port's main airport (the flight model's destination). */
+  airport?: { code: string; lat: number; lng: number };
+  /** Hours from UTC (standard time), for local departure/arrival times. */
+  utcOffset?: number;
+  /** Ids of this port's hotels/activities on hills (doc 07 §7 hillFactor: walks there take 1.4×). */
+  hilly?: string[];
 }
 export interface FlightOption {
   _id: string; kind: "flight"; cityId: CityId; origin: Origin; dateWindowId: string;
   airline: string; departLocal: string; arriveLocal: string; returnLocal: string;
   stops: 0 | 1 | 2; redEye: boolean; priceCents: number;
+  /** Synthesized by the flight model (fit/flights.ts), not a curated listing. Prices are illustrative. */
+  modelled?: boolean;
+  /** The member lives within reach of the port: no flight, nothing to pay (priceCents 0, no share line). */
+  homePort?: boolean;
 }
 export interface HotelOption {
   _id: string; kind: "hotel"; cityId: CityId; name: string; neighborhood: string; lat: number; lng: number;
@@ -32,10 +54,32 @@ export interface ActivityOption {
 }
 export type Option = FlightOption | HotelOption | ActivityOption;
 export interface WalkOverride { fromId: string; toId: string; mode: TravelMode; minutes: number; note?: string }
-export type TravelMode = "walk" | "tram" | "taxi" | "train";
+export type TravelMode = "walk" | "tram" | "taxi" | "train" | "transit";
 export interface Dataset {
   presetId: string; name: string; cities: City[]; dateWindows: DateWindow[];
   flights: FlightOption[]; hotels: HotelOption[]; activities: ActivityOption[]; overrides: WalkOverride[];
+}
+
+// ---------- where the voyage may go ----------
+/**
+ * How the organizer set the course: named ports (2–4), one or more regions / US states, or anywhere. For regions and
+ * anywhere the helm pre-ranks every port in scope for this crew when the table starts and puts the top 4 on the chart.
+ */
+export interface Destination {
+  kind: "cities" | "regions" | "anywhere";
+  cityIds?: CityId[];
+  regions?: Region[];
+  /** US states (two-letter codes), for "somewhere in California". */
+  states?: string[];
+}
+/** What anyone in the voyage sees about its course (no crew facts). */
+export interface DestinationPublic extends Destination {
+  /** "Europe", "Europe or the Caribbean", "California", "anywhere", or the ports' names. */
+  label: string;
+  /** Every port in scope (for the Brief's love/skip chips): id, name, region. */
+  scope: { cityId: CityId; name: string; region?: Region; state?: string }[];
+  /** The ports have been chosen (always true for named ports; for the others once the table has met). */
+  portsChosen: boolean;
 }
 
 // ---------- people ----------
@@ -58,6 +102,12 @@ export interface BriefInput {
   dealbreakers: Dealbreaker[];
   note?: string;
   noteSource?: "typed" | "voice";
+  /**
+   * "Places I'd love" / "Places I'd skip": port ids ("BCN") or regions ("Europe") from the voyage's scope. Private like
+   * the rest of the terms: they steer which ports reach the chart and what the member's own mate argues for.
+   */
+  loves?: string[];
+  skips?: string[];
 }
 export interface Brief extends BriefInput { memberId: string; tripId: string; sealedAt: string }
 
@@ -189,7 +239,10 @@ export interface TripState {
   /** SEC-010: the organizer closed the crew; the join code no longer adds anyone (absent invites still work). */
   crewClosed?: boolean;
   candidateCities: { cityId: CityId; name: string; lat: number; lng: number }[];
+  /** The date windows this voyage offers (the organizer's 1–3; the Brief's date chips). */
   dateWindows: DateWindow[];
+  /** How the course was set (named ports, regions, anywhere). Absent on voyages from older builds (named ports). */
+  destination?: DestinationPublic;
   negotiation: { watch: number; running: boolean };
   /**
    * The Two Charts by id (DRY_RUN and later). The plan bodies come once, in table:decided (live and on replay,
@@ -207,7 +260,7 @@ export interface TripState {
 }
 
 /** R2-WP-14 (O2-040): the parts of a voyage's snapshot that never change once it exists. */
-export const TRIP_STATIC_FIELDS = ["candidateCities", "dateWindows"] as const;
+export const TRIP_STATIC_FIELDS = ["candidateCities", "dateWindows", "destination"] as const;
 export type TripStaticField = (typeof TRIP_STATIC_FIELDS)[number];
 /**
  * R2-WP-14 (O2-040): `trip:state` as sent. The static fields (the ports and date windows) come with a (re)joining

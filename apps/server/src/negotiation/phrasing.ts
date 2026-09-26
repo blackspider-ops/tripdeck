@@ -57,9 +57,22 @@ const isGroup = (ds: Dataset, short: string) => groupShorts(ds).has(short);
 
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
 const COMMON_FIRST = new Set(["Food", "Street", "Tram", "Fado", "Mezcal", "Bagel", "Fine", "Anthropology", "Lucha", "Tile", "Old", "Jazz"]);
-/** "Food tour" → "the food tour", "Cascais beach day" → "the Cascais beach day", "Belém" → "Belém". */
+/** A Title Case place name that still takes "the" ("the Van Gogh Museum", "the Botanical Gardens"). */
+const THE_NOUNS = new Set([
+  "Museum", "House", "Gardens", "Garden", "Tower", "Theatre", "Theater", "Centre", "Center", "Capitol", "Aquarium", "Market",
+  "Memorial", "Lighthouse", "Arboretum", "Cathedral", "Palace", "Bridge", "Library", "Zoo", "Club", "Brewhouse", "Alliance",
+  "District", "Opera", "Hall", "Pier", "Observatory", "Gallery", "Basilica", "Mosque", "Bazaar", "Souk", "Quarter", "Coast",
+]);
+const isTitleCase = (words: string[]) => words.filter((w) => /\p{L}/u.test(w[0] ?? "")).every((w) => w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase());
+/**
+ * "Food tour" → "the food tour", "Cascais beach day" → "the Cascais beach day", "Belém" → "Belém"; a proper name
+ * from any port reads as itself ("Sagrada Família", "Table Mountain") unless it ends in a noun that takes "the"
+ * ("the Van Gogh Museum").
+ */
 function np(short: string): string {
   if (!short.includes(" ")) return short;
+  const words = short.split(" ");
+  if (isTitleCase(words) && !THE_NOUNS.has(words.at(-1)!)) return short;
   if (/night out$/i.test(short)) return `a ${short}`;
   const [first, ...rest] = short.split(" ");
   return `the ${COMMON_FIRST.has(first) ? first.toLowerCase() : first} ${rest.join(" ")}`;
@@ -67,8 +80,19 @@ function np(short: string): string {
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const nps = (xs: string[]) => list(xs.map(np));
 
-/** Captain OPEN. `dates` is the window everyone can do, or null when there is none (TR4-005). */
-export function openLine(dates: string | null, cities: string[]): LineOut {
+/**
+ * Captain OPEN. `dates` is the window everyone can do, or null when there is none (TR4-005). `scope`: a region /
+ * anywhere voyage says what was asked for and which ports the pre-rank put on the chart.
+ */
+export function openLine(dates: string | null, cities: string[], scope?: string): LineOut {
+  if (scope) {
+    const where = scope === "anywhere" ? "We could go anywhere." : `We're looking at ${scope}.`;
+    const when = dates ? `${dates} works for everyone. ` : "No dates suit everyone; we'll weigh the closest. ";
+    return {
+      line: `${when}${where} ${list(cities)} ${cities.length === 1 ? "is" : "are"} on the chart. Let's hear it.`,
+      ribbon: clampRibbon(`${scope === "anywhere" ? "Anywhere" : scope} · ${NUM[cities.length]?.toLowerCase() ?? cities.length} ports`),
+    };
+  }
   if (!dates) {
     return {
       line: `No dates suit everyone; we'll weigh the closest. ${NUM[cities.length] ?? cities.length} ports: ${list(cities)}. Let's hear it.`,

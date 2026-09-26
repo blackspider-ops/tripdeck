@@ -9,6 +9,7 @@ import { restoreOrRetry } from "./store/restoreRetry.js";
 import { pruneAudioCache } from "./voice/voice.js";
 import { mountWeb, securityHeaders } from "./web.js";
 import { LIMITS } from "./util/limits.js";
+import { restoreWorldPacks } from "./world/packs.js";
 
 // SEC-013: production fails closed on a guessable DEV_KEY or a missing PUBLIC_BASE_URL
 const problems = productionProblems();
@@ -18,6 +19,8 @@ if (problems.length) {
 }
 
 const helm = new TripService();
+// docs/11: generated ports stored on this disk come back before any voyage is restored (no network)
+await restoreWorldPacks().then((n) => { if (n) console.log(`[helm] ${n} generated port(s) restored`); }, (e) => console.warn("[helm] generated ports not restored", e));
 await connectDb();
 // L5-002: one writer. A new instance waits for the previous helm's lease (released on its shutdown, or expired)
 // before its restore voids "abandoned" seals and resets "interrupted" tables that another process may still own.

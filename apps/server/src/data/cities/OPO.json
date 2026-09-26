@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "OPO", "name": "Porto", "country": "Portugal", "region": "Europe", "airport": {"code": "OPO", "lat": 41.2481, "lng": -8.6814}, "utcOffset": 0, "centerLat": 41.145, "centerLng": -8.615, "tileRadiusKm": 1.8, "publicFlags": ["steep hills around Ribeira", "rainy in winter"] },
+  "hotels": [
+    { "_id": "OPO-h-galerias-hostel", "kind": "hotel", "cityId": "OPO", "name": "Galerias Hostel (3 beds)", "neighborhood": "Baixa", "lat": 41.1466, "lng": -8.6152, "stayType": "hostel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "OPO-h-foz-guest", "kind": "hotel", "cityId": "OPO", "name": "Foz Guesthouse", "neighborhood": "Foz do Douro", "lat": 41.1515, "lng": -8.6725, "stayType": "guesthouse", "nightlyCents": 14000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "OPO-h-ribeira-flat", "kind": "hotel", "cityId": "OPO", "name": "Ribeira Riverside Apartment", "neighborhood": "Ribeira", "lat": 41.1409, "lng": -8.6125, "stayType": "apartment", "nightlyCents": 17500, "sleeps": 4, "rating": 4.6 },
+    { "_id": "OPO-h-aliados-triple", "kind": "hotel", "cityId": "OPO", "name": "Aliados Hotel (triple)", "neighborhood": "Aliados", "lat": 41.1478, "lng": -8.6112, "stayType": "hotel", "nightlyCents": 19000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "OPO-h-boavista-triple", "kind": "hotel", "cityId": "OPO", "name": "Boavista Boutique (triple)", "neighborhood": "Boavista", "lat": 41.1585, "lng": -8.6295, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "OPO-a-port-cellars", "kind": "activity", "cityId": "OPO", "name": "Port wine cellars, Vila Nova de Gaia", "short": "Port cellars", "tags": ["food", "history"], "lat": 41.1375, "lng": -8.6125, "durationMin": 120, "priceCents": 3000, "startEarliest": "11:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "OPO-a-lello-clerigos", "kind": "activity", "cityId": "OPO", "name": "Livraria Lello & Clérigos Tower", "short": "Lello & Clérigos", "tags": ["history", "museums"], "lat": 41.1466, "lng": -8.6149, "durationMin": 120, "priceCents": 2500, "startEarliest": "09:30", "startLatest": "16:30", "role": "group" },
+    { "_id": "OPO-a-six-bridges", "kind": "activity", "cityId": "OPO", "name": "Douro six-bridges cruise", "short": "Six-bridges cruise", "tags": ["chill"], "lat": 41.1405, "lng": -8.6135, "durationMin": 60, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "OPO-a-serralves", "kind": "activity", "cityId": "OPO", "name": "Serralves museum & park", "short": "Serralves", "tags": ["museums", "nature"], "lat": 41.1597, "lng": -8.6598, "durationMin": 150, "priceCents": 2600, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "OPO-a-foz-beach", "kind": "activity", "cityId": "OPO", "name": "Foz beaches & sunset walk", "short": "Foz beach walk", "tags": ["beach", "chill"], "lat": 41.153, "lng": -8.679, "durationMin": 180, "priceCents": 0, "startEarliest": "14:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "OPO-a-food-tour", "kind": "activity", "cityId": "OPO", "name": "Bolhão market & francesinha tour", "short": "Food tour", "tags": ["food"], "lat": 41.1496, "lng": -8.6057, "durationMin": 180, "priceCents": 7000, "startEarliest": "10:30", "startLatest": "13:00", "role": "pick" },
+    { "_id": "OPO-a-galerias-night", "kind": "activity", "cityId": "OPO", "name": "Galerias de Paris bar night", "short": "Galerias bar night", "tags": ["nightlife"], "lat": 41.1466, "lng": -8.6148, "durationMin": 180, "priceCents": 2500, "startEarliest": "22:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "OPO-a-guimaraes", "kind": "activity", "cityId": "OPO", "name": "Guimarães day trip (train)", "short": "Guimarães", "tags": ["history"], "lat": 41.4425, "lng": -8.2918, "durationMin": 420, "priceCents": 4000, "startEarliest": "08:30", "startLatest": "10:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "OPO-h-ribeira-flat", "toId": "OPO-a-guimaraes", "mode": "train", "minutes": 80, "note": "walk to São Bento + regional train" },
+    { "fromId": "OPO-h-ribeira-flat", "toId": "OPO-a-port-cellars", "mode": "walk", "minutes": 12, "note": "across the lower deck of Dom Luís I bridge" }
+  ],
+  "hilly": ["OPO-h-ribeira-flat", "OPO-a-port-cellars"]
+}

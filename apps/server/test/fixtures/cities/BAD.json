@@ -1,0 +1,5 @@
+{
+  "city": { "_id": "BAD", "name": "Nowhere", "country": "Atlantis", "region": "Under the Sea", "airport": { "code": "BAD", "lat": 0, "lng": 0 }, "utcOffset": 0, "centerLat": 0, "centerLng": 0, "tileRadiusKm": 1, "publicFlags": [] },
+  "hotels": [],
+  "activities": []
+}

@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "OKC", "name": "Oklahoma City", "country": "United States", "state": "OK", "region": "United States", "airport": {"code": "OKC", "lat": 35.3931, "lng": -97.6007}, "utcOffset": -6, "centerLat": 35.47, "centerLng": -97.515, "tileRadiusKm": 2.5, "publicFlags": ["spring tornado season", "car-centric city"] },
+  "hotels": [
+    { "_id": "OKC-h-plaza-motel", "kind": "hotel", "cityId": "OKC", "name": "Plaza District Budget Motel (2 queens)", "neighborhood": "Plaza District", "lat": 35.488, "lng": -97.542, "stayType": "guesthouse", "nightlyCents": 8500, "sleeps": 4, "rating": 3.5 },
+    { "_id": "OKC-h-bricktown-loft", "kind": "hotel", "cityId": "OKC", "name": "Bricktown Loft", "neighborhood": "Bricktown", "lat": 35.466, "lng": -97.508, "stayType": "apartment", "nightlyCents": 18000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "OKC-h-skirvin", "kind": "hotel", "cityId": "OKC", "name": "Skirvin Hilton (2 queens)", "neighborhood": "Downtown", "lat": 35.4692, "lng": -97.5125, "stayType": "hotel", "nightlyCents": 22000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "OKC-h-ambassador", "kind": "hotel", "cityId": "OKC", "name": "Ambassador Hotel (triple)", "neighborhood": "Midtown", "lat": 35.48, "lng": -97.5195, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "OKC-h-omni", "kind": "hotel", "cityId": "OKC", "name": "Omni Oklahoma City (2 queens)", "neighborhood": "Scissortail Park", "lat": 35.46, "lng": -97.5165, "stayType": "hotel", "nightlyCents": 29000, "sleeps": 4, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "OKC-a-memorial", "kind": "activity", "cityId": "OKC", "name": "Oklahoma City National Memorial & Museum", "short": "OKC National Memorial", "tags": ["history", "museums"], "lat": 35.473, "lng": -97.517, "durationMin": 150, "priceCents": 1800, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "OKC-a-water-taxi", "kind": "activity", "cityId": "OKC", "name": "Bricktown Water Taxi", "short": "Bricktown Water Taxi", "tags": ["chill"], "lat": 35.4655, "lng": -97.5095, "durationMin": 60, "priceCents": 1500, "startEarliest": "11:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "OKC-a-cattlemens", "kind": "activity", "cityId": "OKC", "name": "Cattlemen's Steakhouse, Stockyards City", "short": "Cattlemen's steaks", "tags": ["food", "history"], "lat": 35.4495, "lng": -97.554, "durationMin": 90, "priceCents": 4500, "startEarliest": "11:00", "startLatest": "20:30", "role": "group" },
+    { "_id": "OKC-a-cowboy-museum", "kind": "activity", "cityId": "OKC", "name": "National Cowboy & Western Heritage Museum", "short": "Cowboy Museum", "tags": ["museums", "history"], "lat": 35.536, "lng": -97.484, "durationMin": 150, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "OKC-a-myriad-gardens", "kind": "activity", "cityId": "OKC", "name": "Myriad Botanical Gardens & Crystal Bridge", "short": "Myriad Gardens", "tags": ["nature", "chill"], "lat": 35.466, "lng": -97.5185, "durationMin": 90, "priceCents": 1000, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "OKC-a-okcmoa", "kind": "activity", "cityId": "OKC", "name": "Oklahoma City Museum of Art", "short": "Museum of Art", "tags": ["museums"], "lat": 35.4695, "lng": -97.521, "durationMin": 90, "priceCents": 1800, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "OKC-a-tower-theatre", "kind": "activity", "cityId": "OKC", "name": "Show at Tower Theatre, Uptown 23rd", "short": "Tower Theatre show", "tags": ["music", "nightlife"], "lat": 35.493, "lng": -97.519, "durationMin": 150, "priceCents": 3000, "startEarliest": "19:30", "startLatest": "21:00", "role": "pick" },
+    { "_id": "OKC-a-riversport", "kind": "activity", "cityId": "OKC", "name": "Riversport OKC rafting & zip lines", "short": "Riversport OKC", "tags": ["nature"], "lat": 35.455, "lng": -97.5, "durationMin": 180, "priceCents": 7000, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "OKC-h-skirvin", "toId": "OKC-a-cowboy-museum", "mode": "taxi", "minutes": 15, "note": "I-235 north" },
+    { "fromId": "OKC-h-skirvin", "toId": "OKC-a-cattlemens", "mode": "taxi", "minutes": 10 }
+  ],
+  "hilly": []
+}

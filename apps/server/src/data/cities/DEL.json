@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "DEL", "name": "Delhi", "country": "India", "region": "Asia", "airport": { "code": "DEL", "lat": 28.5562, "lng": 77.1 }, "utcOffset": 5.5, "centerLat": 28.615, "centerLng": 77.225, "tileRadiusKm": 3.0, "publicFlags": ["long flight from the US (15 h nonstop)", "heavy smog Nov–Jan, extreme heat Apr–Jun"] },
+  "hotels": [
+    { "_id": "DEL-h-paharganj-hostel", "kind": "hotel", "cityId": "DEL", "name": "Paharganj Hostel (3 beds)", "neighborhood": "Paharganj", "lat": 28.642, "lng": 77.213, "stayType": "hostel", "nightlyCents": 3000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "DEL-h-old-delhi-haveli", "kind": "hotel", "cityId": "DEL", "name": "Old Delhi Haveli", "neighborhood": "Chandni Chowk", "lat": 28.656, "lng": 77.232, "stayType": "guesthouse", "nightlyCents": 8000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "DEL-h-lodhi-flat", "kind": "hotel", "cityId": "DEL", "name": "Lodhi Colony Apartment", "neighborhood": "Lodhi Colony", "lat": 28.588, "lng": 77.225, "stayType": "apartment", "nightlyCents": 9000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "DEL-h-cp-triple", "kind": "hotel", "cityId": "DEL", "name": "Connaught Place Hotel (triple)", "neighborhood": "Connaught Place", "lat": 28.632, "lng": 77.219, "stayType": "hotel", "nightlyCents": 12000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "DEL-h-lutyens-triple", "kind": "hotel", "cityId": "DEL", "name": "Lutyens Delhi Hotel (triple)", "neighborhood": "Mansingh Road", "lat": 28.605, "lng": 77.225, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.8 }
+  ],
+  "activities": [
+    { "_id": "DEL-a-old-delhi-food", "kind": "activity", "cityId": "DEL", "name": "Old Delhi food walk (Chandni Chowk)", "short": "Old Delhi food walk", "tags": ["food", "history"], "lat": 28.6562, "lng": 77.2303, "durationMin": 180, "priceCents": 3000, "startEarliest": "09:30", "startLatest": "17:00", "role": "group" },
+    { "_id": "DEL-a-humayun", "kind": "activity", "cityId": "DEL", "name": "Humayun's Tomb", "short": "Humayun's Tomb", "tags": ["history"], "lat": 28.5933, "lng": 77.2507, "durationMin": 120, "priceCents": 700, "startEarliest": "07:00", "startLatest": "16:30", "role": "group" },
+    { "_id": "DEL-a-qawwali", "kind": "activity", "cityId": "DEL", "name": "Qawwali at Nizamuddin Dargah", "short": "Nizamuddin qawwali", "tags": ["music"], "lat": 28.5913, "lng": 77.2419, "durationMin": 90, "priceCents": 0, "startEarliest": "18:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "DEL-a-red-fort", "kind": "activity", "cityId": "DEL", "name": "Red Fort", "short": "Red Fort", "tags": ["history", "museums"], "lat": 28.6562, "lng": 77.241, "durationMin": 120, "priceCents": 800, "startEarliest": "09:30", "startLatest": "16:00", "role": "pick" },
+    { "_id": "DEL-a-natl-museum", "kind": "activity", "cityId": "DEL", "name": "National Museum", "short": "National Museum", "tags": ["museums"], "lat": 28.6118, "lng": 77.2195, "durationMin": 150, "priceCents": 800, "startEarliest": "10:00", "startLatest": "15:30", "role": "pick" },
+    { "_id": "DEL-a-lodhi-garden", "kind": "activity", "cityId": "DEL", "name": "Lodhi Garden stroll", "short": "Lodhi Garden", "tags": ["nature", "chill"], "lat": 28.5931, "lng": 77.2197, "durationMin": 90, "priceCents": 0, "startEarliest": "06:00", "startLatest": "17:00", "earlyStart": true, "role": "pick" },
+    { "_id": "DEL-a-hauz-khas", "kind": "activity", "cityId": "DEL", "name": "Hauz Khas Village bars", "short": "Hauz Khas bars", "tags": ["nightlife"], "lat": 28.554, "lng": 77.194, "durationMin": 180, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "DEL-a-qutub", "kind": "activity", "cityId": "DEL", "name": "Qutub Minar", "short": "Qutub Minar", "tags": ["history"], "lat": 28.5245, "lng": 77.1855, "durationMin": 90, "priceCents": 700, "startEarliest": "07:00", "startLatest": "16:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DEL-h-cp-triple", "toId": "DEL-a-qutub", "mode": "taxi", "minutes": 40, "note": "south Delhi traffic" },
+    { "fromId": "DEL-h-cp-triple", "toId": "DEL-a-hauz-khas", "mode": "taxi", "minutes": 35, "note": "south Delhi traffic" },
+    { "fromId": "DEL-h-paharganj-hostel", "toId": "DEL-a-humayun", "mode": "taxi", "minutes": 30, "note": "via Mathura Road" },
+    { "fromId": "DEL-h-lodhi-flat", "toId": "DEL-a-old-delhi-food", "mode": "transit", "minutes": 35, "note": "Violet + Yellow line metro to Chandni Chowk" }
+  ],
+  "hilly": []
+}

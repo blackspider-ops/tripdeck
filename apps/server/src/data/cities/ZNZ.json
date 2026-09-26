@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "ZNZ", "name": "Zanzibar (Stone Town)", "country": "Tanzania", "region": "Africa", "airport": { "code": "ZNZ", "lat": -6.222, "lng": 39.2249 }, "utcOffset": 3, "centerLat": -6.162, "centerLng": 39.19, "tileRadiusKm": 1.5, "publicFlags": ["modest dress in Stone Town", "hot and humid; long rains begin in March"] },
+  "hotels": [
+    { "_id": "ZNZ-h-stone-town-hostel", "kind": "hotel", "cityId": "ZNZ", "name": "Stone Town Hostel (3 beds)", "neighborhood": "Stone Town", "lat": -6.161, "lng": 39.1905, "stayType": "hostel", "nightlyCents": 4000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "ZNZ-h-kiponda-guest", "kind": "hotel", "cityId": "ZNZ", "name": "Kiponda Guesthouse", "neighborhood": "Kiponda", "lat": -6.1605, "lng": 39.192, "stayType": "guesthouse", "nightlyCents": 6500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "ZNZ-h-shangani-flat", "kind": "hotel", "cityId": "ZNZ", "name": "Shangani Apartment", "neighborhood": "Shangani", "lat": -6.16, "lng": 39.187, "stayType": "apartment", "nightlyCents": 9500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "ZNZ-h-forodhani-triple", "kind": "hotel", "cityId": "ZNZ", "name": "Forodhani Boutique Hotel (triple)", "neighborhood": "Forodhani", "lat": -6.159, "lng": 39.188, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "ZNZ-h-mizingani-triple", "kind": "hotel", "cityId": "ZNZ", "name": "Mizingani Seafront Hotel (triple)", "neighborhood": "Mizingani Road", "lat": -6.157, "lng": 39.1905, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "ZNZ-a-heritage-walk", "kind": "activity", "cityId": "ZNZ", "name": "Stone Town heritage walk & Old Fort", "short": "Stone Town walk", "tags": ["history"], "lat": -6.1617, "lng": 39.1885, "durationMin": 150, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "ZNZ-a-prison-island", "kind": "activity", "cityId": "ZNZ", "name": "Prison Island boat & giant tortoises", "short": "Prison Island", "tags": ["beach", "nature"], "lat": -6.1135, "lng": 39.1675, "durationMin": 240, "priceCents": 3500, "startEarliest": "09:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "ZNZ-a-forodhani-market", "kind": "activity", "cityId": "ZNZ", "name": "Forodhani Gardens night food market", "short": "Forodhani night market", "tags": ["food"], "lat": -6.16, "lng": 39.188, "durationMin": 90, "priceCents": 1000, "startEarliest": "18:30", "startLatest": "21:00", "role": "group" },
+    { "_id": "ZNZ-a-spice-tour", "kind": "activity", "cityId": "ZNZ", "name": "Spice farm tour", "short": "Spice farm tour", "tags": ["nature", "food"], "lat": -6.0975, "lng": 39.255, "durationMin": 210, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "ZNZ-a-jozani", "kind": "activity", "cityId": "ZNZ", "name": "Jozani Forest red colobus walk", "short": "Jozani Forest", "tags": ["nature"], "lat": -6.2713, "lng": 39.4108, "durationMin": 180, "priceCents": 1200, "startEarliest": "08:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "ZNZ-a-nakupenda", "kind": "activity", "cityId": "ZNZ", "name": "Nakupenda sandbank trip", "short": "Nakupenda sandbank", "tags": ["beach", "chill"], "lat": -6.137, "lng": 39.155, "durationMin": 300, "priceCents": 4000, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "ZNZ-a-slave-market", "kind": "activity", "cityId": "ZNZ", "name": "Old Slave Market memorial & Christ Church", "short": "Slave Market memorial", "tags": ["history", "museums"], "lat": -6.1655, "lng": 39.1925, "durationMin": 90, "priceCents": 700, "startEarliest": "09:00", "startLatest": "17:00", "role": "pick" },
+    { "_id": "ZNZ-a-sunset-terrace", "kind": "activity", "cityId": "ZNZ", "name": "Sunset drinks on a seafront terrace", "short": "Sunset terrace", "tags": ["chill", "nightlife"], "lat": -6.164, "lng": 39.186, "durationMin": 120, "priceCents": 1500, "startEarliest": "17:30", "startLatest": "18:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "ZNZ-h-shangani-flat", "toId": "ZNZ-a-spice-tour", "mode": "taxi", "minutes": 30 },
+    { "fromId": "ZNZ-h-shangani-flat", "toId": "ZNZ-a-jozani", "mode": "taxi", "minutes": 60, "note": "about 35 km east" },
+    { "fromId": "ZNZ-h-shangani-flat", "toId": "ZNZ-a-prison-island", "mode": "transit", "minutes": 30, "note": "walk to the beach + 20 min boat" },
+    { "fromId": "ZNZ-h-shangani-flat", "toId": "ZNZ-a-nakupenda", "mode": "transit", "minutes": 40, "note": "walk to the beach + 30 min boat" }
+  ],
+  "hilly": []
+}

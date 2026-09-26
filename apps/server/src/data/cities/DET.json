@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "DET", "name": "Detroit", "country": "United States", "state": "MI", "region": "United States", "airport": { "code": "DTW", "lat": 42.2124, "lng": -83.3534 }, "utcOffset": -5, "centerLat": 42.34, "centerLng": -83.055, "tileRadiusKm": 2.5, "publicFlags": ["cold winters", "sights spread out; QLine only covers Woodward"] },
+  "hotels": [
+    { "_id": "DET-h-corktown-hostel", "kind": "hotel", "cityId": "DET", "name": "Hostel Detroit (private room)", "neighborhood": "Corktown", "lat": 42.3314, "lng": -83.0776, "stayType": "hostel", "nightlyCents": 10000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "DET-h-corktown-flat", "kind": "hotel", "cityId": "DET", "name": "Corktown Victorian Apartment", "neighborhood": "Corktown", "lat": 42.33, "lng": -83.068, "stayType": "apartment", "nightlyCents": 18000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "DET-h-inn-ferry-street", "kind": "hotel", "cityId": "DET", "name": "The Inn on Ferry Street", "neighborhood": "Midtown", "lat": 42.3595, "lng": -83.0633, "stayType": "guesthouse", "nightlyCents": 21000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "DET-h-foundation", "kind": "hotel", "cityId": "DET", "name": "Detroit Foundation Hotel (2 queens)", "neighborhood": "Downtown", "lat": 42.329, "lng": -83.048, "stayType": "hotel", "nightlyCents": 28500, "sleeps": 4, "rating": 4.6 },
+    { "_id": "DET-h-shinola", "kind": "hotel", "cityId": "DET", "name": "Shinola Hotel (2 queens)", "neighborhood": "Downtown", "lat": 42.3359, "lng": -83.0487, "stayType": "hotel", "nightlyCents": 34500, "sleeps": 4, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "DET-a-dia", "kind": "activity", "cityId": "DET", "name": "Detroit Institute of Arts", "short": "DIA", "tags": ["museums"], "lat": 42.3594, "lng": -83.0645, "durationMin": 150, "priceCents": 2200, "startEarliest": "10:00", "startLatest": "14:30", "role": "group" },
+    { "_id": "DET-a-motown", "kind": "activity", "cityId": "DET", "name": "Motown Museum (Hitsville U.S.A.)", "short": "Motown Museum", "tags": ["music", "history"], "lat": 42.3642, "lng": -83.0885, "durationMin": 90, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "16:00", "role": "group" },
+    { "_id": "DET-a-cliff-bells", "kind": "activity", "cityId": "DET", "name": "Jazz at Cliff Bell's", "short": "Cliff Bell's jazz", "tags": ["music", "nightlife"], "lat": 42.3363, "lng": -83.0527, "durationMin": 150, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "21:30", "role": "group" },
+    { "_id": "DET-a-eastern-market", "kind": "activity", "cityId": "DET", "name": "Eastern Market Saturday", "short": "Eastern Market", "tags": ["food"], "lat": 42.3478, "lng": -83.0417, "durationMin": 120, "priceCents": 2000, "startEarliest": "08:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "DET-a-belle-isle", "kind": "activity", "cityId": "DET", "name": "Belle Isle Park & Conservatory", "short": "Belle Isle", "tags": ["nature", "chill"], "lat": 42.3403, "lng": -82.9868, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "DET-a-henry-ford", "kind": "activity", "cityId": "DET", "name": "The Henry Ford museum (Dearborn)", "short": "The Henry Ford", "tags": ["museums", "history"], "lat": 42.3037, "lng": -83.2334, "durationMin": 240, "priceCents": 3600, "startEarliest": "09:30", "startLatest": "13:00", "role": "pick" },
+    { "_id": "DET-a-corktown-bars", "kind": "activity", "cityId": "DET", "name": "Corktown bar hop", "short": "Corktown bars", "tags": ["nightlife"], "lat": 42.3316, "lng": -83.071, "durationMin": 180, "priceCents": 3000, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" },
+    { "_id": "DET-a-coney", "kind": "activity", "cityId": "DET", "name": "Coney dogs at Lafayette Coney Island", "short": "Lafayette Coney", "tags": ["food"], "lat": 42.3317, "lng": -83.0478, "durationMin": 45, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "22:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "DET-h-foundation", "toId": "DET-a-henry-ford", "mode": "taxi", "minutes": 20, "note": "I-94 west to Dearborn" },
+    { "fromId": "DET-h-foundation", "toId": "DET-a-belle-isle", "mode": "taxi", "minutes": 15 },
+    { "fromId": "DET-h-foundation", "toId": "DET-a-motown", "mode": "taxi", "minutes": 12 },
+    { "fromId": "DET-h-corktown-flat", "toId": "DET-a-henry-ford", "mode": "taxi", "minutes": 18, "note": "I-94 west to Dearborn" }
+  ],
+  "hilly": []
+}

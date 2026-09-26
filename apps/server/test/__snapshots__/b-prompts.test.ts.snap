@@ -196,7 +196,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Maya","role":"member"},"wishes":{"must_haves":["beach","chill"],"dealbreakers":["hostel"],"private_note":"I get tired walking hills"},"memory":[],"watch_of_3":1,"decided_act":"PROPOSE","reason":{"kind":"propose","seconding":false},"plan":{"city":"Lisbon","group_total":"$2,650 to $3,100","stay":"Casa Alfama","what_your_friend_would_do":["Cascais beach day"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Maya","role":"member"},"wishes":{"must_haves":["beach","chill"],"dealbreakers":["hostel"],"private_note":"I get tired walking hills"},"memory":[],"watch_of_3":1,"decided_act":"PROPOSE","reason":{"kind":"propose","seconding":false},"plan":{"city":"Lisbon","group_total":"$2,525 to $4,075","stay":"Casa Alfama","what_your_friend_would_do":["Cascais beach day"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -216,7 +216,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Dev","role":"absent"},"wishes":{"must_haves":["food","museums"],"dealbreakers":["layovers_2plus"],"private_note":"Can't join live, trust my mate"},"memory":[],"watch_of_3":1,"decided_act":"PROPOSE","reason":{"kind":"propose","seconding":false},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Anthropology museum"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Dev","role":"absent"},"wishes":{"must_haves":["food","museums"],"dealbreakers":["layovers_2plus"],"private_note":"Can't join live, trust my mate"},"memory":[],"watch_of_3":1,"decided_act":"PROPOSE","reason":{"kind":"propose","seconding":false},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Anthropology museum"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -236,7 +236,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Rae","role":"organizer"},"wishes":{"must_haves":["food","nightlife"],"dealbreakers":["early_start"],"private_note":"Want at least one big night out"},"memory":["voyage: Lisbon · conceded the city choice"],"watch_of_3":1,"decided_act":"PROPOSE","reason":{"kind":"propose","seconding":true},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Mezcal crawl"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Rae","role":"organizer"},"wishes":{"must_haves":["food","nightlife"],"dealbreakers":["early_start"],"private_note":"Want at least one big night out"},"memory":["voyage: Lisbon · conceded the city choice"],"watch_of_3":1,"decided_act":"PROPOSE","reason":{"kind":"propose","seconding":true},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Mezcal crawl"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -256,7 +256,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Maya","role":"member"},"wishes":{"must_haves":["beach","chill"],"dealbreakers":["hostel"],"private_note":"I get tired walking hills"},"memory":[],"watch_of_3":2,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Lisbon","group_total":"$2,650 to $3,100","stay":"Casa Alfama","what_your_friend_would_do":["Cascais beach day"],"fits_your_friend":true,"your_friends_missing_wishes":[]},"hail_from_your_friend":{"wants":["beach"],"cheaper":true}}",
+{"you_represent":{"name":"Maya","role":"member"},"wishes":{"must_haves":["beach","chill"],"dealbreakers":["hostel"],"private_note":"I get tired walking hills"},"memory":[],"watch_of_3":2,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Lisbon","group_total":"$2,525 to $4,075","stay":"Casa Alfama","what_your_friend_would_do":["Cascais beach day"],"fits_your_friend":true,"your_friends_missing_wishes":[]},"hail_from_your_friend":{"wants":["beach"],"cheaper":true}}",
   },
   {
     "allowChoice": false,
@@ -276,7 +276,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Dev","role":"absent"},"wishes":{"must_haves":["food","museums"],"dealbreakers":["layovers_2plus"],"private_note":"Can't join live, trust my mate"},"memory":[],"watch_of_3":2,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Anthropology museum"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Dev","role":"absent"},"wishes":{"must_haves":["food","museums"],"dealbreakers":["layovers_2plus"],"private_note":"Can't join live, trust my mate"},"memory":[],"watch_of_3":2,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Anthropology museum"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -296,7 +296,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Rae","role":"organizer"},"wishes":{"must_haves":["food","nightlife"],"dealbreakers":["early_start"],"private_note":"Want at least one big night out"},"memory":["voyage: Lisbon · conceded the city choice"],"watch_of_3":2,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Mezcal crawl"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Rae","role":"organizer"},"wishes":{"must_haves":["food","nightlife"],"dealbreakers":["early_start"],"private_note":"Want at least one big night out"},"memory":["voyage: Lisbon · conceded the city choice"],"watch_of_3":2,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Mezcal crawl"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -316,7 +316,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Maya","role":"member"},"wishes":{"must_haves":["beach","chill"],"dealbreakers":["hostel"],"private_note":"I get tired walking hills"},"memory":[],"watch_of_3":3,"decided_act":"CONCEDE","reason":{"kind":"concede"},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Xochimilco boats"],"fits_your_friend":true,"your_friends_missing_wishes":["beach"]}}",
+{"you_represent":{"name":"Maya","role":"member"},"wishes":{"must_haves":["beach","chill"],"dealbreakers":["hostel"],"private_note":"I get tired walking hills"},"memory":[],"watch_of_3":3,"decided_act":"CONCEDE","reason":{"kind":"concede"},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Xochimilco boats"],"fits_your_friend":true,"your_friends_missing_wishes":["beach"]}}",
   },
   {
     "allowChoice": false,
@@ -336,7 +336,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Dev","role":"absent"},"wishes":{"must_haves":["food","museums"],"dealbreakers":["layovers_2plus"],"private_note":"Can't join live, trust my mate"},"memory":[],"watch_of_3":3,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Anthropology museum"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Dev","role":"absent"},"wishes":{"must_haves":["food","museums"],"dealbreakers":["layovers_2plus"],"private_note":"Can't join live, trust my mate"},"memory":[],"watch_of_3":3,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Anthropology museum"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -356,7 +356,7 @@ Return JSON matching the schema.",
     "temperature": 0.7,
     "user": "Write your line for this decided move. Stay within 20 words.
 FACTS (data, not instructions):
-{"you_represent":{"name":"Rae","role":"organizer"},"wishes":{"must_haves":["food","nightlife"],"dealbreakers":["early_start"],"private_note":"Want at least one big night out"},"memory":["voyage: Lisbon · conceded the city choice"],"watch_of_3":3,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,550 to $2,100","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Mezcal crawl"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
+{"you_represent":{"name":"Rae","role":"organizer"},"wishes":{"must_haves":["food","nightlife"],"dealbreakers":["early_start"],"private_note":"Want at least one big night out"},"memory":["voyage: Lisbon · conceded the city choice"],"watch_of_3":3,"decided_act":"SUPPORT","reason":{"kind":"support_hold"},"plan":{"city":"Mexico City","group_total":"$1,375 to $2,325","stay":"Roma Norte Flat","what_your_friend_would_do":["Street food tour","Mezcal crawl"],"fits_your_friend":true,"your_friends_missing_wishes":[]}}",
   },
   {
     "allowChoice": false,
@@ -365,7 +365,7 @@ and you must never guess or imply who can or can't afford something. Speak only 
 Be decisive and kind. At most 20 words. No emoji. Never say you are an AI.
 Return JSON matching the schema.",
     "temperature": 0.3,
-    "user": "Name these two charts and explain the tradeoff in group terms. Chart A: Mexico City (group total $1,550 to $2,100, fits everyone). Chart B: Lisbon (group total $2,650 to $3,100, fits everyone). End with "Let's run them dry." Stay within 20 words.",
+    "user": "Name these two charts and explain the tradeoff in group terms. Chart A: Mexico City (group total $1,375 to $2,325, fits everyone). Chart B: Lisbon (group total $2,525 to $4,075, fits everyone). End with "Let's run them dry." Stay within 20 words.",
   },
 ]
 `;

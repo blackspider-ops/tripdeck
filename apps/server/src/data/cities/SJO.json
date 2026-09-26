@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "SJO", "name": "San José", "country": "Costa Rica", "region": "Latin America", "airport": { "code": "SJO", "lat": 9.9939, "lng": -84.2088 }, "utcOffset": -6, "centerLat": 9.934, "centerLng": -84.071, "tileRadiusKm": 2.0, "publicFlags": ["volcano & cloud-forest trips are 1.5 h drives each way"] },
+  "hotels": [
+    { "_id": "SJO-h-amon-hostel", "kind": "hotel", "cityId": "SJO", "name": "Barrio Amón Hostel (3 beds)", "neighborhood": "Barrio Amón", "lat": 9.9375, "lng": -84.077, "stayType": "hostel", "nightlyCents": 6000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "SJO-h-yoses-guest", "kind": "hotel", "cityId": "SJO", "name": "Los Yoses Guesthouse", "neighborhood": "Los Yoses", "lat": 9.933, "lng": -84.056, "stayType": "guesthouse", "nightlyCents": 8500, "sleeps": 3, "rating": 4.3 },
+    { "_id": "SJO-h-centro-triple", "kind": "hotel", "cityId": "SJO", "name": "Downtown Hotel (triple)", "neighborhood": "Centro", "lat": 9.933, "lng": -84.079, "stayType": "hotel", "nightlyCents": 11000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "SJO-h-escalante-apt", "kind": "hotel", "cityId": "SJO", "name": "Barrio Escalante Apartment", "neighborhood": "Barrio Escalante", "lat": 9.9355, "lng": -84.063, "stayType": "apartment", "nightlyCents": 12000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "SJO-h-amon-triple", "kind": "hotel", "cityId": "SJO", "name": "Barrio Amón Boutique (triple)", "neighborhood": "Barrio Amón", "lat": 9.9385, "lng": -84.0755, "stayType": "hotel", "nightlyCents": 15500, "sleeps": 3, "rating": 4.5 }
+  ],
+  "activities": [
+    { "_id": "SJO-a-poas", "kind": "activity", "cityId": "SJO", "name": "Poás Volcano crater", "short": "Poás Volcano", "tags": ["nature"], "lat": 10.1978, "lng": -84.2306, "durationMin": 360, "priceCents": 6000, "startEarliest": "07:30", "startLatest": "08:30", "role": "group", "earlyStart": true },
+    { "_id": "SJO-a-gold-museum", "kind": "activity", "cityId": "SJO", "name": "Pre-Columbian Gold Museum & Teatro Nacional", "short": "Gold Museum", "tags": ["museums", "history"], "lat": 9.933, "lng": -84.0765, "durationMin": 120, "priceCents": 1100, "startEarliest": "09:30", "startLatest": "15:00", "role": "group" },
+    { "_id": "SJO-a-escalante-night", "kind": "activity", "cityId": "SJO", "name": "Barrio Escalante food & craft beer night", "short": "Escalante food night", "tags": ["food", "nightlife"], "lat": 9.935, "lng": -84.063, "durationMin": 180, "priceCents": 3500, "startEarliest": "18:30", "startLatest": "20:30", "role": "group" },
+    { "_id": "SJO-a-waterfall-gardens", "kind": "activity", "cityId": "SJO", "name": "La Paz Waterfall Gardens (cloud forest)", "short": "Waterfall Gardens", "tags": ["nature", "chill"], "lat": 10.2025, "lng": -84.1605, "durationMin": 300, "priceCents": 5000, "startEarliest": "08:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "SJO-a-irazu", "kind": "activity", "cityId": "SJO", "name": "Irazú Volcano", "short": "Irazú Volcano", "tags": ["nature"], "lat": 9.9793, "lng": -83.852, "durationMin": 360, "priceCents": 5000, "startEarliest": "07:30", "startLatest": "08:30", "role": "pick", "earlyStart": true },
+    { "_id": "SJO-a-mercado-central", "kind": "activity", "cityId": "SJO", "name": "Casado lunch at Mercado Central", "short": "Mercado Central", "tags": ["food"], "lat": 9.935, "lng": -84.08, "durationMin": 90, "priceCents": 1000, "startEarliest": "11:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "SJO-a-jade-museum", "kind": "activity", "cityId": "SJO", "name": "Museo del Jade", "short": "Jade Museum", "tags": ["museums", "history"], "lat": 9.9345, "lng": -84.0725, "durationMin": 120, "priceCents": 1600, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "SJO-a-castros", "kind": "activity", "cityId": "SJO", "name": "Salsa night at Castro's", "short": "Castro's salsa", "tags": ["music", "nightlife"], "lat": 9.942, "lng": -84.077, "durationMin": 180, "priceCents": 1000, "startEarliest": "21:00", "startLatest": "22:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "SJO-h-escalante-apt", "toId": "SJO-a-poas", "mode": "taxi", "minutes": 90, "note": "tour van via Alajuela" },
+    { "fromId": "SJO-h-escalante-apt", "toId": "SJO-a-waterfall-gardens", "mode": "taxi", "minutes": 85, "note": "tour van via Heredia & Vara Blanca" },
+    { "fromId": "SJO-h-escalante-apt", "toId": "SJO-a-irazu", "mode": "taxi", "minutes": 75, "note": "tour van via Cartago" }
+  ],
+  "hilly": []
+}

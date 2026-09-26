@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "JAN", "name": "Jackson", "country": "United States", "state": "MS", "region": "United States", "airport": {"code": "JAN", "lat": 32.3112, "lng": -90.0759}, "utcOffset": -6, "centerLat": 32.31, "centerLng": -90.18, "tileRadiusKm": 2.5, "publicFlags": ["hot, humid summers", "little transit; rideshare needed"] },
+  "hotels": [
+    { "_id": "JAN-h-i55-motel", "kind": "hotel", "cityId": "JAN", "name": "I-55 Budget Motel (2 queens)", "neighborhood": "North Jackson", "lat": 32.344, "lng": -90.164, "stayType": "guesthouse", "nightlyCents": 8500, "sleeps": 4, "rating": 3.4 },
+    { "_id": "JAN-h-fondren-cottage", "kind": "hotel", "cityId": "JAN", "name": "Fondren Cottage", "neighborhood": "Fondren", "lat": 32.33, "lng": -90.179, "stayType": "apartment", "nightlyCents": 15000, "sleeps": 4, "rating": 4.6 },
+    { "_id": "JAN-h-king-edward", "kind": "hotel", "cityId": "JAN", "name": "Hilton Garden Inn King Edward (2 queens)", "neighborhood": "Downtown", "lat": 32.2995, "lng": -90.1885, "stayType": "hotel", "nightlyCents": 17500, "sleeps": 4, "rating": 4.3 },
+    { "_id": "JAN-h-fairview-inn", "kind": "hotel", "cityId": "JAN", "name": "The Fairview Inn (triple)", "neighborhood": "Belhaven", "lat": 32.313, "lng": -90.176, "stayType": "guesthouse", "nightlyCents": 22000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "JAN-h-westin", "kind": "hotel", "cityId": "JAN", "name": "The Westin Jackson (2 queens)", "neighborhood": "Downtown", "lat": 32.2975, "lng": -90.185, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 4, "rating": 4.4 }
+  ],
+  "activities": [
+    { "_id": "JAN-a-civil-rights-museum", "kind": "activity", "cityId": "JAN", "name": "Mississippi Civil Rights Museum & Museum of MS History", "short": "Civil Rights Museum", "tags": ["history", "museums"], "lat": 32.304, "lng": -90.181, "durationMin": 180, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "JAN-a-fondren-food", "kind": "activity", "cityId": "JAN", "name": "Fondren district food crawl", "short": "Fondren food crawl", "tags": ["food"], "lat": 32.3305, "lng": -90.1795, "durationMin": 150, "priceCents": 3500, "startEarliest": "11:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "JAN-a-hal-and-mals", "kind": "activity", "cityId": "JAN", "name": "Live blues at Hal & Mal's", "short": "Hal & Mal's blues", "tags": ["music", "nightlife"], "lat": 32.2977, "lng": -90.1776, "durationMin": 150, "priceCents": 2000, "startEarliest": "19:00", "startLatest": "21:00", "role": "group" },
+    { "_id": "JAN-a-art-museum", "kind": "activity", "cityId": "JAN", "name": "Mississippi Museum of Art", "short": "Museum of Art", "tags": ["museums"], "lat": 32.299, "lng": -90.186, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "JAN-a-welty-house", "kind": "activity", "cityId": "JAN", "name": "Eudora Welty House & Garden", "short": "Eudora Welty House", "tags": ["history"], "lat": 32.316, "lng": -90.1735, "durationMin": 75, "priceCents": 1000, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "JAN-a-natural-science", "kind": "activity", "cityId": "JAN", "name": "Museum of Natural Science, LeFleur's Bluff", "short": "Natural Science museum", "tags": ["nature", "museums"], "lat": 32.323, "lng": -90.154, "durationMin": 120, "priceCents": 800, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "JAN-a-capitol", "kind": "activity", "cityId": "JAN", "name": "Mississippi State Capitol tour", "short": "State Capitol", "tags": ["history"], "lat": 32.3035, "lng": -90.182, "durationMin": 60, "priceCents": 0, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "JAN-a-reservoir", "kind": "activity", "cityId": "JAN", "name": "Ross Barnett Reservoir sunset", "short": "Reservoir sunset", "tags": ["nature", "chill"], "lat": 32.4, "lng": -90.08, "durationMin": 120, "priceCents": 0, "startEarliest": "16:00", "startLatest": "18:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "JAN-h-westin", "toId": "JAN-a-reservoir", "mode": "taxi", "minutes": 25, "note": "Lakeland Dr & Spillway Rd" },
+    { "fromId": "JAN-h-i55-motel", "toId": "JAN-a-hal-and-mals", "mode": "taxi", "minutes": 12 }
+  ],
+  "hilly": []
+}

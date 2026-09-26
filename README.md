@@ -14,7 +14,7 @@ cp .env.example .env        # optional — runs without any keys; one root .env 
 npm run dev                 # helm on :8787, web on :5173 (localhost only; LAN: see dev:lan below)
 ```
 
-Open **http://localhost:5173/demo** → *Seed the Expo voyage* → open the links (Rae on this device, Maya on a phone, the Gallery on a laptop). Each phone link carries a one-time handoff code in the fragment (`/t/CODE#as=…&m=…`), good for one open within 2 h; the member token itself never appears in a URL. On the headset iPhone (Safari, clamped into a Gear VR shell, no USB plug): open `https://<your-https-host>/xr`, type the 8-character headset code, tap **aA → Hide Toolbar**, tap **Enter VR**, allow motion access, turn the phone to landscape and clamp it into the shell. Selecting is by gaze (hold 1.6 s). Step by step: [`docs/10-gear-vr.md`](docs/10-gear-vr.md).
+Open **http://localhost:5173/demo** → *Seed a random voyage* (a fresh crew, ports and dates each time) or *Seed the scripted Expo voyage* (Rae, Maya and Dev on Lisbon / Mexico City / Montréal, the pitch script) → open the links (Rae on this device, Maya on a phone, the Gallery on a laptop). Each phone link carries a one-time handoff code in the fragment (`/t/CODE#as=…&m=…`), good for one open within 2 h; the member token itself never appears in a URL. On the headset iPhone (Safari, clamped into a Gear VR shell, no USB plug): open `https://<your-https-host>/xr`, type the 8-character headset code, tap **aA → Hide Toolbar**, tap **Enter VR**, allow motion access, turn the phone to landscape and clamp it into the shell. Selecting is by gaze (hold 1.6 s). Step by step: [`docs/10-gear-vr.md`](docs/10-gear-vr.md).
 
 In production (and from any other machine, even in dev mode), seeding needs the dev key: open `/demo#key=<DEV_KEY>` once. Only the fragment works, because it never leaves the browser; `?key=` is ignored (it would already be in proxy and CDN request logs) and just wiped from the address bar. The page moves the key into this tab's `sessionStorage`, strips it from the address bar and sends it as the `X-Dev-Key` header.
 
@@ -32,7 +32,7 @@ Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, 
 |---|---|
 | `npm run dev` | server (tsx watch) + web (Vite on localhost); counts as development mode (dev routes open to this machine only; other clients need `DEV_KEY`) |
 | `npm run dev:lan -w @all-ayes/web` | the Vite dev server on every interface (`vite --host`), for a phone on the same Wi-Fi |
-| `npm test` | server + web: **485 server tests** (40 files: pricing, fairness, privacy filter, negotiation rules, payments invariants, service rules, restart/restore, persistence, sweep and write queue, socket budgets, memory/voice fallbacks, limits, hardening, contract, end‑to‑end sockets) and **214 web tests** (33 files: socket store, reducers, phone hooks and screens (happy-dom), routing, error copy, formatting, seating, labels, scene/director and XR logic) |
+| `npm test` | server + web: **568 server tests** (44 files: pricing, city files + flight model + course + random voyages, fairness, privacy filter, negotiation rules, payments invariants, service rules, restart/restore, persistence, sweep and write queue, socket budgets, memory/voice fallbacks, limits, hardening, contract, end‑to‑end sockets) and **251 web tests** (38 files: socket store, reducers, phone hooks and screens (happy-dom), routing, error copy, formatting, seating, labels, scene/director and XR logic) |
 | `npm run typecheck` | `tsc --noEmit` in every workspace |
 | `npm run check` | typecheck + tests + build + bundle budget (`scripts/bundle-budget.mjs`; run before pushing) |
 | `npm run build` | web production build + server bundle (esbuild → `apps/server/dist/index.js`) |
@@ -74,4 +74,9 @@ See [`DEPLOY.md`](DEPLOY.md) — one Docker container (Render blueprint included
 - Memory identity is a private **crew key** kept in the phone's browser storage (no accounts). It is minted at the first join and sent on later joins; the server keeps only its hash. Clearing the browser or switching phones starts a fresh memory, and two people sharing one browser share a key (their threads stay apart only by name).
 
 ## Honesty notes
-Trip inventory is curated sample data for three cities (prices are illustrative). Payments run in simulation unless the Visa sandbox is wired — no real money moves. The project was started before the HackGT hacking window.
+- Trip inventory is curated sample data: the three original ports plus dozens of city files (stays and activities written by hand, prices are ballparks). Nothing is live inventory.
+- **Flights are modelled**, except the original Lisbon / Mexico City / Montréal table from Atlanta, Chicago and New York: every other route and date window is priced by a deterministic formula (great-circle distance, a season factor per window, a hashed ±8 %), with plausible airlines and local times ([`docs/07`](docs/07-dataset-spec.md) §2b). They are illustrative, never quotes. A crew member within 150 km of a port has no flight ($0).
+- Ports built from OpenStreetMap ("any city", [`docs/11`](docs/11-world-cities.md)) have modelled prices too, and carry the © OpenStreetMap contributors attribution.
+- Payments run in simulation unless the Visa sandbox is wired — no real money moves.
+- The scripted Expo voyage always leads to Lisbon by design (its numbers are pinned by tests); `/demo` seeds a random voyage by default to show the engine is generic.
+- The project was started before the HackGT hacking window.

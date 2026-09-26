@@ -33,7 +33,14 @@ describe("voyage setup", () => {
     const { trip } = helm.createTrip({ name: "Two ports", organizerName: "Rae", band: 1, origin: "ATL", cityIds: ["LIS", "MEX"] });
     expect(trip.candidateCityIds).toEqual(["LIS", "MEX"]);
     expect(await code(() => helm.createTrip({ name: "x", organizerName: "Rae", band: 1, origin: "ATL", cityIds: ["LIS"] }))).toBe("BAD_INPUT");
-    expect(helm.createTrip({ name: "x", organizerName: "Rae", band: 1, origin: "ATL" }).trip.candidateCityIds).toEqual(["LIS", "MEX", "YUL"]);
+    // no ports named: 3 at random ("Surprise me"), never every port (the chart book holds 12 plans), and the next two windows
+    const dflt = helm.createTrip({ name: "x", organizerName: "Rae", band: 1, origin: "ATL" }).trip;
+    expect(dflt.candidateCityIds).toHaveLength(Math.min(3, helm.ds.cities.length));
+    expect(new Set(dflt.candidateCityIds).size).toBe(dflt.candidateCityIds.length);
+    expect(dflt.candidateWindowIds).toEqual(["W1", "W2"]);
+    // at most four ports on one chart
+    const five = helm.ds.cities.slice(0, 5).map((c) => c._id);
+    if (five.length === 5) expect(await code(() => helm.createTrip({ name: "x", organizerName: "Rae", band: 1, origin: "ATL", cityIds: five }))).toBe("BAD_INPUT");
   });
 
   it("rejects a taken band, a fifth crew member, and bad briefs", async () => {

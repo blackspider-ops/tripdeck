@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "MDE", "name": "Medellín", "country": "Colombia", "region": "Latin America", "airport": { "code": "MDE", "lat": 6.1645, "lng": -75.4231 }, "utcOffset": -5, "centerLat": 6.23, "centerLng": -75.575, "tileRadiusKm": 3.0, "publicFlags": ["hilly neighborhoods", "airport is 45 min away in Rionegro"] },
+  "hotels": [
+    { "_id": "MDE-h-poblado-hostel", "kind": "hotel", "cityId": "MDE", "name": "Poblado Hostel (3 beds)", "neighborhood": "El Poblado", "lat": 6.2095, "lng": -75.5665, "stayType": "hostel", "nightlyCents": 6000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "MDE-h-laureles-guest", "kind": "hotel", "cityId": "MDE", "name": "Laureles Guesthouse", "neighborhood": "Laureles", "lat": 6.2445, "lng": -75.5905, "stayType": "guesthouse", "nightlyCents": 8000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "MDE-h-provenza-apt", "kind": "hotel", "cityId": "MDE", "name": "Provenza Apartment", "neighborhood": "Provenza", "lat": 6.2072, "lng": -75.5663, "stayType": "apartment", "nightlyCents": 9500, "sleeps": 4, "rating": 4.5 },
+    { "_id": "MDE-h-manila-triple", "kind": "hotel", "cityId": "MDE", "name": "Manila Boutique Hotel (triple)", "neighborhood": "Manila", "lat": 6.2125, "lng": -75.5725, "stayType": "hotel", "nightlyCents": 13000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "MDE-h-astorga-triple", "kind": "hotel", "cityId": "MDE", "name": "Astorga Hotel (triple)", "neighborhood": "Astorga", "lat": 6.204, "lng": -75.57, "stayType": "hotel", "nightlyCents": 18500, "sleeps": 3, "rating": 4.6 }
+  ],
+  "activities": [
+    { "_id": "MDE-a-comuna-13", "kind": "activity", "cityId": "MDE", "name": "Comuna 13 graffiti tour", "short": "Comuna 13", "tags": ["history", "music"], "lat": 6.2555, "lng": -75.6195, "durationMin": 180, "priceCents": 2500, "startEarliest": "09:30", "startLatest": "14:00", "role": "group" },
+    { "_id": "MDE-a-arvi", "kind": "activity", "cityId": "MDE", "name": "Metrocable to Parque Arví", "short": "Parque Arví", "tags": ["nature"], "lat": 6.282, "lng": -75.503, "durationMin": 300, "priceCents": 1200, "startEarliest": "09:00", "startLatest": "12:00", "role": "group" },
+    { "_id": "MDE-a-provenza-night", "kind": "activity", "cityId": "MDE", "name": "Provenza & Parque Lleras night out", "short": "Provenza night out", "tags": ["nightlife"], "lat": 6.2089, "lng": -75.567, "durationMin": 180, "priceCents": 2500, "startEarliest": "21:00", "startLatest": "23:00", "role": "group" },
+    { "_id": "MDE-a-guatape", "kind": "activity", "cityId": "MDE", "name": "Guatapé & El Peñol day trip", "short": "Guatapé", "tags": ["nature", "chill"], "lat": 6.2206, "lng": -75.1788, "durationMin": 540, "priceCents": 5500, "startEarliest": "07:00", "startLatest": "08:00", "role": "pick", "earlyStart": true },
+    { "_id": "MDE-a-museo-antioquia", "kind": "activity", "cityId": "MDE", "name": "Museo de Antioquia & Plaza Botero", "short": "Plaza Botero", "tags": ["museums", "history"], "lat": 6.2522, "lng": -75.5687, "durationMin": 150, "priceCents": 600, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "MDE-a-minorista", "kind": "activity", "cityId": "MDE", "name": "Exotic fruit & street food tour, Minorista market", "short": "Fruit & food tour", "tags": ["food"], "lat": 6.2555, "lng": -75.575, "durationMin": 180, "priceCents": 4000, "startEarliest": "09:00", "startLatest": "11:00", "role": "pick" },
+    { "_id": "MDE-a-tibiri", "kind": "activity", "cityId": "MDE", "name": "Salsa night at El Tíbiri", "short": "El Tíbiri salsa", "tags": ["music", "nightlife"], "lat": 6.2436, "lng": -75.5894, "durationMin": 150, "priceCents": 1500, "startEarliest": "20:00", "startLatest": "21:30", "role": "pick" },
+    { "_id": "MDE-a-botanico", "kind": "activity", "cityId": "MDE", "name": "Jardín Botánico de Medellín", "short": "Botanical garden", "tags": ["nature", "chill"], "lat": 6.271, "lng": -75.564, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "MDE-h-provenza-apt", "toId": "MDE-a-guatape", "mode": "transit", "minutes": 130, "note": "bus from Terminal Norte" },
+    { "fromId": "MDE-h-provenza-apt", "toId": "MDE-a-comuna-13", "mode": "transit", "minutes": 45, "note": "Metro to San Javier + bus up to the escalators" },
+    { "fromId": "MDE-h-provenza-apt", "toId": "MDE-a-arvi", "mode": "transit", "minutes": 70, "note": "Metro + Metrocable K & L" },
+    { "fromId": "MDE-h-provenza-apt", "toId": "MDE-a-botanico", "mode": "transit", "minutes": 30, "note": "Metro Line A to Universidad" }
+  ],
+  "hilly": ["MDE-a-comuna-13", "MDE-h-astorga-triple", "MDE-h-provenza-apt"]
+}

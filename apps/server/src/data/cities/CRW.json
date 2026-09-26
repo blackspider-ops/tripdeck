@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "CRW", "name": "Charleston", "country": "United States", "state": "WV", "region": "United States", "airport": { "code": "CRW", "lat": 38.3731, "lng": -81.5932 }, "utcOffset": -5, "centerLat": 38.35, "centerLng": -81.632, "tileRadiusKm": 2, "publicFlags": ["hilly small city; car needed beyond downtown", "New River Gorge is about an hour's drive"] },
+  "hotels": [
+    { "_id": "CRW-h-brass-pineapple", "kind": "hotel", "cityId": "CRW", "name": "Brass Pineapple B&B", "neighborhood": "East End", "lat": 38.3435, "lng": -81.613, "stayType": "guesthouse", "nightlyCents": 12000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "CRW-h-east-end-flat", "kind": "hotel", "cityId": "CRW", "name": "East End Apartment", "neighborhood": "East End", "lat": 38.344, "lng": -81.618, "stayType": "apartment", "nightlyCents": 14000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CRW-h-four-points", "kind": "hotel", "cityId": "CRW", "name": "Four Points by Sheraton (2 queens)", "neighborhood": "Downtown", "lat": 38.3475, "lng": -81.634, "stayType": "hotel", "nightlyCents": 16000, "sleeps": 4, "rating": 4.1 },
+    { "_id": "CRW-h-embassy-suites", "kind": "hotel", "cityId": "CRW", "name": "Embassy Suites Charleston (suite)", "neighborhood": "Downtown", "lat": 38.3517, "lng": -81.634, "stayType": "hotel", "nightlyCents": 20000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "CRW-h-marriott", "kind": "hotel", "cityId": "CRW", "name": "Charleston Marriott Town Center (2 queens)", "neighborhood": "Downtown", "lat": 38.354, "lng": -81.629, "stayType": "hotel", "nightlyCents": 21500, "sleeps": 4, "rating": 4.3 }
+  ],
+  "activities": [
+    { "_id": "CRW-a-capitol", "kind": "activity", "cityId": "CRW", "name": "West Virginia State Capitol", "short": "State Capitol", "tags": ["history"], "lat": 38.3363, "lng": -81.6122, "durationMin": 75, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "CRW-a-capitol-market", "kind": "activity", "cityId": "CRW", "name": "Capitol Market", "short": "Capitol Market", "tags": ["food"], "lat": 38.353, "lng": -81.6405, "durationMin": 60, "priceCents": 1500, "startEarliest": "09:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "CRW-a-mountain-stage", "kind": "activity", "cityId": "CRW", "name": "Mountain Stage live radio taping", "short": "Mountain Stage", "tags": ["music"], "lat": 38.3368, "lng": -81.6125, "durationMin": 180, "priceCents": 3000, "startEarliest": "19:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "CRW-a-clay-center", "kind": "activity", "cityId": "CRW", "name": "Clay Center science & art museum", "short": "Clay Center", "tags": ["museums"], "lat": 38.3534, "lng": -81.63, "durationMin": 120, "priceCents": 1500, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CRW-a-state-museum", "kind": "activity", "cityId": "CRW", "name": "West Virginia State Museum", "short": "State Museum", "tags": ["museums", "history"], "lat": 38.3368, "lng": -81.6127, "durationMin": 90, "priceCents": 0, "startEarliest": "10:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CRW-a-kanawha-forest", "kind": "activity", "cityId": "CRW", "name": "Kanawha State Forest hike", "short": "Kanawha Forest hike", "tags": ["nature"], "lat": 38.26, "lng": -81.659, "durationMin": 180, "priceCents": 0, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "CRW-a-new-river-gorge", "kind": "activity", "cityId": "CRW", "name": "New River Gorge Bridge & Canyon Rim", "short": "New River Gorge", "tags": ["nature", "chill"], "lat": 38.0703, "lng": -81.0757, "durationMin": 480, "priceCents": 0, "startEarliest": "07:30", "startLatest": "09:30", "role": "pick" },
+    { "_id": "CRW-a-elk-city", "kind": "activity", "cityId": "CRW", "name": "Elk City bars & dinner", "short": "Elk City night", "tags": ["nightlife", "food"], "lat": 38.3575, "lng": -81.647, "durationMin": 150, "priceCents": 3000, "startEarliest": "19:30", "startLatest": "22:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CRW-h-embassy-suites", "toId": "CRW-a-new-river-gorge", "mode": "taxi", "minutes": 60, "note": "I-64 / US-19; no transit" },
+    { "fromId": "CRW-h-brass-pineapple", "toId": "CRW-a-new-river-gorge", "mode": "taxi", "minutes": 60, "note": "I-64 / US-19; no transit" },
+    { "fromId": "CRW-h-embassy-suites", "toId": "CRW-a-kanawha-forest", "mode": "taxi", "minutes": 20 }
+  ],
+  "hilly": ["CRW-a-kanawha-forest", "CRW-a-new-river-gorge"]
+}

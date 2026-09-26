@@ -2,13 +2,21 @@
   "presetId": "three-ports",
   "name": "Three Ports",
   "cities": [
-    { "_id": "LIS", "name": "Lisbon", "centerLat": 38.712, "centerLng": -9.138, "tileRadiusKm": 1.5, "publicFlags": ["hilly neighborhoods", "overnight flights from the US"] },
-    { "_id": "MEX", "name": "Mexico City", "centerLat": 19.42, "centerLng": -99.165, "tileRadiusKm": 2.0, "publicFlags": ["high altitude (2,240 m)"] },
-    { "_id": "YUL", "name": "Montréal", "centerLat": 45.508, "centerLng": -73.57, "tileRadiusKm": 1.5, "publicFlags": ["below freezing in March"] }
+    { "_id": "LIS", "name": "Lisbon", "country": "Portugal", "region": "Europe", "airport": { "code": "LIS", "lat": 38.7813, "lng": -9.1359 }, "utcOffset": 0, "centerLat": 38.712, "centerLng": -9.138, "tileRadiusKm": 1.5, "publicFlags": ["hilly neighborhoods", "overnight flights from the US"], "hilly": ["LIS-h-casa-alfama", "LIS-a-tram-castle", "LIS-a-fado", "LIS-a-bairro-night", "LIS-h-bairro-hostel"] },
+    { "_id": "MEX", "name": "Mexico City", "country": "Mexico", "region": "Latin America", "airport": { "code": "MEX", "lat": 19.4361, "lng": -99.0719 }, "utcOffset": -6, "centerLat": 19.42, "centerLng": -99.165, "tileRadiusKm": 2.0, "publicFlags": ["high altitude (2,240 m)"], "hilly": [] },
+    { "_id": "YUL", "name": "Montréal", "country": "Canada", "region": "Canada", "airport": { "code": "YUL", "lat": 45.4706, "lng": -73.7408 }, "utcOffset": -5, "centerLat": 45.508, "centerLng": -73.57, "tileRadiusKm": 1.5, "publicFlags": ["below freezing in March"], "hilly": [] }
   ],
   "dateWindows": [
     { "id": "W1", "start": "2027-03-12", "end": "2027-03-16", "nights": 4 },
-    { "id": "W2", "start": "2027-03-13", "end": "2027-03-16", "nights": 3 }
+    { "id": "W2", "start": "2027-03-13", "end": "2027-03-16", "nights": 3 },
+    { "id": "W3", "start": "2027-05-28", "end": "2027-05-31", "nights": 3, "label": "Memorial Day weekend" },
+    { "id": "W4", "start": "2027-07-02", "end": "2027-07-07", "nights": 5, "label": "July 4th week" },
+    { "id": "W5", "start": "2027-08-07", "end": "2027-08-14", "nights": 7, "label": "A summer week" },
+    { "id": "W6", "start": "2027-09-03", "end": "2027-09-06", "nights": 3, "label": "Labor Day weekend" },
+    { "id": "W7", "start": "2027-10-08", "end": "2027-10-12", "nights": 4, "label": "Fall break" },
+    { "id": "W8", "start": "2027-11-24", "end": "2027-11-28", "nights": 4, "label": "Thanksgiving" },
+    { "id": "W9", "start": "2027-12-27", "end": "2028-01-02", "nights": 6, "label": "Winter holidays" },
+    { "id": "W10", "start": "2028-03-10", "end": "2028-03-15", "nights": 5, "label": "Spring break '28" }
   ],
   "flights": [
     { "_id": "LIS-f-atl-dl", "kind": "flight", "cityId": "LIS", "origin": "ATL", "dateWindowId": "W1", "airline": "Delta", "departLocal": "2027-03-12T18:10", "arriveLocal": "2027-03-13T07:55", "returnLocal": "2027-03-16T12:40", "stops": 0, "redEye": true, "priceCents": 69000 },

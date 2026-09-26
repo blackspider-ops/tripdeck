@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "TYO", "name": "Tokyo", "country": "Japan", "region": "Asia", "airport": {"code": "HND", "lat": 35.5494, "lng": 139.7798}, "utcOffset": 9, "centerLat": 35.672, "centerLng": 139.705, "tileRadiusKm": 3, "publicFlags": ["long flight from the US", "compact hotel rooms"] },
+  "hotels": [
+    { "_id": "TYO-h-ebisu-apt", "kind": "hotel", "cityId": "TYO", "name": "Ebisu Apartment", "neighborhood": "Ebisu", "lat": 35.6467, "lng": 139.7101, "stayType": "apartment", "nightlyCents": 30000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "TYO-h-shinjuku-triple", "kind": "hotel", "cityId": "TYO", "name": "Shinjuku Hotel (triple)", "neighborhood": "Shinjuku", "lat": 35.693, "lng": 139.7, "stayType": "hotel", "nightlyCents": 32000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "TYO-h-aoyama-triple", "kind": "hotel", "cityId": "TYO", "name": "Aoyama Boutique (triple)", "neighborhood": "Aoyama", "lat": 35.666, "lng": 139.716, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "TYO-h-sendagaya-guest", "kind": "hotel", "cityId": "TYO", "name": "Sendagaya Guesthouse", "neighborhood": "Sendagaya", "lat": 35.681, "lng": 139.711, "stayType": "guesthouse", "nightlyCents": 18000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "TYO-h-shibuya-hostel", "kind": "hotel", "cityId": "TYO", "name": "Shibuya Capsule Hostel (3 beds)", "neighborhood": "Shibuya", "lat": 35.659, "lng": 139.701, "stayType": "hostel", "nightlyCents": 12000, "sleeps": 3, "rating": 4.2 }
+  ],
+  "activities": [
+    { "_id": "TYO-a-tsukiji", "kind": "activity", "cityId": "TYO", "name": "Tsukiji Outer Market breakfast", "short": "Tsukiji breakfast", "tags": ["food"], "lat": 35.6654, "lng": 139.7707, "durationMin": 120, "priceCents": 3000, "startEarliest": "07:00", "startLatest": "10:00", "role": "group" },
+    { "_id": "TYO-a-meiji", "kind": "activity", "cityId": "TYO", "name": "Meiji Shrine & Harajuku", "short": "Meiji Shrine", "tags": ["history", "chill"], "lat": 35.6764, "lng": 139.6993, "durationMin": 120, "priceCents": 0, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "TYO-a-golden-gai", "kind": "activity", "cityId": "TYO", "name": "Golden Gai & Omoide Yokocho", "short": "Golden Gai night", "tags": ["nightlife", "food"], "lat": 35.694, "lng": 139.7045, "durationMin": 180, "priceCents": 4000, "startEarliest": "19:00", "startLatest": "22:00", "role": "group" },
+    { "_id": "TYO-a-teamlab", "kind": "activity", "cityId": "TYO", "name": "teamLab Planets", "short": "teamLab Planets", "tags": ["museums"], "lat": 35.649, "lng": 139.7897, "durationMin": 120, "priceCents": 4000, "startEarliest": "09:00", "startLatest": "19:00", "role": "pick" },
+    { "_id": "TYO-a-sensoji", "kind": "activity", "cityId": "TYO", "name": "Senso-ji & Asakusa", "short": "Senso-ji", "tags": ["history"], "lat": 35.7148, "lng": 139.7967, "durationMin": 120, "priceCents": 0, "startEarliest": "08:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "TYO-a-takao", "kind": "activity", "cityId": "TYO", "name": "Mt. Takao hike", "short": "Mt. Takao hike", "tags": ["nature"], "lat": 35.6251, "lng": 139.2436, "durationMin": 360, "priceCents": 1800, "startEarliest": "08:00", "startLatest": "10:00", "role": "pick" },
+    { "_id": "TYO-a-karaoke", "kind": "activity", "cityId": "TYO", "name": "Karaoke night, Shibuya", "short": "Karaoke night", "tags": ["music", "nightlife"], "lat": 35.66, "lng": 139.699, "durationMin": 120, "priceCents": 2500, "startEarliest": "20:00", "startLatest": "23:30", "role": "pick" },
+    { "_id": "TYO-a-gyoen", "kind": "activity", "cityId": "TYO", "name": "Shinjuku Gyoen garden", "short": "Shinjuku Gyoen", "tags": ["nature", "chill"], "lat": 35.6852, "lng": 139.7101, "durationMin": 120, "priceCents": 500, "startEarliest": "09:00", "startLatest": "15:30", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "TYO-h-shibuya-hostel", "toId": "TYO-a-tsukiji", "mode": "transit", "minutes": 30, "note": "Hibiya line via Ebisu" },
+    { "fromId": "TYO-h-shibuya-hostel", "toId": "TYO-a-sensoji", "mode": "transit", "minutes": 35, "note": "Ginza line end to end" },
+    { "fromId": "TYO-h-shibuya-hostel", "toId": "TYO-a-takao", "mode": "train", "minutes": 60, "note": "Keio line from Shinjuku" },
+    { "fromId": "TYO-h-shibuya-hostel", "toId": "TYO-a-teamlab", "mode": "transit", "minutes": 35, "note": "Yurikamome via Shimbashi" }
+  ],
+  "hilly": ["TYO-a-takao"]
+}

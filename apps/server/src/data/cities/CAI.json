@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "CAI", "name": "Cairo", "country": "Egypt", "region": "Africa", "airport": { "code": "CAI", "lat": 30.1219, "lng": 31.4056 }, "utcOffset": 2, "centerLat": 30.045, "centerLng": 31.235, "tileRadiusKm": 3, "publicFlags": ["modest dress at mosques and churches", "heavy traffic; allow extra time"] },
+  "hotels": [
+    { "_id": "CAI-h-downtown-hostel", "kind": "hotel", "cityId": "CAI", "name": "Downtown Hostel (3 beds)", "neighborhood": "Downtown", "lat": 30.0478, "lng": 31.2395, "stayType": "hostel", "nightlyCents": 3000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "CAI-h-giza-guest", "kind": "hotel", "cityId": "CAI", "name": "Pyramids View Guesthouse", "neighborhood": "Nazlet el-Semman", "lat": 29.9765, "lng": 31.1395, "stayType": "guesthouse", "nightlyCents": 7500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "CAI-h-zamalek-flat", "kind": "hotel", "cityId": "CAI", "name": "Zamalek Apartment", "neighborhood": "Zamalek", "lat": 30.0615, "lng": 31.2195, "stayType": "apartment", "nightlyCents": 9000, "sleeps": 4, "rating": 4.3 },
+    { "_id": "CAI-h-garden-city-triple", "kind": "hotel", "cityId": "CAI", "name": "Garden City Hotel (triple)", "neighborhood": "Garden City", "lat": 30.0375, "lng": 31.231, "stayType": "hotel", "nightlyCents": 14000, "sleeps": 3, "rating": 4.4 },
+    { "_id": "CAI-h-corniche-triple", "kind": "hotel", "cityId": "CAI", "name": "Nile Corniche Hotel (triple)", "neighborhood": "Corniche el-Nil", "lat": 30.0445, "lng": 31.2305, "stayType": "hotel", "nightlyCents": 26000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "CAI-a-pyramids", "kind": "activity", "cityId": "CAI", "name": "Giza Pyramids & Sphinx", "short": "Pyramids of Giza", "tags": ["history"], "lat": 29.9792, "lng": 31.1342, "durationMin": 240, "priceCents": 1800, "startEarliest": "08:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "CAI-a-gem", "kind": "activity", "cityId": "CAI", "name": "Grand Egyptian Museum", "short": "Grand Egyptian Museum", "tags": ["museums", "history"], "lat": 29.9946, "lng": 31.1193, "durationMin": 180, "priceCents": 3000, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "CAI-a-khan-khalili", "kind": "activity", "cityId": "CAI", "name": "Khan el-Khalili & Al-Muizz Street", "short": "Khan el-Khalili", "tags": ["history"], "lat": 30.0477, "lng": 31.2623, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "17:00", "role": "group" },
+    { "_id": "CAI-a-egyptian-museum", "kind": "activity", "cityId": "CAI", "name": "Egyptian Museum, Tahrir", "short": "Egyptian Museum", "tags": ["museums"], "lat": 30.0478, "lng": 31.2336, "durationMin": 150, "priceCents": 1200, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CAI-a-felucca", "kind": "activity", "cityId": "CAI", "name": "Sunset felucca on the Nile", "short": "Nile felucca", "tags": ["chill"], "lat": 30.04, "lng": 31.229, "durationMin": 60, "priceCents": 800, "startEarliest": "16:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "CAI-a-street-food", "kind": "activity", "cityId": "CAI", "name": "Koshary & street food walk, Downtown", "short": "Street food walk", "tags": ["food"], "lat": 30.05, "lng": 31.242, "durationMin": 180, "priceCents": 4000, "startEarliest": "11:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "CAI-a-tanoura", "kind": "activity", "cityId": "CAI", "name": "Tanoura show, Wekalet El Ghouri", "short": "Tanoura show", "tags": ["music"], "lat": 30.0458, "lng": 31.2594, "durationMin": 90, "priceCents": 500, "startEarliest": "19:00", "startLatest": "19:30", "role": "pick" },
+    { "_id": "CAI-a-coptic", "kind": "activity", "cityId": "CAI", "name": "Coptic Cairo & Hanging Church", "short": "Coptic Cairo", "tags": ["history", "museums"], "lat": 30.006, "lng": 31.2305, "durationMin": 150, "priceCents": 600, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CAI-h-zamalek-flat", "toId": "CAI-a-pyramids", "mode": "taxi", "minutes": 45, "note": "traffic varies a lot" },
+    { "fromId": "CAI-h-zamalek-flat", "toId": "CAI-a-gem", "mode": "taxi", "minutes": 40 },
+    { "fromId": "CAI-h-zamalek-flat", "toId": "CAI-a-khan-khalili", "mode": "taxi", "minutes": 25 },
+    { "fromId": "CAI-h-downtown-hostel", "toId": "CAI-a-coptic", "mode": "transit", "minutes": 20, "note": "Metro Line 1 to Mar Girgis" }
+  ],
+  "hilly": []
+}

@@ -14,10 +14,10 @@
  *   replay.ts      trip:state and (re)join replay
  *   persistence.ts boot restore, reconnect sync, on-demand hydrate, trip lookups (`archive`)
  */
-import type { Band, BriefInput, CityId, Origin } from "@all-ayes/shared";
+import type { Band, BriefInput, Origin } from "@all-ayes/shared";
 import type { BookingRec } from "../payments/orchestrator.js";
 import { HelmCore, type Helm } from "./core.js";
-import { Crew } from "./crew.js";
+import { Crew, type CreateTrip } from "./crew.js";
 import { Identity } from "./identity.js";
 import { Table } from "./table.js";
 import { DryRun } from "./dryrun.js";
@@ -46,7 +46,7 @@ export class TripService extends HelmCore implements Helm {
   tripByCode(code: string) { return this.archive.tripByCode(code); }
 
   // ---------- crew ----------
-  createTrip(p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; crewKey?: unknown }) { return this.crew.createTrip(p); }
+  createTrip(p: CreateTrip) { return this.crew.createTrip(p); }
   join(tripId: string, p: { name: string; band: Band; origin: Origin; crewKey?: unknown }) { return this.crew.join(tripId, p); }
   setCrewOpen(tripId: string, actor: Actor, open: boolean) { return this.crew.setCrewOpen(tripId, actor, open); }
   addAbsent(tripId: string, actor: Actor, p: { name: string; band: Band; origin: Origin }) { return this.crew.addAbsent(tripId, actor, p); }
@@ -79,7 +79,8 @@ export class TripService extends HelmCore implements Helm {
   // ---------- snapshots & replay ----------
   state(t: TripRec) { return this.replayer.state(t); }
   /** O2-040: without the static fields (the replay carries them). */
-  broadcastState(t: TripRec) { this.toTrip(t._id, "trip:state", this.replayer.update(t)); }
+  /** `full`: with the static fields too (the ports changed: a region voyage's pre-rank at the table). */
+  broadcastState(t: TripRec, full = false) { this.toTrip(t._id, "trip:state", full ? this.replayer.state(t) : this.replayer.update(t)); }
   /** A (re)joining socket's replay; `later` settles once a slow memory recall's follow-up is sent (replay.ts). */
   replayNow(t: TripRec, emit: Emit, memberId?: string) { return this.replayer.replayNow(t, emit, memberId); }
   /** The voyage's booking attempt, whatever its phase. */

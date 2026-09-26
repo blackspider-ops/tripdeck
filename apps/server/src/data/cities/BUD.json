@@ -1,0 +1,25 @@
+{
+  "city": { "_id": "BUD", "name": "Budapest", "country": "Hungary", "region": "Europe", "airport": {"code": "BUD", "lat": 47.4369, "lng": 19.2556}, "utcOffset": 1, "centerLat": 47.5, "centerLng": 19.052, "tileRadiusKm": 2, "publicFlags": ["forint (HUF), not the euro"] },
+  "hotels": [
+    { "_id": "BUD-h-kiraly-hostel", "kind": "hotel", "cityId": "BUD", "name": "Király Street Hostel (3 beds)", "neighborhood": "Erzsébetváros", "lat": 47.4995, "lng": 19.06, "stayType": "hostel", "nightlyCents": 6000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "BUD-h-jewish-flat", "kind": "hotel", "cityId": "BUD", "name": "Jewish Quarter Apartment", "neighborhood": "Erzsébetváros", "lat": 47.498, "lng": 19.062, "stayType": "apartment", "nightlyCents": 13000, "sleeps": 4, "rating": 4.5 },
+    { "_id": "BUD-h-castle-guest", "kind": "hotel", "cityId": "BUD", "name": "Castle District Guesthouse", "neighborhood": "Várnegyed", "lat": 47.5025, "lng": 19.0335, "stayType": "guesthouse", "nightlyCents": 16000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "BUD-h-belvaros-triple", "kind": "hotel", "cityId": "BUD", "name": "Belváros Hotel (triple)", "neighborhood": "Belváros", "lat": 47.4935, "lng": 19.054, "stayType": "hotel", "nightlyCents": 19000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "BUD-h-andrassy-triple", "kind": "hotel", "cityId": "BUD", "name": "Andrássy Boutique (triple)", "neighborhood": "Terézváros", "lat": 47.506, "lng": 19.065, "stayType": "hotel", "nightlyCents": 24000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "BUD-a-szechenyi", "kind": "activity", "cityId": "BUD", "name": "Széchenyi thermal baths", "short": "Széchenyi Baths", "tags": ["chill"], "lat": 47.5186, "lng": 19.0823, "durationMin": 180, "priceCents": 3800, "startEarliest": "08:00", "startLatest": "18:00", "role": "group" },
+    { "_id": "BUD-a-ruin-bars", "kind": "activity", "cityId": "BUD", "name": "Ruin bar night, Szimpla Kert", "short": "Ruin bar night", "tags": ["nightlife", "music"], "lat": 47.497, "lng": 19.0633, "durationMin": 180, "priceCents": 2000, "startEarliest": "21:00", "startLatest": "23:00", "role": "group" },
+    { "_id": "BUD-a-castle-hill", "kind": "activity", "cityId": "BUD", "name": "Buda Castle & Fisherman's Bastion", "short": "Castle Hill", "tags": ["history"], "lat": 47.502, "lng": 19.0348, "durationMin": 150, "priceCents": 1200, "startEarliest": "09:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "BUD-a-parliament", "kind": "activity", "cityId": "BUD", "name": "Parliament guided tour", "short": "Parliament tour", "tags": ["history", "museums"], "lat": 47.507, "lng": 19.0457, "durationMin": 60, "priceCents": 3500, "startEarliest": "08:30", "startLatest": "15:30", "role": "pick" },
+    { "_id": "BUD-a-market-hall", "kind": "activity", "cityId": "BUD", "name": "Great Market Hall & lángos", "short": "Great Market Hall", "tags": ["food"], "lat": 47.487, "lng": 19.0585, "durationMin": 120, "priceCents": 2500, "startEarliest": "08:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "BUD-a-danube-cruise", "kind": "activity", "cityId": "BUD", "name": "Danube evening cruise", "short": "Danube cruise", "tags": ["chill"], "lat": 47.496, "lng": 19.049, "durationMin": 90, "priceCents": 3000, "startEarliest": "18:00", "startLatest": "21:00", "role": "pick" },
+    { "_id": "BUD-a-national-museum", "kind": "activity", "cityId": "BUD", "name": "Hungarian National Museum", "short": "National Museum", "tags": ["museums"], "lat": 47.491, "lng": 19.062, "durationMin": 120, "priceCents": 1200, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "BUD-a-szentendre", "kind": "activity", "cityId": "BUD", "name": "Szentendre day trip (HÉV)", "short": "Szentendre", "tags": ["history", "nature"], "lat": 47.6694, "lng": 19.0756, "durationMin": 300, "priceCents": 1500, "startEarliest": "09:30", "startLatest": "11:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "BUD-h-jewish-flat", "toId": "BUD-a-szentendre", "mode": "train", "minutes": 55, "note": "metro M2 to Batthyány tér + HÉV H5" },
+    { "fromId": "BUD-h-jewish-flat", "toId": "BUD-a-castle-hill", "mode": "transit", "minutes": 25, "note": "bus 16 across the Chain Bridge" }
+  ],
+  "hilly": ["BUD-h-castle-guest", "BUD-a-castle-hill"]
+}

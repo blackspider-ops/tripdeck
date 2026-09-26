@@ -4,6 +4,7 @@ import { MAX_CREW, type Band, type CrewPublic } from "@all-ayes/shared";
 import { api } from "../../net/api";
 import { KEYS, readJSON, writeJSON } from "../../net/storage";
 import { useCrew, useTripSelector } from "../TripContext";
+import { formatWindow } from "../format";
 import { useAsyncAction } from "../useAsyncAction";
 import { inviteView, resetSeat, seatLists } from "../seatClaims";
 import { CopyLine, CrewList, QR } from "../components/crew";
@@ -42,6 +43,8 @@ export default function Muster() {
           </div>
         </div>
       </Card>
+
+      <CourseCard />
 
       <Card label="Crew">
         <div className="eyebrow">Crew</div>
@@ -225,5 +228,25 @@ function AddAbsent({ tripId, token, taken, onInvite }: {
         <LinkButton onClick={() => setOpen(false)}>Cancel</LinkButton>
       </div>
     </form>
+  );
+}
+
+/**
+ * The course: the ports on the chart (named ports, or once a region / anywhere voyage's table has ranked them) and the
+ * dates on offer.
+ */
+function CourseCard() {
+  const cities = useTripSelector((s) => s.trip!.candidateCities);
+  const destination = useTripSelector((s) => s.trip!.destination);
+  const windows = useTripSelector((s) => s.trip!.dateWindows);
+  const wide = destination && destination.kind !== "cities";
+  return (
+    <Card label="The chart">
+      <div className="eyebrow">The chart</div>
+      {wide ? <h2 className="h2">{destination.label === "anywhere" ? "Anywhere" : destination.label}</h2> : null}
+      {cities.length ? <p className="body">{cities.map((c) => c.name).join(" · ")}</p> : null}
+      {wide && !cities.length ? <p className="small">Ports are chosen when the table meets, from everyone's terms.</p> : null}
+      {windows.length ? <p className="small mono">{windows.map((w) => `${w.label ? `${w.label}: ` : ""}${formatWindow(w.start, w.end)}`).join(" · ")}</p> : null}
+    </Card>
   );
 }

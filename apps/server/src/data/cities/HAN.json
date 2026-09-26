@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "HAN", "name": "Hanoi", "country": "Vietnam", "region": "Asia", "airport": { "code": "HAN", "lat": 21.2212, "lng": 105.8072 }, "utcOffset": 7, "centerLat": 21.032, "centerLng": 105.848, "tileRadiusKm": 2.0, "publicFlags": ["cool, drizzly winters; hot monsoon summers", "long flight from the US (20+ h, one stop)"] },
+  "hotels": [
+    { "_id": "HAN-h-old-quarter-hostel", "kind": "hotel", "cityId": "HAN", "name": "Old Quarter Hostel (3 beds)", "neighborhood": "Old Quarter", "lat": 21.0355, "lng": 105.8505, "stayType": "hostel", "nightlyCents": 3600, "sleeps": 3, "rating": 4.2 },
+    { "_id": "HAN-h-ba-dinh-guest", "kind": "hotel", "cityId": "HAN", "name": "Ba Dinh Guesthouse", "neighborhood": "Ba Dinh", "lat": 21.033, "lng": 105.841, "stayType": "guesthouse", "nightlyCents": 5000, "sleeps": 3, "rating": 4.1 },
+    { "_id": "HAN-h-tay-ho-flat", "kind": "hotel", "cityId": "HAN", "name": "Tay Ho Apartment", "neighborhood": "Tay Ho (West Lake)", "lat": 21.06, "lng": 105.829, "stayType": "apartment", "nightlyCents": 7500, "sleeps": 4, "rating": 4.4 },
+    { "_id": "HAN-h-hoan-kiem-triple", "kind": "hotel", "cityId": "HAN", "name": "Hoan Kiem Boutique (triple)", "neighborhood": "Hoan Kiem", "lat": 21.03, "lng": 105.852, "stayType": "hotel", "nightlyCents": 9000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "HAN-h-french-quarter-triple", "kind": "hotel", "cityId": "HAN", "name": "French Quarter Hotel (triple)", "neighborhood": "French Quarter", "lat": 21.0245, "lng": 105.856, "stayType": "hotel", "nightlyCents": 18000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "HAN-a-street-food", "kind": "activity", "cityId": "HAN", "name": "Old Quarter street food & egg coffee", "short": "Street food walk", "tags": ["food"], "lat": 21.034, "lng": 105.851, "durationMin": 180, "priceCents": 3000, "startEarliest": "17:00", "startLatest": "19:00", "role": "group" },
+    { "_id": "HAN-a-temple-literature", "kind": "activity", "cityId": "HAN", "name": "Temple of Literature", "short": "Temple of Literature", "tags": ["history"], "lat": 21.0285, "lng": 105.8355, "durationMin": 90, "priceCents": 200, "startEarliest": "08:00", "startLatest": "16:30", "role": "group" },
+    { "_id": "HAN-a-water-puppets", "kind": "activity", "cityId": "HAN", "name": "Thang Long water puppet show", "short": "Water puppets", "tags": ["music", "history"], "lat": 21.0318, "lng": 105.8533, "durationMin": 60, "priceCents": 700, "startEarliest": "15:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "HAN-a-ethnology", "kind": "activity", "cityId": "HAN", "name": "Vietnam Museum of Ethnology", "short": "Ethnology museum", "tags": ["museums"], "lat": 21.0405, "lng": 105.7985, "durationMin": 150, "priceCents": 200, "startEarliest": "08:30", "startLatest": "15:00", "role": "pick" },
+    { "_id": "HAN-a-hoa-lo", "kind": "activity", "cityId": "HAN", "name": "Hoa Lo Prison museum", "short": "Hoa Lo Prison", "tags": ["history", "museums"], "lat": 21.0253, "lng": 105.8466, "durationMin": 90, "priceCents": 200, "startEarliest": "08:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "HAN-a-ta-hien", "kind": "activity", "cityId": "HAN", "name": "Bia hoi on Ta Hien beer street", "short": "Ta Hien beer street", "tags": ["nightlife"], "lat": 21.0357, "lng": 105.8527, "durationMin": 150, "priceCents": 800, "startEarliest": "19:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "HAN-a-west-lake", "kind": "activity", "cityId": "HAN", "name": "West Lake bike loop", "short": "West Lake bike", "tags": ["nature", "chill"], "lat": 21.058, "lng": 105.82, "durationMin": 120, "priceCents": 1000, "startEarliest": "07:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "HAN-a-bat-trang", "kind": "activity", "cityId": "HAN", "name": "Bat Trang pottery village", "short": "Bat Trang pottery", "tags": ["history", "chill"], "lat": 20.976, "lng": 105.912, "durationMin": 240, "priceCents": 1500, "startEarliest": "08:30", "startLatest": "13:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "HAN-h-tay-ho-flat", "toId": "HAN-a-bat-trang", "mode": "taxi", "minutes": 35, "note": "across the Red River" },
+    { "fromId": "HAN-h-tay-ho-flat", "toId": "HAN-a-ethnology", "mode": "taxi", "minutes": 15, "note": "west via Hoang Quoc Viet" },
+    { "fromId": "HAN-h-old-quarter-hostel", "toId": "HAN-a-bat-trang", "mode": "taxi", "minutes": 30, "note": "across the Red River" }
+  ],
+  "hilly": []
+}

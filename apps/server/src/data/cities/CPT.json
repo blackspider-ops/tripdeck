@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "CPT", "name": "Cape Town", "country": "South Africa", "region": "Africa", "airport": { "code": "CPT", "lat": -33.9715, "lng": 18.6021 }, "utcOffset": 2, "centerLat": -33.922, "centerLng": 18.414, "tileRadiusKm": 3, "publicFlags": ["strong summer winds (the Cape Doctor)", "rideshare recommended after dark"] },
+  "hotels": [
+    { "_id": "CPT-h-long-st-hostel", "kind": "hotel", "cityId": "CPT", "name": "Long Street Hostel (3 beds)", "neighborhood": "City Bowl", "lat": -33.9235, "lng": 18.4165, "stayType": "hostel", "nightlyCents": 6000, "sleeps": 3, "rating": 4.0 },
+    { "_id": "CPT-h-gardens-guest", "kind": "hotel", "cityId": "CPT", "name": "Gardens Guesthouse", "neighborhood": "Gardens", "lat": -33.9325, "lng": 18.4115, "stayType": "guesthouse", "nightlyCents": 12500, "sleeps": 3, "rating": 4.4 },
+    { "_id": "CPT-h-de-waterkant-flat", "kind": "hotel", "cityId": "CPT", "name": "De Waterkant Apartment", "neighborhood": "De Waterkant", "lat": -33.9135, "lng": 18.4175, "stayType": "apartment", "nightlyCents": 18500, "sleeps": 4, "rating": 4.5 },
+    { "_id": "CPT-h-sea-point-triple", "kind": "hotel", "cityId": "CPT", "name": "Sea Point Hotel (triple)", "neighborhood": "Sea Point", "lat": -33.9165, "lng": 18.3885, "stayType": "hotel", "nightlyCents": 17000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "CPT-h-waterfront-triple", "kind": "hotel", "cityId": "CPT", "name": "V&A Waterfront Hotel (triple)", "neighborhood": "V&A Waterfront", "lat": -33.9055, "lng": 18.4195, "stayType": "hotel", "nightlyCents": 38000, "sleeps": 3, "rating": 4.7 }
+  ],
+  "activities": [
+    { "_id": "CPT-a-table-mountain", "kind": "activity", "cityId": "CPT", "name": "Table Mountain cableway", "short": "Table Mountain", "tags": ["nature"], "lat": -33.948, "lng": 18.4035, "durationMin": 180, "priceCents": 2600, "startEarliest": "08:30", "startLatest": "16:00", "role": "group" },
+    { "_id": "CPT-a-robben-island", "kind": "activity", "cityId": "CPT", "name": "Robben Island ferry & tour", "short": "Robben Island", "tags": ["history", "museums"], "lat": -33.9068, "lng": 18.4194, "durationMin": 240, "priceCents": 3400, "startEarliest": "09:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "CPT-a-bo-kaap", "kind": "activity", "cityId": "CPT", "name": "Bo-Kaap walk & Cape Malay cooking class", "short": "Bo-Kaap cooking", "tags": ["food", "history"], "lat": -33.9205, "lng": 18.4148, "durationMin": 180, "priceCents": 5500, "startEarliest": "10:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "CPT-a-boulders", "kind": "activity", "cityId": "CPT", "name": "Boulders Beach penguins", "short": "Boulders penguins", "tags": ["beach", "nature"], "lat": -34.197, "lng": 18.451, "durationMin": 300, "priceCents": 1300, "startEarliest": "09:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "CPT-a-kirstenbosch", "kind": "activity", "cityId": "CPT", "name": "Kirstenbosch Botanical Garden", "short": "Kirstenbosch", "tags": ["nature", "chill"], "lat": -33.9875, "lng": 18.4327, "durationMin": 150, "priceCents": 1400, "startEarliest": "08:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "CPT-a-camps-bay", "kind": "activity", "cityId": "CPT", "name": "Camps Bay beach afternoon", "short": "Camps Bay beach", "tags": ["beach", "chill"], "lat": -33.9505, "lng": 18.3775, "durationMin": 180, "priceCents": 0, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CPT-a-zeitz-mocaa", "kind": "activity", "cityId": "CPT", "name": "Zeitz MOCAA", "short": "Zeitz MOCAA", "tags": ["museums"], "lat": -33.9085, "lng": 18.4225, "durationMin": 120, "priceCents": 1700, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "CPT-a-kloof-night", "kind": "activity", "cityId": "CPT", "name": "Kloof & Long Street night out", "short": "Kloof St night out", "tags": ["nightlife", "music"], "lat": -33.9265, "lng": 18.4125, "durationMin": 180, "priceCents": 2500, "startEarliest": "21:00", "startLatest": "23:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "CPT-h-de-waterkant-flat", "toId": "CPT-a-boulders", "mode": "taxi", "minutes": 45, "note": "M3 then Main Road via Muizenberg" },
+    { "fromId": "CPT-h-de-waterkant-flat", "toId": "CPT-a-kirstenbosch", "mode": "taxi", "minutes": 20 },
+    { "fromId": "CPT-h-de-waterkant-flat", "toId": "CPT-a-table-mountain", "mode": "taxi", "minutes": 15, "note": "to the lower cableway station" }
+  ],
+  "hilly": ["CPT-a-bo-kaap", "CPT-a-table-mountain", "CPT-h-gardens-guest"]
+}

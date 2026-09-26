@@ -1,0 +1,26 @@
+{
+  "city": { "_id": "HNL", "name": "Honolulu", "country": "United States", "state": "HI", "region": "United States", "airport": {"code": "HNL", "lat": 21.3187, "lng": -157.9225}, "utcOffset": -10, "centerLat": 21.276, "centerLng": -157.822, "tileRadiusKm": 2.5, "publicFlags": ["long flight", "expensive hotels"] },
+  "hotels": [
+    { "_id": "HNL-h-waikiki-condo", "kind": "hotel", "cityId": "HNL", "name": "Waikiki Condo", "neighborhood": "Waikiki", "lat": 21.2825, "lng": -157.83, "stayType": "apartment", "nightlyCents": 32000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "HNL-h-beachfront-triple", "kind": "hotel", "cityId": "HNL", "name": "Beachfront Waikiki Hotel (triple)", "neighborhood": "Waikiki", "lat": 21.277, "lng": -157.827, "stayType": "hotel", "nightlyCents": 52000, "sleeps": 3, "rating": 4.6 },
+    { "_id": "HNL-h-ala-moana-triple", "kind": "hotel", "cityId": "HNL", "name": "Ala Moana Hotel (triple)", "neighborhood": "Ala Moana", "lat": 21.2905, "lng": -157.8395, "stayType": "hotel", "nightlyCents": 30000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "HNL-h-diamond-head-guest", "kind": "hotel", "cityId": "HNL", "name": "Diamond Head Guesthouse", "neighborhood": "Kapahulu", "lat": 21.272, "lng": -157.815, "stayType": "guesthouse", "nightlyCents": 25000, "sleeps": 3, "rating": 4.5 },
+    { "_id": "HNL-h-waikiki-hostel", "kind": "hotel", "cityId": "HNL", "name": "Waikiki Beach Hostel (3 beds)", "neighborhood": "Waikiki", "lat": 21.275, "lng": -157.823, "stayType": "hostel", "nightlyCents": 15000, "sleeps": 3, "rating": 3.9 }
+  ],
+  "activities": [
+    { "_id": "HNL-a-surf", "kind": "activity", "cityId": "HNL", "name": "Waikiki Beach surf lesson", "short": "Surf lesson", "tags": ["beach"], "lat": 21.276, "lng": -157.827, "durationMin": 150, "priceCents": 9000, "startEarliest": "08:00", "startLatest": "14:00", "role": "group" },
+    { "_id": "HNL-a-diamond-head", "kind": "activity", "cityId": "HNL", "name": "Diamond Head summit hike", "short": "Diamond Head hike", "tags": ["nature"], "lat": 21.2614, "lng": -157.8055, "durationMin": 120, "priceCents": 500, "startEarliest": "07:00", "startLatest": "10:00", "role": "group" },
+    { "_id": "HNL-a-pearl-harbor", "kind": "activity", "cityId": "HNL", "name": "Pearl Harbor & USS Arizona Memorial", "short": "Pearl Harbor", "tags": ["history", "museums"], "lat": 21.3649, "lng": -157.939, "durationMin": 240, "priceCents": 3500, "startEarliest": "07:30", "startLatest": "11:00", "role": "group" },
+    { "_id": "HNL-a-hanauma", "kind": "activity", "cityId": "HNL", "name": "Hanauma Bay snorkel", "short": "Hanauma Bay", "tags": ["beach", "nature"], "lat": 21.269, "lng": -157.694, "durationMin": 180, "priceCents": 2500, "startEarliest": "07:00", "startLatest": "13:30", "role": "pick" },
+    { "_id": "HNL-a-poke", "kind": "activity", "cityId": "HNL", "name": "Poke, malasadas & shave ice crawl", "short": "Poke & shave ice", "tags": ["food"], "lat": 21.2847, "lng": -157.8134, "durationMin": 120, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "16:00", "role": "pick" },
+    { "_id": "HNL-a-luau", "kind": "activity", "cityId": "HNL", "name": "Waikiki luau dinner show", "short": "Luau", "tags": ["music", "food"], "lat": 21.277, "lng": -157.829, "durationMin": 180, "priceCents": 17500, "startEarliest": "17:00", "startLatest": "18:00", "role": "pick" },
+    { "_id": "HNL-a-bishop", "kind": "activity", "cityId": "HNL", "name": "Bishop Museum", "short": "Bishop Museum", "tags": ["museums", "history"], "lat": 21.3331, "lng": -157.871, "durationMin": 150, "priceCents": 3400, "startEarliest": "09:00", "startLatest": "14:00", "role": "pick" },
+    { "_id": "HNL-a-dukes", "kind": "activity", "cityId": "HNL", "name": "Sunset mai tais & live Hawaiian music", "short": "Sunset mai tais", "tags": ["chill", "nightlife", "music"], "lat": 21.2767, "lng": -157.8278, "durationMin": 120, "priceCents": 3000, "startEarliest": "16:00", "startLatest": "19:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "HNL-h-waikiki-condo", "toId": "HNL-a-pearl-harbor", "mode": "taxi", "minutes": 35 },
+    { "fromId": "HNL-h-waikiki-condo", "toId": "HNL-a-hanauma", "mode": "taxi", "minutes": 25 },
+    { "fromId": "HNL-h-waikiki-condo", "toId": "HNL-a-bishop", "mode": "taxi", "minutes": 25 }
+  ],
+  "hilly": ["HNL-a-diamond-head"]
+}

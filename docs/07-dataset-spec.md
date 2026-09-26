@@ -1,8 +1,33 @@
-# 07 — Dataset Specification: "Three Ports" preset
+# 07 — Dataset Specification
 
-We use a **curated, illustrative dataset** — not live inventory. Real multi‑supplier booking by agents is still unsolved industry‑wide in 2026, and live APIs would eat our 36 hours. Prices are realistic ballparks for mid‑March 2027 but **invented for the demo**; Devpost and the pitch say so.
+We use a **curated, illustrative dataset** — not live inventory. Real multi‑supplier booking by agents is still unsolved industry‑wide in 2026, and live APIs would eat our 36 hours.
 
-File: `apps/server/src/data/dataset.json` (loaded into memory once at boot and indexed; nothing is seeded into MongoDB. `apps/server/src/demo/seed.ts`, run by `POST /api/demo/seed` from the `/demo` page, creates the Expo trip).
+> **Honesty note.** Stays, activities and their prices are hand‑written ballparks. Flights outside the original
+> Three Ports table are **modelled** (§2b): a formula over distance, season and a seeded hash, not a fare search.
+> Every price is illustrative, never a quote; no real bookings are made. The app, Devpost and the pitch say so.
+
+## 0. Where the data lives
+
+| File | What |
+|---|---|
+| `apps/server/src/data/dataset.json` | The original "Three Ports" preset (Lisbon, Mexico City, Montréal) with its **curated flights**, and the **date windows** W1–W10. |
+| `apps/server/src/data/cities/<ID>.json` | One file per port (Barcelona, Tokyo, New Orleans, …): `{ city, hotels[5], activities[8] (3 group + 5 pick), overrides[], hilly[] }`. No flights. |
+| `packages/shared/src/data/airports.json` | The ~37 US / Canada **home airports** (code, name, city, country, lat, lng, standard UTC offset). `ORIGINS` / `ORIGIN_COORDS` / `AIRPORTS` in shared come from it; ATL, ORD, JFK stay first. |
+| generated ports (docs/11) | Packs built from OpenStreetMap at runtime (`W-…` ids), added with `addCityPack`. |
+
+`data/loader.ts` reads `dataset.json` once at boot, derives W2's curated flights (§2), then merges every
+`cities/*.json` (sorted by name). Each city file is **validated** (`validateCityPack`): id, name, country, region (one of
+`REGIONS`; "Pacific" is read as Oceania), airport, UTC offset, center, tile radius, flags; every stay (`<ID>-h-<slug>`,
+stay type, price, sleeps, rating), every activity (`<ID>-…`, tags from the 8 app tags, duration, price, `HH:MM`
+windows, group/pick), overrides (known places; walk / tram / taxi / train / transit) and hills. A file that doesn't
+parse or validate — or whose port or place ids already exist — is **skipped and logged**; the helm still boots.
+Places far from the center are allowed (a day trip): there is no distance check. `CITIES_DIR` points the loader at
+another folder (tests use `apps/server/test/fixtures/cities`). The production build copies `cities/` next to the
+bundle. `addCityPack(pack)` merges a pack at runtime (same validation, optional `flights`); every per‑dataset cache
+(lookups, flight model, public option sets, dataset hash) is keyed on the dataset's revision and rebuilds.
+
+Nothing is seeded into MongoDB. `apps/server/src/demo/seed.ts` (`POST /api/demo/seed?kind=random|expo`, from the
+`/demo` page) creates a random demo voyage or the scripted Expo one (§8).
 
 ---
 
@@ -14,7 +39,7 @@ File: `apps/server/src/data/dataset.json` (loaded into memory once at boot and i
 - Coordinates WGS84 (used for Dry Run placement + walking times).
 - `id` format: `<CITY>-<kind>-<slug>`.
 
-## 2. Preset
+## 2. The Three Ports preset (dataset.json)
 ```json
 {
   "presetId": "three-ports",
@@ -29,7 +54,59 @@ File: `apps/server/src/data/dataset.json` (loaded into memory once at boot and i
 ```
 (W2 flights = W1 price + 8%; W2 is only used if some member can't do W1.)
 
+### 2a. Date windows
+
+A voyage offers 1–3 of these (the organizer picks on Create; default: the next two that haven't started). The Brief's
+date chips show only the voyage's windows, and the helm drops any other window from a brief (none left → refused).
+W1 and W2 are unchanged. Voyages from older builds offer W1 and W2.
+
+| id | Dates | Nights | Label | Season factor (flight model) |
+|---|---|---|---|---|
+| W1 | 2027‑03‑12 → 03‑16 | 4 | (spring) | 1.00 |
+| W2 | 2027‑03‑13 → 03‑16 | 3 | | 1.08 |
+| W3 | 2027‑05‑28 → 05‑31 | 3 | Memorial Day weekend | 1.12 |
+| W4 | 2027‑07‑02 → 07‑07 | 5 | July 4th week | 1.25 |
+| W5 | 2027‑08‑07 → 08‑14 | 7 | A summer week | 1.18 |
+| W6 | 2027‑09‑03 → 09‑06 | 3 | Labor Day weekend | 1.10 |
+| W7 | 2027‑10‑08 → 10‑12 | 4 | Fall break | 0.94 |
+| W8 | 2027‑11‑24 → 11‑28 | 4 | Thanksgiving | 1.22 |
+| W9 | 2027‑12‑27 → 2028‑01‑02 | 6 | Winter holidays | 1.38 |
+| W10 | 2028‑03‑10 → 03‑15 | 5 | Spring break '28 | 1.15 |
+
+### 2b. The flight model (`apps/server/src/fit/flights.ts`)
+
+**Curated first.** For a (port, home airport, window) with at least one flight in `dataset.json` — LIS / MEX / YUL ×
+ATL / ORD / JFK × W1 / W2 — those listings are the options, exactly as in §4. Every other combination is modelled,
+deterministically (FNV‑1a hash of route + window + option; no `Math.random` at runtime):
+
+| | Rule |
+|---|---|
+| Distance | great‑circle km, home airport → the port's `airport` (NYC → JFK, TYO → HND, LON → LHR, …) |
+| Options | 1–3 by hash: the main one (nonstop up to ~4,500 km, and on ~70 % of long‑haul routes from big hubs; else 1 stop), a cheaper 1‑stop (×0.86), and a 2‑stop budget fare (×0.72, routes > 1,500 km) or a rival nonstop (×1.06) |
+| Duration | km / 800 km/h + 45 min; each stop +1.5–3 h and ~8 % routing |
+| Price | `$120 + 8.5¢/km` (+3¢/km past 8,000 km) × season factor (§2a) × 0.92–1.08 noise × option factor, rounded to $5 and **never a round $50** (budget caps sit on the $50 grid, so a fare can't be mistaken for one) |
+| Airlines | by the port: flag carrier (TAP, Iberia, Air France, KLM, Lufthansa, British Airways, Aer Lingus, Icelandair, ITA, Aegean, Turkish, Emirates, Qatar, Royal Air Maroc, ANA / JAL, Thai, Aeroméxico, Avianca, LATAM, Copa, Air Canada, …) + Delta / United / American; US ports: Delta, United, American, Southwest, JetBlue (east), Alaska (west), Hawaiian (Honolulu). 1‑stop labels name a real hub of that airline that is roughly on the way (≤ +30 % distance; "United (via EWR)"). |
+| Times | local, from each end's standard UTC offset. Eastbound long‑haul leaves 15:30–22:30 and lands next morning; transpacific leaves 10:30–14:00; transcontinental west→east is sometimes a red‑eye; the rest leave 06:00–19:00. The outbound leaves on the window's first day, the return on its last. |
+| Red‑eye | 90+ minutes airborne between 01:00 and 05:00 on the traveller's home clock, or — eastbound long‑haul (evening out, morning in) — on the port's clock |
+| Home port | a home airport within **150 km** of the port (JFK / LGA / EWR → New York, YYZ → Toronto, YUL → Montréal): one option, "No flight — home port", **$0**. Pricing adds no flight line; the member is free from 9 am on day 1 like someone without a flight and doesn't set day 1. |
+
+Ballpark check against the curated table: JFK→YUL (530 km) ≈ $165, ATL→MEX (2,140 km) ≈ $300, JFK→LIS (5,400 km) ≈ $580,
+ATL→LIS (6,700 km) ≈ $690. The public group‑total range (doc 05 §7) is computed over **every** home airport, so it is
+wider than it was with three; its bounds sit on $25 / $75 (a $50 grid offset by $25) for the same reason as the fares.
+
 ## 3. Cities
+
+Every port (dataset.json or a city file) carries: `_id` (3–4 letters; `W-…` for generated ports), `name`, `country`,
+`region` (Europe, Latin America, Caribbean, United States, Canada, Asia, Oceania, Africa, Middle East), `state` (US
+ports, two‑letter), `airport {code, lat, lng}`, `utcOffset` (standard time), `centerLat/Lng`, `tileRadiusKm`,
+`publicFlags`, `hilly` (ids of its places on hills: walks touching them take 1.4×).
+
+| Port | Airport | UTC offset | Region | Hilly |
+|---|---|---|---|---|
+| LIS | LIS 38.7813, −9.1359 | +0 | Europe | Casa Alfama, Bairro hostel, Tram 28 & castle, fado, Bairro Alto night |
+| MEX | MEX 19.4361, −99.0719 | −6 | Latin America | — |
+| YUL | YUL 45.4706, −73.7408 | −5 | Canada | — |
+
 | id | Name | Center (lat, lng) | Tiles radius | Scale in cloche | Public flags |
 |---|---|---|---|---|---|
 | LIS | Lisbon | 38.7120, −9.1380 | 1.5 km | 8 cm per km | "hilly neighborhoods", "overnight flights from the US" |
@@ -133,7 +210,7 @@ straightKm = haversine(a, b)
 if straightKm ≤ 2.0:  mode = walk;  minutes = straightKm × 1.3 / 4.8 km/h × 60 × hillFactor(city, a, b)
 elif straightKm ≤ 8: mode = taxi;  minutes = 8 + straightKm × 2.5
 else:                mode = train/taxi (dataset override)
-hillFactor: LIS segments touching Alfama/Bairro Alto/Castelo = 1.4, else 1.0
+hillFactor: 1.4 when either end is in its port's `hilly` list (Lisbon: Alfama / Bairro Alto / Castelo), else 1.0
 flag long_walk if walk minutes > 25; flag early_start if activity start or flight departure < 08:00
 flag red_eye if the outbound flight is overnight (arrives next calendar day)
 ```
@@ -152,7 +229,13 @@ Dataset `overrides` (checked first):
 
 ---
 
-## 8. Expo crew (seeded by `apps/server/src/demo/seed.ts`)
+## 8. Expo crew (seeded by `apps/server/src/demo/seed.ts`, `?kind=expo`)
+
+The scripted voyage: Lisbon / Mexico City / Montréal, W1 + W2, this crew. Its briefs lead to Lisbon **by design**
+(the tests and the pitch depend on its numbers); the engine is generic. `/demo` seeds a **random** voyage by default
+(docs/09): 3–4 crew from a list of names, random home airports, budget bands and caps, must‑haves, dealbreakers and
+notes, 3 random curated ports, 1–3 random windows, one member away with a standing instruction —
+`seedRandom(helm, seed)` is deterministic for a seed (`?seed=<n>` replays one).
 
 | Member | Role | Band | Origin | Cap (PRIVATE) | Dates | Must‑haves | Dealbreakers | Note | Memory seed |
 |---|---|---|---|---|---|---|---|---|---|
@@ -261,6 +344,17 @@ Because the Captain only shortlists plans that were **proposed or supported** in
 { "_id":"LIS-a-cascais","kind":"activity","cityId":"LIS","name":"Cascais beach day (train)",
   "tags":["beach","chill"],"lat":38.6979,"lng":-9.4215,"durationMin":360,"priceCents":1200,
   "startEarliest":"10:00","startLatest":"12:00","role":"pick" }
+```
+
+## 11b. City file shape (`data/cities/<ID>.json`)
+```json
+{ "city": { "_id":"NYC","name":"New York","country":"United States","region":"United States","state":"NY",
+            "airport":{"code":"JFK","lat":40.6413,"lng":-73.7781},"utcOffset":-5,
+            "centerLat":40.73,"centerLng":-73.995,"tileRadiusKm":3,"publicFlags":["expensive hotels"] },
+  "hotels": [ /* 5 × HotelOption, ids NYC-h-<slug> */ ],
+  "activities": [ /* 3 group + 5 pick, ids NYC-a-<slug>, tags from the 8 app tags */ ],
+  "overrides": [ { "fromId":"NYC-h-east-village","toId":"NYC-a-liberty","mode":"transit","minutes":45 } ],
+  "hilly": [] }
 ```
 
 ## 12. Data QA checklist

@@ -1,0 +1,27 @@
+{
+  "city": { "_id": "NYC", "name": "New York", "country": "United States", "state": "NY", "region": "United States", "airport": {"code": "JFK", "lat": 40.6413, "lng": -73.7781}, "utcOffset": -5, "centerLat": 40.73, "centerLng": -73.995, "tileRadiusKm": 3, "publicFlags": ["expensive hotels", "cold and windy in winter"] },
+  "hotels": [
+    { "_id": "NYC-h-east-village", "kind": "hotel", "cityId": "NYC", "name": "East Village Walk-up", "neighborhood": "East Village", "lat": 40.7265, "lng": -73.9815, "stayType": "apartment", "nightlyCents": 38000, "sleeps": 4, "rating": 4.4 },
+    { "_id": "NYC-h-midtown-triple", "kind": "hotel", "cityId": "NYC", "name": "Midtown Hotel (triple)", "neighborhood": "Midtown", "lat": 40.7549, "lng": -73.984, "stayType": "hotel", "nightlyCents": 42000, "sleeps": 3, "rating": 4.3 },
+    { "_id": "NYC-h-soho-triple", "kind": "hotel", "cityId": "NYC", "name": "SoHo Boutique (triple)", "neighborhood": "SoHo", "lat": 40.7233, "lng": -74.003, "stayType": "hotel", "nightlyCents": 56000, "sleeps": 3, "rating": 4.7 },
+    { "_id": "NYC-h-les-guest", "kind": "hotel", "cityId": "NYC", "name": "Lower East Side Guesthouse", "neighborhood": "Lower East Side", "lat": 40.7185, "lng": -73.9876, "stayType": "guesthouse", "nightlyCents": 29000, "sleeps": 3, "rating": 4.2 },
+    { "_id": "NYC-h-chelsea-hostel", "kind": "hotel", "cityId": "NYC", "name": "Chelsea Hostel (3 beds)", "neighborhood": "Chelsea", "lat": 40.7465, "lng": -74.0014, "stayType": "hostel", "nightlyCents": 19500, "sleeps": 3, "rating": 4 }
+  ],
+  "activities": [
+    { "_id": "NYC-a-liberty", "kind": "activity", "cityId": "NYC", "name": "Statue of Liberty & Ellis Island", "short": "Statue of Liberty", "tags": ["history", "museums"], "lat": 40.6892, "lng": -74.0445, "durationMin": 270, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "13:00", "role": "group" },
+    { "_id": "NYC-a-broadway", "kind": "activity", "cityId": "NYC", "name": "Broadway show", "short": "Broadway show", "tags": ["music", "nightlife"], "lat": 40.759, "lng": -73.9865, "durationMin": 165, "priceCents": 13000, "startEarliest": "19:00", "startLatest": "20:00", "role": "group" },
+    { "_id": "NYC-a-high-line", "kind": "activity", "cityId": "NYC", "name": "High Line & Chelsea Market", "short": "High Line walk", "tags": ["food", "chill"], "lat": 40.7424, "lng": -74.0061, "durationMin": 150, "priceCents": 2500, "startEarliest": "10:00", "startLatest": "15:00", "role": "group" },
+    { "_id": "NYC-a-met", "kind": "activity", "cityId": "NYC", "name": "Metropolitan Museum of Art", "short": "The Met", "tags": ["museums"], "lat": 40.7794, "lng": -73.9632, "durationMin": 180, "priceCents": 3000, "startEarliest": "10:00", "startLatest": "14:30", "role": "pick" },
+    { "_id": "NYC-a-central-park", "kind": "activity", "cityId": "NYC", "name": "Central Park bike loop", "short": "Central Park bikes", "tags": ["nature", "chill"], "lat": 40.7736, "lng": -73.9712, "durationMin": 150, "priceCents": 2500, "startEarliest": "09:00", "startLatest": "15:00", "role": "pick" },
+    { "_id": "NYC-a-jazz", "kind": "activity", "cityId": "NYC", "name": "Village Vanguard jazz set", "short": "Jazz club night", "tags": ["music", "nightlife"], "lat": 40.7361, "lng": -74.0017, "durationMin": 120, "priceCents": 5000, "startEarliest": "20:00", "startLatest": "22:30", "role": "pick" },
+    { "_id": "NYC-a-food-crawl", "kind": "activity", "cityId": "NYC", "name": "Lower East Side food crawl", "short": "LES food crawl", "tags": ["food"], "lat": 40.7223, "lng": -73.9874, "durationMin": 180, "priceCents": 6000, "startEarliest": "11:00", "startLatest": "13:00", "role": "pick" },
+    { "_id": "NYC-a-911", "kind": "activity", "cityId": "NYC", "name": "9/11 Memorial & Museum", "short": "9/11 Memorial", "tags": ["history", "museums"], "lat": 40.7115, "lng": -74.0134, "durationMin": 120, "priceCents": 3600, "startEarliest": "09:00", "startLatest": "16:00", "role": "pick" }
+  ],
+  "overrides": [
+    { "fromId": "NYC-h-east-village", "toId": "NYC-a-liberty", "mode": "transit", "minutes": 45, "note": "subway to Battery Park + ferry" },
+    { "fromId": "NYC-h-east-village", "toId": "NYC-a-met", "mode": "transit", "minutes": 35, "note": "6 train uptown" },
+    { "fromId": "NYC-h-chelsea-hostel", "toId": "NYC-a-met", "mode": "transit", "minutes": 30, "note": "subway via Columbus Circle" },
+    { "fromId": "NYC-h-east-village", "toId": "NYC-a-central-park", "mode": "transit", "minutes": 30, "note": "subway to 72 St" }
+  ],
+  "hilly": []
+}

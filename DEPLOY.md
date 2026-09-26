@@ -14,6 +14,7 @@ Copy `.env.example` → `.env` locally, or set the same variables on your host. 
 | `BACKBOARD_API_KEY` | backboard.io (promo `13HACKGT`) | Mates remember you across voyages |
 | `VITE_GOOGLE_MAP_TILES_KEY` | Google Cloud → Map Tiles API (needs a billing account; restrict to your domain) — **build-time** | Photoreal cities in the Dry Run |
 | `VITE_CESIUM_ION_TOKEN` | ion.cesium.com → Access Tokens (free, no card) — **build-time**; used when no Google key is set | The same Google photoreal cities, via Cesium ion |
+| `ROUTESTACK_API_KEY` / `ROUTESTACK_API_SECRET` (+ optional `ROUTESTACK_ACCOUNT_ID`, `ROUTESTACK_MODE`, `ROUTESTACK_BASE_URL`) | routestack.ai dashboard (partner API key + secret). `ROUTESTACK_MODE` = `off` / `sandbox` / `live`; blank = sandbox (`https://evolvemcp.routestack.ai`, limited tokens) when both keys are set. `live` uses `https://mcp.routestack.ai` unless `ROUTESTACK_BASE_URL` says otherwise | Live hotel and flight prices on the chart (see docs/12-routestack.md); without them, curated/modelled prices |
 | `PAYMENTS_MODE` | `sim` until Visa sandbox credentials arrive (see `apps/server/src/payments/visaVic.ts`) | — |
 
 `VITE_*` variables are baked in at build time — rebuild after changing them.
@@ -24,6 +25,8 @@ Copy `.env.example` → `.env` locally, or set the same variables on your host. 
 | `TRUST_PROXY_HOPS` | 1 on Render/Fly, else 0 | Proxies in front of the server. Rate limits key on the client address through exactly this many proxies, so a spoofed `X-Forwarded-For` doesn't help. Set it to your real hop count (e.g. 2 behind a CDN + load balancer); on a bare Docker host leave it at 0. |
 | `DAILY_CAP_GEMINI` / `_TTS` / `_STT` / `_BACKBOARD` | 3000 / 1500 / 500 / 3000 | Paid calls per UTC day. Over it the app falls back (template lines, captions, typed hails, local memory). `0` switches that provider off. `/api/health` → `budgets` shows `"reserve"` / `"capped"`. With MongoDB the counts are stored (`spend` collection), so a restart or redeploy doesn't reset them. |
 | `TRIP_CAP_GEMINI` / `_TTS` / `_STT` / `_BACKBOARD` | 150 / 100 / 30 / 60 | The same, per voyage. |
+| `ROUTESTACK_DAILY_CAP` / `ROUTESTACK_TRIP_CAP` | 200 / 20 | Billable RouteStack searches (hotel + flight searches; token, destination lookup and flight session are free) per UTC day / per voyage. Over it the chart keeps curated/modelled prices. `/api/health` → `budgets.routestack`. |
+| `ROUTESTACK_SEARCH_TIMEOUT_MS` / `ROUTESTACK_TIMEOUT_MS` / `ROUTESTACK_CACHE_HOURS` | 90000 / 30000 / 6 | How long a search / other call may take, and how long a search answer is reused (memory + `DATA_DIR/routestack/`). A timed-out search isn't re-sent for 10 minutes (it was probably billed). |
 | `SPEND_RESERVE_PCT` | 20 | Share of each daily cap only voyages past the table (Dry Run, sealing, booked) may use, so a flood of new voyages can't switch voices and models off for a crew about to book. |
 | `TRIP_MISS_RATE` | 20 | Unknown voyage ids per minute per address on `/api/trips/:id/*` (each is a MongoDB lookup); then `429`. |
 | `PAIR_FAIL_RATE_48` | 30 | Wrong headset codes per minute per IPv6 /48 (per address it is 10; there is no server-wide cap). |

@@ -37,14 +37,18 @@ export const view = (p: Plan, memberId: string) => mustFind(p.members.find((m) =
 /** The member currently backs this plan (every member backs one after Watch 1). */
 const backedBy = (st: TableState, memberId: string) => mustFind(st.backing.get(memberId), "backing for", memberId);
 
-/** Best plan per city for this member, then the best of those (so proposals differ by city, not hotel). */
-function favourite(plans: Plan[], memberId: string): Plan {
-  const ranked = [...plans].sort((a, b) => advocatePreference(b, memberId) - advocatePreference(a, memberId) || compareFairness(a.fairness, b.fairness));
+/**
+ * Best plan per city for this member, then the best of those (so proposals differ by city, not hotel). `bias` (the
+ * member's loved / skipped places) nudges the preference; unfit plans stay unfit.
+ */
+function favourite(plans: Plan[], memberId: string, bias?: (p: Plan) => number): Plan {
+  const pref = (p: Plan) => { const v = advocatePreference(p, memberId); return v < 0 || !bias ? v : v + bias(p); };
+  const ranked = [...plans].sort((a, b) => pref(b) - pref(a) || compareFairness(a.fairness, b.fairness));
   return ranked[0];
 }
 
-export function decideWatch1(plans: Plan[], st: TableState, memberId: string): Decision {
-  const fav = favourite(plans, memberId);
+export function decideWatch1(plans: Plan[], st: TableState, memberId: string, bias?: (p: Plan) => number): Decision {
+  const fav = favourite(plans, memberId, bias);
   const seconding = st.proposedBy.has(fav._id);
   return { act: "PROPOSE", planId: fav._id, why: { kind: "propose", seconding } };
 }
