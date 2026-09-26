@@ -108,6 +108,9 @@ export class SceneDirector {
     ];
   }
 
+  /** The "Photoreal cities" setting changed: start or drop the tiles in any cloches on the table now. */
+  photorealChanged() { this.phases.syncTiles(); }
+
   private toggleClock() {
     const d = this.store.state.dryrun;
     this.store.emit("dryrun:control", { action: d?.pausedAt ? "resume" : "pause" });

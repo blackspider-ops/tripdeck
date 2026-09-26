@@ -30,8 +30,9 @@ export class Stage {
   private frames = 0;
   private fpsT = 0;
 
-  constructor(readonly container: HTMLElement, readonly store: TripStore, opts: DirectorOptions, alpha: boolean) {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha });
+  /** `antialias: false` for phone GPUs (Gear VR / Cardboard: MSAA on a 2560×1440 panel costs more than it buys). */
+  constructor(readonly container: HTMLElement, readonly store: TripStore, opts: DirectorOptions, alpha: boolean, gfx: { antialias?: boolean } = {}) {
+    this.renderer = new THREE.WebGLRenderer({ antialias: gfx.antialias ?? true, alpha });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.NoToneMapping;

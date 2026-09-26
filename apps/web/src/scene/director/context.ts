@@ -13,6 +13,9 @@ export interface DirectorOptions {
   controls: boolean;
   voices: boolean;
   speechFallback: boolean;
+  /** Stream Google photoreal 3D tiles into the Dry Run cloches (when a key is configured). Default on; the VR
+   *  chart room turns it off on phones (menu "Photoreal cities"). */
+  photoreal?: () => boolean;
 }
 
 export interface DirectorContext {

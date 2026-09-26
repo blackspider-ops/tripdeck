@@ -26,29 +26,32 @@ Hacking window: **Fri Sep 25 8:00 PM → Sun Sep 27 8:00 AM**. We submit by **7:
 | 10 | Hosting account with WebSockets (Render/Railway/Fly) | — | B | ☐ |
 | 11 | Install `cloudflared` (HTTPS tunnel), Node 22+ (npm workspaces) | local | both | ☐ |
 | 12 | Chrome extension **Immersive Web Emulator** (Meta) | Chrome Web Store | A | ☐ |
+| 12b | **Gear VR phone set up** (doc 10 §3): Samsung Internet + Chrome updated, Gear VR Service disabled (Package Disabler Pro or the VR Service developer‑mode trick), right USB holder in the shell | Galaxy Store / Play Store | A | ☐ |
 | 13 | Download fonts (Libre Caslon Display/Text, Source Serif 4, IBM Plex Mono, Homemade Apple) + CC0 sounds (doc 02 §10) | Google Fonts / freesound (CC0 filter) | A | ☐ |
 | 14 | Join HackGT Discord (packet link) + Match | — | both | ☐ |
 
 ### 1.2 Packing (both)
-Govt ID + student ID (**required**), laptops + chargers, **2 phones each if possible** (demo needs 2–3 phones), USB‑C cables, power strip, headphones, phone hotspot plan, water bottle, hoodie, toiletries/sleep kit if staying, **alcohol wipes** (headset hygiene for judges), a real small table cloth (dark green) for the demo table, printed 1‑page pitch card.
+Govt ID + student ID (**required**), laptops + chargers, **the Gear VR + its Galaxy phone** (and both USB holders), **2 phones each if possible** (demo needs the Gear VR phone + 1–2 more), USB‑C cables, power strip, headphones, phone hotspot plan, water bottle, hoodie, toiletries/sleep kit if staying, **alcohol wipes** (headset hygiene for judges), a real small table cloth (dark green) for the demo table, printed 1‑page pitch card.
 
 ### 1.3 Friday before 8 PM
 - 2:00 check‑in (arrive by 1:45; bags to Klaus first).
 - 5:30–7:00 Sponsor Fair: ask open questions (PRD §10): Visa (sandbox vs sim), Hardware desk (Quest count, opening time, keep all weekend), organizers (prize stacking), Meta (video details).
-- **7:45 PM: Person A queues at the Hardware Desk** for the Quest 3.
+- ~~7:45 PM: Person A queues at the Hardware Desk for the Quest 3.~~ None available for us; we use the Gear VR (doc 10).
 
 ---
 
 ## 2. Hour‑by‑hour
+
+> **Hardware change (Sat Sep 26).** The hardware desk had no Quest 3 for us. The headset is now our own **Samsung Gear VR** with a Galaxy phone: WebXR `immersive-vr` in Samsung Internet/Chrome, a VR chart room with the table at a fixed seated pose, gaze + touchpad/dwell, a webxr‑polyfill fallback (`?vr=cardboard`). Setup: doc 10. The Friday rows below are kept as planned; read "Quest" there as "Gear VR phone" and "place on the table" as "table at the seated pose". The Quest MR path stays in the code as a stretch.
 
 Legend: **CP** = checkpoint (go/no‑go). IDs reference PRD stories.
 
 ### Friday night
 | Time | Person A (Shipwright) | Person B (Purser) |
 |---|---|---|
-| 8:00–8:30 | Get Quest 3; set up guardian; connect Wi‑Fi; open test HTTPS URL | Create monorepo (doc 04 §3), shared types, `.env`, Mongo connection, `/health`; tunnel up |
+| 8:00–8:30 | Get Quest 3 (none came; Gear VR instead, doc 10); connect Wi‑Fi; open test HTTPS URL | Create monorepo (doc 04 §3), shared types, `.env`, Mongo connection, `/health`; tunnel up |
 | 8:30–10:00 | XR hello: `immersive-ar` passthrough, hit‑test ring, pinch to place a paper disc on real table (C1) | Server: trips/members REST, join codes, member tokens, socket rooms, `trip:state` (A1–A3) |
-| **10:00 CP1** | **WebXR AR runs on the desk Quest over HTTPS.** If NO → Gallery‑first plan (§4) | **Create/join from 2 phones works live** |
+| **10:00 CP1** | **WebXR runs on the headset over HTTPS** (now: `immersive-vr` on the Gear VR phone, or `?vr=cardboard`). If NO → Gallery‑first plan (§4) | **Create/join from 2 phones works live** |
 | 10:00–1:00 | Chart table, globe (texture + graticules + pins), crew pieces (Lathe), troika text, CaptionStrip; `SceneDirector` driven by a **fake event log** | `fit/pricing.ts`, `fit.ts`, `fairness.ts` + dataset JSON from doc 07 + **unit tests reproducing doc 07 §9** |
 | 1:00–2:00 | Phone design tokens + Landing/Create/Muster/Join/Brief screens (styling) | Wire Brief submit (B1–B6), brief privacy (private room only), state machine BRIEFING→AT_TABLE |
 | 2:00–3:30 | Ink ribbons + piece tip/slide animations; compass timer | **Sleep 2:00–6:00** |
@@ -133,11 +136,11 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 | 4 | Backboard memory | Skip (lose MLH Backboard entry) | Minor |
 | 5 | VIC real sandbox | SIM mode, labeled | Weaker Visa, still valid flow |
 | 6 | Phone Table mirror visuals | Log list only | Minor |
-| 7 | Quest XR (no headset or broken) | **Gallery‑first demo**: laptop Spectator + phones; enter Lighthouse only if we have any XR running | Track at risk |
+| 7 | Gear VR XR (phone fails, no WebXR, overheats) | First `?vr=cardboard`, then a second Galaxy; last, **Gallery‑first demo**: laptop Spectator + phones; enter Lighthouse only if we have any XR running | Track at risk |
 
 **Never cut:** privacy filter · deterministic pricing/fit · 3‑Watch termination · all‑or‑nothing orchestrator · captions · the design rulebook.
 
-**Gallery‑first plan (if CP1 fails):** all scene code already runs in Gallery; keep trying the Quest at the desk every 2 hours; worst case demo on laptop + phones and pitch the Quest build as "runs in Quest Browser" only if it truly does.
+**Gallery‑first plan (if CP1 fails):** all scene code already runs in Gallery; keep trying the Gear VR phone (other browser, `?vr=cardboard`, another Galaxy); worst case demo on laptop + phones and say "runs on a Gear VR" only if it truly does.
 
 ---
 
@@ -145,16 +148,19 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 
 | # | Risk | P | I | Trigger | Mitigation | Owner |
 |---|---|---|---|---|---|---|
-| R1 | No Quest from desk | M | H | Desk empty at 8 PM | Queue 7:45; ask at fair; Discord ask; Gallery‑first | A |
-| R2 | Desk Quest not in dev mode (no devtools) | H | M | — | `client:log` relay + in‑headset debug overlay | A |
-| R3 | WebXR features missing (plane detection) | L | M | CP1 | Hit‑test only; manual height adjust | A |
+| R1 | No Quest from desk | — | — | **Happened** (Fri 8 PM) | Switched to our Samsung Gear VR (doc 10). Quest MR kept as stretch if one turns up | A |
+| R1b | Gear VR phone can't run it: no WebXR in its browser, browser too old to update, Oculus app hijacks the screen on insert | M | H | CP1 on the Gear VR | Update Samsung Internet (11.2+) and Chrome; `?vr=cardboard` polyfill; disable Gear VR Service (Package Disabler Pro / VR Service developer mode); slot without the plug + gaze‑dwell; borrow a newer Galaxy (S9/S10) | A |
+| R1c | Gear VR phone overheats or drops frames mid‑demo | H | M | Phone hot, fps < 45 in the debug overlay | *Photoreal cities* off in VR (default); brightness ~70%; phone out of the shell between judges; charge between runs, not during | A |
+| R1d | Wearer gets motion sick (3DoF drift, low fps) | M | M | Judge says so | Seated only; **Recenter**; *Reduce motion*; runs ≤ 3 min; offer the Gallery instead | A |
+| R2 | No devtools once the phone is in the headset | H | M | — | `client:log` relay + in‑headset debug overlay; USB `chrome://inspect` with the phone out of the shell | A |
+| R3 | Quest only: WebXR features missing (plane detection) | L | M | CP1 | Hit‑test only; manual height adjust | A |
 | R4 | VIC sandbox access delayed | M | M | Not approved by Sat noon | Mode B/C | B |
 | R5 | Gemini latency spikes | M | M | > 4 s turns | Flash model, short outputs, pipelining, template fallback, cached run | B |
 | R6 | Budget leak in a spoken line | L | H | Filter tests | Filter + regenerate + template; 40 tests | B |
 | R7 | Negotiation boring/robotic | M | M | Stranger test Sat night | Tune prompts for warmth; distinct voices; memory line; hail moment | B |
 | R8 | Tiles slow on venue Wi‑Fi | H | M | > 4 s load | Low‑poly fallback auto‑switch; pre‑warm by viewing once | A |
 | R9 | Venue Wi‑Fi fails at Expo | M | H | — | Phone hotspot; cached run mode | B |
-| R10 | Audio inaudible at Expo | H | M | Loud atrium | Captions everywhere; small speaker for laptop; Quest audio in headset | A |
+| R10 | Audio inaudible at Expo | H | M | Loud atrium | Captions everywhere; small speaker for laptop; wired earbuds into the Gear VR phone if it has a jack | A |
 | R11 | Burnout / sleep debt | H | M | — | Scheduled sleep blocks; meals away from screens | both |
 | R12 | Scope creep | H | H | Any P2 before CP3 | Only P0 until CP3 green | both |
 | R13 | Meta video missing | L | H | Not recorded by 10 PM Sat | Recorded Sat 7:45–9:30 fixed slot | A |
@@ -166,8 +172,9 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 ---
 
 ## 6. Expo station setup (Sun 8:00–9:00)
-- Table with dark green cloth (plane detection + looks like a chart table).
-- Quest charged ≥ 90%, guardian set for seated, Quest Browser on `<domain>/xr` paired with the headset code from Rae's phone (re‑pair after each re‑seed), **alcohol wipes**.
+- A chair for the wearer (the chart room is seated). Table with dark green cloth (looks like a chart table; a Quest would use it for plane detection).
+- Gear VR phone charged ≥ 90% and cool, Do Not Disturb on, brightness ~70%, `<domain>/xr` open and paired with the headset code from Rae's phone (**Show headset code**; re‑pair after each re‑seed), a charger at the station, **alcohol wipes** for the lenses and face pad. Full list: doc 10 §8.
+- The Gallery on the laptop is **projected / turned to the aisle**, so judges see the scene the wearer sees.
 - Laptop: Gallery view full‑screen facing the aisle; second tab `/api/debug/<code>` (sign in once with the dev key).
 - Phones: Organizer (Rae) + Maya logged into seeded trip; Dev pre‑sealed.
 - Hotspot on, tested. Laptop speaker for voices.
@@ -180,7 +187,8 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 ## 7. Demo run checklist (use at CP4 and every rehearsal)
 - [ ] `/api/health` with `X-Dev-Key` all green (mongo, gemini, eleven, backboard, `payments` mode shown, `persistence.degraded` false, budgets `ok`)
 - [ ] Fresh seeded trip; 3 crew shown; Dev pre‑sealed
-- [ ] Quest enters AR, chart placed on table in ≤ 10 s
+- [ ] Gear VR phone: `/xr` paired, **Enter VR** → side‑by‑side chart room in ≤ 10 s; table straight ahead (or one **Recenter**); reticle visible; touchpad tap and a 1.6 s dwell both select; Back leaves VR
+- [ ] Phone not hot, fps ≥ 45 in the debug overlay through the Dry Run
 - [ ] Captain opens with no individual numbers
 - [ ] Early exit after Watch 2 (8 voiced lines), ≤ 70 s, voices audible, captions synced
 - [ ] Rae's hail "I'd pay more for the beach" appears as a caption and Rae's mate acknowledges it ("Heard you, Rae…")
@@ -196,7 +204,7 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 ---
 
 ## 8. Definition of done (per P0 story)
-- Works on Quest (or Gallery if R1), phones (iOS Safari + Android Chrome), and survives a page reload mid‑phase.
+- Works on the Gear VR phone (or `?vr=cardboard`, or the Gallery if R1b), phones (iOS Safari + Android Chrome), and survives a page reload mid‑phase.
 - Private data verified absent from `trip:{id}` room (socket privacy test green).
 - Copy checked against doc 02 §11 voice rules.
 - No console errors in `/debug` during a full run.

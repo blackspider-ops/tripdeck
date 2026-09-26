@@ -48,3 +48,5 @@
   .cr-card h1 { font-size: 28px; }
   .cr-code { font-size: 32px; }
 }
+/* VR on a phone: "Turn your phone sideways" over the stereo view until it's landscape (iPhone can't lock orientation) */
+.cr-rotate { background: var(--room); z-index: 5; }

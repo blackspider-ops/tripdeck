@@ -27,9 +27,19 @@ export interface MenuActions {
   captions(): string;   // returns new label
   motion(): string;
   sound(): string;
+  /** "Photoreal cities: on/off" (Google 3D tiles in the Dry Run cloches). Optional: no item without it. */
+  photoreal?(): string;
+  /** The item's label when the menu is built. */
+  photorealLabel?: string;
+  /** "Lens spacing: narrow/normal/wide" (the Cardboard lens profile). Optional: no item without it. */
+  lens?(): string;
+  lensLabel?: string;
   debug(): string;
   exit(): void;
 }
+
+/** The menu's first item: turns the chart (and in VR the whole room) to face the viewer. */
+export const RECENTER_LABEL = "Recenter";
 
 export class WristMenu {
   readonly group = new THREE.Group();
@@ -40,18 +50,26 @@ export class WristMenu {
   private a = new THREE.Vector3();
   private b = new THREE.Vector3();
   open = false;
+  /** How far ahead and how far below the eye the menu floats when opened by the wheel or a squeeze. */
+  placement = { dist: 0.45, drop: 0.12 };
 
   private wheelHit: THREE.Mesh;
 
   constructor(tw: Tweens, actions: MenuActions) {
-    this.menu = new PaperMenu(tw, CARD.menuTitle, [
-      { label: "Recenter chart", onSelect: () => { this.toggle(false); actions.recenter(); } },
-      { label: "Captions: M", onSelect: () => this.menu.buttons[1].btn.setLabel(actions.captions()) },
-      { label: "Reduce motion: off", onSelect: () => this.menu.buttons[2].btn.setLabel(actions.motion()) },
-      { label: "Sound: on", onSelect: () => this.menu.buttons[3].btn.setLabel(actions.sound()) },
-      { label: "Debug: off", onSelect: () => this.menu.buttons[4].btn.setLabel(actions.debug()) },
-      { label: "Exit", onSelect: () => actions.exit() },
-    ], 0.17);
+    const items: { label: string; onSelect: () => void }[] = [];
+    const relabel = (label: string, act: () => string) => {
+      const i = items.length;
+      items.push({ label, onSelect: () => this.menu.buttons[i].btn.setLabel(act()) });
+    };
+    items.push({ label: RECENTER_LABEL, onSelect: () => { this.toggle(false); actions.recenter(); } });
+    relabel("Captions: M", actions.captions);
+    relabel("Reduce motion: off", actions.motion);
+    relabel("Sound: on", actions.sound);
+    if (actions.photoreal) relabel(actions.photorealLabel ?? "Photoreal cities: on", actions.photoreal);
+    if (actions.lens) relabel(actions.lensLabel ?? "Lens spacing: normal", actions.lens);
+    relabel("Debug: off", actions.debug);
+    items.push({ label: "Exit", onSelect: () => actions.exit() });
+    this.menu = new PaperMenu(tw, CARD.menuTitle, items, 0.17);
     this.group.add(this.menu.group);
     this.group.visible = false;
 
@@ -77,7 +95,12 @@ export class WristMenu {
    */
   deskCamera: THREE.Camera | null = null;
 
-  /** Show the menu floating 45 cm in front of the viewer, facing them. */
+  /** Relabel an item by its current label prefix (e.g. "Photoreal cities") — VR flips defaults on entry. */
+  setLabel(prefix: string, label: string) {
+    this.menu.buttons.find((b) => b.btn.labelText.startsWith(prefix))?.btn.setLabel(label);
+  }
+
+  /** Show the menu floating in front of the viewer (45 cm; VR: `placement`), facing them. */
   toggle(force?: boolean, camera?: THREE.Camera) {
     this.open = force ?? !this.open;
     this.group.visible = this.open;
@@ -98,7 +121,7 @@ export class WristMenu {
       return;
     }
     fwd.y = 0; fwd.normalize();
-    this.group.position.copy(pos).addScaledVector(fwd, 0.45).add(new THREE.Vector3(0, -0.12, 0));
+    this.group.position.copy(pos).addScaledVector(fwd, this.placement.dist).add(new THREE.Vector3(0, -this.placement.drop, 0));
     this.group.lookAt(pos.x, this.group.position.y, pos.z);
   }
 

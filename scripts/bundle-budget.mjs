@@ -30,7 +30,8 @@ const BUDGETS = {
   entry: 44 * KB,
   socket: 42 * KB,
   browser: 26 * KB, // @simplewebauthn/browser (lazy, the seal/passkey flow only)
-  XRPage: 22 * KB,
+  XRPage: 41 * KB, // + VR chart room (lens-shell / Cardboard): gaze input, room rig, iOS motion + lens settings
+  cardboard: 172 * KB, // webxr-polyfill (lazy: the headset route's Cardboard fallback only)
   index: 9.5 * KB, // qrcode (lazy, the headset code card)
   tripstore: 7.5 * KB,
 };

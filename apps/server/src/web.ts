@@ -22,6 +22,8 @@ const ION = "https://api.cesium.com";
  *   connect-src       the API + Socket.io (same origin; ws(s):// spelled out for older Safari), Google tiles, Cesium ion
  *   img-src data: blob:  QR codes are data: URLs; tile textures arrive as blobs
  *   media-src blob:   ElevenLabs voices come from same-origin /api/audio; recorded hails are previewed as blobs
+ *   media-src data:   the Gear VR / Cardboard fallback (webxr-polyfill) keeps an old phone's screen awake with a tiny
+ *                     looping data: video where the Screen Wake Lock API is missing (Samsung Internet <= 12)
  *   style-src 'unsafe-inline'  the /api/debug page's <style>; React's style props don't need it
  */
 function contentSecurityPolicy(host: string | undefined): string {
@@ -45,7 +47,7 @@ function buildCsp(host: string | undefined): string {
     "worker-src 'self' blob:",
     `connect-src 'self' ${[...ws].join(" ")} ${TILES} ${ION}`.replace(/\s+/g, " "),
     `img-src 'self' data: blob: ${TILES}`,
-    "media-src 'self' blob:",
+    "media-src 'self' blob: data:",
     "font-src 'self' data:",
     "style-src 'self' 'unsafe-inline'",
     "manifest-src 'self'",

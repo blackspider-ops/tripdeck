@@ -2,7 +2,7 @@
 
 > **All Ayes — everyone's in, or nobody pays.**
 > *Send your mate to the table.*
-> Every friend privately briefs their own agent with their real budget and wishes. The agents meet around a paper globe on your real table (Meta Quest 3, mixed reality), argue it out loud, show the group two candidate trips as miniature cities ticking through a day (**Dry Run**), and then book it with an **all‑or‑nothing checkout**: every friend sets their seal, each share is paid by a Visa agent token capped at that friend's private limit, and if any share fails, nobody is charged. Nobody fronts the money. Nobody has to say "that's too expensive" in the group chat.
+> Every friend privately briefs their own agent with their real budget and wishes. The agents meet around a paper globe in a VR chart room (Samsung Gear VR: a Galaxy phone in a lens shell; a Meta Quest 3, if we ever get one, puts it on your real table in mixed reality), argue it out loud, show the group two candidate trips as miniature cities ticking through a day (**Dry Run**), and then book it with an **all‑or‑nothing checkout**: every friend sets their seal, each share is paid by a Visa agent token capped at that friend's private limit, and if any share fails, nobody is charged. Nobody fronts the money. Nobody has to say "that's too expensive" in the group chat.
 
 Built for **HackGT 13 — Seaside Market** (Sep 25–27, 2026, Klaus Advanced Computing Building, Georgia Tech). Team of 2.
 
@@ -22,8 +22,9 @@ Built for **HackGT 13 — Seaside Market** (Sep 25–27, 2026, Klaus Advanced Co
 | 07 | [`07-dataset-spec.md`](07-dataset-spec.md) | The curated trip dataset (3 cities) with seed values | Person A (data), B (loader) |
 | 08 | [`08-build-plan.md`](08-build-plan.md) | Hour‑by‑hour plan for 2 people, cut lines, risks, tests, prep tonight | Both |
 | 09 | [`09-demo-and-pitch.md`](09-demo-and-pitch.md) | Expo script, judge Q&A, Meta video storyboard, Devpost draft, submission checklist | Both |
+| 10 | [`10-gear-vr.md`](10-gear-vr.md) | Running the headset on a Samsung Gear VR: what to bring, phone setup, pairing, controls, fallbacks, pre‑demo checklist | Person A |
 
-**Reading order for a new teammate:** 00 → 01 → 03 → 02 → 08. Engineers then read 04 → 05 → 06 → 07.
+**Reading order for a new teammate:** 00 → 01 → 03 → 02 → 08. Whoever wears or sets up the headset reads 10. Engineers then read 04 → 05 → 06 → 07.
 
 ---
 
@@ -66,8 +67,9 @@ Built for **HackGT 13 — Seaside Market** (Sep 25–27, 2026, Klaus Advanced Co
 | **Fit** | Fits your terms ✓ | Deterministic check that a plan's share for a member ≤ that member's cap and violates no dealbreaker. |
 | **Seal** | Set your seal | A member's approval + payment authorization for their share. |
 | **Booking** | Logged in the ship's book | The all‑or‑nothing group transaction. Either every seal captures, or every seal is voided. |
+| **Headset** | Headset | The phone in the **Samsung Gear VR** showing the VR chart room (WebXR `immersive-vr`, Cardboard‑style side by side; 3DoF; gaze + touchpad). A Quest 3 is optional: on one, `/xr` opens the same table in mixed reality. Setup: doc 10. |
 | **Spectator** | Gallery | A laptop/TV view of the table for people without the headset (judges, video capture). |
-| **Headset code** | Headset code | 8‑character code (no lookalike letters, valid 10 min, single use) on the Organizer's phone, typed at `<domain>/xr` to pair the Quest. Gives the headset controls but **no private data**. |
+| **Headset code** | Headset code | 8‑character code (no lookalike letters, valid 10 min, single use) on the Organizer's phone, typed at `<domain>/xr` to pair the headset (the Gear VR phone, or a Quest). Gives the headset controls but **no private data**. |
 | **Standing instruction** | (pre‑signed seal) | An absent member's advance permission: "my mate may pay up to my terms for this voyage, next 24 h". |
 | **Group moment / Pick** | — | Activities everyone attends vs. ones only members with a matching must‑have attend (doc 07 §6). |
 | **Privacy tiers** | — | **Secret** (cap, share, fit) · **Discreet** (must‑haves, dealbreakers, note — only your own mate may paraphrase) · **Public** (doc 05 §7.0). |
@@ -78,8 +80,11 @@ Built for **HackGT 13 — Seaside Market** (Sep 25–27, 2026, Klaus Advanced Co
 ## 4. One‑screen architecture
 
 ```
- Quest 3 (Quest Browser, WebXR immersive-ar)      Phones (any browser)          Laptop (Spectator)
-  three.js + 3DTilesRendererJS + troika text       Briefing, Table view, Seal    same scene, orbit camera
+ Headset: Galaxy phone in a Gear VR              Phones (any browser)          Laptop (Spectator)
+  (Samsung Internet/Chrome, WebXR immersive-vr,    Briefing, Table view, Seal    same scene, orbit camera
+   webxr-polyfill Cardboard fallback;
+   a Quest 3 still gets immersive-ar)
+  three.js + 3DTilesRendererJS + troika text
             │                                         │                             │
             └──────────────── Socket.io (WSS) ────────┴─────────────────────────────┘
                                      │
@@ -103,7 +108,7 @@ Built for **HackGT 13 — Seaside Market** (Sep 25–27, 2026, Klaus Advanced Co
 | Fri 2:00–3:35 PM (be early; docs disagree 3:35/3:45/4:00) | Check‑in — **Govt ID + Student ID required** | Ferst Theater, south entrance (drop big bags at Klaus first) |
 | Fri 4–5 PM | Opening Ceremony (keynote Thomas Dohmke) | Ferst Theater |
 | Fri 5:30–7 PM | Sponsor Fair — ask Visa/Meta/Hardware desk our open questions | Klaus Atrium 1F/2F |
-| **Fri 8:00 PM** | **Hacking starts — one of us at the Hardware Desk for the Quest 3** | Klaus Atrium |
+| **Fri 8:00 PM** | **Hacking starts** (no Quest 3 came through; we run on our own Gear VR, doc 10) | Klaus Atrium |
 | Sat 10 AM | Visa tech talk | Klaus |
 | Sat 2:30 PM | MLH workshop (likely Google AI Studio) | Klaus |
 | Sat 3:30 PM | Meta tech talk | Klaus |

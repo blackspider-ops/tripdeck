@@ -32,6 +32,8 @@ export class XRInput {
   private tmpV = new THREE.Vector3();
   private tmpN = new THREE.Vector3();
   private frame = 0;
+  /** Off in the VR chart room: gaze input (gaze.ts) owns selection there, so a gaze source's select isn't doubled. */
+  enabled = true;
   onEmptySelect?: () => void;
   onLongPress?: () => void;
   onSqueeze?: () => void;
@@ -57,14 +59,15 @@ export class XRInput {
       };
       const onDisconnected = () => { ray.visible = false; dot.visible = false; };
       const onSelectStart = () => {
+        if (!this.enabled) return;
         // Quest can suspend the AudioContext (system menu, headset off); a select is a user gesture
         if (!sound.unlocked) void sound.unlock();
         p.downAt = performance.now();
         p.down = true;
         p.downHit = this.hit(p);
       };
-      const onSelectEnd = () => this.release(p);
-      const onSqueeze = () => this.onSqueeze?.();
+      const onSelectEnd = () => { if (this.enabled) this.release(p); };
+      const onSqueeze = () => { if (this.enabled) this.onSqueeze?.(); };
       ctrl.addEventListener("connected", onConnected);
       ctrl.addEventListener("disconnected", onDisconnected);
       ctrl.addEventListener("selectstart", onSelectStart);
@@ -113,7 +116,7 @@ export class XRInput {
   /** Hover feedback: a small red ring where the ray lands on something selectable. While nothing is held it's
    *  refreshed every other frame (36–45 Hz on Quest), halving the per-frame ray casts (O2-057). */
   update() {
-    if (!this.pointers.some((p) => p.ctrl.visible)) { for (const p of this.pointers) p.dot.visible = false; return; }
+    if (!this.enabled || !this.pointers.some((p) => p.ctrl.visible)) { for (const p of this.pointers) p.dot.visible = false; return; }
     const skip = (this.frame++ & 1) === 1;
     for (const p of this.pointers) if (p.down || !skip) this.hit(p);
   }

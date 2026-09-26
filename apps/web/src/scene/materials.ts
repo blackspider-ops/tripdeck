@@ -30,10 +30,12 @@ export function rng(seed = 7) {
 // Every sheet is drawn in a fixed *logical* pixel space (the sizes the look was designed at) and scaled
 // onto a smaller physical canvas where that's enough: the drawing is identical, only the resolution drops.
 
-/** Standalone headset browsers get half-resolution big sheets (¼ of the GPU memory). `?lowtex` forces it. */
+/** Standalone headset browsers and phones (Gear VR / Cardboard) get half-resolution big sheets (¼ of the GPU memory).
+ *  `?lowtex` or `?vr=…` forces it. */
 const LOW_TEX = (() => {
   try {
-    return /OculusBrowser|Quest|Pico/i.test(navigator.userAgent) || new URLSearchParams(location.search).has("lowtex");
+    const q = new URLSearchParams(location.search);
+    return /OculusBrowser|Quest|Pico|Android/i.test(navigator.userAgent) || q.has("lowtex") || q.has("vr");
   } catch { return false; }
 })();
 /** Physical size for a sheet designed at `logical` px (2048 → 1024 on a headset). */

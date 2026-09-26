@@ -1,5 +1,7 @@
-// `/t/:code/xr` — the Organizer's headset. Enters immersive-ar on Quest 3; anywhere else it opens
-// the same chart room as a laptop view so the scene can be built and tested without a headset.
+// `/t/:code/xr` — the Organizer's headset. Enters immersive-ar on Quest 3; immersive-vr on a phone in a lens shell
+// (a Gear VR used as a plain Cardboard viewer — typically an iPhone in Safari, via webxr-polyfill loaded lazily;
+// `?vr=cardboard` forces it; `?ipd=62` sets the lens spacing in mm); anywhere else it opens the same chart room as a
+// laptop view so the scene can be built and tested without a headset.
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { JOIN_REFUSAL } from "@all-ayes/shared";
@@ -8,9 +10,29 @@ import { TripStore, useTripStore } from "../net/tripStore";
 import { preloadFonts } from "../scene/text";
 import { sound } from "../scene/audio";
 import { XRApp, hailOpen } from "./XRApp";
+import { MOTION_DENIED, cardboardRequested, detectXRMode, ipdFromSearch, isPhoneUA, requestMotionPermission, vrBufferScale, type XRKind } from "./vrMode";
 import "./xr.css";
 
-type Mode = "checking" | "ready-ar" | "ready-desk" | "in-ar" | "in-desk";
+type Mode = "checking" | "ready-ar" | "ready-vr" | "ready-desk" | "in-ar" | "in-vr" | "in-desk";
+const READY: Record<XRKind, Mode> = { ar: "ready-ar", vr: "ready-vr", desk: "ready-desk" };
+
+/** The Cardboard polyfill, in its own chunk: only a phone without native WebXR VR (or `?vr=cardboard`) loads it. */
+const loadPolyfill = (force: boolean) =>
+  import("./cardboard").then((m) => m.installCardboard(force, { bufferScale: vrBufferScale(window.devicePixelRatio || 1), ipdMm: ipdFromSearch(window.location.search) }));
+
+/** Portrait on a phone (the lens shell needs landscape; an iPhone can't be locked to it). */
+function usePortrait(): boolean {
+  const q = typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(orientation: portrait)") : null;
+  const [portrait, setPortrait] = useState(() => !!q?.matches);
+  useEffect(() => {
+    if (!q) return;
+    const on = () => setPortrait(q.matches);
+    q.addEventListener?.("change", on);
+    window.addEventListener("resize", on);
+    return () => { q.removeEventListener?.("change", on); window.removeEventListener("resize", on); };
+  }, [q]);
+  return portrait;
+}
 
 export default function XRPage() {
   const { code = "" } = useParams();
@@ -22,7 +44,9 @@ export default function XRPage() {
   const [store, setStore] = useState<TripStore | null>(null);
   const [mode, setMode] = useState<Mode>("checking");
   const [err, setErr] = useState("");
-  const arOk = useRef(false);
+  const ready = useRef<Mode>("ready-desk");
+  const polyfilled = useRef(false);
+  const portrait = usePortrait();
 
   useEffect(() => { setSession(loadHeadsetSession(code)); setUnpaired(false); }, [code]);
 
@@ -38,32 +62,53 @@ export default function XRPage() {
       setUnpaired(true);
       setSession(null);
     });
-    const app = new XRApp(hostRef.current, s);
-    // Exit (menu or the end of an AR session) returns to the Enter card, in the laptop view too
-    app.onExit = () => setMode((m) => (m === "in-ar" || m === "in-desk" ? (arOk.current ? "ready-ar" : "ready-desk") : m));
+    // phones (Gear VR / Cardboard): no MSAA, the GPU is busy enough drawing two eyes on a 1440p panel
+    const phone = isPhoneUA(navigator.userAgent);
+    const app = new XRApp(hostRef.current, s, { antialias: !phone, vrMenu: phone || cardboardRequested(window.location.search) });
+    // Exit (menu, Back / Escape, or the end of an XR session) returns to the Enter card, in the laptop view too;
+    // the pairing is kept
+    app.onExit = () => setMode((m) => (m === "in-ar" || m === "in-vr" || m === "in-desk" ? ready.current : m));
     appRef.current = app;
     if (import.meta.env.DEV) (window as unknown as { __aa: unknown }).__aa = { store: s, app };
     setStore(s);
     void preloadFonts(); // start now: awaiting it in the Enter tap could outlive the user activation
-    void XRApp.arSupported().then((ok) => { arOk.current = ok; setMode(ok ? "ready-ar" : "ready-desk"); });
-    return () => { offUnpaired(); app.dispose(); s.close(); appRef.current = null; setStore(null); setMode("checking"); };
+    let live = true;
+    void detectXRMode({
+      getXR: () => navigator.xr as unknown as { isSessionSupported(m: string): Promise<boolean> } | undefined,
+      search: window.location.search,
+      phone: isPhoneUA(navigator.userAgent),
+      loadPolyfill,
+    }).then((d) => {
+      polyfilled.current = d.polyfilled;
+      ready.current = READY[d.kind];
+      if (live) setMode(READY[d.kind]);
+    });
+    return () => { live = false; offUnpaired(); app.dispose(); s.close(); appRef.current = null; setStore(null); setMode("checking"); };
     // one chart room per headset key
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, session?.deviceToken]);
 
-  async function enter(kind: "ar" | "desk") {
+  async function enter(kind: "ar" | "vr" | "desk") {
     const app = appRef.current;
     if (!app) return;
     setErr("");
     // requestSession needs transient user activation: call it before any slow await (fonts can take
     // seconds on venue Wi-Fi and are already preloading since mount). ctx.resume() is quick.
     const unlocked = sound.unlock();
+    // iOS: motion access (head tracking) must be asked in this same tap, before anything else is awaited
+    const motion = kind === "vr" ? requestMotionPermission() : null;
     try {
       if (kind === "ar") { await app.enterAR(); setMode("in-ar"); }
+      else if (kind === "vr") {
+        if ((await motion) === "denied") { setErr(MOTION_DENIED); return; }
+        await app.enterVR(polyfilled.current);
+        setMode("in-vr");
+      }
       else { await unlocked; await preloadFonts(); app.startDesk(); setMode("in-desk"); }
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Couldn't open mixed reality.");
-      setMode("ready-desk");
+      setErr(e instanceof Error && e.message ? e.message : kind === "vr" ? "Couldn't open VR." : "Couldn't open mixed reality.");
+      // a refused VR session (no gesture, fullscreen denied) can be tried again; AR falls back to the laptop view
+      setMode(kind === "vr" ? "ready-vr" : "ready-desk");
     }
   }
 
@@ -86,10 +131,18 @@ export default function XRPage() {
   return (
     <div className="cr-page">
       <div className="cr-canvas" ref={hostRef} />
-      {store && (mode === "checking" || mode === "ready-ar" || mode === "ready-desk") && (
+      {store && (mode === "checking" || mode === "ready-ar" || mode === "ready-vr" || mode === "ready-desk") && (
         <EnterCard store={store} mode={mode} err={err} onEnter={enter} />
       )}
       {mode === "in-desk" && appRef.current && store && <DeskToolbar store={store} app={appRef.current} />}
+      {mode === "in-vr" && portrait && (
+        <div className="cr-overlay cr-rotate" role="status">
+          <div className="cr-card">
+            <h1>Turn your phone sideways</h1>
+            <p>Landscape, with the screen facing the lenses, then slip it into the headset.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -111,7 +164,7 @@ function DeskToolbar({ store, app }: { store: TripStore; app: XRApp }) {
   );
 }
 
-function EnterCard({ store, mode, err, onEnter }: { store: TripStore; mode: Mode; err: string; onEnter: (k: "ar" | "desk") => void }) {
+function EnterCard({ store, mode, err, onEnter }: { store: TripStore; mode: Mode; err: string; onEnter: (k: "ar" | "vr" | "desk") => void }) {
   const s = useTripStore(store);
   const trip = s.trip;
   // L2-003: a refused join (no such voyage, too many tries) says so instead of "Finding the voyage…" forever
@@ -132,13 +185,21 @@ function EnterCard({ store, mode, err, onEnter }: { store: TripStore; mode: Mode
             <button className="cr-btn" onClick={() => onEnter("desk")}>Laptop view</button>
           </>
         )}
+        {mode === "ready-vr" && (
+          <>
+            <p>Sit down, tap Enter VR, turn the phone sideways and slip it into the headset.</p>
+            <p className="muted">Look at a thing and hold your gaze until the red ring fills to choose it (a screen tap works too). Look at the brass wheel for the menu; look down at the Exit VR plaque to leave.</p>
+            <button className="cr-btn primary" onClick={() => onEnter("vr")}>Enter VR</button>
+            <button className="cr-btn" onClick={() => onEnter("desk")}>Laptop view</button>
+          </>
+        )}
         {mode === "ready-desk" && (
           <>
             <p className="muted">This browser can't open mixed reality, so the chart room opens as a laptop view.</p>
             <button className="cr-btn primary" onClick={() => onEnter("desk")}>Open the chart room</button>
           </>
         )}
-        {mode === "checking" && <p className="muted">Checking for mixed reality…</p>}
+        {mode === "checking" && <p className="muted">Checking for mixed reality and VR…</p>}
         {err && <p className="cr-error">{err}</p>}
       </div>
     </div>

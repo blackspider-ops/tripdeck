@@ -29,6 +29,7 @@ export class PaperButton {
   }
 
   setLabel(t: string) { setText(this.label, t); }
+  get labelText(): string { return this.label.text; }
 
   press() {
     return this.tw.to(160, (t) => (this.group.position.z = -0.001 * Math.sin(Math.PI * t)), ease.linear);

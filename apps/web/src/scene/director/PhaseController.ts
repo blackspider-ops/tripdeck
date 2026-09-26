@@ -148,12 +148,25 @@ export class PhaseController {
       this.ctx.root.add(cl.group);
       this.cloches.set(plan.planId, cl);
       void cl.slideOut(instant);
-      if (tilesAvailable()) this.tiles.push(new CityTiles(cl, this.ctx.renderer));
     });
+    this.syncTiles();
     this.ctx.targetsChanged();
     if (!instant) sound.play("clink");
     this.ctx.clock.group.visible = true;
     this.ctx.clock.setMinute(this.ctx.store.dryrunMinute() ?? DRYRUN_DAY_START_MIN, this.dayLabel());
+  }
+
+  private photorealOn() { return tilesAvailable() && (this.ctx.opts.photoreal?.() ?? true); }
+
+  /** Start or drop the photoreal tiles to match the "Photoreal cities" setting (the paper cities stay either way). */
+  syncTiles() {
+    if (!this.photorealOn()) {
+      for (const t of this.tiles) t.dispose();
+      this.tiles = [];
+      return;
+    }
+    if (this.tiles.length || !this.cloches.size) return;
+    for (const cl of this.cloches.values()) this.tiles.push(new CityTiles(cl, this.ctx.renderer));
   }
 
   private dayLabel() { return this.ctx.store.state.shortlist[0]?.days[0]?.label ?? DRYRUN_DAY1_LABEL; }
