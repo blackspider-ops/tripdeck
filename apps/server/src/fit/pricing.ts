@@ -90,6 +90,17 @@ function chooseFlights(ds: Dataset, crew: PricingMember[], cityId: CityId, windo
   return new Map(crew.map((m) => [m.memberId, chooseFlight(ds, m, cityId, windowId)] as const));
 }
 
+/** Whole days from one ISO date to another ("2028-03-10" → "2028-03-15" is 5). */
+const daysBetween = (from: string, to: string) => Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+/**
+ * How many days the schedule shows from day 1 (`startDate`) through the window's last day (the flight home), at
+ * least 2; and the last day anything may be placed on (the day before the flight home, at least day 2).
+ */
+function dayCounts(startDate: string, win: DateWindow): { shown: number; placeable: number } {
+  const shown = Math.max(2, daysBetween(startDate, win.end) + 1);
+  return { shown, placeable: Math.max(2, shown - 1) };
+}
+
 /**
  * Step 2: day 1 is the latest arrival date among members (the window's start if nobody flies). Each member is free
  * from landing + 60 min, rounded up to :00/:30 (never before 7am); someone landing a day early counts as landing at 7.
@@ -112,14 +123,27 @@ function arrivalsFor(crew: PricingMember[], flights: Map<string, FlightChoice>, 
   return { day1Date, freeFrom, arrivals };
 }
 
-/** Step 3: the city's (first two) group moments on day 1 — daytime at startLatest (leaves the morning for picks), evening at startEarliest. */
-function placeGroupMoments(ds: Dataset, cityId: CityId, crew: PricingMember[]): Placed[] {
+/**
+ * Step 3: the city's (first two) group moments on day 1 — daytime at startLatest (leaves the morning for picks),
+ * evening at startEarliest. A group moment is for the whole crew, so on day 1 it never starts before the last of
+ * them is free (`crewFrom`: the latest landing + 60 min): one the default time would start too early moves later
+ * within its listed hours, else to day 2 at its usual time. Without `crewFrom` (the public, crew-independent
+ * layout) they keep the listed times.
+ */
+function placeGroupMoments(ds: Dataset, cityId: CityId, crew: PricingMember[], crewFrom = 0): Placed[] {
   const everyone = crew.map((c) => c.memberId);
-  return indexOf(ds).activitiesOf(cityId).filter((a) => a.role === "group").slice(0, 2).map((a) => {
+  const placed: Placed[] = [];
+  for (const a of indexOf(ds).activitiesOf(cityId).filter((x) => x.role === "group").slice(0, 2)) {
     const early = clockToMin(a.startEarliest);
-    const start = early >= EVENING_MIN ? early : clockToMin(a.startLatest);
-    return { a, day: 1, start, end: start + a.durationMin, attendees: [...everyone] };
-  });
+    const usual = early >= EVENING_MIN ? early : clockToMin(a.startLatest);
+    const free = (day: number, t: number) => !placed.some((p) => p.day === day && overlaps(t, t + a.durationMin, p.start, p.end));
+    let day = 1;
+    let start: number | null = usual >= crewFrom && free(1, usual) ? usual : null;
+    for (let t = roundUp30(Math.max(early, crewFrom, usual)); start === null && t <= clockToMin(a.startLatest); t += 30) if (free(1, t)) start = t;
+    if (start === null) { day = 2; start = usual; }
+    placed.push({ a, day, start, end: start + a.durationMin, attendees: [...everyone] });
+  }
+  return placed;
 }
 
 /**
@@ -127,7 +151,7 @@ function placeGroupMoments(ds: Dataset, cityId: CityId, crew: PricingMember[]): 
  * half hour on day 1 that clashes with nothing its attendees already have, else on day 2 (else at its earliest).
  * Returns every placed moment: the group moments first, then the picks.
  */
-function placePicks(ds: Dataset, cityId: CityId, crew: PricingMember[], freeFrom: Map<string, number>, groups: Placed[]): Placed[] {
+function placePicks(ds: Dataset, cityId: CityId, crew: PricingMember[], freeFrom: Map<string, number>, groups: Placed[], lastDay: number): Placed[] {
   const pickAttendees = new Map<string, { a: ActivityOption; attendees: string[] }>();
   for (const m of crew) {
     for (const p of choosePicks(ds, cityId, m)) {
@@ -136,11 +160,14 @@ function placePicks(ds: Dataset, cityId: CityId, crew: PricingMember[], freeFrom
       pickAttendees.set(p._id, e);
     }
   }
-  return placeInOrder([...pickAttendees.values()], (attendees) => Math.max(...attendees.map((id) => freeFrom.get(id) ?? DAY2_FREE_FROM)), groups);
+  return placeInOrder([...pickAttendees.values()], (attendees) => Math.max(...attendees.map((id) => freeFrom.get(id) ?? DAY2_FREE_FROM)), groups, lastDay);
 }
 
-/** Step 4's placement rule, shared with the public layout: first free half hour on day 1 from `day1From`, else day 2. */
-function placeInOrder(entries: { a: ActivityOption; attendees: string[] }[], day1From: (attendees: string[]) => number, groups: Placed[]): Placed[] {
+/**
+ * Step 4's placement rule, shared with the public layout: the first free half hour on day 1 from `day1From`, else
+ * on day 2, … up to `lastDay` (else day 2 at its earliest).
+ */
+function placeInOrder(entries: { a: ActivityOption; attendees: string[] }[], day1From: (attendees: string[]) => number, groups: Placed[], lastDay = 2): Placed[] {
   const placed = [...groups];
   for (const { a, attendees } of entries) {
     const tryDay = (day: number): number | null => {
@@ -155,18 +182,20 @@ function placeInOrder(entries: { a: ActivityOption; attendees: string[] }[], day
     };
     let day = 1;
     let start = tryDay(1);
-    if (start === null) { day = 2; start = tryDay(2) ?? clockToMin(a.startEarliest); }
+    while (start === null && day < lastDay) start = tryDay(++day);
+    if (start === null) { day = 2; start = clockToMin(a.startEarliest); }
     placed.push({ a, day, start, end: start + a.durationMin, attendees });
   }
   return placed;
 }
 
 /** Step 5: the days' schedules with every attendee's travel leg (doc 07 §7), and each member's long-walk / early-start flags. */
-function legsAndFlags(ds: Dataset, crew: PricingMember[], placed: Placed[], hotelPt: Point, day1Date: string, arrivals: Arrivals):
+function legsAndFlags(ds: Dataset, crew: PricingMember[], placed: Placed[], hotelPt: Point, day1Date: string, arrivals: Arrivals, shownDays: number):
   { days: PlanDay[]; memberFlags: Map<string, PlanFlag[]> } {
   const days: PlanDay[] = [];
   const memberFlags = new Map<string, PlanFlag[]>(crew.map((m) => [m.memberId, []]));
-  const maxDay = Math.max(...placed.map((p) => p.day));
+  // every day of the stay, free days included (day 1 → the flight home)
+  const maxDay = Math.max(shownDays, ...placed.map((p) => p.day));
   for (let d = 1; d <= maxDay; d++) {
     const items: ScheduleItem[] = placed.filter((p) => p.day === d).sort((x, y) => x.start - y.start).map((p) => ({
       activityId: p.a._id, name: p.a.short, startMin: p.start, endMin: p.end, attendees: p.attendees,
@@ -250,8 +279,11 @@ export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, wi
 
   const flights = chooseFlights(ds, crew, cityId, windowId);
   const { day1Date, freeFrom, arrivals } = arrivalsFor(crew, flights, win);
-  const placed = placePicks(ds, cityId, crew, freeFrom, placeGroupMoments(ds, cityId, crew));
-  const { days, memberFlags } = legsAndFlags(ds, crew, placed, hotelPt, day1Date, arrivals);
+  const { shown, placeable } = dayCounts(day1Date, win);
+  // the crew is together from the last one's landing (+ an hour): group moments on day 1 never start before
+  const crewFrom = Math.max(0, ...freeFrom.values());
+  const placed = placePicks(ds, cityId, crew, freeFrom, placeGroupMoments(ds, cityId, crew, crewFrom), placeable);
+  const { days, memberFlags } = legsAndFlags(ds, crew, placed, hotelPt, day1Date, arrivals, shown);
   const airport = indexOf(ds).city.get(cityId)?.airport?.code ?? cityId;
   const members = crew.map((m) => memberView(m, {
     cityId, airport, windowId, hotel, nights: win.nights, crewSize: crew.length, organizerId,
@@ -403,10 +435,11 @@ const PUBLIC_SLOT = "crew";
  * Public schedule (SEC-001 / TR2-015 / S2-002): the plan's moments and places, never who attends, nobody's legs,
  * nobody's arrival — and no time that depends on anyone. The real pick times follow the attendees' landing times
  * (and a pick's day follows who shares it), so re-running the open-source builder against them narrowed every
- * share. Here the group moments keep their (dataset-fixed) times and the picks are laid out afresh from public
- * facts only: in dataset order, one after another from a fixed hour, as if one party did them all. Labels are
- * "Day 1", "Day 2" (the real day 1 is the latest landing date). Legs are crew-independent (stay / group moment →
- * here), so the Gallery and headset can draw group routes. Each member's real times are in plan:private.
+ * share. Here the group moments keep their listed times (the crew's real ones wait for its latest landing, which is
+ * crew-dependent, so only plan:private carries them) and the picks are laid out afresh from public facts only:
+ * in dataset order, one after another from a fixed hour, as if one party did them all. Labels are "Day 1", "Day 2"
+ * (the real day 1 is the latest landing date). Legs are crew-independent (stay / group moment → here), so the
+ * Gallery and headset can draw group routes. Each member's real times are in plan:private.
  */
 function publicDays(ds: Dataset, p: Plan): PublicDay[] {
   const ix = indexOf(ds);

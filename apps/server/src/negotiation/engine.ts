@@ -18,7 +18,7 @@ import {
 } from "./rules.js";
 import {
   DECIDE_RIBBON, clampRibbon, clampToSentences, concedeLine, decideLine, objectMissingLine, objectUnfitLine, openLine,
-  proposeLine, safeLine, supportHoldLine, supportSwitchLine, type LineOut,
+  LINE_VARIANTS, REPEAT_TAILS, lineKey, proposeLine, safeLine, supportHoldLine, supportSwitchLine, variantFor, type LineOut,
 } from "./phrasing.js";
 import { generateLine } from "./gemini.js";
 import {
@@ -71,6 +71,10 @@ export class NegotiationEngine {
   readonly privacy: PrivacyContext;
   private hails = new Map<string, HailNote>(); // pending per member
   private prepared: Promise<unknown> = Promise.resolve();
+  /** Every line said this meeting (lineKey): nothing is said twice. */
+  private spoken = new Set<string>();
+  /** The varied kinds of line (support_hold, concede, …) said at least once this meeting. */
+  private saidKinds = new Set<string>();
 
   constructor(
     private ds: Dataset,
@@ -114,7 +118,7 @@ export class NegotiationEngine {
         apply(this.st, c.memberId, d);
         if (hail) this.hails.delete(c.memberId);
         const plan = planById(this.plans, d.planId);
-        await this.say({ kind: "advocate", memberId: c.memberId }, d.act, plan, watch, this.template(c, d), (noAmounts) => this.advocatePrompt(c, d, watch, hail, noAmounts));
+        await this.say({ kind: "advocate", memberId: c.memberId }, d.act, plan, watch, this.template(c, d, watch), (noAmounts) => this.advocatePrompt(c, d, watch, hail, noAmounts));
       }
       // Early exit after Watch 2 when everyone backs the same plan and no hail is waiting
       this.collectHails();
@@ -140,7 +144,27 @@ export class NegotiationEngine {
   }
 
   // ---------- speaking ----------
-  private template(c: EngineCrew, d: Decision): LineOut {
+  /**
+   * The act's template line(s), in the order to try them: SUPPORT / CONCEDE give every wording, so `phrase` can skip
+   * any already said this meeting. The first line of a kind in a meeting is the classic wording (the Expo script, and
+   * its warmed voice cache, stay as they were); after that each speaker starts from their own wording for this watch
+   * (keyed by seat and name, which are stable across runs; member ids are random).
+   */
+  private template(c: EngineCrew, d: Decision, watch: number): LineOut[] {
+    const p = planById(this.plans, d.planId);
+    const why = d.why;
+    const start = this.saidKinds.has(why.kind) ? variantFor(`${c.band}:${c.name}`, watch) : 0;
+    this.saidKinds.add(why.kind);
+    const each = (f: (v: number) => LineOut) => Array.from({ length: LINE_VARIANTS }, (_, k) => f(start + k));
+    switch (why.kind) {
+      case "support_switch": return each((v) => supportSwitchLine(this.ds, p, c.memberId, v));
+      case "support_hold": return each((v) => supportHoldLine(this.ds, p, v));
+      case "concede": return each((v) => concedeLine(this.ds, p, c.memberId, why.hailFrom, v));
+      default: return [this.template1(c, d)];
+    }
+  }
+
+  private template1(c: EngineCrew, d: Decision): LineOut {
     const p = planById(this.plans, d.planId);
     switch (d.why.kind) {
       case "propose": {
@@ -159,8 +183,9 @@ export class NegotiationEngine {
    * Phrase (model or template) → privacy filter → emit → voice → wait until spoken.
    * The next line is prepared while this one plays (pipelining, doc 04 §8.1).
    */
-  private async say(speaker: Speaker, act: Act, plan: Plan | undefined, watch: number, fallback: LineOut, prompt: Prompt) {
-    const phrased = await this.phrase(act, plan, fallback, prompt);
+  private async say(speaker: Speaker, act: Act, plan: Plan | undefined, watch: number, fallback: LineOut | LineOut[], prompt: Prompt) {
+    const phrased = await this.phrase(act, plan, Array.isArray(fallback) ? fallback : [fallback], prompt);
+    this.spoken.add(lineKey(phrased.line));
     const turnId = await this.io.emitTurn({
       speaker, act, planId: plan?._id, cityId: plan?.cityId, text: phrased.line, ribbon: phrased.ribbon, voiced: true, redactions: phrased.redactions,
     }, watch);
@@ -176,25 +201,41 @@ export class NegotiationEngine {
    * Model line → filter; on a leak, regenerate once with a "state no amount" instruction; then the
    * act's template; then a safe line for that act (doc 05 §7.1.5). Invented prices are stripped, not
    * fatal (§7.2). `redactions` counts every rejected attempt, stripped amount and rewrite (TR4-010).
+   * Nothing is said twice in a meeting: a model line identical to an earlier one falls back to the templates, which
+   * are tried in order (the act's other wordings) for one not yet said; if every wording was said, one gets a
+   * sign-off (REPEAT_TAILS) that makes it new.
    */
-  private async phrase(act: Act, plan: Plan | undefined, fallback: LineOut, prompt: Prompt): Promise<LineOut & { redactions: number }> {
+  private async phrase(act: Act, plan: Plan | undefined, fallbacks: LineOut[], prompt: Prompt): Promise<LineOut & { redactions: number }> {
     let redactions = 0;
-    const clean = (l: LineOut): LineOut | null => {
+    const clean = (l: LineOut): (LineOut & { redactions: number }) | null => {
       const s = sanitizeSpoken(l, this.privacy);
       if (!s) { redactions++; return null; }
-      redactions += s.redactions;
-      return { line: clampToSentences(s.line, this.maxWords), ribbon: clampRibbon(s.ribbon) };
+      return { line: clampToSentences(s.line, this.maxWords), ribbon: clampRibbon(s.ribbon), redactions: s.redactions };
     };
+    const fresh = (l: LineOut & { redactions: number }) => !this.spoken.has(lineKey(l.line));
+    const take = (l: LineOut & { redactions: number }) => ({ line: l.line, ribbon: l.ribbon, redactions: redactions + l.redactions });
     if (features.gemini()) {
       for (let attempt = 0; attempt < 2; attempt++) {
         const out = await prompt(attempt > 0);
         if (!out) break;
         const ok = clean(out);
-        if (ok) return { ...ok, redactions };
+        if (ok && !fresh(ok)) { redactions += ok.redactions; break; } // said already this meeting: a varied template instead
+        if (ok) return take(ok);
       }
     }
-    const t = clean(fallback) ?? clean(safeLine(act, plan ? cityName(this.ds, plan.cityId) : undefined)) ?? safeLine(act);
-    return { ...t, redactions };
+    const cleaned: (LineOut & { redactions: number })[] = [];
+    // the templates in order, then the act's safe line — each only filtered once the ones before it were said
+    for (const l of [...fallbacks, safeLine(act, plan ? cityName(this.ds, plan.cityId) : undefined)]) {
+      const c = clean(l);
+      if (!c) continue;
+      if (fresh(c)) return take(c);
+      cleaned.push(c);
+    }
+    for (const tail of REPEAT_TAILS) for (const c of cleaned) {
+      const t = clean({ line: `${c.line} ${tail}`, ribbon: c.ribbon });
+      if (t && fresh(t)) return take(t);
+    }
+    return cleaned[0] ? take(cleaned[0]) : { ...safeLine(act), redactions };
   }
 
   // ---------- prompts (worded in prompts.ts) ----------

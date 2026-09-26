@@ -213,12 +213,15 @@ function Timeline({ plan, priv }: { plan: PlanPublic; priv?: PlanPrivate }) {
         ) : null}
         {day1 ? day1.items.map((it) => <Row key={it.activityId} it={it} cls={state(it)} />) : null}
       </ul>
-      {later.map((d) => (
+      {/* every day of the stay, free ones too; the last is the flight home */}
+      {later.map((d, i) => (
         <div key={d.day} className="mt-s">
           <div className="small">{d.label}</div>
           <ul className="timeline">
             {d.items.map((it) => <Row key={it.activityId} it={it} cls="" />)}
-            {!d.items.length ? <li><span className="t">—</span><span className="small">Free day</span></li> : null}
+            {!d.items.length ? (
+              <li><span className="t">—</span><span className="small">{i === later.length - 1 ? "Free day · then home" : "Free day"}</span></li>
+            ) : null}
           </ul>
         </div>
       ))}

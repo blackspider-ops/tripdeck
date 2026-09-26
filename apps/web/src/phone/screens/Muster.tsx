@@ -58,18 +58,25 @@ export default function Muster() {
                 onUrl={(url) => { keepInvite(c.memberId, url); setJustMade(c.memberId); }}
               />
             ))}
-            {others.length ? (
-              <SeatReset
-                seats={others} tripId={session.tripId} token={session.memberToken}
-                onInvite={(memberId, url) => { keepInvite(memberId, url); setJustMade(memberId); }}
-              />
-            ) : null}
-            {crew.length < MAX_CREW ? (
-              <AddAbsent
-                tripId={session.tripId} token={session.memberToken} taken={crew.map((c) => c.band)}
-                onInvite={(memberId, url) => { keepInvite(memberId, url); setJustMade(memberId); }}
-              />
-            ) : null}
+            {/* the crew's organizer actions, each on its own line */}
+            <div className="stack mt-m crew-actions">
+              {others.length ? (
+                <div>
+                  <SeatReset
+                    seats={others} tripId={session.tripId} token={session.memberToken}
+                    onInvite={(memberId, url) => { keepInvite(memberId, url); setJustMade(memberId); }}
+                  />
+                </div>
+              ) : null}
+              {crew.length < MAX_CREW ? (
+                <div>
+                  <AddAbsent
+                    tripId={session.tripId} token={session.memberToken} taken={crew.map((c) => c.band)}
+                    onInvite={(memberId, url) => { keepInvite(memberId, url); setJustMade(memberId); }}
+                  />
+                </div>
+              ) : null}
+            </div>
           </>
         ) : null}
       </Card>

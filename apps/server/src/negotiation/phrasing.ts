@@ -138,29 +138,87 @@ export function objectUnfitLine(ds: Dataset, rival: Plan, reason: FitReason): Li
   return { line: `${r} means ${phrase}, and my friend won't do that.`, ribbon: `${r} — no ${phrase}` };
 }
 
-export function supportSwitchLine(ds: Dataset, p: Plan, memberId: string): LineOut {
+/**
+ * SUPPORT / CONCEDE come in LINE_VARIANTS wordings each, so a table that keeps backing one port doesn't hear the same
+ * sentence again ("Still with Milwaukee…" three times). `variantFor` picks a speaker's starting wording from a stable
+ * speaker key and the watch (deterministic); the engine walks on from there to one nobody has said yet this meeting.
+ */
+export const LINE_VARIANTS = 5;
+/** FNV-1a of the speaker key, plus the watch: a stable, per-speaker rotation through the wordings. */
+export function variantFor(speakerId: string, watch: number): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < speakerId.length; i++) { h ^= speakerId.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return ((h >>> 0) + watch) % LINE_VARIANTS;
+}
+const nth = <T>(xs: readonly T[], variant: number): T => xs[((variant % xs.length) + xs.length) % xs.length];
+
+export function supportSwitchLine(ds: Dataset, p: Plan, memberId: string, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
   const hl = highlights(ds, p, memberId);
+  const has = nps(hl), are = hl.length > 1 ? "are" : "is";
+  const line = hl.length
+    ? nth([
+      `Fair. ${city} still has ${has} for my friend. I'll back ${city}.`,
+      `Fine by us. ${cap(has)} in ${city} will do for my friend.`,
+      `Okay, ${city} from me. My friend still gets ${has}.`,
+      `I can get behind ${city}; ${has} keeps my friend happy.`,
+      `Right, switching to ${city}. ${cap(has)} ${are} there for my friend.`,
+    ], variant)
+    : nth([
+      `Fair. ${city} works for my friend. I'll back it.`,
+      `Fine by us. ${city} will do for my friend.`,
+      `Okay, ${city} from me. My friend can live with it.`,
+      `I can get behind ${city}. It suits my friend.`,
+      `Right, switching to ${city}. It works for my friend.`,
+    ], variant);
   return {
-    line: hl.length ? `Fair. ${city} still has ${nps(hl)} for my friend. I'll back ${city}.` : `Fair. ${city} works for my friend. I'll back it.`,
-    ribbon: hl.length ? `${city}, with ${np(hl[0])}` : `${city}, backed`,
+    line,
+    ribbon: hl.length ? nth([`${city}, with ${np(hl[0])}`, `${city} will do`, `Backing ${city}`, `${city}, with ${np(hl[0])}`, `Over to ${city}`], variant)
+      : nth([`${city}, backed`, `${city} will do`, `Backing ${city}`, `${city}, backed`, `Over to ${city}`], variant),
   };
 }
 
-export function supportHoldLine(ds: Dataset, p: Plan): LineOut {
+export function supportHoldLine(ds: Dataset, p: Plan, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
-  return { line: `Still with ${city}. It covers everything my friend asked for.`, ribbon: `Still ${city}` };
+  return nth([
+    { line: `Still with ${city}. It covers everything my friend asked for.`, ribbon: `Still ${city}` },
+    { line: `${city} for us, still. Nothing's changed for my friend.`, ribbon: `${city}, still` },
+    { line: `My friend is staying with ${city}. It ticks every box.`, ribbon: `Staying with ${city}` },
+    { line: `No change here: ${city} has all my friend wanted.`, ribbon: `No change: ${city}` },
+    { line: `Holding at ${city}. It's still the right fit for my friend.`, ribbon: `Holding at ${city}` },
+  ], variant);
 }
 
-export function concedeLine(ds: Dataset, p: Plan, memberId: string, hailFrom?: string): LineOut {
+export function concedeLine(ds: Dataset, p: Plan, memberId: string, hailFrom?: string, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
   const keep = highlights(ds, p, memberId).find((h) => !isGroup(ds, h));
   const keepText = keep ? ` — as long as we keep ${np(keep)}` : "";
-  return {
-    line: hailFrom ? `Heard you, ${hailFrom}. ${city} it is${keepText}.` : `I'll come round to ${city}${keepText}.`,
-    ribbon: keep ? clampRibbon(`${city} — keep ${np(keep)}`) : `${city} it is`,
-  };
+  const line = hailFrom
+    ? nth([
+      `Heard you, ${hailFrom}. ${city} it is${keepText}.`,
+      `Point taken, ${hailFrom}. We'll take ${city}${keepText}.`,
+      `Thanks, ${hailFrom}. ${city} then${keepText}.`,
+      `Understood, ${hailFrom}. My friend is fine with ${city}${keepText}.`,
+      `Right you are, ${hailFrom}. ${city} it is${keepText}.`,
+    ], variant)
+    : nth([
+      `I'll come round to ${city}${keepText}.`,
+      `Alright, ${city} for us${keepText}.`,
+      `My friend can do ${city}${keepText}.`,
+      `Fine, we'll go with ${city}${keepText}.`,
+      `${city} works for us too${keepText}.`,
+    ], variant);
+  return { line, ribbon: keep ? clampRibbon(`${city} — keep ${np(keep)}`) : `${city} it is` };
 }
+
+/**
+ * The last resort against a repeat (the engine never says the same line twice in one meeting): a short sign-off
+ * after the line, which makes it a different sentence without changing what it says.
+ */
+export const REPEAT_TAILS = ["Aye.", "Count my friend in.", "No change.", "Steady as she goes.", "That's our word."] as const;
+
+/** How two lines compare for "said already": case, spacing and punctuation don't count. */
+export const lineKey = (line: string) => line.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 
 export function decideLine(ds: Dataset, a: Plan, b: Plan, noneFit: boolean): LineOut {
   const A = cityName(ds, a.cityId), B = cityName(ds, b.cityId);

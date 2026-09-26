@@ -97,7 +97,7 @@ describe("Expo run over the wire", () => {
     expect(decided.shortlist.map((p: any) => p.planId)).toEqual(["MEX-W1-roma-flat", "LIS-W1-casa-alfama"]);
     const turns = gallery.events.filter((e) => e.ev === "turn:new").map((e) => e.p);
     expect(turns.map((t: any) => t.act)).toEqual(["OPEN", "PROPOSE", "PROPOSE", "PROPOSE", "HAIL", "OBJECT", "SUPPORT", "CONCEDE", "DECIDE"]);
-    expect(turns.find((t: any) => t.act === "CONCEDE").text).toMatch(/^Heard you, Rae/);
+    expect(turns.find((t: any) => t.act === "CONCEDE").text).toMatch(/^Heard you, Rae/); // the first concede of the meeting keeps the classic wording
 
     const mayaLis = await maya.waitFor((e) => e.ev === "plan:private" && e.p.planId === "LIS-W1-casa-alfama");
     expect(mayaLis.amountCents).toBe(86_800);

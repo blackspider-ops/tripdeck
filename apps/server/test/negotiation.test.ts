@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 vi.mock("../src/util/ids.js", async (orig) => ({ ...(await orig<typeof import("../src/util/ids.js")>()), sleep: () => Promise.resolve() }));
 
-import { loadDataset } from "../src/data/loader.js";
+import { isGeneratedPort, loadDataset } from "../src/data/loader.js";
+import { randomVoyagePlan } from "../src/demo/seed.js";
+import { LINE_VARIANTS, concedeLine, supportHoldLine, supportSwitchLine, variantFor } from "../src/negotiation/phrasing.js";
 import { buildChartBook } from "../src/fit/pricing.js";
 import { NegotiationEngine, type EmittedTurn } from "../src/negotiation/engine.js";
 import { buildPrivacyContext } from "../src/privacy/context.js";
@@ -48,14 +50,14 @@ describe("negotiation — Expo run (doc 05 §12)", () => {
     ]);
     // consensus after Watch 2: the Captain decides straight after the Watch-2 turns (no Watch 3 in the shape above)
     expect(result.shortlist.map((p) => p._id)).toEqual(["MEX-W1-roma-flat", "LIS-W1-casa-alfama"]);
-    expect(turns[6].text).toMatch(/^Heard you, Rae\./);
+    expect(turns[6].text).toMatch(/^Heard you, Rae\./); // the meeting's first concede: the classic wording
     expect(turns[1].text).toMatch(/gave up the city pick/);
   });
 
   it("without a hail, Rae's mate still concedes to Lisbon (objection rule)", async () => {
     const { turns } = await runMeeting();
     expect(turns[6].act).toBe("CONCEDE");
-    expect(turns[6].text).not.toMatch(/Heard you/);
+    expect(turns[6].text).not.toMatch(/Rae/);
   });
 
   it("every line is within 20 words, ribbons within 8, and nothing leaks", async () => {
@@ -120,4 +122,50 @@ describe("negotiation — privacy & quality (WP-12)", () => {
       expect(other).not.toMatch(/hills/);
     }
   });
+});
+
+// ---------- no line said twice (the live demo heard "Still with Milwaukee…" three times) ----------
+describe("negotiation — varied lines, never the same one twice", () => {
+  const key = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+
+  it("SUPPORT / CONCEDE come in distinct wordings; the start rotates by speaker and watch, deterministically", () => {
+    const p = plans[0];
+    const holds = Array.from({ length: LINE_VARIANTS }, (_, v) => supportHoldLine(ds, p, v).line);
+    const switches = Array.from({ length: LINE_VARIANTS }, (_, v) => supportSwitchLine(ds, p, "dev", v).line);
+    const concedes = Array.from({ length: LINE_VARIANTS }, (_, v) => concedeLine(ds, p, "rae", undefined, v).line);
+    const hailed = Array.from({ length: LINE_VARIANTS }, (_, v) => concedeLine(ds, p, "rae", "Rae", v).line);
+    for (const set of [holds, switches, concedes, hailed]) {
+      expect(new Set(set.map(key)).size).toBe(LINE_VARIANTS);
+      for (const l of set) expect(l.split(/\s+/).length, l).toBeLessThanOrEqual(20);
+    }
+    expect(variantFor("maya", 2)).toBe(variantFor("maya", 2));
+    expect(variantFor("maya", 3)).not.toBe(variantFor("maya", 2));
+    expect(new Set(["a", "b", "c", "d", "e", "f"].map((id) => variantFor(id, 1))).size).toBeGreaterThan(1);
+  });
+
+  it("20 random voyages: every meeting's lines are all different, and repeated holds were varied", async () => {
+    const ports = ds.cities.map((c) => c._id).filter((id) => !isGeneratedPort(id));
+    let repeatedActs = 0;
+    for (let seed = 1; seed <= 20; seed++) {
+      const v = randomVoyagePlan(seed, ports, ds.dateWindows.map((w) => w.id));
+      const members = v.crew.map((c, i) => ({ memberId: `m${i}`, name: c.name, role: c.role, origin: c.origin, brief: c.brief, band: i + 1 }));
+      const book = buildChartBook(ds, members, v.ports);
+      const turns: EmittedTurn[] = [];
+      await new NegotiationEngine(ds, members, book, v.ports, "Mar 10 to 15", {
+        emitTurn: async (t) => { turns.push(t); return `t${turns.length}`; },
+        voice: async () => null, onWatch: () => undefined, takeHails: () => [], cancelled: () => false, memory: () => [],
+      }).run();
+      const keys = turns.map((t) => key(t.text));
+      expect(new Set(keys).size, `seed ${seed}: ${turns.map((t) => t.text).join(" | ")}`).toBe(turns.length);
+      // the same act for the same port more than once in a meeting: before, these were word-for-word the same
+      const seen = new Set<string>();
+      for (const t of turns.filter((x) => x.act === "SUPPORT" || x.act === "CONCEDE")) {
+        const k = `${t.act}|${t.cityId}`;
+        if (seen.has(k)) repeatedActs++;
+        seen.add(k);
+      }
+      for (const t of turns) expect(t.text.split(/\s+/).length, t.text).toBeLessThanOrEqual(20);
+    }
+    expect(repeatedActs).toBeGreaterThan(0);
+  }, 60_000);
 });

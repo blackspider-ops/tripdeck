@@ -80,9 +80,22 @@ describe("model mode guardrails", () => {
     reply = (c) => (c.system.startsWith("You are the Captain") ? null : { line: "This one has the beach my friend wants. The hotel is only $137 a night.", ribbon: "For the beach" });
     const turns = await run();
     const proposals = turns.filter((t) => t.act === "PROPOSE");
-    for (const t of proposals) {
-      expect(t.text).toBe("This one has the beach my friend wants.");
-      expect(t.redactions).toBe(1);
-    }
+    expect(proposals[0].text).toBe("This one has the beach my friend wants.");
+    // the same line again is rejected as a repeat: the later mates fall back to their own templates
+    expect(new Set(proposals.map((t) => t.text)).size).toBe(proposals.length);
+    for (const t of proposals) expect(t.redactions).toBe(1);
+  });
+
+  it("a model line identical to an earlier one in the meeting is rejected for a varied template; nothing is said twice", async () => {
+    const same = "Still with Milwaukee. It covers everything my friend asked for.";
+    reply = () => ({ line: same, ribbon: "Still" });
+    const turns = await run([{ afterTurn: 4, memberId: "rae", text: "beach please" }]);
+    expect(turns.filter((t) => t.text === same).length).toBe(1);
+    const keys = turns.map((t) => t.text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim());
+    expect(new Set(keys).size).toBe(turns.length);
+    // a model line differing only in case / punctuation is a repeat too
+    reply = () => ({ line: "We're with Lisbon!", ribbon: "Lisbon" });
+    const again = await run();
+    expect(again.filter((t) => /we're with lisbon/i.test(t.text)).length).toBe(1);
   });
 });

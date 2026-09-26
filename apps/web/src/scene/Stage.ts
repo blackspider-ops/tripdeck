@@ -9,6 +9,7 @@ import { M, disposeObject, releaseSharedTextures, shadowDecal } from "./material
 import { Tweens } from "./tween";
 import { sound } from "./audio";
 import { TABLE_TARGET } from "./layout";
+import { ContainerSize } from "./containerSize";
 
 export class Stage {
   readonly renderer: THREE.WebGLRenderer;
@@ -24,7 +25,8 @@ export class Stage {
   private bgTimer: number;
   private envMap: THREE.Texture;
   private hooks: ((dt: number, frame?: XRFrame) => void)[] = [];
-  private resizeObs: ResizeObserver;
+  /** The canvas follows its container (never the window): ResizeObserver, focus / visibility, and a per-frame check. */
+  private sizer: ContainerSize;
   private roomProps = new THREE.Group();
   fps = 0;
   private frames = 0;
@@ -39,6 +41,8 @@ export class Stage {
     if (alpha) this.renderer.setClearColor(0x000000, 0);
     container.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.display = "block";
+    this.renderer.domElement.style.width = "100%";
+    this.renderer.domElement.style.height = "100%";
 
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.01, 30);
     this.camera.position.set(0, 0.62, 0.78);
@@ -63,9 +67,7 @@ export class Stage {
     this.anchor.add(this.director.root);
     this.scene.add(this.anchor);
 
-    this.resizeObs = new ResizeObserver(() => this.resize());
-    this.resizeObs.observe(container);
-    this.resize();
+    this.sizer = new ContainerSize(container, (w, h) => this.resize(w, h));
     // resizes are ignored while presenting; catch up once the headset session ends
     this.renderer.xr.addEventListener("sessionend", this.onSessionEnd);
     this.renderer.setAnimationLoop((_t, frame) => { this.lastFrameT = performance.now(); this.tick(frame); });
@@ -96,6 +98,8 @@ export class Stage {
     this.lastT = now;
     this.tweens.update(dt);
     if (background) return;
+    // a tab shown after loading in the background (or any layout change the observer missed): catch up before drawing
+    if (!this.renderer.xr.isPresenting) this.sizer.check();
     for (const h of this.hooks) h(dt, frame);
     const cam = this.renderer.xr.isPresenting ? this.renderer.xr.getCamera() : this.camera;
     this.director.update(cam);
@@ -105,23 +109,23 @@ export class Stage {
     if (this.fpsT >= 1) { this.fps = Math.round(this.frames / this.fpsT); this.frames = 0; this.fpsT = 0; }
   }
 
-  private onSessionEnd = () => this.resize();
+  private onSessionEnd = () => { this.sizer.check(true); };
 
-  private resize() {
-    const w = this.container.clientWidth || window.innerWidth;
-    const h = this.container.clientHeight || window.innerHeight;
-    if (this.renderer.xr.isPresenting) return;
+  /** Sizes the drawing buffer and camera to the container (CSS px × the current pixel ratio); false while presenting. */
+  private resize(w: number, h: number): boolean {
+    if (this.renderer.xr.isPresenting) return false;
+    const pr = Math.min(window.devicePixelRatio || 1, 2); // it can differ once a background tab is shown, or on another screen
+    if (this.renderer.getPixelRatio() !== pr) this.renderer.setPixelRatio(pr);
     this.renderer.setSize(w, h, false);
-    this.renderer.domElement.style.width = "100%";
-    this.renderer.domElement.style.height = "100%";
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+    return true;
   }
 
   dispose() {
     this.renderer.setAnimationLoop(null);
     clearInterval(this.bgTimer);
-    this.resizeObs.disconnect();
+    this.sizer.dispose();
     this.renderer.xr.removeEventListener("sessionend", this.onSessionEnd);
     this.director.dispose();
     // O2-051: resolve every pending tween/wait now (nothing will tick them again) so the old director's chain and

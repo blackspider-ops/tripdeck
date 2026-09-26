@@ -10,9 +10,9 @@
  *             cheaper with stops, rounded to $5 (never a round $50, so a price can't be mistaken for a budget cap)
  *   airlines  plausible for the destination (flag carrier + US majors / Air Canada), picked by hash
  *   times     local, from each end's UTC offset: eastbound long-haul leaves in the evening and lands next morning,
- *             transpacific leaves late morning, the rest by day; redEye = 90+ min airborne between 1 and 5 am on
- *             the traveller's home clock (or, eastbound long-haul, the port's clock); the return leaves on the
- *             window's last day
+ *             transpacific leaves late morning, the rest by day (landing by 9 pm where the route allows);
+ *             redEye = 90+ min airborne between 1 and 5 am on the traveller's home clock (or, eastbound long-haul,
+ *             the port's clock); the return leaves on the window's last day
  *
  * A home airport within 150 km of the port is a "home port": one option, no flight, $0 (pricing adds no flight line).
  * Prices are illustrative, not quotes.
@@ -176,6 +176,8 @@ function nightMinutes(start: number, end: number): number {
   }
   return n;
 }
+/** A daytime flight lands by this local time at the port when its route allows (minutes after midnight). */
+const LATEST_DAY_ARRIVAL = 21 * 60;
 /** A red-eye spends at least this long airborne in the small hours. */
 const RED_EYE_MIN = 90;
 
@@ -247,7 +249,9 @@ export function modelFlights(ds: Dataset, cityId: CityId, origin: Origin, window
     if (longHaulEast) dep = slot(u("dep"), 15 * 60 + 30, 22 * 60 + 30);
     else if (transpacific) dep = slot(u("dep"), 10 * 60 + 30, 14 * 60);
     else if (shift >= 2 && km >= 3000 && u("redeye") < 0.35) dep = slot(u("dep"), 21 * 60 + 30, 23 * 60 + 30); // transcon red-eye
-    else dep = slot(u("dep"), 6 * 60, 19 * 60);
+    // by day: leave 6am–7pm, but late enough only to land by 9pm at the port where the route allows (a crew's
+    // first evening shouldn't start at midnight)
+    else dep = slot(u("dep"), 6 * 60, Math.max(6 * 60, Math.min(19 * 60, Math.floor((LATEST_DAY_ARRIVAL - durMin - shift * 60) / 5) * 5)));
     const arrHome = dep + durMin; // on the home clock
     const ret = slot(u("ret"), 8 * 60, 17 * 60);
     out.push({
