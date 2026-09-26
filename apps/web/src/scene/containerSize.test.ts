@@ -67,6 +67,25 @@ describe("ContainerSize", () => {
     expect(s.size).toEqual({ w: 1024, h: 768 });
   });
 
+  it("browser zoom (a new devicePixelRatio, same CSS size stays filled) re-applies the size", () => {
+    // Chrome's per-site zoom at 80% on a Retina screen: devicePixelRatio 2 → 1.6 and the CSS viewport grows by 1.25;
+    // the canvas must be re-sized to the container's new CSS size (the drawing buffer follows via the pixel ratio)
+    const b = box(1470, 779);
+    const apply = vi.fn();
+    const win = Object.assign(new EventTarget(), { devicePixelRatio: 2, document }) as unknown as Window;
+    const s = new ContainerSize(b.el, apply, { win });
+    made.push(s);
+    expect(apply).toHaveBeenLastCalledWith(1470, 779);
+    (win as unknown as { devicePixelRatio: number }).devicePixelRatio = 1.6;
+    b.set(1838, 974);
+    win.dispatchEvent(new Event("resize"));
+    expect(apply).toHaveBeenLastCalledWith(1838, 974);
+    (win as unknown as { devicePixelRatio: number }).devicePixelRatio = 2; // zoom reset without a resize event
+    b.set(1470, 779);
+    expect(s.check()).toBe(true);
+    expect(apply).toHaveBeenLastCalledWith(1470, 779);
+  });
+
   it("dispose stops listening", () => {
     const b = box(800, 600);
     const apply = vi.fn();

@@ -33,7 +33,7 @@ const BUDGETS = {
   XRPage: 41 * KB, // + VR chart room (lens-shell / Cardboard): gaze input, room rig, iOS motion + lens settings
   cardboard: 172 * KB, // webxr-polyfill (lazy: the headset route's Cardboard fallback only)
   index: 9.5 * KB, // qrcode (lazy, the headset code card)
-  tripstore: 7.5 * KB,
+  tripstore: 9.5 * KB, // + the seating plan for 2–12 (shared-ui/seating.ts: exclusion windows, even spread, two-ring fallback, flag tiers)
   Create: 12 * KB, // the course pickers: ports by region + Surprise me + any city (CitySearch), regions / states, windows
 };
 const OTHER_BUDGET = 8 * KB;

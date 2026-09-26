@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { BANDS, type CrewPublic, type Turn } from "@all-ayes/shared";
 import { CrewPiece } from "../CrewPiece";
 import { sound } from "../audio";
-import { pieceScale, seatAngle } from "../../shared-ui/seating";
+import { flagTier, pieceScale, seatPlace } from "../../shared-ui/seating";
 import { CAPTAIN_POS, seatMap, seatPoint } from "../seats";
 import type { DirectorContext } from "./context";
 
@@ -44,6 +44,7 @@ export class CrewSeating {
         void piece.placeAt(seat);
       }
       piece.group.scale.setScalar(scale);
+      piece.setFlagTier(flagTier(crew, organizerId, c.memberId)); // neighbours' flags at alternating heights
       if (c.briefSealed && !piece.isSealed) {
         piece.setSealed(true);
         if (!instant) { void piece.placeAt(piece.seat.clone(), true); sound.play("click"); }
@@ -66,7 +67,8 @@ export class CrewSeating {
     const seat = this.pieces.get(id)?.seat ?? this.seats.get(id);
     if (seat) return out.copy(seat).setY(CREW_HEAD_Y * pieceScale(trip?.crew.length ?? 0));
     if (!trip) return null;
-    return seatPoint(seatAngle(trip.crew, trip.organizerId, id), out).setY(CREW_HEAD_Y);
+    const { deg, r } = seatPlace(trip.crew, trip.organizerId, id);
+    return seatPoint(deg, out, r).setY(CREW_HEAD_Y);
   }
 
   /** Per frame: name flags face the viewer (`camPos`: the camera, world space). */

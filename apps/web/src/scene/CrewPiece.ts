@@ -42,6 +42,13 @@ const G = (() => {
   };
 })();
 
+/** The flag's pin rises from the piece's top; the flag (0.018 tall) hangs near the pin's head. */
+const PIN_BASE_Y = 0.09;
+const PIN_LEN = 0.034;
+const FLAG_Y = 0.117;
+/** A raised flag sits this much higher: more than a flag's height, so neighbours' flags never overlap edge-on. */
+export const FLAG_TIER_STEP = 0.022;
+
 const graphiteLine = new THREE.LineBasicMaterial({ color: PALETTE.graphite, transparent: true, opacity: 0.7 });
 
 export class CrewPiece {
@@ -51,6 +58,8 @@ export class CrewPiece {
   private collar: THREE.Mesh;
   private outline: THREE.LineSegments;
   private flag = new THREE.Group();
+  private pin: THREE.Mesh;
+  private tier = 0;
   private hourglass: THREE.Group;
   private shadow: THREE.Mesh;
   private sealed = false;
@@ -67,12 +76,13 @@ export class CrewPiece {
 
     // brass pin with a paper name flag
     const pin = new THREE.Mesh(G.pin, M.brass());
-    pin.position.y = 0.09 + 0.017;
+    pin.position.y = PIN_BASE_Y + PIN_LEN / 2;
+    this.pin = pin;
     const bandStrip = new THREE.Mesh(G.strip, bandInk(bandHex, true)); // cached, not a material per piece
     bandStrip.position.x = 0.002;
     const { group: flag } = paperFlag({ text: name, font: "heading", size: 0.0105 }, 0.018, { x0: 0.002, pad: 0.0035, guessPerChar: 0.0062 });
     this.flag.add(flag, bandStrip);
-    this.flag.position.y = 0.117;
+    this.flag.position.y = FLAG_Y;
 
     // hourglass shown while terms are unsealed
     this.hourglass = new THREE.Group();
@@ -92,6 +102,18 @@ export class CrewPiece {
     this.setSealed(false, true);
   }
 
+
+  /** Raises the name flag (and lengthens its pin) by `tier` notches, so neighbouring flags stand at different heights. */
+  setFlagTier(tier: number) {
+    if (tier === this.tier) return;
+    this.tier = tier;
+    const len = PIN_LEN + tier * FLAG_TIER_STEP;
+    this.pin.scale.y = len / PIN_LEN;
+    this.pin.position.y = PIN_BASE_Y + len / 2;
+    this.flag.position.y = FLAG_Y + tier * FLAG_TIER_STEP;
+  }
+
+  get flagTier() { return this.tier; }
 
   /** Pencil outline until the member's terms are sealed; then a carved piece. */
   setSealed(sealed: boolean, instant = false) {

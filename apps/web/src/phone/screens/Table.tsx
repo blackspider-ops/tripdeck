@@ -141,7 +141,9 @@ const COMPACT_FROM = 6;
 
 /**
  * Top-down chart: paper disc, globe, compass rose + Captain at north, crew seated around. Organizer at south.
- * Seats follow the 3D table's seating plan (shared-ui/seating.ts: x = cos, SVG y = sin, so south is down).
+ * Seats follow the 3D table's seating plan (shared-ui/seating.ts: x = cos, SVG y = sin, so south is down): the same
+ * angles, spread evenly round the whole ring clear of the Captain / compass (north here) and the Dry Run cloches; one
+ * radius here (the 3D inner ring only exists to pass between the globe and a cloche).
  */
 export const TopDownChart = memo(function TopDownChart({ crew, organizerId, speakingId }: { crew: CrewPublic[]; organizerId: string; speakingId: string | null }) {
   const cx = 150, cy = 150;

@@ -95,10 +95,12 @@ export function mulberry32(seed: number): () => number {
 }
 
 /** The random crew and course for a seed (pure: no helm), so tests can check what a seed makes. */
-export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: string[]) {
+export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: string[], crewSize?: number) {
   const r = mulberry32(seed);
   const pick = <T>(xs: readonly T[]) => xs[Math.floor(r() * xs.length) % xs.length];
-  const size = RANDOM_CREW_MIN + Math.floor(r() * (RANDOM_CREW_MAX - RANDOM_CREW_MIN + 1)); // 3–8
+  const drawn = RANDOM_CREW_MIN + Math.floor(r() * (RANDOM_CREW_MAX - RANDOM_CREW_MIN + 1)); // 3–8
+  // /demo?crew=N asks for a crew size (2..MAX_CREW) — the draw above still runs so the rest of the seed is unchanged
+  const size = crewSize ?? drawn;
   const shuffled = [...NAMES];
   for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
   const ports = sample(cityIds, 3, r);
@@ -125,10 +127,10 @@ export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: str
  * A random demo voyage: sealed briefs for everyone, one member away (their standing instruction set when their
  * terms seal), a headset code. Same seed → same voyage (ids and tokens aside).
  */
-export async function seedRandom(helm: TripService, seed: number = Math.floor(Math.random() * 2 ** 31)): Promise<DemoSeed> {
+export async function seedRandom(helm: TripService, seed: number = Math.floor(Math.random() * 2 ** 31), crewSize?: number): Promise<DemoSeed> {
   // curated ports only (a generated one, docs/11, is picked by name)
   const ports = helm.ds.cities.map((c) => c._id).filter((id) => !isGeneratedPort(id));
-  const plan = randomVoyagePlan(seed, ports, helm.ds.dateWindows.map((w) => w.id));
+  const plan = randomVoyagePlan(seed, ports, helm.ds.dateWindows.map((w) => w.id), crewSize);
   const [org, ...rest] = plan.crew;
   const { trip, member: o, token: oToken } = helm.createTrip({
     name: plan.tripName, organizerName: org.name, band: org.band, origin: org.origin, cityIds: plan.ports, windowIds: plan.windows,

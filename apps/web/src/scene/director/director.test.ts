@@ -22,6 +22,7 @@ vi.mock("../CrewPiece", async () => {
     constructor(_tw: unknown, readonly id: string) { reg.pieces.push(this); }
     placeAt(v: THREE.Vector3) { this.seat.copy(v); return Promise.resolve(); }
     setSealed(v: boolean) { this.isSealed = v; }
+    setFlagTier() { /* neighbours' flags at alternating heights */ }
     speak = vi.fn(async () => undefined); object = vi.fn(async () => undefined); concede = vi.fn(async () => undefined);
     settle = vi.fn(async () => undefined);
     frontPoint() { return new T.Vector3(); }

@@ -44,6 +44,17 @@ describe("TopDownChart", () => {
     expect(key.textContent).toContain("Mate11 (away)");
     expect(key.querySelector("li.speaking")?.textContent).toBe("Mate3");
   });
+  it("spreads twelve round the whole ring (the 3D table's plan), not bunched at the top", () => {
+    const { container } = render(<TopDownChart crew={crew(12)} organizerId="m0" speakingId={null} />);
+    const pts = seats(container);
+    const cx = 150, cy = 150;
+    const quarter = (fx: (x: number) => boolean, fy: (y: number) => boolean) => pts.filter((p) => fx(p.x - cx) && fy(p.y - cy)).length;
+    const lt = (v: number) => v < 0, ge = (v: number) => v >= 0;
+    for (const q of [quarter(lt, lt), quarter(ge, lt), quarter(lt, ge), quarter(ge, ge)]) expect(q).toBeGreaterThanOrEqual(2);
+    expect(pts.filter((p) => p.y > cy).length).toBeGreaterThanOrEqual(5); // the Organizer and four more along the front
+    expect(pts[0].x).toBeCloseTo(cx); // the Organizer, south
+    expect(pts[0].y).toBeGreaterThan(cy);
+  });
   it("up to six, names sit on the chart and there is no key", () => {
     const { container } = render(<TopDownChart crew={crew(4)} organizerId="m0" speakingId={null} />);
     expect(seats(container)).toHaveLength(4);
