@@ -2,10 +2,10 @@
  * The crew (OPT-031): creating a voyage, joining, absent friends and their invites, sealed terms (briefs), and
  * "sail without them".
  */
-import type { Band, BriefInput, CityId, Dataset, Destination, Origin, Role } from "@all-ayes/shared";
+import type { Availability, Band, BriefInput, CityId, Dataset, Destination, Origin, Role } from "@all-ayes/shared";
 import {
   BANDS, CAP_MAX_CENTS, CAP_MIN_CENTS, DEALBREAKERS, MAX_CREW, MAX_DEALBREAKERS, MAX_MUST_HAVES, MIN_TABLE_CREW, NAME_MAX_CHARS, NOTE_MAX_CHARS, ORIGINS,
-  TAGS, TRIP_NAME_MAX_CHARS, formatDollars,
+  TAGS, TRIP_NAME_MAX_CHARS, dayNumber, formatDollars,
 } from "@all-ayes/shared";
 import { indexOf } from "../data/loader.js";
 import { crewKeyHash, validCrewKey } from "../memory/memory.js";
@@ -32,6 +32,8 @@ export interface CreateTrip {
   cityIds?: CityId[];
   destination?: Destination;
   windowIds?: string[];
+  /** A date-range voyage (docs/03 P1): earliest departure, latest return, min–max nights. Wins over windowIds. */
+  dateRange?: unknown;
   /** The draw for "Surprise me" ports (seeded by the demo; Math.random otherwise). */
   random?: () => number;
 }
@@ -64,14 +66,15 @@ export class Crew {
     const { helm } = this;
     const name = clean(p.name, TRIP_NAME_MAX_CHARS) || DEFAULT_TRIP_NAME;
     // A4: the organizer sets the course: 2–4 named ports, regions / states, or anywhere (default: 3 ports at random),
-    // and offers 1–3 date windows (default: the next 2)
-    const { destination, candidateCityIds, candidateWindowIds } = resolveCourse(helm.ds, p, p.random);
+    // and either a date range (the crew's availability picks the windows when the table meets) or, the older way,
+    // 1–3 fixed date windows (default: the next 2)
+    const { destination, candidateCityIds, candidateWindowIds, dateRange } = resolveCourse(helm.ds, p, p.random);
     let joinCode = newJoinCode();
     while (helm.findByCode(joinCode)) joinCode = newJoinCode();
     const now = nowIso();
     const t: TripRec = {
       _id: newId(), joinCode, name, status: "BRIEFING", version: 0, organizerId: "",
-      memberIds: [], removedMemberIds: [], candidateCityIds, candidateWindowIds, destination,
+      memberIds: [], removedMemberIds: [], candidateCityIds, candidateWindowIds, destination, ...(dateRange ? { dateRange } : {}),
       negotiation: { watch: 0, running: false, seq: 0, round: 0, turns: [] }, votes: {}, attempt: 0, datasetHash: datasetHash(helm.ds), createdAt: now, updatedAt: now,
     };
     const packs = worldPacksFor(t);
@@ -270,8 +273,11 @@ export class Crew {
     // now (in the background), so the chart book can use them when the table meets. Regions / anywhere wait for the
     // table's pre-rank (table.ts).
     const seated = helm.activeMembers(t);
-    if (t.status === "BRIEFING" && (!t.destination || t.destination.kind === "cities") && seated.length >= MIN_TABLE_CREW && seated.every((x) => x.briefSealed)) {
-      void helm.live.prefetch(t, helm.table.pricingCrew(t));
+    if (t.status === "BRIEFING" && seated.length >= MIN_TABLE_CREW && seated.every((x) => x.briefSealed)) {
+      // a date-range voyage: the windows for everyone's availability (not shown until the table meets; it may
+      // regenerate them if someone reseals), so the prefetch fetches exactly those dates
+      if (helm.table.generateWindows(t)) helm.save(t);
+      if (!t.destination || t.destination.kind === "cities") void helm.live.prefetch(t, helm.table.pricingCrew(t));
     }
     // WP-11 follow-up: the sealed terms go back at once; slow memory lines follow in a second brief:private
     const { later } = await helm.replayer.briefPrivate(m, briefOut(rec), (p) => helm.toMember(tripId, memberId, "brief:private", p));
@@ -328,10 +334,17 @@ export function validateBrief(input: BriefInput, ds: Dataset, t?: TripRec): Brie
   if (!Number.isFinite(cap) || cap < CAP_MIN_CENTS || cap > CAP_MAX_CENTS) {
     throw new HelmError("BAD_INPUT", `Set what you can do, between ${formatDollars(CAP_MIN_CENTS)} and ${formatDollars(CAP_MAX_CENTS)}.`);
   }
-  const known = indexOf(ds).window;
-  const offered = t ? new Set(tripWindowIds(t)) : null;
-  const windows = [...new Set(input.dateWindowIds ?? [])].filter((id) => known.has(id) && (!offered || offered.has(id)));
-  if (!windows.length) throw new HelmError("BAD_INPUT", "Pick at least one set of dates.");
+  let windows: string[] = [];
+  let availability: Availability | undefined;
+  if (t?.dateRange) {
+    // a date-range voyage: the days the member can go, inside the organizer's range (private, like the cap)
+    availability = cleanAvailability(input.availability, t.dateRange.start, t.dateRange.end);
+  } else {
+    const known = indexOf(ds).window;
+    const offered = t ? new Set(tripWindowIds(t)) : null;
+    windows = [...new Set(input.dateWindowIds ?? [])].filter((id) => known.has(id) && (!offered || offered.has(id)));
+    if (!windows.length) throw new HelmError("BAD_INPUT", "Pick at least one set of dates.");
+  }
   const tagIds = new Set(TAGS.map((x) => x.id));
   const dbIds = new Set(DEALBREAKERS.map((x) => x.id));
   const mustHaves = [...new Set(input.mustHaves ?? [])].filter((x) => tagIds.has(x)).slice(0, MAX_MUST_HAVES);
@@ -339,5 +352,24 @@ export function validateBrief(input: BriefInput, ds: Dataset, t?: TripRec): Brie
   const note = clean(input.note, NOTE_MAX_CHARS) || undefined;
   // TR4-006: the note reaches the member's own Advocate (filtered); its source only means something with a note
   const places = t ? cleanPlaces(ds, t, input.loves, input.skips) : {};
-  return { capCents: cap, dateWindowIds: windows, mustHaves, dealbreakers, note, noteSource: note ? (input.noteSource === "voice" ? "voice" : "typed") : undefined, ...places };
+  return {
+    capCents: cap, dateWindowIds: windows, ...(availability ? { availability } : {}), mustHaves, dealbreakers, note,
+    noteSource: note ? (input.noteSource === "voice" ? "voice" : "typed") : undefined, ...places,
+  };
+}
+
+/**
+ * "When can you go?": `{any: true}`, or the member's free days — real ISO days inside the organizer's range, deduped
+ * and sorted. At least one day; a whole range of days is stored as `{any: true}`'s equal, day by day.
+ */
+export function cleanAvailability(x: unknown, start: string, end: string): Availability {
+  const av = (x && typeof x === "object" ? x : {}) as { any?: unknown; days?: unknown };
+  if (av.any === true) return { any: true };
+  const a = dayNumber(start)!, b = dayNumber(end)!;
+  const days = [...new Set((Array.isArray(av.days) ? av.days : []).filter((d): d is string => {
+    const n = dayNumber(d);
+    return n !== null && n >= a && n <= b;
+  }))].sort();
+  if (!days.length) throw new HelmError("BAD_INPUT", "Mark the days you can go, or pick \"Any of these dates\".");
+  return { days };
 }

@@ -2,7 +2,7 @@
  * The helm's records, the bus contract, and the pure helpers the trips/* modules share (OPT-031).
  */
 import { createHash } from "node:crypto";
-import type { Brief, CityId, Dataset, Destination, Plan, Role, S2CPayload, ServerToClient, TripRoomEvent, TripStatus, Turn, Band, Origin } from "@all-ayes/shared";
+import type { Brief, CityId, DateRange, Dataset, Destination, Plan, Role, S2CPayload, ServerToClient, TripRoomEvent, TripStatus, Turn, Band, Origin } from "@all-ayes/shared";
 import type { BookingRec, StoredStanding } from "../payments/orchestrator.js";
 import { datasetRev } from "../data/loader.js";
 import type { BookingDoc } from "../store/db.js";
@@ -27,8 +27,14 @@ export interface TripRec {
    * the top 4 of the pre-rank (fit/prerank.ts) for this crew.
    */
   candidateCityIds: CityId[];
-  /** The date windows on offer (1–3). Absent on voyages from older builds: W1 and W2 (`tripWindowIds`). */
+  /**
+   * The date windows on offer (1–3). Fixed-window voyages: the organizer's pick (absent on voyages from older builds:
+   * W1 and W2, `tripWindowIds`). Date-range voyages: the windows generated from the crew's availability
+   * (fit/windows.ts) when the table met — empty or absent until then.
+   */
   candidateWindowIds?: string[];
+  /** The organizer's date range and trip length (date-range voyages; absent on fixed-window ones). */
+  dateRange?: DateRange;
   /** How the course was set. Absent on voyages from older builds: the named ports in candidateCityIds. */
   destination?: Destination;
   /**
@@ -186,6 +192,7 @@ let dsHashCache: { ds: Dataset; rev: number; hash: string } | null = null;
 /** The voyage's date windows (older voyages offered W1 and W2). */
 export const LEGACY_WINDOW_IDS = ["W1", "W2"];
 export function tripWindowIds(t: TripRec): string[] {
+  if (t.dateRange) return t.candidateWindowIds ?? []; // generated when the table meets (none while briefing)
   return t.candidateWindowIds?.length ? t.candidateWindowIds : LEGACY_WINDOW_IDS;
 }
 

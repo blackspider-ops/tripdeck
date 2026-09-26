@@ -3,8 +3,9 @@
  * "anywhere"; and offers 1–3 date windows. Pure functions over the dataset: crew.ts validates with them, replay.ts
  * shows them, table.ts pre-ranks the ports in scope when the table meets.
  */
-import type { City, CityId, Dataset, DateWindow, Destination, DestinationPublic, Region, TripState } from "@all-ayes/shared";
+import type { City, CityId, Dataset, DateRange, DateWindow, Destination, DestinationPublic, Region, TripState } from "@all-ayes/shared";
 import {
+  addDays, addMonths, checkDateRange, RANGE_MAX_MONTHS,
   DEFAULT_PORTS, DEFAULT_WINDOWS, MAX_PLACES, MAX_PORTS, MAX_WINDOWS, MIN_PORTS, MIN_WINDOWS, REGIONS, US_STATES, stateName,
 } from "@all-ayes/shared";
 import { generatedPackOf, indexOf, isGeneratedPort } from "../data/loader.js";
@@ -79,16 +80,39 @@ export interface CourseInput {
   /** The older API: named ports. */
   cityIds?: unknown;
   destination?: unknown;
+  /** Fixed windows (the Expo, older clients): 1–3 dataset window ids. */
   windowIds?: unknown;
+  /** A date-range voyage: earliest departure, latest return, trip length (wins over windowIds). */
+  dateRange?: unknown;
+}
+
+const isoAt = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+/**
+ * The helm's bounds for a new range. The organizer's phone checks "starts tomorrow, ends within 12 months" on its own
+ * calendar; the helm allows for every time zone: tomorrow where it is earliest (UTC−12), 12 months from today where
+ * it is latest (UTC+14).
+ */
+export function helmRangeBounds(now = Date.now()): { tomorrow: string; lastDay: string } {
+  return { tomorrow: addDays(isoAt(now - 12 * 3_600_000), 1), lastDay: addMonths(isoAt(now + 14 * 3_600_000), RANGE_MAX_MONTHS) };
+}
+
+/** A date range from a request, validated (docs/03 P1), or a BAD_INPUT naming what's wrong. */
+export function resolveDateRange(x: unknown, now = Date.now()): DateRange {
+  const r = (x && typeof x === "object" ? x : {}) as Record<string, unknown>;
+  const range = { start: r.start, end: r.end, minNights: Number(r.minNights), maxNights: Number(r.maxNights) } as DateRange;
+  const problem = checkDateRange(range, helmRangeBounds(now));
+  if (problem) throw new HelmError("BAD_INPUT", problem);
+  return { start: range.start, end: range.end, minNights: range.minNights, maxNights: range.maxNights };
 }
 
 /**
  * The course a new voyage sets, validated. Named ports: 2–4 known, distinct. Regions / states: known ones, at least
  * two ports in scope. Nothing named: 3 ports at random ("Surprise me" — never every port: the chart book holds 12
- * plans). Windows: 1–3 known, distinct, in date order; none named: the next 2.
+ * plans). Dates: a date range (docs/03 P1: start ≥ tomorrow, end within 12 months, room for the shortest trip), or
+ * the older fixed windows: 1–3 known, distinct, in date order; neither named: the next 2.
  */
 export function resolveCourse(ds: Dataset, p: CourseInput, random: () => number = Math.random):
-  { destination: Destination; candidateCityIds: CityId[]; candidateWindowIds: string[] } {
+  { destination: Destination; candidateCityIds: CityId[]; candidateWindowIds: string[]; dateRange?: DateRange } {
   const known = indexOf(ds).city;
   const ids = (x: unknown) => (Array.isArray(x) ? x : []).filter((c): c is string => typeof c === "string");
   const d = (p.destination && typeof p.destination === "object" ? p.destination : undefined) as Partial<Destination> | undefined;
@@ -117,6 +141,10 @@ export function resolveCourse(ds: Dataset, p: CourseInput, random: () => number 
     destination = { kind: "cities", cityIds: candidateCityIds };
   }
 
+  // a date range: the windows are generated from the crew's availability when the table meets (fit/windows.ts)
+  if (p.dateRange !== undefined && p.dateRange !== null) {
+    return { destination, candidateCityIds, candidateWindowIds: [], dateRange: resolveDateRange(p.dateRange) };
+  }
   let candidateWindowIds: string[];
   if (p.windowIds !== undefined) {
     const win = indexOf(ds).window;

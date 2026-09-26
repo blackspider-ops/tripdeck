@@ -56,9 +56,18 @@ Nothing is seeded into MongoDB. `apps/server/src/demo/seed.ts` (`POST /api/demo/
 
 ### 2a. Date windows
 
-A voyage offers 1–3 of these (the organizer picks on Create; default: the next two that haven't started). The Brief's
-date chips show only the voyage's windows, and the helm drops any other window from a brief (none left → refused).
-W1 and W2 are unchanged. Voyages from older builds offer W1 and W2.
+**New voyages don't use these.** The organizer picks a date range and trip length on Create, the crew mark the days
+they can go, and the helm generates up to three windows from that (doc 04 §4.12): ids `D<yyyymmdd>N<nights>`
+(`D20270312N4` = Mar 12–16, 4 nights), labelled with their dates ("Mar 12–16"). A generated window isn't in
+`dataset.json`: the dataset index resolves it from its id, so every lookup that takes a window id (pricing, the
+flight model, labels) accepts it. It has no curated flights, so its fares come from the flight model (season factor by
+**month**, the table's "by month" row below) or RouteStack live fares for its exact dates.
+
+The fixed windows below stay for **compatibility**: the scripted Expo voyage (W1 + W2, curated flights, numbers
+unchanged), voyages stored by older builds, and API callers that still send `windowIds` (1–3 of these; none and no
+range = the next two that haven't started). On such a voyage the Brief's date chips show only its windows, and the helm
+drops any other window from a brief (none left → refused). W1 and W2 are unchanged. Voyages from older builds that
+stored no windows offer W1 and W2.
 
 | id | Dates | Nights | Label | Season factor (flight model) |
 |---|---|---|---|---|
@@ -234,8 +243,10 @@ Dataset `overrides` (checked first):
 The scripted voyage: Lisbon / Mexico City / Montréal, W1 + W2, this crew. Its briefs lead to Lisbon **by design**
 (the tests and the pitch depend on its numbers); the engine is generic. `/demo` seeds a **random** voyage by default
 (docs/09): 3–8 crew from a list of names, random home airports, budget bands and caps, must‑haves, dealbreakers and
-notes, 3 random curated ports, 1–3 random windows, one member away with a standing instruction —
-`seedRandom(helm, seed)` is deterministic for a seed (`?seed=<n>` replays one).
+notes, 3 random curated ports, a random **date range** 2–9 months out (10–40 days, trips of 2–4 up to 7 nights) with
+random per-member availability (everyone shares a block long enough for the longest trip, most mark a few more days,
+some "any of these dates"; in about a third of voyages one member has a gap in the block), one member away with a
+standing instruction — `seedRandom(helm, seed)` is deterministic for a seed and day (`?seed=<n>` replays one).
 
 | Member | Role | Band | Origin | Cap (PRIVATE) | Dates | Must‑haves | Dealbreakers | Note | Memory seed |
 |---|---|---|---|---|---|---|---|---|---|

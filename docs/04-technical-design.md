@@ -145,6 +145,11 @@ interface Trip {
   memberIds: string[];         // ordered = seating order
   removedMemberIds: string[];  // "sail without them" (not travelling, not priced)
   candidateCityIds: string[];  // the ports the organizer picked (2–3)
+  dateRange?: { start: string; end: string; minNights: number; maxNights: number };
+                               // a date-range voyage (§4.12): ISO days, both included; nights 1–14. Absent = fixed windows
+  candidateWindowIds?: string[];
+                               // fixed windows: the organizer's 1–3 dataset ids (absent on older docs = W1, W2).
+                               // date range: [] until the last terms seal / the table meets, then the generated ids
   negotiation: {               // the turn log itself is in `turns` (§4.6)
     watch: number; running: boolean; seq: number;
     round: number;             // table meetings so far; turns of an earlier (interrupted) meeting are never re-attached
@@ -168,7 +173,8 @@ interface Trip {
   createdAt: string; updatedAt: string;
 }
 ```
-Date windows and cities come from the dataset (doc 07), not the trip doc. R2-WP-14 (O2-036): the trip doc is small
+Cities and fixed date windows come from the dataset (doc 07), not the trip doc; a generated window (`D20270312N4`)
+carries its dates in its id, so only the ids are stored. R2-WP-14 (O2-036): the trip doc is small
 (~0.8 kB) because it is rewritten on every save (votes, clock control, pick, seal outcome); the Two Charts' plan bodies
 (~11 kB) are written once per decision, in `shortlists`.
 
@@ -199,7 +205,11 @@ interface Brief {
   tripId: string; memberId: string;
   capCents: number;                   // all-in cap — stored ONLY here (and as the limit of the provider instruction, doc 06 §3;
                                       // never in `members.standing` or a seal, L5-007 / TR5-015)
-  dateWindowIds: string[];            // acceptable windows
+  dateWindowIds: string[];            // acceptable windows (fixed-window voyages); [] on a date-range voyage
+  availability?: { days?: string[]; any?: true };
+                                      // date-range voyages: the ISO days (inside the range, sorted, deduped) the member
+                                      // can go, or any of them. PRIVATE like the cap: never broadcast, never logged,
+                                      // never spoken per member; back to the member only in brief:private (§4.12)
   mustHaves: Tag[];                   // max 3
   dealbreakers: Dealbreaker[];        // max 3
   note?: string;                      // ≤ 200 chars
@@ -312,6 +322,36 @@ interface Seal {
 - `helm_lease`: `{ _id: "helm", owner, expiresAt }` — the single-writer lease (§4 "Single writer", `store/lease.ts`).
 - `shortlists` (R2-WP-14 / O2-036): `{ _id: tripId, tripId, round, planIds: [a, b], plans: Plan[], datasetHash?, at }` — SERVER-ONLY: the Two Charts as priced when the table decided (TR5-022; per-member shares, never broadcast). Written once per decision (a new decision replaces it). Restore attaches it only while `round` and `planIds` match the trip doc; otherwise the charts resolve from the chart book (and a voyage whose charts don't resolve goes back to BRIEFING).
 
+### 4.12 Date ranges and the window finder
+New voyages offer a **date range** instead of fixed windows (docs/03 P1/P4). Pure calendar code is shared
+(`packages/shared/src/dates.ts`: ISO-day arithmetic, `checkDateRange`, generated ids and labels, `availableFor`);
+the finder is `apps/server/src/fit/windows.ts` (`findWindows`).
+- **Create** validates `dateRange` (`course.ts resolveDateRange`): start ≥ tomorrow (the helm allows every time zone:
+  tomorrow at UTC−12), end ≤ 12 months from today (at UTC+14), end − start ≥ minNights, 1 ≤ minNights ≤ maxNights
+  ≤ 14. `BAD_INPUT` otherwise. A request with `windowIds` and no range is the older fixed-window path (unchanged);
+  with both, the range wins.
+- **Brief** (`crew.ts cleanAvailability`): on a date-range voyage `availability` is required — `{any: true}` or ≥ 1
+  real ISO day inside the range (others dropped; sorted, deduped); `dateWindowIds` is ignored ([]). On a fixed-window
+  voyage `availability` is dropped. The socket parser caps `days` at 400 entries of ≤ 10 chars.
+- **Finder.** Candidates: every departure day d and length n ∈ [minNights, maxNights] with d..d+n inside the range.
+  Ranked by (1) members free every day d..d+n (departure and return included; `any` = free), most first; (2) weekend
+  fit: fewer workdays (Mon–Fri) per day away; (3) earlier departure; (4) the longer trip. Picked greedily, skipping
+  one that shares more than one day with a window already picked; a small range is topped up with the best remaining
+  distinct trips. Up to `GENERATED_WINDOWS` (3), in date order, ids `D<yyyymmdd>N<nights>`, labels "Mar 12–16".
+  ~5,000 candidates for a 12-month range × 14 lengths, O(1) per member each (prefix sums): a few ms for 12 members.
+- **When.** Generated when the last terms seal (so the live prefetch fetches exactly those dates, docs/12) and again
+  when the table meets (`Table.generateWindows`); stored on `trip.candidateWindowIds` and fixed from there (a void
+  then new terms regenerate them at the next meeting). While BRIEFING they are **not** in `trip:state` (`dateWindows:
+  []`): they follow terms still being sealed. The table-start broadcast is a full snapshot carrying them.
+- **Everywhere a dataset window was.** `indexOf(ds).window.get(id)` resolves a generated id from the id itself, so the
+  chart book, pricing, the flight model (season by month), live prefetch dates, Dry Run days, Seal/Booked labels,
+  the .ics, the Captain's phrasing and memory notes ("voyage: Lisbon, Mar 12 to 16") all work unchanged.
+- **Absentees.** `pricingCrew` derives each member's `dateWindowIds` from their availability per generated window.
+  A window a member can't make is a private `date_mismatch` on their share (like any term it breaks), so fairness
+  and the Captain's choice weigh it; the chart book prices the windows the most members can make (all of them when
+  nobody can make any). The Captain says "<dates> works for everyone", or "…works for most of the crew" when the best
+  window suits more than half but not all — never who.
+
 ### 4.11 Memory only, by design (L5-013)
 Not stored, so a restart loses them on purpose: demo handoff codes (2 h; a restart means a re-seed) · passkey assertion challenges and assertion tokens (2 min) · pending hails and the per-member hail pacing · the engine's table state (who backed what) · rate-limit windows and the hydrate miss cache · the chart book and privacy context (rebuilt from briefs) · the per-voyage debug ring buffer and client logs (the audit rows in `events` refill it) · spend counters when MongoDB is off (with MongoDB they are in `spend`) · a pending headset code's secret when `PAIRING_SECRET` is unset. Live bookings don't survive a restart either: restore voids them (doc 06 §4.2).
 
@@ -361,7 +401,7 @@ Base `/api`. JSON bodies ≤ 32 kB. Member auth = `Authorization: Bearer <member
 
 | Method & path | Body | Returns | Notes |
 |---|---|---|---|
-| `POST /trips` | `{name, organizerName, band, origin, cityIds?, crewKey?}` | `{tripId, joinCode, memberId, memberToken, crewKey}` | Status → BRIEFING. `cityIds`: the ports (≥ 2 of `LIS`/`MEX`/`YUL`; omitted = all). 10/min per address |
+| `POST /trips` | `{name, organizerName, band, origin, cityIds? \| destination?, dateRange? \| windowIds?, crewKey?}` | `{tripId, joinCode, memberId, memberToken, crewKey}` | Status → BRIEFING. `cityIds` / `destination`: the course (2–4 ports, regions, anywhere). `dateRange: {start, end, minNights, maxNights}` (new phones; §4.12, `422 BAD_INPUT` when invalid) or the older `windowIds` (1–3 dataset windows; neither = the next 2); both → the range. 10/min per address |
 | `GET /trips/by-code/:code` | — | `{tripId, joinCode, name, status, crew:[{memberId,name,role,band,briefSealed}], takenBands, crewClosed}` | Public info only. 60/min; 20 wrong codes/min |
 | `POST /trips/:tripId/members` | `{name, band, origin, crewKey?}` | `{memberId, memberToken, crewKey}` | Join. `403 CREW_CLOSED`, `409 BAD_PHASE` once the table has met, `CREW_FULL` (12 seats, absent ones included: `MAX_CREW`), `BAND_TAKEN` |
 | `POST /trips/:tripId/absent` | `{name, band, origin}` (organizer) | `{memberId, inviteKey, invitePath}` | `invitePath` = `/t/CODE/brief#m=<id>&k=<key>`; shown once |
@@ -410,7 +450,7 @@ Namespace `/`. On connect the client sends `trip:join {tripId? | joinCode?, memb
 | Event | Payload | Who | Effect |
 |---|---|---|---|
 | `trip:join` | `{tripId?, joinCode?, memberToken?, deviceToken?, surface}` | all | Join rooms, then the replay (§7.3); the ack follows the replay proper, before a slow memory recall's second `brief:private` (L3-002). Ack `{ok:true, as:"member"\|"device"\|"spectator", tokenRejected?:"member"\|"device"}` (R2-WP-07). A token that was sent but not accepted still joins as a spectator, but the caller first gets `error {code, event:"trip:join"}`: `TOKEN_REJECTED` (member token matches no seat; the phone shows its "Join again" card) or `DEVICE_EXPIRED` (headset replaced by a newer pairing, unpaired, or past its 12 h TTL; the headset forgets its key and shows the pairing card). Not sent for a headset once the voyage is BOOKED. A headset whose pairing ends mid-session gets `DEVICE_EXPIRED` (not `NOT_ORGANIZER` / `NOT_MEMBER`) on its next organizer action or hail. Copy: `JOIN_REFUSAL` in events.ts |
-| `brief:submit` | `Brief` fields | member | Save; `brief:private` to the owner, then `trip:state` (its crew shows `briefSealed`, no content) |
+| `brief:submit` | `Brief` fields: `{capCents, dateWindowIds, availability?: {days?: string[] (≤ 400) \| any: true}, mustHaves, dealbreakers, note?, noteSource?, loves?, skips?}` | member | Save; `brief:private` to the owner (with their `availability`), then `trip:state` (its crew shows `briefSealed`, no content). A date-range voyage needs `availability` (§4.12) |
 | `table:start` | `{}` | organizer phone / xr | BRIEFING→AT_TABLE (if every remaining member sealed: `BRIEFS_PENDING`; ≥ 2 crew: `TOO_FEW`) and start engine. `TOO_MANY_RUNS` (429) after `TABLE_RUNS_MAX` meetings (default 6) |
 | `table:sailWithout` | `{memberIds}` | organizer phone / xr (no headset UI) | Remove those members from the voyage (`trip.removedMemberIds`); not priced, not charged |
 | `table:hail` | `{text}` (after STT if spoken) | member / xr (as organizer) | Queue HAIL turn (not voiced); amounts removed. Refused with a private `error` (`TABLE_OPENING` during the Captain's OPEN, Watch 0; `HAIL_WAITING` one still waiting; `HAIL_AMOUNTS` only an amount; `CAPTAINS_CALLING` Watch 3 / deciding; `SLOW_DOWN` within 5 s of the member's last hail, **refused ones included**). Every non-public amount is stripped whatever the secrets are (S2-003) — doc 05 §4, §7.1 rule 8 |
@@ -427,7 +467,7 @@ Namespace `/`. On connect the client sends `trip:join {tripId? | joinCode?, memb
 ### 7.2 Server → Client (room)
 | Event | Room | Payload |
 |---|---|---|
-| `trip:state` | trip | `TripState` = `{tripId, joinCode, name, status, version, organizerId, crew:[{memberId,name,role,band,briefSealed,inviteOpen?}] (no home airport, S2-002; `inviteOpen` only on a seat sent an invite link, S2-012), crewClosed?, candidateCities:[{cityId,name,lat,lng}], dateWindows, negotiation:{watch,running}, shortlistIds?:[A,B], votes?, autoPick?, chosenPlanId?, booking?:BookingPublic, paymentsMode, serverNow}`. Sent on every phase change and after a join / sealed brief (there is no separate `member:joined` / `brief:received`). `shortlistIds` only from DRY_RUN on: the plan bodies travel once, in `table:decided`. `chosenPlanId`/`booking` only in SEALING, BOOKED, VOIDED (after "back to the charts" the voided attempt is history). `serverNow` maps `autoPick.at` onto the device clock. **Live broadcasts omit the static `candidateCities` and `dateWindows`** (`TripStateUpdate`, R2-WP-14 / O2-040); the (re)join replay always sends the full `TripState`, and the client keeps the static fields for the same trip id |
+| `trip:state` | trip | `TripState` = `{tripId, joinCode, name, status, version, organizerId, crew:[{memberId,name,role,band,briefSealed,inviteOpen?}] (no home airport, S2-002; `inviteOpen` only on a seat sent an invite link, S2-012), crewClosed?, candidateCities:[{cityId,name,lat,lng}], dateWindows, dateRange?:{start,end,minNights,maxNights}, negotiation:{watch,running}, shortlistIds?:[A,B], votes?, autoPick?, chosenPlanId?, booking?:BookingPublic, paymentsMode, serverNow}`. Sent on every phase change and after a join / sealed brief (there is no separate `member:joined` / `brief:received`). `shortlistIds` only from DRY_RUN on: the plan bodies travel once, in `table:decided`. `chosenPlanId`/`booking` only in SEALING, BOOKED, VOIDED (after "back to the charts" the voided attempt is history). `serverNow` maps `autoPick.at` onto the device clock. `dateWindows`: a fixed-window voyage's 1–3 windows; a date-range voyage's generated ones (`{id:"D20270312N4", start, end, nights, label:"Mar 12–16"}`) once the table has met, `[]` while briefing (§4.12). **Live broadcasts omit the static `candidateCities`, `dateWindows`, `destination` and `dateRange`** (`TripStateUpdate`, R2-WP-14 / O2-040); the (re)join replay always sends the full `TripState`, and the client keeps the static fields for the same trip id |
 | `brief:private` | member | `{brief, memory?}` (echo to owner). Sent at once; if the member's memory lines aren't ready within a tick, a second `brief:private` follows with `memory` |
 | `table:watch` | trip | `{watch:1|2|3}`. `trip:state` is not re-sent per Watch: clients patch `negotiation.watch` from this (a rejoin gets it in `trip:state`) |
 | `turn:new` | trip | `Turn` = `{turnId, tripId, seq, watch, speaker, act, planId?, cityId?, text, ribbon, voiced, audioUrl?, durationMs?, redactions, createdAt}` |

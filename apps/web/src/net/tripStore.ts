@@ -17,9 +17,10 @@ import type {
 export function withStatic(s: TripStateUpdate, prev: TripState | null): TripState {
   const same = prev?.tripId === s.tripId ? prev : null;
   const destination = s.destination ?? same?.destination;
+  const dateRange = s.dateRange ?? same?.dateRange;
   return {
     ...s, candidateCities: s.candidateCities ?? same?.candidateCities ?? [], dateWindows: s.dateWindows ?? same?.dateWindows ?? [],
-    ...(destination ? { destination } : {}),
+    ...(destination ? { destination } : {}), ...(dateRange ? { dateRange } : {}),
   };
 }
 

@@ -50,7 +50,8 @@ export const LIMITS = {
    * SEC-020: the longest field a socket payload may carry before the handler refuses it as BAD_INPUT (the service then
    * cleans and cuts it to its real cap, e.g. NOTE_MAX_CHARS / HAIL_MAX_CHARS).
    */
-  fields: { id: 200, joinCode: 40, text: 2_000, listItems: 16, listItem: 64, memberIds: MAX_CREW },
+  /** `days`: a Brief's available days (a 12-month range is at most 367 of them). */
+  fields: { id: 200, joinCode: 40, text: 2_000, listItems: 16, listItem: 64, memberIds: MAX_CREW, days: 400 },
   /** Dev routes (api/devAccess.ts): the sign-in cookie's life and wrong keys per address per minute. */
   dev: { sessionMs: HOUR_MS, loginFailPerMinute: 10 },
   /** SEC-015 (index.ts): how often idle voyages are swept from memory, and the voice cache is pruned. */

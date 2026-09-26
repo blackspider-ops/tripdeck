@@ -126,7 +126,8 @@ export class LivePrices {
   plan(t: TripRec, crew: PricingMember[]): { jobs: Job[]; trimmed: boolean } {
     const ds = this.helm.ds;
     const ix = indexOf(ds);
-    const windows = usableWindows(ds, crew).map((id) => ix.window.get(id)).filter((w): w is NonNullable<typeof w> => Boolean(w));
+    // a date-range voyage: its generated windows' exact dates (fit/windows.ts); else the dataset windows the crew named
+    const windows = usableWindows(ds, crew, this.helm.table.offered(t)).map((id) => ix.window.get(id)).filter((w): w is NonNullable<typeof w> => Boolean(w));
     if (!windows.length) return { jobs: [], trimmed: false };
     const ranked = rankPorts(ds, crew, t.candidateCityIds, windows.map((w) => w.id), t._id).map((p) => p.cityId);
     // ports the pre-rank can't score (no stay for this crew) still get flights priced if they're on the chart

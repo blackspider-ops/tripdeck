@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  DEALBREAKERS, MAX_DEALBREAKERS, MAX_MUST_HAVES, MAX_PLACES, NOTE_MAX_CHARS, TAGS, stateName,
-  type Brief as SealedBrief, type Dealbreaker, type DestinationPublic, type Tag,
+  DEALBREAKERS, MAX_DEALBREAKERS, MAX_MUST_HAVES, MAX_PLACES, NOTE_MAX_CHARS, TAGS, dayNumber, stateName,
+  type Availability, type Brief as SealedBrief, type DateRange, type Dealbreaker, type DestinationPublic, type Tag,
 } from "@all-ayes/shared";
 import { useCrew, useSendGuard, useTripSelector } from "../TripContext";
 import { formatWindow } from "../format";
@@ -12,6 +12,7 @@ import { Pencil, SealedLetter } from "../components/icons";
 import { Eyebrow, MarginNote, Page, StampButton } from "../components/ui";
 import { VoiceNote } from "../components/VoiceNote";
 import { AddPasskey } from "../components/AddPasskey";
+import { DaysCalendar } from "../components/Calendar";
 
 /** Where the dial starts for a member with no terms on file and nothing remembered. */
 const DEFAULT_CAP_CENTS = 90_000;
@@ -25,6 +26,9 @@ const ANY_NUMBER = Number.POSITIVE_INFINITY;
 function useBriefDraft(existing: SealedBrief | null, memory: string[], firstWindow: string | undefined) {
   const [cap, setCap] = useState(existing?.capCents ?? DEFAULT_CAP_CENTS);
   const [dates, setDates] = useState<string[]>(existing?.dateWindowIds ?? (firstWindow ? [firstWindow] : []));
+  // a date-range voyage: the days I can go, or any of them (private, like the rest)
+  const [anyDay, setAnyDay] = useState(Boolean(existing?.availability?.any));
+  const [days, setDays] = useState<string[]>(existing?.availability?.days ?? []);
   const [must, setMust] = useState<Tag[]>(existing?.mustHaves ?? []);
   const [wont, setWont] = useState<Dealbreaker[]>(existing?.dealbreakers ?? []);
   const [note, setNote] = useState(existing?.note ?? "");
@@ -41,6 +45,7 @@ function useBriefDraft(existing: SealedBrief | null, memory: string[], firstWind
   useEffect(() => {
     if (adopted || !existing) return;
     setCap(existing.capCents); setDates(existing.dateWindowIds); setMust(existing.mustHaves);
+    setAnyDay(Boolean(existing.availability?.any)); setDays(existing.availability?.days ?? []);
     setWont(existing.dealbreakers); setNote(existing.note ?? ""); setNoteSource(existing.noteSource ?? "typed");
     setLoves(existing.loves ?? []); setSkips(existing.skips ?? []);
     lastTranscript.current = existing.noteSource === "voice" ? existing.note ?? null : null;
@@ -62,7 +67,9 @@ function useBriefDraft(existing: SealedBrief | null, memory: string[], firstWind
   }, [memory, existing, prefilled, adopted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
-    cap, dates, must, wont, note, noteSource, pencilled, loves, skips,
+    cap, dates, must, wont, note, noteSource, pencilled, loves, skips, anyDay, days, setAnyDay, setDays,
+    /** What goes in the sealed terms on a date-range voyage (null: nothing marked yet). */
+    availability: (): Availability | null => (anyDay ? { any: true } : days.length ? { days } : null),
     /** A place is loved or skipped, never both. */
     setLoves: (v: string[], touched: string) => { setLoves(v); setSkips((s) => s.filter((x) => x !== touched)); },
     setSkips: (v: string[], touched: string) => { setSkips(v); setLoves((l) => l.filter((x) => x !== touched)); },
@@ -94,6 +101,49 @@ function ChipGroup<T extends string>({ options, value, max, disabled, onChange, 
         </button>
       ))}
     </div>
+  );
+}
+
+/** The longest run of consecutive marked days. */
+function longestRun(days: string[]): number {
+  const ns = days.map((d) => dayNumber(d)).filter((n): n is number => n !== null).sort((a, b) => a - b);
+  let best = 0, run = 0;
+  ns.forEach((n, i) => { run = i && n === ns[i - 1] + 1 ? run + 1 : 1; best = Math.max(best, run); });
+  return best;
+}
+
+/**
+ * "When can you go?" (a date-range voyage): a calendar limited to the organizer's range; tap or drag to mark days,
+ * or "Any of these dates". Only the member's own mate sees it; the crew only ever hears which trips suit everyone
+ * (or most of the crew).
+ */
+function WhenCanYouGo({ range, anyDay, days, disabled, onAny, onDays }: {
+  range: DateRange; anyDay: boolean; days: string[]; disabled: boolean; onAny: (v: boolean) => void; onDays: (d: string[]) => void;
+}) {
+  const shortest = range.minNights + 1;
+  const run = longestRun(days);
+  return (
+    <section aria-label="Dates">
+      <h2 className="h2 mt-l">When can you go?</h2>
+      <p className="small">
+        {formatWindow(range.start, range.end, { year: true })} · trips of {range.minNights === range.maxNights ? range.minNights : `${range.minNights}–${range.maxNights}`} nights.
+        {" "}Tap or drag across the days you're free.
+      </p>
+      <div className="chips">
+        <button type="button" className="chip" aria-pressed={anyDay} disabled={disabled} onClick={() => onAny(!anyDay)}>Any of these dates</button>
+      </div>
+      {anyDay ? <p className="small mt-s">Every day in the range works for you.</p> : (
+        <>
+          <DaysCalendar min={range.start} max={range.end} days={days} onChange={onDays} disabled={disabled} />
+          <p className="cal-summary" aria-live="polite">
+            {days.length ? `${days.length} day${days.length === 1 ? "" : "s"} marked` : "No days marked yet"}
+          </p>
+          {days.length && run < shortest ? (
+            <p className="small">The shortest trip is {range.minNights} night{range.minNights === 1 ? "" : "s"}: mark {shortest} days in a row if you can.</p>
+          ) : null}
+        </>
+      )}
+    </section>
   );
 }
 
@@ -149,6 +199,7 @@ export default function Brief() {
   const joinCode = useTripSelector((s) => s.trip!.joinCode);
   // R2-WP-14: dateWindows is a static field (the store keeps it from the join's full snapshot)
   const dateWindows = useTripSelector((s) => s.trip!.dateWindows);
+  const dateRange = useTripSelector((s) => s.trip!.dateRange);
   const existing = useTripSelector((s) => s.brief);
   const memory = useTripSelector((s) => s.memory);
   const d = useBriefDraft(existing, memory, dateWindows[0]?.id);
@@ -168,11 +219,13 @@ export default function Brief() {
   }, [submitted, me?.briefSealed, sealedAt, sentPrev, isOrganizer, navigate, joinCode]);
 
   const seal = () => {
-    if (!d.dates.length) { setProblem("Pick at least one set of dates you can travel."); return; }
+    const availability = dateRange ? d.availability() : null;
+    if (dateRange && !availability) { setProblem("Mark the days you can go, or pick \"Any of these dates\"."); return; }
+    if (!dateRange && !d.dates.length) { setProblem("Pick at least one set of dates you can travel."); return; }
     setProblem(null);
     const text = d.note.trim();
     markSubmitted({
-      capCents: d.cap, dateWindowIds: d.dates, mustHaves: d.must, dealbreakers: d.wont,
+      capCents: d.cap, dateWindowIds: dateRange ? [] : d.dates, ...(availability ? { availability } : {}), mustHaves: d.must, dealbreakers: d.wont,
       note: text || undefined, noteSource: text ? d.noteSource : "typed",
       ...(d.loves.length ? { loves: d.loves } : {}), ...(d.skips.length ? { skips: d.skips } : {}),
     }, sealedAt);
@@ -202,10 +255,14 @@ export default function Brief() {
         {d.pencilled.has("cap") ? <p className="small"><span className="pencil"><Pencil size={14} /></span> Pencilled in from your last voyage's budget.</p> : null}
       </section>
 
-      <section aria-label="Dates">
-        <h2 className="h2 mt-l">I can travel</h2>
-        <ChipGroup options={windows} value={d.dates} max={ANY_NUMBER} disabled={locked} onChange={d.setDates} />
-      </section>
+      {dateRange ? (
+        <WhenCanYouGo range={dateRange} anyDay={d.anyDay} days={d.days} disabled={locked} onAny={d.setAnyDay} onDays={d.setDays} />
+      ) : (
+        <section aria-label="Dates">
+          <h2 className="h2 mt-l">I can travel</h2>
+          <ChipGroup options={windows} value={d.dates} max={ANY_NUMBER} disabled={locked} onChange={d.setDates} />
+        </section>
+      )}
 
       <section aria-label="Must have">
         <h2 className="h2 mt-l">Must have <span className="small">(up to {MAX_MUST_HAVES})</span></h2>

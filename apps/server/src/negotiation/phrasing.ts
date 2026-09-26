@@ -78,16 +78,20 @@ function np(short: string): string {
   return `the ${COMMON_FIRST.has(first) ? first.toLowerCase() : first} ${rest.join(" ")}`;
 }
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** Who the Captain says the dates suit (counts only, never names: availability is private). */
+export type DatesWho = "everyone" | "most of the crew";
 const nps = (xs: string[]) => list(xs.map(np));
 
 /**
- * Captain OPEN. `dates` is the window everyone can do, or null when there is none (TR4-005). `scope`: a region /
- * anywhere voyage says what was asked for and which ports the pre-rank put on the chart.
+ * Captain OPEN. `dates` is the window everyone can do, or null when there is none (TR4-005). `who`: a date-range
+ * voyage whose best window suits most (not all) of the crew says "for most of the crew" — never who is missing.
+ * `scope`: a region / anywhere voyage says what was asked for and which ports the pre-rank put on the chart.
  */
-export function openLine(dates: string | null, cities: string[], scope?: string): LineOut {
+export function openLine(dates: string | null, cities: string[], scope?: string, who: DatesWho = "everyone"): LineOut {
+  const works = `works for ${who}`;
   if (scope) {
     const where = scope === "anywhere" ? "We could go anywhere." : `We're looking at ${scope}.`;
-    const when = dates ? `${dates} works for everyone. ` : "No dates suit everyone; we'll weigh the closest. ";
+    const when = dates ? `${dates} ${works}. ` : "No dates suit everyone; we'll weigh the closest. ";
     return {
       line: `${when}${where} ${list(cities)} ${cities.length === 1 ? "is" : "are"} on the chart. Let's hear it.`,
       ribbon: clampRibbon(`${scope === "anywhere" ? "Anywhere" : scope} · ${NUM[cities.length]?.toLowerCase() ?? cities.length} ports`),
@@ -100,7 +104,7 @@ export function openLine(dates: string | null, cities: string[], scope?: string)
     };
   }
   return {
-    line: `${dates} works for everyone. ${NUM[cities.length] ?? cities.length} ports on the chart: ${list(cities)}. Let's hear it.`,
+    line: `${dates} ${works}. ${NUM[cities.length] ?? cities.length} ports on the chart: ${list(cities)}. Let's hear it.`,
     ribbon: `${dates.replace(" to ", "–")} · ${NUM[cities.length]?.toLowerCase() ?? cities.length} ports`,
   };
 }

@@ -61,7 +61,7 @@ export default function Seal() {
   return (
     <Page>
       <Eyebrow icon={<Ledger size={18} />}>Your share{plan ? ` — ${plan.cityName}` : ""}</Eyebrow>
-      {plan ? <p className="small">{windowLabel(dateWindows, plan.dateWindowId)} · {plan.hotelName}</p> : null}
+      {plan ? <p className="small">{windowLabel(dateWindows, plan.dateWindowId, { year: true })} · {plan.hotelName}</p> : null}
 
       <Card label="Your share">
         <LedgerTable lines={mine.lines} />

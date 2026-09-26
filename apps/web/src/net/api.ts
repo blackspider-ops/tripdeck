@@ -1,5 +1,5 @@
 // REST client (docs/04-technical-design.md §6). All paths are relative; Vite proxies /api in dev.
-import type { Airport, Band, CityPack, CrewPublic, DateWindow, Destination, Origin, Region, TripStatus } from "@all-ayes/shared";
+import type { Airport, Band, CityPack, CrewPublic, DateRange, DateWindow, Destination, Origin, Region, TripStatus } from "@all-ayes/shared";
 // type-only: the WebAuthn helper itself still loads lazily at seal time (OPT-057)
 import type {
   AuthenticationResponseJSON, PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialRequestOptionsJSON, RegistrationResponseJSON,
@@ -88,7 +88,8 @@ export const api = {
   /** docs/11: build (or fetch) a generated port from OpenStreetMap; 503 LOADING while the map is busy, 409 TOO_FEW. */
   worldPack: (osmId: string) => call<{ pack: CityPack; cached: boolean; registered: boolean }>("POST", "/world/packs", { osmId }, undefined, undefined, { timeoutMs: 90_000 }),
 
-  createTrip: (p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: string[]; destination?: Destination; windowIds?: string[] }) =>
+  /** A new voyage: a date range (`dateRange`), or the older fixed windows (`windowIds`, still accepted by the helm). */
+  createTrip: (p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: string[]; destination?: Destination; windowIds?: string[]; dateRange?: DateRange }) =>
     withCrewKey(call<{ tripId: string; joinCode: string; memberId: string; memberToken: string; crewKey?: string }>("POST", "/trips", { ...p, crewKey: loadCrewKey() })),
 
   tripByCode: (code: string, opts?: CallOpts) =>

@@ -17,9 +17,22 @@ export type Surface = "phone" | "xr" | "gallery";
 
 export interface DateWindow {
   id: string; start: string; end: string; nights: number;
-  /** "Memorial Day weekend", "Thanksgiving week" (absent on the original two windows). */
+  /**
+   * "Memorial Day weekend", "Thanksgiving week" (absent on the original two windows). A window generated from the
+   * organizer's date range (id `D20270312N4`) is labelled with its dates: "Mar 12–16".
+   */
   label?: string;
 }
+/**
+ * The organizer's date range (docs/03 P1): the earliest departure and the latest return (ISO days, both included)
+ * and how long the trip may be. Public: everyone on the voyage sees it (it says nothing about anyone's terms).
+ */
+export interface DateRange { start: string; end: string; minNights: number; maxNights: number }
+/**
+ * A member's "When can you go?" (the Brief): the days inside the organizer's range they're free (ISO days), or any
+ * of them. PRIVATE like the rest of the terms: never in a trip-room payload, never spoken per member.
+ */
+export interface Availability { days?: string[]; any?: true }
 
 // ---------- dataset ----------
 export interface City {
@@ -98,7 +111,13 @@ export interface CrewPublic {
 }
 export interface BriefInput {
   capCents: number;
+  /**
+   * Fixed-window voyages (the Expo, older voyages): the windows the member can do. On a date-range voyage the member
+   * sends `availability` instead (this stays [] in the sealed brief; the helm derives it per generated window).
+   */
   dateWindowIds: string[];
+  /** Date-range voyages: the days the member can go (private). */
+  availability?: Availability;
   mustHaves: Tag[];
   dealbreakers: Dealbreaker[];
   note?: string;
@@ -268,8 +287,14 @@ export interface TripState {
   /** SEC-010: the organizer closed the crew; the join code no longer adds anyone (absent invites still work). */
   crewClosed?: boolean;
   candidateCities: { cityId: CityId; name: string; lat: number; lng: number }[];
-  /** The date windows this voyage offers (the organizer's 1–3; the Brief's date chips). */
+  /**
+   * The date windows this voyage offers. Fixed-window voyages: the organizer's 1–3 (the Brief's date chips). Date-range
+   * voyages: empty while briefing, then the up-to-3 windows the helm generated from everyone's availability when the
+   * table met (a full trip:state carries them).
+   */
   dateWindows: DateWindow[];
+  /** The organizer's date range (date-range voyages only; the Brief's calendar is limited to it). */
+  dateRange?: DateRange;
   /** How the course was set (named ports, regions, anywhere). Absent on voyages from older builds (named ports). */
   destination?: DestinationPublic;
   negotiation: { watch: number; running: boolean };
@@ -289,7 +314,7 @@ export interface TripState {
 }
 
 /** R2-WP-14 (O2-040): the parts of a voyage's snapshot that never change once it exists. */
-export const TRIP_STATIC_FIELDS = ["candidateCities", "dateWindows", "destination"] as const;
+export const TRIP_STATIC_FIELDS = ["candidateCities", "dateWindows", "destination", "dateRange"] as const;
 export type TripStaticField = (typeof TRIP_STATIC_FIELDS)[number];
 /**
  * R2-WP-14 (O2-040): `trip:state` as sent. The static fields (the ports and date windows) come with a (re)joining

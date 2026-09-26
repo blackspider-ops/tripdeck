@@ -3,11 +3,12 @@
  * and hails.
  */
 import type { Plan, PlanPublic, TripStatus, Turn } from "@all-ayes/shared";
-import { HAIL_MAX_CHARS, MAX_WATCHES, MIN_TABLE_CREW, monthDayLabel, stateName } from "@all-ayes/shared";
+import { HAIL_MAX_CHARS, MAX_WATCHES, MIN_TABLE_CREW, availableFor, monthDayLabel, stateName } from "@all-ayes/shared";
 import { cityName, indexOf } from "../data/loader.js";
 import { buildChartBook, buildPlan, planHotel, toPrivate, toPublic, type PricingMember } from "../fit/pricing.js";
 import { pickPorts } from "../fit/prerank.js";
-import { destinationLabel, scopeOf } from "./course.js";
+import { findWindows } from "../fit/windows.js";
+import { destinationLabel, scopeOf, tripWindows } from "./course.js";
 import { NegotiationEngine, type EngineIO } from "../negotiation/engine.js";
 import type { PrivacyContext } from "../privacy/filter.js";
 import { buildPrivacyContext } from "../privacy/context.js";
@@ -38,11 +39,37 @@ export class Table {
 
   // ---------- the chart book ----------
   pricingCrew(t: TripRec): PricingMember[] {
+    // a date-range voyage: each member "can do" the generated windows they're free for every day of (private; a
+    // window they can't make is a date_mismatch on their own share, like any term it breaks)
+    const windows = t.dateRange ? tripWindows(this.helm.ds, t) : null;
     // TR5-002: a member without a brief doc isn't priced (restore unseals them and the voyage returns to BRIEFING)
     return this.helm.activeMembers(t).flatMap((m) => {
-      const brief = this.helm.briefs.get(m._id);
-      return brief ? [{ memberId: m._id, name: m.name, role: m.role, origin: m.origin, brief }] : [];
+      const sealed = this.helm.briefs.get(m._id);
+      if (!sealed) return [];
+      const brief = windows
+        ? { ...sealed, dateWindowIds: windows.filter((w) => availableFor(sealed.availability, w.start, w.end)).map((w) => w.id) }
+        : sealed;
+      return [{ memberId: m._id, name: m.name, role: m.role, origin: m.origin, brief }];
     });
+  }
+
+  /** A date-range voyage's generated windows (the chart book counts these instead of the dataset's); else undefined. */
+  offered(t: TripRec): string[] | undefined {
+    return t.dateRange ? tripWindowIds(t) : undefined;
+  }
+
+  /**
+   * A date-range voyage: the up-to-3 windows for the seated crew's availability (fit/windows.ts), kept on the voyage.
+   * Called when the last terms seal (so live prices can be fetched for them) and again when the table meets. Returns
+   * whether they changed.
+   */
+  generateWindows(t: TripRec): boolean {
+    if (!t.dateRange) return false;
+    const briefs = this.helm.activeMembers(t).map((m) => this.helm.briefs.get(m._id)?.availability);
+    const ids = findWindows(t.dateRange, briefs).map((w) => w.id);
+    if (JSON.stringify(ids) === JSON.stringify(t.candidateWindowIds ?? [])) return false;
+    t.candidateWindowIds = ids;
+    return true;
   }
 
   /**
@@ -54,7 +81,7 @@ export class Table {
     if (!book || !this.helm.privacy.has(t._id)) {
       const priced = crew ?? this.pricingCrew(t);
       // docs/12: live (RouteStack) stays and fares that have landed for this voyage are preferred; the rest is estimated
-      let built = buildChartBook(this.helm.ds, priced, t.candidateCityIds, CHART_BOOK_LIMIT, this.helm.live.inventory(t));
+      let built = buildChartBook(this.helm.ds, priced, t.candidateCityIds, CHART_BOOK_LIMIT, this.helm.live.inventory(t), this.offered(t));
       // TR5-022: the Two Charts keep the prices they were decided at, even if the dataset changed since
       if (t.shortlistPlans?.length) {
         const stored = new Map(t.shortlistPlans.map((p) => [p._id, p]));
@@ -86,7 +113,7 @@ export class Table {
     if (t.negotiation.watch === 0) {
       // the Captain is still opening (ports and dates only): no plan has been named yet, so the whole chart book may
       // be built again — live stays included. The engine holds this array, so it is refilled in place.
-      const rebuilt = buildChartBook(helm.ds, crew, t.candidateCityIds, CHART_BOOK_LIMIT, live);
+      const rebuilt = buildChartBook(helm.ds, crew, t.candidateCityIds, CHART_BOOK_LIMIT, live, this.offered(t));
       if (JSON.stringify(rebuilt) !== JSON.stringify(book)) { changed = rebuilt.length; book.splice(0, book.length, ...rebuilt); }
     } else for (let i = 0; i < book.length; i++) {
       const p = book[i];
@@ -134,12 +161,27 @@ export class Table {
    * there is none, so the Captain never claims a common window that doesn't exist (TR4-005).
    */
   datesLabel(t: TripRec, crew?: PricingMember[]): string | null {
+    return this.dates(t, crew)?.label ?? null;
+  }
+
+  /**
+   * The dates the Captain may name and who they suit — counts only ("everyone", "most of the crew"), never names.
+   * A date-range voyage whose windows suit no one fully but more than half the crew says "most of the crew".
+   */
+  dates(t: TripRec, crew?: PricingMember[]): { label: string; who: "everyone" | "most of the crew" } | null {
     const chosen = this.planOf(t, t.chosenPlanId);
-    const w = chosen
-      ? indexOf(this.helm.ds).window.get(chosen.dateWindowId)
-      : this.helm.ds.dateWindows.find((x) => (crew ?? this.pricingCrew(t)).every((c) => c.brief.dateWindowIds.includes(x.id)));
+    const priced = crew ?? (chosen ? [] : this.pricingCrew(t));
+    const can = (id: string) => priced.filter((c) => c.brief.dateWindowIds.includes(id)).length;
+    const pool = t.dateRange ? tripWindows(this.helm.ds, t) : this.helm.ds.dateWindows;
+    let who: "everyone" | "most of the crew" = "everyone";
+    let w = chosen ? indexOf(this.helm.ds).window.get(chosen.dateWindowId) : pool.find((x) => can(x.id) === priced.length);
+    if (!w && !chosen && t.dateRange && priced.length) {
+      const best = [...pool].sort((a, b) => can(b.id) - can(a.id))[0];
+      if (best && can(best.id) * 2 > priced.length) { w = best; who = "most of the crew"; }
+    }
     if (!w) return null;
-    return `${monthDayLabel(w.start)} to ${monthDayLabel(w.end).replace(/^[A-Za-z]+ /, "")}`; // O2-043: cached formatter
+    const label = `${monthDayLabel(w.start)} to ${monthDayLabel(w.end).replace(/^[A-Za-z]+ /, "")}`; // O2-043: cached formatter
+    return { label: w.start.slice(5, 7) === w.end.slice(5, 7) ? label : `${monthDayLabel(w.start)} to ${monthDayLabel(w.end)}`, who };
   }
 
   /** The charts, votes, auto-pick and Dry Run clock are forgotten (a new table, new terms, a restore repair). */
@@ -200,6 +242,11 @@ export class Table {
     if ((t.tableRuns ?? 0) >= runsMax) throw new HelmError("TOO_MANY_RUNS", `This voyage has met ${runsMax} times already. Start a new voyage to meet again.`);
     // A region / anywhere voyage: every port in scope is pre-ranked for this crew and the top 4 go on the chart
     // (fit/prerank.ts). Only the ranking leaves the helm, never anyone's terms.
+    // a date-range voyage: its windows come from everyone's availability, fixed from here on (fit/windows.ts)
+    if (t.dateRange) {
+      this.generateWindows(t);
+      if (!tripWindowIds(t).length) throw new HelmError("BAD_INPUT", "The dates don't hold a trip of that length. Start a voyage with a wider range.");
+    }
     const scoped = t.destination && t.destination.kind !== "cities";
     const ports = scoped ? pickPorts(helm.ds, this.pricingCrew(t), scopeOf(helm.ds, t.destination!).map((c) => c._id), tripWindowIds(t), t._id) : null;
     if (ports && !ports.length) throw new HelmError("BAD_INPUT", "No port in range has a stay for this crew. Start a voyage with more ports.");
@@ -222,15 +269,16 @@ export class Table {
     const plans = this.chartBook(t, crew);
     if (helm.live.inventory(t) && !process.env.VITEST) console.log(`[live] voyage ${t._id}: chart book of ${plans.length}, ${plans.filter((p) => p.priceSource === "live").length} priced live`);
     helm.save(t);
-    helm.broadcastState(t, Boolean(ports)); // new ports: the snapshot carries them (a static field)
+    helm.broadcastState(t, Boolean(ports) || Boolean(t.dateRange)); // new ports / generated windows: static fields, so a full snapshot
 
     const memories = new Map<string, string[]>();
     await Promise.all(members.map(async (m) => memories.set(m._id, await helm.memoryFor(m))));
     const bands = new Map(members.map((m) => [m._id, m.band]));
+    const dates = this.dates(t, crew);
     const engine = new NegotiationEngine(
-      helm.ds, crew.map((c) => ({ ...c, band: bands.get(c.memberId) ?? 1 })), plans, t.candidateCityIds, this.datesLabel(t, crew),
+      helm.ds, crew.map((c) => ({ ...c, band: bands.get(c.memberId) ?? 1 })), plans, t.candidateCityIds, dates?.label ?? null,
       this.engineHooks(t, memories), helm.privacy.get(t._id),
-      { scopeLabel: scoped ? destinationLabel(helm.ds, t.destination!) : undefined, placeNames: (id) => this.placeName(id) },
+      { scopeLabel: scoped ? destinationLabel(helm.ds, t.destination!) : undefined, placeNames: (id) => this.placeName(id), datesWho: dates?.who },
     );
     // TR4-002: the two-argument form, so an error in the success handler isn't taken for an engine failure
     const round = t.negotiation.round;

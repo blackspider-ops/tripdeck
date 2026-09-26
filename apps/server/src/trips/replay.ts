@@ -27,9 +27,11 @@ export class Replayer {
         const c = cities.get(id);
         return c ? [{ cityId: id, name: c.name, lat: c.centerLat, lng: c.centerLng }] : [];
       }),
-      // only the windows this voyage offers (older voyages: W1 and W2)
-      dateWindows: tripWindows(this.helm.ds, t),
+      // only the windows this voyage offers (older voyages: W1 and W2). A date-range voyage's generated windows show
+      // once the table has met: while briefing they follow the terms still being sealed (private), so they stay back
+      dateWindows: t.dateRange && t.status === "BRIEFING" ? [] : tripWindows(this.helm.ds, t),
       destination: destinationPublic(this.helm.ds, t),
+      ...(t.dateRange ? { dateRange: { ...t.dateRange } } : {}),
     };
   }
 

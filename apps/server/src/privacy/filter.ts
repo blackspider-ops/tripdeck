@@ -215,6 +215,19 @@ function affordPatterns(ctx: PrivacyContext): RegExp[] {
   return res;
 }
 
+const MONTH = "(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\\.?";
+/** "Mar 27", and the end of "Mar 27 to 31" / "Mar 27–31" / "Dec 27 to Jan 2", just before a number. */
+const DAY_BEFORE = new RegExp(`\\b${MONTH}\\s+$|\\b${MONTH}\\s+\\d{1,2}\\s*(?:to|through|until|–|-)\\s*(?:${MONTH}\\s+)?$`, "i");
+/**
+ * A day of the month said with its month ("Mar 27", "Mar 27 to 31") is a date, not an amount: the voyage's dates are
+ * public (docs/04 §4.12), and without this a day number near some secret dollar value (±5%) would make the Captain's
+ * "Mar 27 to 31 works for everyone" a leak. Only whole numbers 1–31 with no currency qualify.
+ */
+function isCalendarDay(t: string, a: Amount): boolean {
+  if (a.currency || a.value < 1 || a.value > 31 || !/^\d{1,2}$/.test(t.slice(a.start, a.end).trim())) return false;
+  return DAY_BEFORE.test(t.slice(Math.max(0, a.start - 24), a.start));
+}
+
 export function filterLine(input: string, ctx: PrivacyContext): FilterResult {
   let text = normalizeText(input);
   let rewrites = 0;
@@ -228,7 +241,7 @@ export function filterLine(input: string, ctx: PrivacyContext): FilterResult {
     }
   }
 
-  const amounts = amountsIn(text);
+  const amounts = amountsIn(text).filter((a) => !isCalendarDay(text, a));
   const allowed = (v: number) => isAllowed(ctx, v);
 
   // 2) leak: any amount within ±5% of a secret value that isn't an exact public value

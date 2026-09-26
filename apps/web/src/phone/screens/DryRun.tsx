@@ -8,6 +8,7 @@ import { FitStamp } from "../components/money";
 import { HeadsetControls } from "../components/organizer";
 import { Cloche, WaxSeal } from "../components/icons";
 import { Button, Card, Eyebrow, Page, Plotting, StampButton } from "../components/ui";
+import { windowLabel } from "../format";
 
 /**
  * O2-047: one ticker per store, shared by everything that shows the Dry Run's in-trip minute (the clock and the
@@ -78,6 +79,8 @@ export default function DryRun() {
   const { store, isOrganizer } = useCrew();
   const shortlist = useTripSelector((s) => s.shortlist);
   const planPrivate = useTripSelector((s) => s.planPrivate);
+  // R2-WP-14: a static field (the store keeps it from the last full snapshot: the generated windows come with the table's)
+  const dateWindows = useTripSelector((s) => s.trip!.dateWindows);
   const votes = useTripSelector((s) => s.votes);
   const autoPick = useTripSelector((s) => s.autoPick);
   const serverVote = useTripSelector((s) => s.myVote);
@@ -115,7 +118,7 @@ export default function DryRun() {
       <div className="charts2" role="group" aria-label="The two charts">
         {shortlist.map((p) => (
           <ChartCard
-            key={p.planId} plan={p} priv={planPrivate[p.planId]} selected={p.planId === plan.planId}
+            key={p.planId} plan={p} priv={planPrivate[p.planId]} selected={p.planId === plan.planId} dates={windowLabel(dateWindows, p.dateWindowId)}
             onSelect={setSelected}
           />
         ))}
@@ -170,7 +173,11 @@ function AutoPickNote({ shortlist, autoPick }: { shortlist: PlanPublic[]; autoPi
   );
 }
 
-const ChartCard = memo(function ChartCard({ plan, priv, selected, onSelect }: { plan: PlanPublic; priv?: PlanPrivate; selected: boolean; onSelect: (planId: string) => void }) {
+const ChartCard = memo(function ChartCard({ plan, priv, selected, onSelect, dates }: {
+  plan: PlanPublic; priv?: PlanPrivate; selected: boolean; onSelect: (planId: string) => void;
+  /** "Mar 12–16": the chart's window (each chart may sail on different dates). */
+  dates?: string;
+}) {
   const publicTypes = new Set(plan.publicFlags.map((f) => f.type));
   const myFlags = (priv?.flags ?? []).filter((f) => !publicTypes.has(f.type));
   return (
@@ -178,12 +185,14 @@ const ChartCard = memo(function ChartCard({ plan, priv, selected, onSelect }: { 
       <div className="lbl">CHART {plan.label ?? ""}</div>
       <div className="city">{plan.cityName}</div>
       <div className="small">{plan.neighborhood} · {plan.hotelName}</div>
+      {dates ? <div className="small mono">{dates}</div> : null}
       {/* S2-002: the group total anyone may see is a range from public facts; your exact share is private */}
       <div className="total">{formatDollars(plan.groupRange.lowCents)}–{formatDollars(plan.groupRange.highCents).slice(1)} <span className="small">group, all in</span></div>
       <PriceTag plan={plan} />
       {priv ? <FitStamp fits={priv.fits} /> : null}
       {plan.fitsEveryone ? <div className="mt-xs"><span className="plaque">Fits everyone</span></div> : null}
       <ul>
+        {priv?.reasons.includes("date_mismatch") ? <li className="red">not your dates <span className="small">(private)</span></li> : null}
         {(priv?.missing ?? []).map((t) => <li key={t} className="red">no {t} <span className="small">(private)</span></li>)}
         {myFlags.map((f, i) => <li key={`m${i}`} className="red">{f.detail}</li>)}
         {plan.publicFlags.map((f, i) => <li key={`p${i}`} className="pub">{f.detail}</li>)}

@@ -41,9 +41,21 @@ const strs = (v: unknown, maxItems: number = F.listItems, max: number = F.listIt
   if (!Array.isArray(v) || v.length > maxItems) throw badInput();
   return v.map((x) => str(x, max));
 };
+/** "When can you go?": `{any: true}` or up to a year and a bit of ISO days (the helm keeps the ones in range). */
+const availabilityInput = (v: unknown): BriefInput["availability"] => {
+  if (v === undefined || v === null) return undefined;
+  if (typeof v !== "object" || Array.isArray(v)) throw badInput();
+  const a = v as Raw;
+  if (a.any === true) return { any: true };
+  return { days: strs(a.days, F.days, 10) };
+};
 const briefInput = (p: Raw): BriefInput => ({
   capCents: typeof p.capCents === "number" || typeof p.capCents === "string" ? Number(p.capCents) : NaN,
   dateWindowIds: strs(p.dateWindowIds),
+  availability: availabilityInput(p.availability),
+  // "Places I'd love / skip" (validated against the voyage's scope by validateBrief)
+  loves: p.loves === undefined ? undefined : strs(p.loves),
+  skips: p.skips === undefined ? undefined : strs(p.skips),
   mustHaves: strs(p.mustHaves) as Tag[], // unknown tags are dropped by validateBrief
   dealbreakers: strs(p.dealbreakers) as Dealbreaker[],
   note: optStr(p.note, F.text),

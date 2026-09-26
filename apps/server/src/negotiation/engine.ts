@@ -53,6 +53,8 @@ export interface EngineOptions {
   scopeLabel?: string;
   /** A member's loved / skipped place ("BCN", "Europe", "CA") as a name, for their own mate's facts. */
   placeNames?: (entry: string) => string;
+  /** Who `datesLabel` suits: everyone (default), or — a date-range voyage with no window for all — most of the crew. */
+  datesWho?: "everyone" | "most of the crew";
 }
 
 /** O2-033: words per spoken line (Expo mode keeps them short). */
@@ -121,8 +123,8 @@ export class NegotiationEngine {
     // WATCH 0 — Captain opens with group-level facts only
     const cities = this.cityIds.map((c) => cityName(this.ds, c));
     const scope = this.opts.scopeLabel;
-    await this.say({ kind: "captain" }, "OPEN", undefined, 0, openLine(this.datesLabel, cities, scope), (noAmounts) =>
-      this.captainPrompt("OPEN", openInstruction(this.datesLabel, cities, scope), noAmounts));
+    await this.say({ kind: "captain" }, "OPEN", undefined, 0, openLine(this.datesLabel, cities, scope, this.opts.datesWho), (noAmounts) =>
+      this.captainPrompt("OPEN", openInstruction(this.datesLabel, cities, scope, this.opts.datesWho), noAmounts));
 
     let lastWatch = 0;
     const big = this.crew.length > TABLE_VOICES_PER_WATCH;

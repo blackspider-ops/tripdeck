@@ -41,10 +41,16 @@ const NO_FLIGHT_FREE_FROM = 9 * 60;
  */
 const legFromStay = (gapMin: number, startMin: number) => (gapMin > 60 && startMin >= EVENING_MIN) || gapMin > 180;
 
-/** Windows everyone can do; if none, the ones the most members can do. */
-export function usableWindows(ds: Dataset, crew: PricingMember[]): string[] {
-  const counts = ds.dateWindows.map((w) => ({ id: w.id, n: crew.filter((m) => m.brief.dateWindowIds.includes(w.id)).length }));
+/**
+ * Windows everyone can do; if none, the ones the most members can do. `offered`: a date-range voyage's generated
+ * windows (fit/windows.ts), counted instead of the dataset's; when nobody can make any of them, all of them (every
+ * share then carries a private date_mismatch, and fairness sorts it out).
+ */
+export function usableWindows(ds: Dataset, crew: PricingMember[], offered?: string[]): string[] {
+  const ids = offered ?? ds.dateWindows.map((w) => w.id);
+  const counts = ids.map((id) => ({ id, n: crew.filter((m) => m.brief.dateWindowIds.includes(id)).length }));
   const best = Math.max(...counts.map((c) => c.n));
+  if (offered && best <= 0) return [...offered];
   return counts.filter((c) => c.n === best && c.n > 0).map((c) => c.id);
 }
 
@@ -359,10 +365,10 @@ const labelFor = (startDate: string, offset: number): string => dayLabel(startDa
  * All candidate plans, best first (the "chart book"). Every stay is a candidate: a crew larger than a stay sleeps books
  * several rooms/units of it (roomsFor), and the dearer bill simply scores lower.
  */
-export function buildChartBook(ds: Dataset, crew: PricingMember[], cityIds: CityId[], limit = 12, live?: LiveInventory): Plan[] {
+export function buildChartBook(ds: Dataset, crew: PricingMember[], cityIds: CityId[], limit = 12, live?: LiveInventory, offered?: string[]): Plan[] {
   const noHostel = crew.some((m) => m.brief.dealbreakers.includes("hostel"));
   const plans: Plan[] = [];
-  for (const windowId of usableWindows(ds, crew)) {
+  for (const windowId of usableWindows(ds, crew, offered)) {
     for (const cityId of cityIds) {
       // docs/12: a port × window with live stays (searched for this crew size) is priced on them, else on the curated ones
       const liveStays = liveStaysFor(live, cityId, windowId, crew.length).filter((h) => !(noHostel && h.stayType === "hostel"));

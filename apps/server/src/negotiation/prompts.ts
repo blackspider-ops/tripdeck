@@ -93,8 +93,10 @@ export function captainLineRequest(instruction: string, maxWords: number, noAmou
 }
 
 /** Captain OPEN: the dates everyone can do (or that there are none) and the ports. */
-export function openInstruction(datesLabel: string | null, cities: string[], scope?: string): string {
-  const dates = datesLabel ? `Dates everyone can do: ${datesLabel}.` : "No dates suit everyone; say the charts hold the closest.";
+export function openInstruction(datesLabel: string | null, cities: string[], scope?: string, who: "everyone" | "most of the crew" = "everyone"): string {
+  const dates = datesLabel
+    ? who === "everyone" ? `Dates everyone can do: ${datesLabel}.` : `Dates most of the crew can do: ${datesLabel} (never say who can't).`
+    : "No dates suit everyone; say the charts hold the closest.";
   const asked = scope ? ` The crew asked for ${scope}; say so, then name the ports.` : "";
   return `Open the meeting. ${dates}${asked} Ports on the chart: ${cities.join(", ")}. Invite proposals.`;
 }

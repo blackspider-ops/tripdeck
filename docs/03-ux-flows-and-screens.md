@@ -116,13 +116,26 @@ home‑airport picker over ~37 US / Canada airports: type a code — "sea" — o
     member's home airport vs their cap, dealbreakers, places they'd love / skip, season) and puts the top 4 on the
     chart (doc 05 §2.0). Until then the Muster says "Ports are chosen when the table meets".
   - **Anywhere**: the same, over every curated port.
-- **When** — the date windows on offer (1–3 of W1–W10: Memorial Day, July 4th week, a summer week, Labor Day, fall
-  break, Thanksgiving, winter holidays, spring break '28, …). Default: the next two that haven't started.
+- **When** — a **date range** and a **trip length**, on a small Chart Room month calendar (`components/Calendar.tsx`,
+  no date library; one month at a time with ‹ ›, Sunday first, every day a real button):
+  - tap the **earliest departure**, then the **latest return** (a tap before the start moves it; a third tap starts a
+    new range). The summary reads "Oct 30–Nov 15, 2026 · 17 days".
+  - **Trip length (nights)**: shortest and longest steppers, 1–14, default **3–5** (the shortest can't pass the longest).
+  - Default range: the first Friday four or more weeks out, 17 days.
+  - Validation (on the phone and again at the helm, `checkDateRange` in `packages/shared/src/dates.ts`): starts
+    **tomorrow** at the earliest; ends within **12 months**; long enough for the shortest trip (end − start ≥ min
+    nights). **Set sail** stays disabled with the reason under it ("The range is too short for 3 nights.").
+  - A range ending more than ~330 days out gets a gentle note: *"Live prices may not be available that far ahead —
+    we'll estimate."* (airlines open fares ~330 days ahead; docs/12).
+  - The crew then mark the days they can go on their Brief (P4), and when the table meets the helm picks up to three
+    trips inside the range from everyone's availability (doc 04 §4.12). The range is stored on the trip as
+    `dateRange: {start, end, minNights, maxNights}`.
 - "Sample listings; flights are modelled. No real bookings are made."
 
-Sending nothing leaves it to the helm: 3 random ports and the next 2 windows (never every port — the chart book holds
-12 plans). The helm validates everything (unknown ids dropped; < 2 or > 4 ports, unknown regions, 0 or > 3 windows
-refused).
+Sending no ports leaves it to the helm: 3 random ports (never every port — the chart book holds 12 plans). The helm
+validates everything (unknown ids dropped; < 2 or > 4 ports, unknown regions, a bad range refused with `BAD_INPUT`).
+**Older clients** may still send fixed windows (`windowIds`, 1–3 of W1–W10) instead of a range, and an API caller that
+sends neither gets the next 2 dataset windows; the Expo voyage keeps W1/W2. A request with both uses the range.
 Primary: **Set sail** → creates trip (`BRIEFING`), goes to P2.
 
 ### P2 — Muster (invite) (`/t/:code/muster`)
@@ -141,6 +154,11 @@ Primary: **Set sail** → creates trip (`BRIEFING`), goes to P2.
 │ [ Seal my terms ] (red)    │
 └────────────────────────────┘
 ```
+- **The chart** card: the ports (or the region), and the dates. A date-range voyage shows the range and trip length
+  ("Mar 1–31, 2027 · 3–5 nights") and, while briefing, "Everyone marks the days they can go; the best trips are picked
+  when the table meets"; once the table has met, the generated trips ("Trips: Mar 4–7 · Mar 12–16 · Mar 30–Apr 2").
+  They stay hidden while briefing because they follow the terms still being sealed. A fixed-window voyage lists its
+  windows ("Memorial Day weekend: May 28–31").
 - A crew holds up to 12 seats (the organizer + 11, absent friends included). The crew list wraps; **Add an absent friend** is offered until the 12th seat is taken, and the 13th join by code is refused ("This crew is full (12 aboard).", `CREW_FULL`).
 - "Add an absent friend" → name + band → copyable link `/t/:code/brief#m=:memberId&k=:inviteKey`. The key is in the fragment, so no server log sees it, and it is shown only this once. The phone strips it from the address bar on open (SEC-019). Opening it on the organizer's own phone is refused ("This invite is for your friend…"). Re-opening it on the phone that already claimed it just opens the voyage (TR1-002).
 - Organizer: **Close the crew** / **Reopen the crew** under the Muster. A closed crew refuses joins by code ("The organizer has closed this crew"). Absent invites still work (SEC-010).
@@ -166,8 +184,14 @@ Name, color band (taken bands disabled), **Join the crew** → P4.
 │         $ 900              │  (Plex Mono)
 │   [−50]           [+50]    │
 │                            │
-│ I can travel               │
-│ [Mar 12–16 ✓] [Mar 13–16]  │  (only this voyage's windows)
+│ When can you go?           │
+│ Mar 1–31, 2027 · 3–5 nights│
+│ (Any of these dates)       │
+│ ‹    March 2027    ›       │
+│ S  M  T  W  T  F  S        │
+│    1  2  3  4 [5][6]       │  (tap or drag to mark)
+│[7] 8  9 …                  │
+│ 3 days marked              │
 │                            │
 │ Must have (up to 3)        │
 │ (beach)(food)(nightlife)   │
@@ -187,15 +211,24 @@ Name, color band (taken bands disabled), **Join the crew** → P4.
 └────────────────────────────┘
 ```
 - Dial range $300–$3,000, step $50; ± buttons; tap numeral to type.
-- **I can travel** shows only the windows the organizer offered (with their label, e.g. "Thanksgiving · Nov 24–28");
-  the helm drops any other window from the sealed terms.
+- **When can you go?** (a date-range voyage): a month calendar limited to the organizer's range (days outside it are
+  disabled; ‹ › pages only its months). **Tap** a day to mark it, or **drag** across days: the drag marks every day
+  it passes, or clears them if the first day was already marked (touch drags follow the finger; the grid is
+  `touch-action: none` while marking). **Any of these dates** marks the whole range. "N days marked" underneath, and
+  a gentle hint if no run is long enough for the shortest trip ("mark 4 days in a row if you can"). Sealed as
+  `availability: {days: [ISO dates]}` or `{any: true}` — **private** like the cap: it goes to the helm and back to
+  the member's own phone only, is never in a trip-room payload, and is never spoken per member. The Captain may say
+  "Mar 12 to 16 works for everyone" or "…works for most of the crew" — never who can't.
+- **I can travel** (a fixed-window voyage: the Expo, older voyages) shows only the windows the organizer offered (with
+  their label, e.g. "Thanksgiving · Nov 24–28"); the helm drops any other window from the sealed terms.
 - **Places I'd love / Places I'd skip** (optional, up to 3 each; a place can't be on both): chips from the voyage's
   scope — its ports for named ports, its regions / states and ports for a region or "anywhere" voyage. Private like
   the rest of the terms: they feed the pre‑rank (+ for a loved port, region or state; − for a skipped one) and the
   member's own mate (it proposes a loved port first and may mention it, never anyone's numbers).
 - Chip ↔ code mapping (doc 04 §4.3): overnight flights = `red_eye`, hostels = `hostel`, 2+ layovers = `layovers_2plus`, starts before 8am = `early_start` (any activity start **or flight departure** before 08:00), long walks = `long_walks` (any walk > 25 min).
 - If memory exists (P1 feature): banner "Remembered from your last voyage" + pre‑fill; each pre‑filled chip shows a tiny pencil mark.
-- Validation: cap required; ≥ 1 date option.
+- Validation: cap required; ≥ 1 date option (fixed windows), or ≥ 1 marked day inside the range / "Any of these
+  dates" (a date range; days outside the range are dropped by the helm).
 - Submit → `brief:submit` → P5.
 
 ### P5 — Sealed (waiting) (`/t/:code/wait`)
@@ -259,6 +292,9 @@ Sealed‑letter illustration; "Sealed. Your mate knows what you can do." Crew li
 └────────────────────────────┘
 ```
 - Private stamp only for me. Group sees "Fits everyone" badge only if *all* fit (computed server‑side).
+- Each chart card names its dates ("Mar 12–16"): on a date-range voyage the two charts may sail on different
+  generated windows. If a chart's window isn't one I marked, my own card says "not your dates (private)" — the same
+  private treatment as any term it breaks; nobody else sees whose dates don't fit.
 - Votes: `plan:vote`; Organizer can confirm with `plan:pick`.
 
 ### P8 — Your share & Seal (`/t/:code/seal`)
@@ -291,7 +327,7 @@ Sealed‑letter illustration; "Sealed. Your mate knows what you can do." Crew li
 - Card for the cap shown as "Visa •••• 4242 (agent card, capped)" — sandbox/test card.
 
 ### P9 — Booked (`/t/:code/booked`)
-Twine‑tied rolled chart illustration, "Logged. Nobody fronted a cent." Booking reference (Plex Mono), itinerary summary, per‑member "your share" (own only). Link: "Save to your log" (downloads .ics).
+Twine‑tied rolled chart illustration, "Logged. Nobody fronted a cent." Booking reference (Plex Mono), itinerary summary with the chosen window ("Mar 12–16, 2027 · 4 nights"), per‑member "your share" (own only). Link: "Save to your log" (downloads .ics, an all-day event from the window's departure through its return day). P8 (Seal) shows the same dates with the year.
 
 ### P10 — Voided (`/t/:code/voided`)
 Broken seal illustration. Shared copy: "One share didn't clear, so nobody was charged." Owner of the declined seal additionally sees a reason‑specific line (doc 06 §7): `over_limit` → "Your seal didn't clear: that share is over your agent card's limit." · `user_cancelled` → "You lifted your seal, so nobody was charged." · `timeout` → "The card network didn't answer in time." · `provider_error` → "The card network had a problem." Buttons (organizer only, L4-002): **Back to the charts** (→ DRY_RUN, same two charts) · **Adjust my terms** (→ P4; re‑opens BRIEFING and the table meets again). Members read "The organizer chooses what's next: back to the charts, or new terms for everyone."; their Brief is locked in VOIDED (the helm refuses a member's re-seal there with `BAD_PHASE`).

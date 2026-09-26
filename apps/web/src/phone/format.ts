@@ -11,6 +11,15 @@ export function formatWindow(start: string, end: string, opts: { year?: boolean 
   return `${month(s)} ${s.getUTCDate()}–${endLabel}${opts.year ? `, ${e.getUTCFullYear()}` : ""}`;
 }
 
+/**
+ * A window as a phone shows it: "Memorial Day weekend · May 28–31" for a named dataset window, just the dates for one
+ * generated from a date range (its label is its dates: "Mar 12–16") or an unnamed one.
+ */
+export function windowText(w: { start: string; end: string; label?: string }, opts: { year?: boolean; sep?: string } = {}): string {
+  const dates = formatWindow(w.start, w.end, opts);
+  return w.label && w.label !== formatWindow(w.start, w.end) ? `${w.label}${opts.sep ?? " · "}${dates}` : dates;
+}
+
 /** The label for a date window by id, or "" if it isn't on the trip. */
 export function windowLabel(windows: { id: string; start: string; end: string }[], id: string | undefined, opts?: { year?: boolean }): string {
   const w = windows.find((x) => x.id === id);

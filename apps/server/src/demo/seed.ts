@@ -2,14 +2,17 @@
  * Demo voyages for the /demo page (docs/09):
  *
  *   seedRandom (default)  a fresh crew each time: 3–8 people from a list of names, random home airports, budget
- *                         bands and caps, must-haves, dealbreakers and notes, 3 random ports, 1–3 random windows, and
- *                         one member away with a standing instruction. Deterministic for a given seed.
+ *                         bands and caps, must-haves, dealbreakers and notes, 3 random ports, a random date range
+ *                         2–9 months out (so live fares are on sale) with random trip lengths and per-member
+ *                         availability (mostly overlapping; sometimes one person with a gap), and one member away with
+ *                         a standing instruction. Deterministic for a given seed (and day).
  *   seedExpo              the scripted Expo scenario (docs/07-dataset-spec.md §8): Rae (organizer, ATL), Maya (ORD),
  *                         Dev (absent, JFK) on Lisbon / Mexico City / Montréal in W1–W2, all briefs sealed, Maya's
  *                         memory from a previous voyage, Dev's standing instruction. Its briefs lead to Lisbon by
  *                         design (tests and the pitch rely on its numbers); the engine itself is generic.
  */
-import type { Band, BriefInput, Dealbreaker, Tag } from "@all-ayes/shared";
+import type { Availability, Band, BriefInput, DateRange, Dealbreaker, Tag } from "@all-ayes/shared";
+import { addDays, daysOf } from "@all-ayes/shared";
 import { CAP_MAX_CENTS, CAP_MIN_CENTS, CAP_STEP_CENTS, DEALBREAKERS, MAX_DEALBREAKERS, MAX_MUST_HAVES, ORIGINS, TAGS } from "@all-ayes/shared";
 import type { TripService } from "../trips/service.js";
 import { crewKeyHash, personKey, recall, remember } from "../memory/memory.js";
@@ -97,8 +100,12 @@ export function mulberry32(seed: number): () => number {
   };
 }
 
-/** The random crew and course for a seed (pure: no helm), so tests can check what a seed makes. */
-export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: string[], crewSize?: number) {
+/**
+ * The random crew and course for a seed (pure: no helm), so tests can check what a seed makes. `windows` and each
+ * brief's `dateWindowIds` are the older fixed-window draw (pure pricing tests use them); the demo voyage itself uses
+ * `dateRange` and each member's `availability` (drawn after everything else, so older draws are unchanged).
+ */
+export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: string[], crewSize?: number, today = new Date().toISOString().slice(0, 10)) {
   const r = mulberry32(seed);
   const pick = <T>(xs: readonly T[]) => xs[Math.floor(r() * xs.length) % xs.length];
   const drawn = RANDOM_CREW_MIN + Math.floor(r() * (RANDOM_CREW_MAX - RANDOM_CREW_MIN + 1)); // 3–8
@@ -123,7 +130,39 @@ export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: str
     const role: DemoSeat["role"] = i === 0 ? "organizer" : i === size - 1 ? "absent" : "member";
     return { name, role, band: (i + 1) as Band, origin: pick(ORIGINS), brief };
   });
-  return { tripName: pick(TRIP_NAMES), ports, windows, crew };
+  const tripName = pick(TRIP_NAMES);
+  const { dateRange, availability } = randomDates(r, today, crew.length);
+  return { tripName, ports, windows, crew: crew.map((c, i) => ({ ...c, availability: availability[i] })), dateRange };
+}
+
+/**
+ * A date range starting 2–9 months out (it ends within ~10, inside the airlines' ~330-day sales horizon), 10–40 days
+ * long, trips of 2–4 up to 3 more nights; everyone is free on a shared block long enough for the longest trip, most
+ * mark a few more days (some "any of these dates"), and in about a third of voyages one member has a gap in the block.
+ */
+export function randomDates(r: () => number, today: string, n: number): { dateRange: DateRange; availability: Availability[] } {
+  const start = addDays(today, 61 + Math.floor(r() * 200));
+  const len = 10 + Math.floor(r() * 31);
+  const end = addDays(start, len - 1);
+  const minNights = 2 + Math.floor(r() * 3);
+  const maxNights = minNights + Math.floor(r() * 4);
+  const days = daysOf(start, end);
+  const blockLen = Math.min(days.length, maxNights + 1 + Math.floor(r() * 5));
+  const at = Math.floor(r() * (days.length - blockLen + 1));
+  const block = days.slice(at, at + blockLen);
+  const gapped = n > 2 && r() < 0.35 ? 1 + Math.floor(r() * (n - 1)) : -1; // never the organizer
+  const availability = Array.from({ length: n }, (_, i): Availability => {
+    if (i !== gapped && r() < 0.3) return { any: true };
+    const mine = new Set(block);
+    const extra = Math.floor(r() * 3);
+    for (let k = 0; k < extra; k++) {
+      const s0 = Math.floor(r() * days.length), l = 2 + Math.floor(r() * 5);
+      for (const d of days.slice(s0, s0 + l)) mine.add(d);
+    }
+    if (i === gapped) mine.delete(block[1 + Math.floor(r() * Math.max(1, block.length - 2))]);
+    return { days: [...mine].sort() };
+  });
+  return { dateRange: { start, end, minNights, maxNights }, availability };
 }
 
 /**
@@ -136,7 +175,7 @@ export async function seedRandom(helm: TripService, seed: number = Math.floor(Ma
   const plan = randomVoyagePlan(seed, ports, helm.ds.dateWindows.map((w) => w.id), crewSize);
   const [org, ...rest] = plan.crew;
   const { trip, member: o, token: oToken } = helm.createTrip({
-    name: plan.tripName, organizerName: org.name, band: org.band, origin: org.origin, cityIds: plan.ports, windowIds: plan.windows,
+    name: plan.tripName, organizerName: org.name, band: org.band, origin: org.origin, cityIds: plan.ports, dateRange: plan.dateRange,
   });
   const seats: { c: (typeof plan.crew)[number]; memberId: string; token: string }[] = [{ c: org, memberId: o._id, token: oToken }];
   for (const c of rest) {
@@ -148,7 +187,7 @@ export async function seedRandom(helm: TripService, seed: number = Math.floor(Ma
       seats.push({ c, memberId: j.member._id, token: j.token });
     }
   }
-  for (const s of seats) await helm.submitBrief(trip._id, s.memberId, s.c.brief);
+  for (const s of seats) await helm.submitBrief(trip._id, s.memberId, { ...s.c.brief, dateWindowIds: [], availability: s.c.availability });
   const { code } = helm.headsetCode(trip._id, { memberId: o._id });
   const crew = seats.map((s): DemoSeat => ({
     name: s.c.name, role: s.c.role, band: s.c.band, memberId: s.memberId, memberToken: s.token, handoff: helm.mintHandoff(trip._id, s.memberId, s.token),

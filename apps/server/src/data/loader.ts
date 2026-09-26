@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import type {
   ActivityOption, City, CityId, Dataset, DateWindow, FlightOption, HotelOption, Region, WalkOverride,
 } from "@all-ayes/shared";
-import { REGIONS, TAGS } from "@all-ayes/shared";
+import { REGIONS, TAGS, parseRangeWindowId } from "@all-ayes/shared";
 
 let cached: Dataset | null = null;
 
@@ -267,6 +267,10 @@ interface DatasetIndex {
   city: ReadonlyMap<string, City>;
   hotel: ReadonlyMap<string, HotelOption>;
   activity: ReadonlyMap<string, ActivityOption>;
+  /**
+   * The dataset's windows by id, and any window generated from an organizer's date range (`D20270312N4`: its id
+   * carries its dates, so it resolves anywhere a dataset window does: pricing, the flight model, labels).
+   */
   window: ReadonlyMap<string, DateWindow>;
   /** A port's stays / activities, in dataset order. */
   hotelsOf(cityId: CityId): readonly HotelOption[];
@@ -285,6 +289,23 @@ function groupBy<T extends { cityId: string }>(xs: T[]): Map<string, T[]> {
   return m;
 }
 
+/** Dataset windows by id; a generated window's id (`D20270312N4`) resolves from the id itself (memoised). */
+class WindowIndex extends Map<string, DateWindow> {
+  private generated = new Map<string, DateWindow | null>();
+  override get(id: string): DateWindow | undefined {
+    const w = super.get(id);
+    if (w || typeof id !== "string") return w;
+    let g = this.generated.get(id);
+    if (g === undefined) {
+      g = parseRangeWindowId(id);
+      if (this.generated.size > 10_000) this.generated.clear();
+      this.generated.set(id, g);
+    }
+    return g ?? undefined;
+  }
+  override has(id: string): boolean { return this.get(id) !== undefined; }
+}
+
 /** Maps by id for a dataset, built once per dataset (revision) and cached with it. */
 export const indexOf: (ds: Dataset) => DatasetIndex = perDataset((ds) => {
   const overrides = new Map<string, WalkOverride>();
@@ -294,7 +315,7 @@ export const indexOf: (ds: Dataset) => DatasetIndex = perDataset((ds) => {
   const hotels = groupBy(ds.hotels), activities = groupBy(ds.activities);
   return Object.freeze({
     city: byId(ds.cities), hotel: byId(ds.hotels), activity: byId(ds.activities),
-    window: new Map(ds.dateWindows.map((w) => [w.id, w] as const)),
+    window: new WindowIndex(ds.dateWindows.map((w) => [w.id, w] as const)),
     hotelsOf: (cityId: CityId) => hotels.get(cityId) ?? [],
     activitiesOf: (cityId: CityId) => activities.get(cityId) ?? [],
     hilly: new Set(ds.cities.flatMap((c) => c.hilly ?? [])),

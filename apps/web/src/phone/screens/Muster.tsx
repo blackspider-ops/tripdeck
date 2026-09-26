@@ -4,7 +4,7 @@ import { MAX_CREW, type Band, type CrewPublic } from "@all-ayes/shared";
 import { api } from "../../net/api";
 import { KEYS, readJSON, writeJSON } from "../../net/storage";
 import { useCrew, useTripSelector } from "../TripContext";
-import { formatWindow } from "../format";
+import { formatWindow, windowText } from "../format";
 import { useAsyncAction } from "../useAsyncAction";
 import { inviteView, resetSeat, seatLists } from "../seatClaims";
 import { CopyLine, CrewList, QR } from "../components/crew";
@@ -246,14 +246,23 @@ function CourseCard() {
   const cities = useTripSelector((s) => s.trip!.candidateCities);
   const destination = useTripSelector((s) => s.trip!.destination);
   const windows = useTripSelector((s) => s.trip!.dateWindows);
+  const range = useTripSelector((s) => s.trip!.dateRange);
   const wide = destination && destination.kind !== "cities";
+  const nights = range ? (range.minNights === range.maxNights ? `${range.minNights}` : `${range.minNights}–${range.maxNights}`) : "";
   return (
     <Card label="The chart">
       <div className="eyebrow">The chart</div>
       {wide ? <h2 className="h2">{destination.label === "anywhere" ? "Anywhere" : destination.label}</h2> : null}
       {cities.length ? <p className="body">{cities.map((c) => c.name).join(" · ")}</p> : null}
       {wide && !cities.length ? <p className="small">Ports are chosen when the table meets, from everyone's terms.</p> : null}
-      {windows.length ? <p className="small mono">{windows.map((w) => `${w.label ? `${w.label}: ` : ""}${formatWindow(w.start, w.end)}`).join(" · ")}</p> : null}
+      {range ? (
+        <>
+          <p className="small mono">{formatWindow(range.start, range.end, { year: true })} · {nights} nights</p>
+          {windows.length
+            ? <p className="small mono">Trips: {windows.map((w) => windowText(w, { sep: ": " })).join(" · ")}</p>
+            : <p className="small">Everyone marks the days they can go; the best trips are picked when the table meets.</p>}
+        </>
+      ) : windows.length ? <p className="small mono">{windows.map((w) => windowText(w, { sep: ": " })).join(" · ")}</p> : null}
     </Card>
   );
 }

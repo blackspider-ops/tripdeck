@@ -33,7 +33,7 @@ export default function Booked() {
         {plan ? (
           <>
             <h2 className="h2">{plan.cityName}</h2>
-            <p className="small">{plan.hotelName} · {plan.neighborhood}{win ? ` · ${formatWindow(win.start, win.end, { year: true })}` : ""}</p>
+            <p className="small">{plan.hotelName} · {plan.neighborhood}{win ? ` · ${formatWindow(win.start, win.end, { year: true })} · ${win.nights} night${win.nights === 1 ? "" : "s"}` : ""}</p>
             {(mine?.days ?? []).map((d) => {
               const items = d.items;
               if (!items.length) return null;

@@ -135,14 +135,18 @@ function mountTripRoutes(r: Router, helm: TripService, lim: Limiters) {
   r.post("/trips", asyncRoute((req, res) => {
     limitCreate(req);
     const b = jsonBody(req) as {
-      name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; destination?: Destination; windowIds?: string[]; crewKey?: string;
+      name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; destination?: Destination; windowIds?: string[];
+      dateRange?: unknown; crewKey?: string;
     };
-    // the course is validated by the helm (trips/course.ts): named ports, regions / states or anywhere, 1–3 windows
+    // the course is validated by the helm (trips/course.ts): named ports, regions / states or anywhere; a date range
+    // or 1–3 fixed windows
     const { trip, member, token, crewKey } = helm.createTrip({
       name: b.name, organizerName: b.organizerName, band: Number(b.band) as Band, origin: b.origin,
       cityIds: Array.isArray(b.cityIds) ? b.cityIds : undefined,
       destination: b.destination && typeof b.destination === "object" ? b.destination : undefined,
-      windowIds: Array.isArray(b.windowIds) ? b.windowIds : undefined, crewKey: b.crewKey,
+      windowIds: Array.isArray(b.windowIds) ? b.windowIds : undefined,
+      // a date range (new phones) wins over fixed windows (older clients, the Expo); both are validated by the helm
+      dateRange: b.dateRange && typeof b.dateRange === "object" ? b.dateRange : undefined, crewKey: b.crewKey,
     });
     issuePasskeyClaim(req, res, trip._id, member._id); // S2-009: only this phone may add the seat's passkey
     // crewKey: the phone's private memory identity (SEC-003), echoed or freshly minted; the phone keeps it
