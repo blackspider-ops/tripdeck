@@ -124,6 +124,11 @@ export const config = {
     timeoutMs: () => positive("ROUTESTACK_TIMEOUT_MS", 30_000),
     /** The same query within this window is answered from the cache (memory + DATA_DIR/routestack), never billed twice. */
     cacheTtlMs: () => positive("ROUTESTACK_CACHE_HOURS", 6) * 3_600_000,
+    /**
+     * A voyage's background prefetch (trips/live.ts) sends at most this many billable searches (and never more than
+     * ROUTESTACK_TRIP_CAP): whole port × window sets, in the order the chart book ranks them.
+     */
+    prefetchMax: () => positive("ROUTESTACK_PREFETCH_MAX", 12),
   },
   payments: {
     mode: oneOf("PAYMENTS_MODE", ["sim", "visa_sandbox"] as const, "sim"),

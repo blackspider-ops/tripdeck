@@ -17,12 +17,13 @@ const TAG_WORD: Record<Tag, string> = {
   beach: "beach", food: "food scene", nightlife: "nightlife", museums: "museums", nature: "outdoors",
   chill: "slow days", history: "history", music: "music",
 };
-const DEALBREAKER_PHRASE: Partial<Record<FitReason, string>> = {
-  "dealbreaker:red_eye": "an overnight flight",
-  "dealbreaker:early_start": "starts before eight",
-  "dealbreaker:long_walks": "long walks",
-  "dealbreaker:layovers_2plus": "two layovers",
-  "dealbreaker:hostel": "a hostel",
+/** A broken dealbreaker as a noun phrase ("Cartagena means an early start — …") and as its ribbon ("no early starts"). */
+const DEALBREAKER_PHRASE: Partial<Record<FitReason, { means: string; ribbon: string }>> = {
+  "dealbreaker:red_eye": { means: "an overnight flight", ribbon: "no overnight flights" },
+  "dealbreaker:early_start": { means: "an early start", ribbon: "no early starts" },
+  "dealbreaker:long_walks": { means: "long walks", ribbon: "no long walks" },
+  "dealbreaker:layovers_2plus": { means: "two layovers", ribbon: "too many layovers" },
+  "dealbreaker:hostel": { means: "a hostel", ribbon: "no hostels" },
 };
 
 /** Activities this member attends that cover their must-haves (picks first). */
@@ -138,8 +139,11 @@ export function objectMissingLine(ds: Dataset, rival: Plan, mine: Plan, tag: Tag
 export function objectUnfitLine(ds: Dataset, rival: Plan, reason: FitReason): LineOut {
   const r = cityName(ds, rival.cityId);
   if (reason === "over_cap") return { line: `${r} is past what my friend can do.`, ribbon: `${r} — not for us` };
-  const phrase = DEALBREAKER_PHRASE[reason] ?? "something my friend won't do";
-  return { line: `${r} means ${phrase}, and my friend won't do that.`, ribbon: `${r} — no ${phrase}` };
+  if (reason === "date_mismatch") return { line: `${r} is on dates my friend can't make.`, ribbon: `${r} — wrong dates` };
+  if (reason === "no_flight") return { line: `${r} has no flight that works for my friend.`, ribbon: `${r} — no flight` };
+  const phrase = DEALBREAKER_PHRASE[reason];
+  if (!phrase) return { line: `${r} breaks one of my friend's terms.`, ribbon: `${r} — not for us` };
+  return { line: `${r} means ${phrase.means} — my friend won't do that.`, ribbon: `${r} — ${phrase.ribbon}` };
 }
 
 /**

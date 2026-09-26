@@ -124,7 +124,7 @@ export class Table {
     }
     if (changed) {
       Object.assign(ctx, buildPrivacyContext(helm.ds, crew, book, ctx.sensitiveDollars));
-      console.log(`[live] voyage ${t._id}: re-priced ${changed} of ${book.length} charts before the Dry Run (${book.filter((p) => p.priceSource === "live").length} live)`);
+      if (!process.env.VITEST) console.info(`[live] voyage ${t._id}: re-priced ${changed} of ${book.length} charts at Watch ${t.negotiation.watch} (${book.filter((p) => p.priceSource === "live").length} live); ${helm.live.explain(t, book, crew)}`);
     }
     return changed;
   }
@@ -267,7 +267,7 @@ export class Table {
     // OPT-045: the crew is priced once per meeting
     const crew = this.pricingCrew(t);
     const plans = this.chartBook(t, crew);
-    if (helm.live.inventory(t) && !process.env.VITEST) console.log(`[live] voyage ${t._id}: chart book of ${plans.length}, ${plans.filter((p) => p.priceSource === "live").length} priced live`);
+    if (helm.live.enabledFor(t) && !process.env.VITEST) console.info(`[live] voyage ${t._id}: chart book of ${plans.length}, ${plans.filter((p) => p.priceSource === "live").length} priced live; ${helm.live.explain(t, plans, crew)}`);
     helm.save(t);
     helm.broadcastState(t, Boolean(ports) || Boolean(t.dateRange)); // new ports / generated windows: static fields, so a full snapshot
 

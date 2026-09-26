@@ -25,7 +25,7 @@ beforeAll(() => { globalThis.fetch = (async () => { throw new Error("network in 
 afterAll(() => { globalThis.fetch = realFetch; });
 
 const tripCap = config.limits.spend.trip.routestack;
-afterEach(() => { config.limits.spend.trip.routestack = tripCap; resetSpend(); });
+afterEach(() => { config.limits.spend.trip.routestack = tripCap; delete process.env.ROUTESTACK_PREFETCH_MAX; resetSpend(); });
 
 type Call = { kind: "hotels" | "flights"; cityId: string; window: string; origin?: string; adults?: number; guests?: number };
 
@@ -105,7 +105,7 @@ describe("the live prefetch", () => {
   });
 
   it("fetches the full set when the voyage budget allows, with guests = crew size and adults per home airport", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     const { helm, fake } = helmWith();
     const { t } = await voyage(helm);
     await helm.live.settled(t._id);
@@ -119,20 +119,41 @@ describe("the live prefetch", () => {
     expect(fake.calls).toHaveLength(24);
   });
 
-  it("respects the voyage cap: only the top 2 ranked ports × the common window, and never more than what's left", async () => {
+  it("respects the budget: whole port × window sets in the chart book's order, stays first, never more than what's left", async () => {
     config.limits.spend.trip.routestack = 6;
     const { helm, fake } = helmWith();
     const { t } = await voyage(helm);
     const report = await helm.live.settled(t._id);
-    expect(report).toMatchObject({ planned: 6, trimmed: true });
-    expect(fake.calls).toHaveLength(6);
-    expect(new Set(fake.calls.map((c) => c.cityId)).size).toBeLessThanOrEqual(2);
-    expect(new Set(fake.calls.map((c) => c.window))).toEqual(new Set(["W1"]));
+    // a set is 1 stay + 3 home airports = 4 searches: one fits in 6, the rest are skipped (a partial set can't be live)
+    expect(report).toMatchObject({ planned: 4, trimmed: true });
+    expect(report!.skipped).toBeGreaterThan(0);
+    expect(fake.calls).toHaveLength(4);
+    const top = buildChartBook(helm.ds, helm.table.pricingCrew(t), t.candidateCityIds, 12)[0];
+    expect(new Set(fake.calls.map((c) => `${c.cityId}|${c.window}`))).toEqual(new Set([`${top.cityId}|${top.dateWindowId}`]));
     expect(fake.calls[0].kind).toBe("hotels");
+    // the table starting doesn't search past the budget
+    await helm.live.prefetch(t, helm.table.pricingCrew(t));
+    expect(fake.calls).toHaveLength(4);
+    // the log says why the other plans stayed estimated
+    const book = helm.table.chartBook(t);
+    expect(helm.live.explain(t, book, helm.table.pricingCrew(t))).toMatch(/not searched \(budget\)/);
+  });
+
+  it("ROUTESTACK_PREFETCH_MAX (default 12) bounds a voyage's searches; the top set's plan comes out live", async () => {
+    const { helm, fake } = helmWith();
+    const { t } = await voyage(helm);
+    await helm.live.settled(t._id);
+    await helm.live.prefetch(t, helm.table.pricingCrew(t));
+    expect(fake.calls).toHaveLength(12); // 3 whole sets of 4
+    const kinds = fake.calls.map((c) => c.kind);
+    expect(kinds.slice(0, 3)).toEqual(["hotels", "hotels", "hotels"]); // stays first
+    const book = helm.table.chartBook(t);
+    expect(book.some((p) => p.priceSource === "live")).toBe(true);
+    expect(helm.live.explain(t, book, helm.table.pricingCrew(t))).toMatch(/estimated|every plan is live/);
   });
 
   it("skips home ports (no flight search from the port's own airport)", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     const { helm, fake } = helmWith();
     const { trip, member: org } = helm.createTrip({ name: "Home", organizerName: "Ann", band: 1, origin: "JFK", cityIds: ["NYC", "LIS"].filter((c) => helm.ds.cities.some((x) => x._id === c)) as CityId[], windowIds: ["W1"] });
     if (trip.candidateCityIds.length < 2) return; // no NYC port in this dataset
@@ -144,7 +165,7 @@ describe("the live prefetch", () => {
   });
 
   it("skips fares past the airlines' sales horizon (stays are still searched)", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     const { helm, fake } = helmWith();
     const far = helm.ds.dateWindows.find((w) => Date.parse(w.start) - Date.now() > FLIGHT_HORIZON_DAYS * 86_400_000);
     if (!far) return; // every window is within the horizon today
@@ -179,7 +200,7 @@ describe("the live prefetch", () => {
 
 describe("the chart book with the live overlay", () => {
   it("prefers live stays and fares (live > curated > modelled) and labels those plans live", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     const { helm } = helmWith();
     const { t } = await voyage(helm);
     await helm.live.settled(t._id);
@@ -201,7 +222,7 @@ describe("the chart book with the live overlay", () => {
   });
 
   it("falls back to curated / modelled when the provider returns null", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     const { helm, fake } = helmWith({ nothing: true });
     const { t } = await voyage(helm);
     await helm.live.settled(t._id);
@@ -294,7 +315,7 @@ function holdLine(helm: TripService, which: (turn: { act: string; watch?: number
 
 describe("re-pricing: only before the Dry Run", () => {
   it("results landing while the Captain opens re-price the chart book; the Two Charts and the seals keep those prices", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     let open!: () => void;
     const gate = new Promise<void>((r) => { open = r; });
     const { helm, member } = helmWith({ gate });
@@ -336,7 +357,7 @@ describe("re-pricing: only before the Dry Run", () => {
   });
 
   it("from Watch 1 on, a re-price keeps every plan's port, window and stay (only fares move)", async () => {
-    config.limits.spend.trip.routestack = 100;
+    config.limits.spend.trip.routestack = 100; process.env.ROUTESTACK_PREFETCH_MAX = "100";
     let open!: () => void;
     const gate = new Promise<void>((r) => { open = r; });
     const { helm } = helmWith({ gate });

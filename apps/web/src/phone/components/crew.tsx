@@ -29,19 +29,44 @@ export const CrewList = memo(function CrewList({ crew, meId, mode = "brief" }: {
   );
 });
 
-/** QR drawn in ink on chart paper (no default black/white). */
+/**
+ * OPT-056: qrcode loads only where a QR is drawn (Muster, Demo), not with CrewList on every trip screen. A failed
+ * lazy import (a dev dependency re-optimized under a new hash, a chunk gone after a deploy, a flaky network) is
+ * retried once; a module that keeps failing isn't cached, so the next QR tries again.
+ */
+let qrModule: Promise<typeof import("qrcode")> | null = null;
+export function loadQrcode(): Promise<typeof import("qrcode")> {
+  qrModule ??= import("qrcode")
+    .catch(() => new Promise<void>((r) => setTimeout(r, QR_RETRY_MS)).then(() => import("qrcode")))
+    .catch((e) => { qrModule = null; throw e; });
+  return qrModule;
+}
+const QR_RETRY_MS = 400;
+
+/** QR drawn in ink on chart paper (no default black/white). If it can't be drawn, says so (the link is beside it). */
 export function QR({ value, size = 132, label }: { value: string; size?: number; label: string }) {
   const [src, setSrc] = useState<string>("");
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
     let alive = true;
+    setFailed(false);
     // always ink on light chart paper, dark mode or not, so the code still scans (O2-029: from PALETTE)
-    // OPT-056: qrcode loads only where a QR is drawn (Muster, Demo), not with CrewList on every trip screen
-    import("qrcode").then(({ default: QRCode }) => QRCode.toDataURL(value, { margin: 1, width: size * 2, color: { dark: PALETTE.ink, light: PALETTE.paper }, errorCorrectionLevel: "M" }))
-      .then((u) => alive && setSrc(u))
-      .catch(() => alive && setSrc(""));
+    loadQrcode()
+      .then((mod) => {
+        // the CommonJS package comes through as the default export (bundled) or as the namespace itself
+        const QRCode = (mod as { default?: typeof mod }).default ?? mod;
+        return QRCode.toDataURL(value, { margin: 1, width: size * 2, color: { dark: PALETTE.ink, light: PALETTE.paper }, errorCorrectionLevel: "M" });
+      })
+      .then((u) => { if (alive) setSrc(u); })
+      .catch(() => { if (alive) { setSrc(""); setFailed(true); } });
     return () => { alive = false; };
   }, [value, size]);
-  return src ? <img src={src} width={size} height={size} alt={label} /> : <div style={{ width: size, height: size }} aria-label={label} />;
+  if (src) return <img src={src} width={size} height={size} alt={label} />;
+  return (
+    <div className="qr-empty" style={{ width: size, height: size, display: "grid", placeItems: "center", textAlign: "center" }} role="img" aria-label={label} aria-busy={!failed}>
+      {failed ? <span className="small">QR didn't load. Use the link.</span> : null}
+    </div>
+  );
 }
 
 export function CopyLine({ text }: { text: string }) {

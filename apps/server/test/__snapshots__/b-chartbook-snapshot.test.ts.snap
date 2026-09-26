@@ -4,7 +4,7 @@ exports[`chart book snapshot (b-) > expo: plans, public and private views are un
 {
   "book": "19e5216994d7f60b",
   "plans": 12,
-  "views": "6e6b2cc05b39c324",
+  "views": "5886e2484ed85cf5",
 }
 `;
 
@@ -12,7 +12,7 @@ exports[`chart book snapshot (b-) > four: plans, public and private views are un
 {
   "book": "dbd9338c3e8970e1",
   "plans": 12,
-  "views": "b436b1c88e545375",
+  "views": "0c2a835f5877d38b",
 }
 `;
 
@@ -36,7 +36,7 @@ exports[`chart book snapshot (b-) > picky: plans, public and private views are u
 {
   "book": "212d52a35487fd38",
   "plans": 12,
-  "views": "0cd3f1f1173eff54",
+  "views": "39e0c2076e67a392",
 }
 `;
 
@@ -52,6 +52,6 @@ exports[`chart book snapshot (b-) > w2: plans, public and private views are unch
 {
   "book": "6d775075d07a2011",
   "plans": 12,
-  "views": "32427eff417a257a",
+  "views": "4d0372bef497c017",
 }
 `;

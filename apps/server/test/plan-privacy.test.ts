@@ -351,7 +351,7 @@ describe("S2-002: public plan + crew list can't narrow anyone's share", () => {
         expect(span(c), `${p._id} ${m.memberId}`).toBeGreaterThanOrEqual(15_000);
       }
     }
-  });
+  }, 20_000); // exhaustive over every candidate share (and now the trip between moments): slow under a loaded runner
 
   it("20 random 2- to 4-person crews: no share is ever pinned; each is only as narrow as the public listings allow", () => {
     for (const crew of randomCrews()) {

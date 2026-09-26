@@ -60,7 +60,10 @@ export default defineConfig({
       "/socket.io": { target: API, ws: true, changeOrigin: true },
     },
   },
-  optimizeDeps: { exclude: ["@all-ayes/shared"] },
+  // qrcode is only reached through a lazy import() (OPT-056), which the dev optimizer can miss at start-up: found
+  // later, it is re-bundled under a new hash and the page's import of the old one answers 504, leaving Muster's QR
+  // blank until a reload. Pre-bundling it keeps the lazy chunk in the build and the dev import stable.
+  optimizeDeps: { exclude: ["@all-ayes/shared"], include: ["qrcode"] },
   // O2-067: tests run in node by default (pure logic, three.js math); hook/component tests opt into a DOM with a
   // `// @vitest-environment happy-dom` docblock, so the pure suites don't pay for a DOM they never touch.
   test: {

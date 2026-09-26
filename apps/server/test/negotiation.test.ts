@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 vi.mock("../src/util/ids.js", async (orig) => ({ ...(await orig<typeof import("../src/util/ids.js")>()), sleep: () => Promise.resolve() }));
 
+import type { Plan } from "@all-ayes/shared";
 import { isGeneratedPort, loadDataset } from "../src/data/loader.js";
 import { randomVoyagePlan } from "../src/demo/seed.js";
-import { LINE_VARIANTS, concedeLine, supportHoldLine, supportSwitchLine, variantFor } from "../src/negotiation/phrasing.js";
+import { LINE_VARIANTS, concedeLine, objectUnfitLine, supportHoldLine, supportSwitchLine, variantFor } from "../src/negotiation/phrasing.js";
 import { buildChartBook } from "../src/fit/pricing.js";
 import { NegotiationEngine, type EmittedTurn } from "../src/negotiation/engine.js";
 import { buildPrivacyContext } from "../src/privacy/context.js";
@@ -168,4 +169,24 @@ describe("negotiation — varied lines, never the same one twice", () => {
     }
     expect(repeatedActs).toBeGreaterThan(0);
   }, 60_000);
+});
+
+describe("OBJECT on a rival that breaks a member's terms", () => {
+  const ds = loadDataset();
+  const rival = { cityId: ds.cities.find((c) => c._id === "CTG")?._id ?? ds.cities[0]._id } as Plan;
+  const r = ds.cities.find((c) => c._id === rival.cityId)!.name;
+  const reasons = ["dealbreaker:red_eye", "dealbreaker:early_start", "dealbreaker:long_walks", "dealbreaker:layovers_2plus", "dealbreaker:hostel", "date_mismatch", "no_flight", "ok"] as const;
+
+  it("says each reason once, in one clean sentence (no 'something my friend won't do, and my friend won't do that')", () => {
+    expect(objectUnfitLine(ds, rival, "dealbreaker:early_start").line).toBe(`${r} means an early start — my friend won't do that.`);
+    expect(objectUnfitLine(ds, rival, "dealbreaker:early_start").ribbon).toBe(`${r} — no early starts`);
+    expect(objectUnfitLine(ds, rival, "date_mismatch").line).toBe(`${r} is on dates my friend can't make.`);
+    for (const why of reasons) {
+      const { line, ribbon } = objectUnfitLine(ds, rival, why);
+      expect(line.match(/won't do/g)?.length ?? 0).toBeLessThanOrEqual(1);
+      expect(line).not.toMatch(/something my friend|means starts|, and my friend/);
+      expect(ribbon).not.toMatch(/no an? /);
+      expect(line.startsWith(r)).toBe(true);
+    }
+  });
 });

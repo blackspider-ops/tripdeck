@@ -12,7 +12,7 @@ import { travel, type Point } from "../dryrun/walking.js";
 import { compareFairness, fairness, satisfaction } from "./fairness.js";
 import { flightsFor, publicFlights } from "./flights.js";
 import { isLiveOption, liveBand, liveFaresFor, liveStaysFor, type LiveInventory } from "./live.js";
-import { cityName, datasetRev, indexOf, mustFind } from "../data/loader.js";
+import { cityName, datasetRev, indexOf, mustFind, perDataset } from "../data/loader.js";
 
 export interface PricingMember {
   memberId: string;
@@ -29,7 +29,6 @@ const DAY2_FREE_FROM = 7 * 60;
 const minOf = (local: string) => clockToMin(local.split("T")[1]);
 const dateOf = (local: string) => local.split("T")[0];
 const roundUp30 = (m: number) => Math.ceil(m / 30) * 30;
-const overlaps = (s1: number, e1: number, s2: number, e2: number, buf = BUFFER_MIN) => s1 < e2 + buf && s2 < e1 + buf;
 /** OPT-060: "starts before 8am" is the shared EARLY_START_BEFORE, not a literal. */
 const EARLY_START_MIN = clockToMin(EARLY_START_BEFORE);
 const EVENING_MIN = 18 * 60;
@@ -143,20 +142,61 @@ function arrivalsFor(crew: PricingMember[], flights: Map<string, FlightChoice>, 
  * within its listed hours, else to day 2 at its usual time. Without `crewFrom` (the public, crew-independent
  * layout) they keep the listed times.
  */
-function placeGroupMoments(ds: Dataset, cityId: CityId, crew: PricingMember[], crewFrom = 0): Placed[] {
+function placeGroupMoments(ds: Dataset, cityId: CityId, crew: PricingMember[], crewFrom = 0, lastDay = 2): Placed[] {
   const everyone = crew.map((c) => c.memberId);
   const placed: Placed[] = [];
   for (const a of indexOf(ds).activitiesOf(cityId).filter((x) => x.role === "group").slice(0, 2)) {
-    const early = clockToMin(a.startEarliest);
-    const usual = early >= EVENING_MIN ? early : clockToMin(a.startLatest);
-    const free = (day: number, t: number) => !placed.some((p) => p.day === day && overlaps(t, t + a.durationMin, p.start, p.end));
+    const early = clockToMin(a.startEarliest), latest = clockToMin(a.startLatest);
+    const usual = early >= EVENING_MIN ? early : latest;
+    const free = (day: number, t: number) => !clashes(ds, placed, a, day, t, null);
     let day = 1;
     let start: number | null = usual >= crewFrom && free(1, usual) ? usual : null;
-    for (let t = roundUp30(Math.max(early, crewFrom, usual)); start === null && t <= clockToMin(a.startLatest); t += 30) if (free(1, t)) start = t;
-    if (start === null) { day = 2; start = usual; }
+    for (let t = roundUp30(Math.max(early, crewFrom, usual)); start === null && t <= latest; t += 30) if (free(1, t)) start = t;
+    // later days: its usual time, else any half hour in its listed hours; a moment that fits nowhere is left out
+    // (never on top of another one)
+    while (start === null && day < lastDay) {
+      day++;
+      if (free(day, usual)) start = usual;
+      for (let t = roundUp30(early); start === null && t <= latest; t += 30) if (free(day, t)) start = t;
+    }
+    if (start === null) continue;
     placed.push({ a, day, start, end: start + a.durationMin, attendees: [...everyone] });
   }
   return placed;
+}
+
+/**
+ * Whether `a` at `start` on `day` would overlap anything already placed for any of `attendees` (null = anyone),
+ * counting the trip between the two places (at least BUFFER_MIN): the earlier one ends, the attendee travels, then
+ * the later one starts.
+ */
+function clashes(ds: Dataset, placed: Placed[], a: ActivityOption, day: number, start: number, attendees: string[] | null): boolean {
+  const end = start + a.durationMin;
+  return placed.some((p) => {
+    if (p.day !== day) return false;
+    // far apart in time even with a long trip between: no clash (the common case, no lookup)
+    if (start >= p.end + MAX_GAP_MIN || p.start >= end + MAX_GAP_MIN) return false;
+    if (attendees && !p.attendees.some((x) => attendees.includes(x))) return false;
+    if (start < p.end + BUFFER_MIN && p.start < end + BUFFER_MIN) return true;
+    const gap = gapBetween(ds, p.a, a);
+    return start < p.end + gap && p.start < end + gap;
+  });
+}
+/** No trip between two moments of one port is counted as longer than this (a far day trip is a moment of its own). */
+const MAX_GAP_MIN = 4 * 60;
+/** Minutes kept between two moments: the trip from one to the other, BUFFER_MIN..MAX_GAP_MIN (memoised per dataset). */
+const gapCache = perDataset(() => new Map<ActivityOption, Map<ActivityOption, number>>());
+function gapBetween(ds: Dataset, x: ActivityOption, y: ActivityOption): number {
+  const cache = gapCache(ds);
+  let row = cache.get(x);
+  if (!row) cache.set(x, (row = new Map()));
+  let g = row.get(y);
+  if (g === undefined) {
+    const there = travel(ds, { id: x._id, lat: x.lat, lng: x.lng }, { id: y._id, lat: y.lat, lng: y.lng }).minutes;
+    const back = travel(ds, { id: y._id, lat: y.lat, lng: y.lng }, { id: x._id, lat: x.lat, lng: x.lng }).minutes;
+    row.set(y, (g = Math.min(MAX_GAP_MIN, Math.max(BUFFER_MIN, there, back))));
+  }
+  return g;
 }
 
 /**
@@ -173,30 +213,30 @@ function placePicks(ds: Dataset, cityId: CityId, crew: PricingMember[], freeFrom
       pickAttendees.set(p._id, e);
     }
   }
-  return placeInOrder([...pickAttendees.values()], (attendees) => Math.max(...attendees.map((id) => freeFrom.get(id) ?? DAY2_FREE_FROM)), groups, lastDay);
+  return placeInOrder(ds, [...pickAttendees.values()], (attendees) => Math.max(...attendees.map((id) => freeFrom.get(id) ?? DAY2_FREE_FROM)), groups, lastDay);
 }
 
 /**
- * Step 4's placement rule, shared with the public layout: the first free half hour on day 1 from `day1From`, else
- * on day 2, … up to `lastDay` (else day 2 at its earliest).
+ * Step 4's placement rule, shared with the public layout: the first half hour on day 1 from `day1From` that clashes
+ * with nothing its attendees have (the trip between the two places counted), else on day 2, … up to `lastDay`. A
+ * pick that fits on none of those days is left out (its must-have then reads as missing) — never stacked on top of
+ * another moment.
  */
-function placeInOrder(entries: { a: ActivityOption; attendees: string[] }[], day1From: (attendees: string[]) => number, groups: Placed[], lastDay = 2): Placed[] {
+function placeInOrder(ds: Dataset, entries: { a: ActivityOption; attendees: string[] }[], day1From: (attendees: string[]) => number, groups: Placed[], lastDay = 2): Placed[] {
   const placed = [...groups];
   for (const { a, attendees } of entries) {
     const tryDay = (day: number): number | null => {
       const from = day === 1 ? day1From(attendees) : DAY2_FREE_FROM;
       const latest = clockToMin(a.startLatest);
       for (let t = roundUp30(Math.max(clockToMin(a.startEarliest), from)); t <= latest; t += 30) {
-        const end = t + a.durationMin;
-        const clash = placed.some((p) => p.day === day && p.attendees.some((x) => attendees.includes(x)) && overlaps(t, end, p.start, p.end));
-        if (!clash) return t;
+        if (!clashes(ds, placed, a, day, t, attendees)) return t;
       }
       return null;
     };
     let day = 1;
     let start = tryDay(1);
     while (start === null && day < lastDay) start = tryDay(++day);
-    if (start === null) { day = 2; start = clockToMin(a.startEarliest); }
+    if (start === null) continue;
     placed.push({ a, day, start, end: start + a.durationMin, attendees });
   }
   return placed;
@@ -320,7 +360,7 @@ export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, wi
   const { shown, placeable } = dayCounts(day1Date, win);
   // the crew is together from the last one's landing (+ an hour): group moments on day 1 never start before
   const crewFrom = Math.max(0, ...freeFrom.values());
-  const placed = placePicks(ds, cityId, crew, freeFrom, placeGroupMoments(ds, cityId, crew, crewFrom), placeable);
+  const placed = placePicks(ds, cityId, crew, freeFrom, placeGroupMoments(ds, cityId, crew, crewFrom, placeable), placeable);
   const { days, memberFlags } = legsAndFlags(ds, crew, placed, hotelPt, day1Date, arrivals, shown);
   const airport = indexOf(ds).city.get(cityId)?.airport?.code ?? cityId;
   const rooms = roomsFor(hotel, crew.length);
@@ -509,7 +549,8 @@ function publicDays(ds: Dataset, p: Plan): PublicDay[] {
   const pickIds = new Set(p.days.flatMap((d) => d.items).map((it) => it.activityId).filter((id) => ix.activity.get(id)?.role === "pick"));
   const groups = placeGroupMoments(ds, p.cityId, []).map((g) => ({ ...g, attendees: [PUBLIC_SLOT] }));
   const picks = ix.activitiesOf(p.cityId).filter((a) => pickIds.has(a._id)).map((a) => ({ a, attendees: [PUBLIC_SLOT] }));
-  const placed = placeInOrder(picks, () => PUBLIC_PICKS_FROM, groups);
+  // as many days as the plan itself can place on (the flight-home day aside), so a pick moves on rather than out
+  const placed = placeInOrder(ds, picks, () => PUBLIC_PICKS_FROM, groups, Math.max(2, p.days.length - 1));
   const maxDay = Math.max(1, ...placed.map((x) => x.day));
   const days: PublicDay[] = [];
   for (let d = 1; d <= maxDay; d++) {
