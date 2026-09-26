@@ -9,8 +9,8 @@ Scope: everything needed to build All Ayes in 36 hours with 2 people. Names here
 ```
 ┌───────────────────────── Clients (one Vite + TS web app, route-split) ─────────────────────────┐
 │                                                                                                 │
-│  /xr → /t/:code/xr  Gear VR phone · Samsung Internet   /t/:code/*   Phones   /t/:code/gallery    │
-│  ├ three.js WebXR (immersive-vr; Quest: immersive-ar)  ├ React UI (logbook)          three.js    │
+│  /xr → /t/:code/xr  iPhone in Gear VR shell · Safari   /t/:code/*   Phones   /t/:code/gallery    │
+│  ├ three.js + webxr-polyfill (Quest: immersive-ar)     ├ React UI (logbook)          three.js    │
 │  ├ scene/ (shared components, doc 02 §7)              ├ WebAuthn (passkey seal)     non-XR      │
 │  ├ 3d-tiles-renderer (Dry Run cities)                 ├ MediaRecorder (hail audio)  orbit cam   │
 │  ├ troika-three-text (SDF text)                       └ Audio playback (optional)               │
@@ -49,7 +49,7 @@ Scope: everything needed to build All Ayes in 36 hours with 2 people. Names here
 | Client bundler | Vite | HTTPS dev via tunnel (§10) |
 | Phone UI | React 19 + React Router | Plain CSS with design tokens (doc 02); no UI kit |
 | 3D | three.js (latest) | `renderer.xr.enabled = true`; a custom **Enter VR** button instead of stock `VRButton`/`ARButton` (styling) |
-| XR features | **Gear VR (primary):** WebXR `immersive-vr` with a `local` reference space (3DoF), Cardboard‑style side by side in Samsung Internet (WebXR since 11.2) or Chrome for Android; `webxr-polyfill` Cardboard mode when `navigator.xr` is missing or `?vr=cardboard` forces it. **Quest (optional):** `immersive-ar`; `local-floor` (required); `plane-detection`, `hit-test`, `anchors`, `hand-tracking` (optional) | The team has a Gear VR, not a Quest (doc 10). Session mode is picked by `isSessionSupported`: AR if offered, else VR, else the polyfill |
+| XR features | **iPhone in a Gear VR shell (primary):** Safari has no WebXR, so the page loads `webxr-polyfill` (lazy chunk) in Cardboard mode: `immersive-vr` side by side with Cardboard lens distortion, head pose from `deviceorientation` (iOS motion permission asked in the **Enter VR** tap), a `local` reference space (3DoF), lens profiles for a Gear VR shell (narrow 58 / normal 62 / wide 66 mm, `?ipd=`). **Native `immersive-vr`** (e.g. Chrome for Android on a borrowed Galaxy) is used where offered. **Quest (optional):** `immersive-ar`; `local-floor` (required); `plane-detection`, `hit-test`, `anchors`, `hand-tracking` (optional) | The team has an iPhone 16 Pro and a Gear VR shell, no Galaxy phone and no Quest (doc 10). Mode order (`vrMode.ts detectXRMode`): AR if offered, else native VR, else the polyfill on a phone (or with `?vr=cardboard`), else the laptop view |
 | Text in 3D | troika-three-text | SDF, Caslon/Source Serif/Plex Mono loaded as fonts |
 | Fat lines | three `Line2` / `LineMaterial` | Ink lines with world‑space width |
 | City tiles | `3d-tiles-renderer` (NASA‑AMMOS 3DTilesRendererJS) + Google Photorealistic 3D Tiles | Has WebXR guidance (override scheduling callback) |
@@ -61,7 +61,7 @@ Scope: everything needed to build All Ayes in 36 hours with 2 people. Names here
 | Payments | Visa Intelligent Commerce sandbox (starter: `github.com/visa/mcp`, `github.com/visa/vic-reference-agent`) | SIM mode fallback (doc 06) |
 | Passkeys | WebAuthn (`navigator.credentials`) with `@simplewebauthn/browser` + `/server` | Optional: a member adds one with **Add a passkey** (Wait/Brief); without one the confirm tap seals (LIVE-001) |
 | Tests | Vitest | Pure logic + replay tests |
-| Hosting | Any host with long‑lived WebSockets + HTTPS (Render / Railway / Fly / a VM) + `.tech` domain CNAME | WebXR and `deviceorientation` need a secure context (HTTPS) on the Gear VR phone and on a Quest |
+| Hosting | Any host with long‑lived WebSockets + HTTPS (Render / Railway / Fly / a VM) + `.tech` domain CNAME | WebXR and `deviceorientation` need a secure context (HTTPS) on the headset iPhone (motion sensors) and on a Quest |
 
 ---
 
@@ -371,7 +371,7 @@ Base `/api`. JSON bodies ≤ 32 kB. Member auth = `Authorization: Bearer <member
 | `POST /trips/:tripId/members/:memberId/handoff` | `{code}` | `{memberToken}` | One-time `/demo` handoff (SEC-004); `403 BAD_HANDOFF` |
 | `POST /trips/:tripId/headset-code` | — (organizer) | `{code, expiresAt}` | 8‑char code, valid 10 min, single use |
 | `DELETE /trips/:tripId/headset` | — (organizer phone) | `{ok:true}` | Revoke the paired headset and any pending code (SEC-018) |
-| `POST /xr/pair` | `{code}` | `{tripId, joinCode, deviceToken}` | Called from `<domain>/xr` on the headset (the Gear VR phone's browser, or Quest Browser); device token = organizer **controls**, no private data. 10 wrong codes/min per address |
+| `POST /xr/pair` | `{code}` | `{tripId, joinCode, deviceToken}` | Called from `<domain>/xr` on the headset (Safari on the headset iPhone, or Quest Browser); device token = organizer **controls**, no private data. 10 wrong codes/min per address |
 | `POST /trips/:tripId/hail-audio[?kind=note]` | raw audio body (`Content-Type: audio/webm`…), `Content-Length` required, 1 byte … `HAIL_AUDIO_MAX_BYTES` (512 kB) | `{transcript}` (≤ 160 chars; ≤ 200 with `kind=note`, the Brief's dictated note, R2-WP-12 L1-005) | STT. Checked **before** the body is read: member, voice on (`501/503 NO_STT`), phase BRIEFING/VOIDED/AT_TABLE, length (`411`/`413`; empty `422 BAD_INPUT`), rate, budget. `502 STT_FAILED` |
 | `GET /trips/:tripId/passkey` | — (member) | `{registered, required, canRegister}` | `registered` on this address; `required` = a passkey exists anywhere, so the seal gate will ask for one; `canRegister` = this phone holds the seat's passkey claim and nothing blocks adding one |
 | `POST /trips/:tripId/passkey/register/options` / `…/register/verify` | — / `{response}` (+ claim cookie) | SimpleWebAuthn options / `{ok:true}` | One passkey per member per rpID: `409 PASSKEY_EXISTS`, `409 PASSKEY_ELSEWHERE` (production), `409 PASSKEY_UNBOUND` (no claim cookie: S2-009), `400 PASSKEY_FAILED` |
@@ -501,20 +501,24 @@ The headset page picks its session in this order (doc 10 has the hardware side):
 | Browser offers | Session | Used on |
 |---|---|---|
 | `immersive-ar` | MR on the real table (below) | Quest 3, if one turns up |
-| `immersive-vr` | VR chart room, `local` reference space, 3DoF | Gear VR phone in Samsung Internet 11.2+ / Chrome for Android (Cardboard‑style side by side) |
-| neither, or `?vr=cardboard` | `webxr-polyfill` Cardboard mode: side by side, head pose from `deviceorientation` | Old browsers; forced for testing |
+| `immersive-vr` (native) | VR chart room, `local` reference space, 3DoF | A browser with native WebXR VR, e.g. Chrome for Android on a borrowed Galaxy phone (doc 10 appendix) |
+| neither, on a phone, or `?vr=cardboard` | `webxr-polyfill` Cardboard mode (`xr/cardboard.ts`): `immersive-vr` side by side with lens distortion, head pose from `deviceorientation` | **The iPhone 16 Pro in the Gear VR shell (primary)**; a laptop with the flag for testing (stereo, no head tracking) |
+| none of the above, on a desktop | Laptop view (orbit camera, mouse) | Laptops |
 
-**Gear VR / Cardboard (`immersive-vr`)**
+**VR chart room (`immersive-vr`: the polyfill on the iPhone, or native)**
 ```ts
 const session = await navigator.xr!.requestSession("immersive-vr", { optionalFeatures: ["local"] });
 renderer.xr.setReferenceSpaceType("local");
 await renderer.xr.setSession(session);
 // opaque clear + the chart room around the table; the table sits at a fixed seated pose
 ```
-- **No placement.** The chart is at a fixed seated pose in front of the start orientation (a little below eye level). **Recenter** (menu) re‑yaws the room to the current head direction. 3DoF only: no position, so nothing may need leaning in to read.
-- **Input.** A gaze ray from the viewer pose drives a reticle and hover outline. Select = the session's `select` (screen tap), the Gear VR touchpad (reaches the page as a tap or an Enter key when the phone is on the headset's plug), Enter on a keyboard, or a **1.6 s dwell** on the same target. Android Back / Escape ends the session (`session.end()`), back to the pairing card, pairing kept.
-- **Performance on an old Galaxy** (Exynos/Snapdragon from 2016–2019, 60 Hz panel, thermal throttling after a few minutes): target 60 fps in the Table, ≥ 45 in Dry Run. Keep draw calls < 100; pixel ratio capped (≤ 1.5); no real‑time shadows; instancing for beads/pins; **Photoreal cities off by default** (the paper city is cheap; tiles cost memory, network and heat); troika fonts preloaded before entry. The debug overlay shows fps so a hot phone is visible.
-- The Gear VR's own browser (last updated 2018) and the Oculus runtime are not used; neither exposes WebXR.
+- **Polyfill setup (`cardboard.ts`).** `webvr: false` (a stale WebVR display must not win), `cardboard: true`, the Cardboard settings/back‑arrow overlay off, the online device database off (the built‑in copy plus the modern iPhones added by screen resolution, e.g. iPhone 16 Pro 1206×2622 @ 460 dpi). Three viewer profiles model a Gear VR shell used as a plain Cardboard viewer (~100° lenses, the phone centred) at 58 / 62 / 66 mm lens spacing; distortion reuses Cardboard 2015's coefficients (the closest published profile, **not measured for Gear VR lenses**). `?ipd=<mm>` (50–75) replaces the *normal* profile; menu **Lens spacing** switches profiles mid‑session and is remembered. Framebuffer scale ≤ 0.75 and never above an effective pixel ratio of 2 (`vrBufferScale`: the 16 Pro's DPR‑3 panel renders at 2/3).
+- **iPhone specifics.** No Fullscreen API: the polyfill presents in place, and the wearer hides Safari's toolbar (**aA → Hide Toolbar**). `DeviceOrientationEvent.requestPermission()` / `DeviceMotionEvent.requestPermission()` are called inside the **Enter VR** tap (`requestMotionPermission`); on denial the card shows `MOTION_DENIED` (*"Head tracking needs motion access…"*). No orientation lock: in portrait the page shows **"Turn your phone sideways"**. A Screen Wake Lock is taken where the browser has one (iOS 16.4+, Chrome 84+); older ones get the polyfill's video trick.
+- **The room (`xr/vrRig.ts`).** No real table, so: a dark room (inward‑facing unlit cylinder in `PALETTE.room` #221C17), a walnut floor, a round walnut tabletop (r 0.64 m) on a pedestal, lit by the Gallery's warm hemisphere + key light (doc 02 §5). 4 extra draw calls. Opaque clear in `PALETTE.room`.
+- **No placement.** The chart (scaled ×1.4 so it reads at phone‑VR resolution) sits 0.9 m ahead and 0.5 m below the eye at session start. **Recenter** (menu, or a 3.2 s gaze on the ship's wheel, `LONG_GAZE_MS`) re‑yaws the room to the current head direction. 3DoF only: no position, so nothing may need leaning in to read.
+- **Input (`xr/gaze.ts`).** A gaze ray from the viewer pose drives a reticle and hover outline. In the shell the only input is a **1.6 s dwell** (`DWELL_MS`; a red ring fills) on the target; it acts on anything, including a cloche (a pick), so the organizer's phone is the recommended place for picks and seals. Also select: the session's `select` (screen tap, out of the shell), Enter/Space on a keyboard, and a Galaxy phone's touchpad when it's on the shell's plug. Leaving: dwell on the red **Exit VR** plaque below the table, menu → **Exit**, or Escape / Android Back → `session.end()`, back to the Enter card, pairing kept. VR‑only extras: the **Hail the table** tag on the table's near‑left edge (while hails are open) opens the HAIL THE TABLE card (four presets + Never mind), since a gaze can't pinch‑and‑hold.
+- **Performance on a phone in a shell** (the iPhone 16 Pro has plenty of GPU; the limit is heat in a closed shell and the polyfill's extra distortion pass): target 60 fps in the Table, ≥ 45 in Dry Run. Keep draw calls < 100; framebuffer scale capped (above); low‑res textures (`?lowtex`, on with any `?vr=` and on phones); no real‑time shadows; instancing for beads/pins; **Photoreal cities off by default** (the paper city is cheap; tiles cost memory, network and heat); troika fonts preloaded before entry. The debug overlay shows fps so a hot phone is visible.
+- The Gear VR shell's electronics (touchpad, Back, proximity sensor), its own browser (last updated 2018) and the Oculus runtime are not used: the iPhone can't connect to the plug, and neither the browser nor the runtime exposes WebXR.
 
 **Quest (`immersive-ar`, optional)**
 ```ts
@@ -532,7 +536,7 @@ renderer.setClearColor(0x000000, 0);   // transparent → passthrough visible
 
 **Both**
 - Text: preload troika fonts before entering session (avoids hitch).
-- Audio: `THREE.PositionalAudio` attached to each piece; unlock AudioContext on the **Enter VR** tap.
+- Audio: `THREE.PositionalAudio` attached to each piece; unlock AudioContext on the **Enter VR** (or **Enter the chart room**) tap.
 
 ### 9.2 Dry Run tiles (`scene/CityTiles.ts`)
 - `TilesRenderer` with Google Photorealistic 3D Tiles, from one of two sources chosen at build time: `VITE_GOOGLE_MAP_TILES_KEY` loads the root directly (`https://tile.googleapis.com/v1/3dtiles/root.json?key=...`, needs a Google Cloud billing account); otherwise `VITE_CESIUM_ION_TOKEN` (a free Cesium ion account, no card) asks `https://api.cesium.com` for ion asset 2275207 (the same Google tiles), and the tiles then load from `tile.googleapis.com`. Neither set → the paper city. The CSP allows both hosts. Place the tile set so the **city center** from the dataset (doc 07 §3, chosen to include the hotel and core stops) is at the cloche center.
@@ -569,10 +573,10 @@ Single place mapping server events → animation queue (so XR and Gallery behave
 
 - WebXR needs a **secure context**. Recommended: tunnel a production-mode build — `npm run build`, `cloudflared tunnel --url http://localhost:8787`, then `APP_ENV=production SERVE_WEB=1 PUBLIC_BASE_URL=<tunnel URL> DEV_KEY=<32+ chars> npm run start:prod` (README *Run it*). For quick iteration a tunnel to Vite (`cloudflared tunnel --url http://localhost:5173` in front of `npm run dev`) also works: Vite proxies `/api` and `/socket.io`, binds to localhost only (`npm run dev:lan -w @all-ayes/web` = `vite --host` for a phone on the Wi-Fi), serves only `apps/web`, `packages/shared` and `node_modules` (`server.fs` strict + deny list, S2-005), and marks each proxied request with `x-dev-proxy-client` / `x-dev-proxy-host` so the helm can tell this machine from a tunnel or LAN client.
 - Dev routes (`/api/demo/seed`, `/api/debug/*`, the `/api/health` details) open without `DEV_KEY` only to a loopback client (loopback socket and Host, no `Forwarded` / `Cf-*` headers, loopback proxy markers; `devAccess.ts isLoopbackRequest`). Through a tunnel or from the LAN they need the key: `/demo#key=<DEV_KEY>` (fragment only) or the debug sign-in.
-- On the Gear VR phone, Chrome remote debugging over USB (`chrome://inspect`, USB debugging on in Android developer options) works when the phone is out of the headset; Samsung Internet can be inspected the same way once its own remote debugging setting is on. In the headset there's no cable and no devtools. (A Quest would likely not be in developer mode either.) So:
+- On the headset iPhone, Safari's Web Inspector works from a Mac over USB when the phone is out of the shell (iPhone: Settings → Apps → Safari → Advanced → **Web Inspector** on; Mac Safari: Develop menu → the iPhone). (A borrowed Galaxy: Chrome's `chrome://inspect` over USB.) In the shell there's no cable and no devtools. (A Quest would likely not be in developer mode either.) So:
   - `client:log` relays `console.*` from XR to server; view at `/api/debug/:tripId` on laptop.
   - In‑headset **debug overlay** (toggle in the menu): fps, draw calls, socket status, last event.
-- Desktop iteration: Meta's **Immersive Web Emulator** Chrome extension fakes an XR session (pick a VR device for the Gear VR path); `?vr=cardboard` in a desktop browser shows the polyfill side‑by‑side view; the Gallery view for scene logic.
+- Desktop iteration: Meta's **Immersive Web Emulator** Chrome extension fakes an XR session (pick a VR device for the native VR path); `?vr=cardboard` in a desktop browser shows the polyfill side‑by‑side view (no head tracking; `?ipd=` to test lens spacing); the Gallery view for scene logic.
 - Not built: a `?fake=1` event-log replayer. Use a seeded Expo voyage (`/demo`) and the Gallery view instead; with no keys the whole table runs on templates in about a minute (`PACE_SCALE` shortens it).
 
 ---

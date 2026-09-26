@@ -13,7 +13,7 @@ This fits HackGT 13's seaside theme (tracks are named Oracle of the Deep, The Sh
 3. **Physical motion.** Things slide, tip, unroll, press, tick. Nothing floats, pulses, shimmers or fades in from nowhere.
 4. **Private things look sealed.** Anything private (a Brief, a cap) is shown as a sealed letter or a closed brass case. Anything shared is ink on the common chart.
 5. **Numbers are logged, not decorated.** Prices appear in a mono "ship's log" face, right‑aligned, like a ledger.
-6. **Legible first.** Mixed reality text must be readable at arm's length on a Quest 3. Style never beats readability.
+6. **Legible first.** Headset text must be readable at arm's length through phone‑VR lenses (the iPhone in the Gear VR shell, ~13 px per degree) and, if we get one, in mixed reality on a Quest 3. Style never beats readability.
 
 ---
 
@@ -92,7 +92,7 @@ Computed WCAG 2.x ratios (checked Sep 24):
 | `--brass` on `--paper` (day) | 2.5:1 | — | ✗ **never for text** — decoration only |
 | `--sea-wash` on `--paper` (night) | — | 3.7:1 | ✗ non‑text only |
 
-- In XR, all text sits on a paper card (never directly over passthrough).
+- In XR, all text sits on a paper card (never directly on the dark room in VR, or over passthrough on a Quest).
 
 ---
 
@@ -117,11 +117,12 @@ Computed WCAG 2.x ratios (checked Sep 24):
 | `num` | 16 / 22 | Plex Mono, tabular |
 | `hand` | 20 / 26 | Homemade Apple |
 
-### 4.2 XR text rules (Quest 3)
+### 4.2 XR text rules (VR chart room; Quest 3 MR)
 - Render text with **troika‑three‑text** (SDF, crisp at any distance).
 - **Minimum cap height 12 mm at ~0.6 m** viewing distance (≈ 1.1° visual angle); headings ≥ 20 mm.
+- **VR chart room (primary: iPhone in a Gear VR shell).** The phone gives each eye roughly 13 px per degree after the lenses, so 1.1° is about 14 px: the floor, not a comfortable size. The whole tabletop is scaled **×1.4** in VR (chart centre 0.9 m ahead, 0.5 m below the eye), so the same labels read larger than on a Quest. Floating cards (menu, hail card) sit ahead of the eye, nearly level, clear of the gaze down at the table. As built some labels are still under the 12 mm target (README *Known limits*); check them through the shell, not on a laptop.
 - Max 8 words per ink ribbon; full sentence goes to the caption strip on the chart edge.
-- Text always on a paper card with 6 mm margin; never over raw passthrough.
+- Text always on a paper card with 6 mm margin; never on the bare room walls (VR) or raw passthrough (Quest).
 - Text faces the user (billboard on Y axis only; no roll).
 
 ---
@@ -136,9 +137,20 @@ Computed WCAG 2.x ratios (checked Sep 24):
 | Wood | Faceted low‑poly walnut, roughness 0.6 | Crew pieces, table rim |
 | Glass | Cloche: transmission 0.9, roughness 0.05, thin rim highlight only | Dry Run domes; **no blur, no frosted glass** |
 | Sealing wax | Red, roughness 0.4, slight bump map with crest | Seals |
-| Cloth | Dark green baize under the chart, roughness 1.0 | Grounds the table in passthrough |
+| Cloth | Dark green baize under the chart, roughness 1.0 | Grounds the chart on the walnut table (VR) or the real table (Quest passthrough) |
 
-Lighting: one warm key light (2700K feel) from above‑left like an oil lamp + ambient from passthrough estimate (if available). No rim lights, no bloom.
+Lighting: one warm key light (2700K feel) from above‑left like an oil lamp (`DirectionalLight` #FFDCAE) + a warm hemisphere fill (#FFF1DC over #3B3026) and a faint baked room environment for the brass and glass; on a Quest, ambient from the passthrough estimate if available. The same lights serve the Gallery and the VR room. No rim lights, no bloom.
+
+### 5.1 The VR chart room (the headset)
+The headset is VR only (an iPhone in a Gear VR shell, doc 10), so there's no real table to sit on. The chart gets a room of its own:
+- **Dark room.** A closed, windowless room in `room` #221C17 (the Gallery's background), walls a shade darker and unlit, so there's nothing to read, no banding and no cost. The room exists to frame the table, not to be looked at: no windows, shelves or props competing with the chart.
+- **Walnut table.** A round walnut tabletop (`woodDark` #4A3120, faceted, roughness 0.65), Ø ≈ 1.3 m, on a single pedestal, with the baize and chart on top; walnut floor below. Seated height: chart 0.5 m below the eye, 0.9 m ahead.
+- **Lamplight.** The warm key + hemisphere above: the table and pieces are lit, the room falls off to dark around them, like a chart table under an oil lamp at night.
+- **Fixtures of the room.** A red paper **Exit VR** plaque straight below the eyes (look down to leave); a small **Hail the table** paper tag on the table's near‑left edge (only while hails are open); the brass ship's wheel (menu) on the chart's south‑east edge. All are paper, brass or wax, per §1.
+- **Reticle.** A small paper‑white dot at the centre of view that turns **Sounding Red** over a target; a thin Sounding Red ring fills round it for the 1.6 s dwell, and an outer **brass** ring fills for the 3.2 s recenter on the wheel. No glow, no pulsing.
+- **Budget.** The room is 4 draw calls. Everything stays within an easy downward glance and ~40° either side (seated, 3DoF).
+
+*On a Quest (optional):* the room is not drawn. Passthrough shows the real room, and the chart lies on the real table (§7).
 
 ---
 
@@ -167,10 +179,10 @@ Engraved line icons, 1.5px stroke at 24px, square caps, drawn like chart symbols
 
 ## 7. XR component library (the scene)
 
-All dimensions in real‑world units. Scene is anchored to a detected horizontal plane (the user's table).
+All dimensions in real‑world units. In the VR chart room (the primary headset) the scene sits on the walnut table at a fixed seated pose (§5.1), scaled ×1.4; on a Quest it's anchored to a detected horizontal plane (the user's table).
 
 ### 7.1 The Chart Table (root)
-- Paper chart disc **Ø 70 cm** resting on the real table, 2 mm above the plane; deckled edge; 4 brass corner weights.
+- Paper chart disc **Ø 70 cm** resting on the walnut table in VR (the real table on a Quest), 2 mm above the surface; deckled edge; 4 brass corner weights.
 - Around the edge: a **caption strip** (paper ribbon, 60 cm long, 4 cm tall) facing the Organizer — shows the latest full line in Source Serif.
 - **Compass rose** printed at the chart's west edge beside the Captain = Watch timer (see 7.5). (As built: from the Organizer's seat the north edge sits behind the globe, so the Captain moved west.)
 
@@ -208,7 +220,7 @@ All dimensions in real‑world units. Scene is anchored to a detected horizontal
 - **Paper tag** under each cloche: city · hotel · group-total **range** (e.g. "$2,650–3,100"), never an exact total.
 - **Margin notes:** red ink handwriting next to issues: "30 min uphill", "overnight flight".
 - **Edge arrows:** stops outside the cloche radius (e.g. Cascais, Belém, Frida Kahlo museum) are drawn as an ink arrow on the cloche rim labelled with travel time ("to Cascais · 55 min"); beads walk to the rim and wait there.
-- Selecting a Chart: pinch (select) its cloche and it lifts; the other slides back under the chart (as built there is no grab‑and‑lift, doc 03 §4).
+- Selecting a Chart: select its cloche (a 1.6 s gaze in VR, a pinch on a Quest, or the organizer's phone) and it lifts; the other slides back under the chart (as built there is no grab‑and‑lift, doc 03 §4).
 
 ### 7.7 The Seal ceremony
 - The chosen Chart appears as a **rolled paper chart** that unrolls on the table, listing each member's share line (Plex Mono) — **amounts only shown to their owner on their phone; on the shared chart shares show as "— sealed —"** until booked.

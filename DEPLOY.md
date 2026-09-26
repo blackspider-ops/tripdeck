@@ -122,5 +122,5 @@ Point a tunnel at a **production-mode build**, not at the dev servers: `npm run 
 
 ## 4. Expo checklist
 - `https://allayes.tech/demo#key=$DEV_KEY` → *Seed a fresh voyage*. The page keeps the key in this tab's sessionStorage, strips it from the address bar and sends it as the `X-Dev-Key` header.
-- Gear VR phone (Samsung Internet or Chrome) → `https://allayes.tech/xr` → headset code (**Show headset code** on the organizer's phone) → **Enter VR** → phone into the Gear VR. No WebXR in that browser: `https://allayes.tech/xr?vr=cardboard`. A Quest, if one turns up, uses the same URL in Quest Browser. Setup and fixes: `docs/10-gear-vr.md`.
+- Headset iPhone (Safari) → `https://allayes.tech/xr` → headset code (**Show headset code** on the organizer's phone) → **aA → Hide Toolbar** → **Enter VR** → allow motion access → landscape → clamp it into the Gear VR shell (no USB plug; select by gaze). A Quest, if one turns up, uses the same URL in Quest Browser. Setup and fixes: `docs/10-gear-vr.md`.
 - Optional: `npm run warm-voices --workspace @all-ayes/server` with the ElevenLabs key, then `DEMO_REPLAY=cached` is the emergency button if the Wi‑Fi dies (template lines, cached voices, no network calls).

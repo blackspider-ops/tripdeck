@@ -26,12 +26,12 @@ Hacking window: **Fri Sep 25 8:00 PM → Sun Sep 27 8:00 AM**. We submit by **7:
 | 10 | Hosting account with WebSockets (Render/Railway/Fly) | — | B | ☐ |
 | 11 | Install `cloudflared` (HTTPS tunnel), Node 22+ (npm workspaces) | local | both | ☐ |
 | 12 | Chrome extension **Immersive Web Emulator** (Meta) | Chrome Web Store | A | ☐ |
-| 12b | **Gear VR phone set up** (doc 10 §3): Samsung Internet + Chrome updated, Gear VR Service disabled (Package Disabler Pro or the VR Service developer‑mode trick), right USB holder in the shell | Galaxy Store / Play Store | A | ☐ |
+| 12b | **Headset iPhone set up** (doc 10 §3–4): iOS 18 updated, case off, fit tested in the Gear VR shell (no USB plug, centred, padded, camera bump clear), Low Power Mode off, Auto‑Lock 5 min, motion access allowed for the tunnel site, **aA → Hide Toolbar** practised | Settings / Safari | A | ☐ |
 | 13 | Download fonts (Libre Caslon Display/Text, Source Serif 4, IBM Plex Mono, Homemade Apple) + CC0 sounds (doc 02 §10) | Google Fonts / freesound (CC0 filter) | A | ☐ |
 | 14 | Join HackGT Discord (packet link) + Match | — | both | ☐ |
 
 ### 1.2 Packing (both)
-Govt ID + student ID (**required**), laptops + chargers, **the Gear VR + its Galaxy phone** (and both USB holders), **2 phones each if possible** (demo needs the Gear VR phone + 1–2 more), USB‑C cables, power strip, headphones, phone hotspot plan, water bottle, hoodie, toiletries/sleep kit if staying, **alcohol wipes** (headset hygiene for judges), a real small table cloth (dark green) for the demo table, printed 1‑page pitch card.
+Govt ID + student ID (**required**), laptops + chargers, **the Gear VR shell + the iPhone 16 Pro** (plus folded paper/foam to pad it in the clamp), **2 phones each if possible** (demo needs the headset iPhone + 1–2 more), USB‑C cables, power strip, headphones, phone hotspot plan, water bottle, hoodie, toiletries/sleep kit if staying, **alcohol wipes** (headset hygiene for judges), a real small table cloth (dark green) for the demo table, printed 1‑page pitch card.
 
 ### 1.3 Friday before 8 PM
 - 2:00 check‑in (arrive by 1:45; bags to Klaus first).
@@ -42,7 +42,7 @@ Govt ID + student ID (**required**), laptops + chargers, **the Gear VR + its Gal
 
 ## 2. Hour‑by‑hour
 
-> **Hardware change (Sat Sep 26).** The hardware desk had no Quest 3 for us. The headset is now our own **Samsung Gear VR** with a Galaxy phone: WebXR `immersive-vr` in Samsung Internet/Chrome, a VR chart room with the table at a fixed seated pose, gaze + touchpad/dwell, a webxr‑polyfill fallback (`?vr=cardboard`). Setup: doc 10. The Friday rows below are kept as planned; read "Quest" there as "Gear VR phone" and "place on the table" as "table at the seated pose". The Quest MR path stays in the code as a stretch.
+> **Hardware change (Sat Sep 26).** The hardware desk had no Quest 3 for us, and we have no Galaxy phone. The headset is an **iPhone 16 Pro (iOS 18, Safari) clamped into our Samsung Gear VR shell**, used as a plain lens viewer with no USB plug (so no touchpad or Back button): webxr-polyfill Cardboard mode, a VR chart room with the table at a fixed seated pose, gaze + 1.6 s dwell only, motion permission on **Enter VR**, **Lens spacing** / `?ipd=`. The organizer's phone drives picks and seals. Setup: doc 10. The Friday rows below are kept as planned; read "Quest" there as "headset iPhone" and "place on the table" as "table at the seated pose". The Quest MR path stays in the code as a stretch.
 
 Legend: **CP** = checkpoint (go/no‑go). IDs reference PRD stories.
 
@@ -51,7 +51,7 @@ Legend: **CP** = checkpoint (go/no‑go). IDs reference PRD stories.
 |---|---|---|
 | 8:00–8:30 | Get Quest 3 (none came; Gear VR instead, doc 10); connect Wi‑Fi; open test HTTPS URL | Create monorepo (doc 04 §3), shared types, `.env`, Mongo connection, `/health`; tunnel up |
 | 8:30–10:00 | XR hello: `immersive-ar` passthrough, hit‑test ring, pinch to place a paper disc on real table (C1) | Server: trips/members REST, join codes, member tokens, socket rooms, `trip:state` (A1–A3) |
-| **10:00 CP1** | **WebXR runs on the headset over HTTPS** (now: `immersive-vr` on the Gear VR phone, or `?vr=cardboard`). If NO → Gallery‑first plan (§4) | **Create/join from 2 phones works live** |
+| **10:00 CP1** | **WebXR runs on the headset over HTTPS** (now: the polyfill's `immersive-vr` on the iPhone in Safari, with head tracking after the motion prompt). If NO → Gallery‑first plan (§4) | **Create/join from 2 phones works live** |
 | 10:00–1:00 | Chart table, globe (texture + graticules + pins), crew pieces (Lathe), troika text, CaptionStrip; `SceneDirector` driven by a **fake event log** | `fit/pricing.ts`, `fit.ts`, `fairness.ts` + dataset JSON from doc 07 + **unit tests reproducing doc 07 §9** |
 | 1:00–2:00 | Phone design tokens + Landing/Create/Muster/Join/Brief screens (styling) | Wire Brief submit (B1–B6), brief privacy (private room only), state machine BRIEFING→AT_TABLE |
 | 2:00–3:30 | Ink ribbons + piece tip/slide animations; compass timer | **Sleep 2:00–6:00** |
@@ -136,11 +136,11 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 | 4 | Backboard memory | Skip (lose MLH Backboard entry) | Minor |
 | 5 | VIC real sandbox | SIM mode, labeled | Weaker Visa, still valid flow |
 | 6 | Phone Table mirror visuals | Log list only | Minor |
-| 7 | Gear VR XR (phone fails, no WebXR, overheats) | First `?vr=cardboard`, then a second Galaxy; last, **Gallery‑first demo**: laptop Spectator + phones; enter Lighthouse only if we have any XR running | Track at risk |
+| 7 | Headset XR (iPhone: motion denied, double image, overheats) | First reopen the tab and allow motion, **Lens spacing** / `?ipd=`, cool the phone; then a borrowed phone (a Galaxy S6–S10 fits the clamp properly, doc 10 appendix A); last, **Gallery‑first demo**: laptop Spectator + phones; enter Lighthouse only if we have any XR running | Track at risk |
 
 **Never cut:** privacy filter · deterministic pricing/fit · 3‑Watch termination · all‑or‑nothing orchestrator · captions · the design rulebook.
 
-**Gallery‑first plan (if CP1 fails):** all scene code already runs in Gallery; keep trying the Gear VR phone (other browser, `?vr=cardboard`, another Galaxy); worst case demo on laptop + phones and say "runs on a Gear VR" only if it truly does.
+**Gallery‑first plan (if CP1 fails):** all scene code already runs in Gallery; keep trying the headset iPhone (new tab + motion prompt, `?vr=cardboard` elsewhere, a borrowed phone); worst case demo on laptop + phones and say "runs on a phone in a Gear VR shell" only if it truly does.
 
 ---
 
@@ -148,11 +148,12 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 
 | # | Risk | P | I | Trigger | Mitigation | Owner |
 |---|---|---|---|---|---|---|
-| R1 | No Quest from desk | — | — | **Happened** (Fri 8 PM) | Switched to our Samsung Gear VR (doc 10). Quest MR kept as stretch if one turns up | A |
-| R1b | Gear VR phone can't run it: no WebXR in its browser, browser too old to update, Oculus app hijacks the screen on insert | M | H | CP1 on the Gear VR | Update Samsung Internet (11.2+) and Chrome; `?vr=cardboard` polyfill; disable Gear VR Service (Package Disabler Pro / VR Service developer mode); slot without the plug + gaze‑dwell; borrow a newer Galaxy (S9/S10) | A |
-| R1c | Gear VR phone overheats or drops frames mid‑demo | H | M | Phone hot, fps < 45 in the debug overlay | *Photoreal cities* off in VR (default); brightness ~70%; phone out of the shell between judges; charge between runs, not during | A |
-| R1d | Wearer gets motion sick (3DoF drift, low fps) | M | M | Judge says so | Seated only; **Recenter**; *Reduce motion*; runs ≤ 3 min; offer the Gallery instead | A |
-| R2 | No devtools once the phone is in the headset | H | M | — | `client:log` relay + in‑headset debug overlay; USB `chrome://inspect` with the phone out of the shell | A |
+| R1 | No Quest from desk, and no Galaxy phone | — | — | **Happened** (Fri 8 PM) | An iPhone 16 Pro in our Samsung Gear VR shell (webxr-polyfill Cardboard mode, gaze only; doc 10). Quest MR kept as stretch if one turns up | A |
+| R1b | Headset iPhone can't run it: motion access denied (no head tracking), double image (lens spacing / off‑centre), Safari toolbar crops the view, loose fit in a clamp made for Galaxy phones | M | H | CP1 through the shell | Enter VR → **Allow**; denied → new tab or clear the site's website data; **Lens spacing** / `?ipd=`; **aA → Hide Toolbar**; case off, centre it, pad with paper/foam; lens distortion is Cardboard's, not measured for Gear VR (accept slight edge bend) | A |
+| R1c | Headset iPhone overheats or drops frames mid‑demo (closed shell) | H | M | Phone hot, fps < 45 in the debug overlay | *Photoreal cities* off in VR (default); `?lowtex`; brightness down a notch; phone out of the shell between judges; charge between runs, not during | A |
+| R1d | Wearer gets motion sick (3DoF drift, low fps) | M | M | Judge says so | Seated only; **Recenter** (3.2 s gaze on the wheel); *Reduce motion*; runs ≤ 3 min; offer the Gallery instead | A |
+| R2 | No devtools once the phone is in the headset | H | M | — | `client:log` relay + in‑headset debug overlay; Safari Web Inspector from a Mac over USB with the phone out of the shell | A |
+| R2b | Dwell selects by accident (a judge stares at a cloche and picks it) | M | M | Rehearsal | Rae drives picks and seals from her phone; tell the wearer "just look around"; the pick stays open to the phone | A |
 | R3 | Quest only: WebXR features missing (plane detection) | L | M | CP1 | Hit‑test only; manual height adjust | A |
 | R4 | VIC sandbox access delayed | M | M | Not approved by Sat noon | Mode B/C | B |
 | R5 | Gemini latency spikes | M | M | > 4 s turns | Flash model, short outputs, pipelining, template fallback, cached run | B |
@@ -160,7 +161,7 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 | R7 | Negotiation boring/robotic | M | M | Stranger test Sat night | Tune prompts for warmth; distinct voices; memory line; hail moment | B |
 | R8 | Tiles slow on venue Wi‑Fi | H | M | > 4 s load | Low‑poly fallback auto‑switch; pre‑warm by viewing once | A |
 | R9 | Venue Wi‑Fi fails at Expo | M | H | — | Phone hotspot; cached run mode | B |
-| R10 | Audio inaudible at Expo | H | M | Loud atrium | Captions everywhere; small speaker for laptop; wired earbuds into the Gear VR phone if it has a jack | A |
+| R10 | Audio inaudible at Expo | H | M | Loud atrium | Captions everywhere; small speaker for laptop; captions; the headset iPhone's speaker is muffled by the shell | A |
 | R11 | Burnout / sleep debt | H | M | — | Scheduled sleep blocks; meals away from screens | both |
 | R12 | Scope creep | H | H | Any P2 before CP3 | Only P0 until CP3 green | both |
 | R13 | Meta video missing | L | H | Not recorded by 10 PM Sat | Recorded Sat 7:45–9:30 fixed slot | A |
@@ -173,7 +174,8 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 
 ## 6. Expo station setup (Sun 8:00–9:00)
 - A chair for the wearer (the chart room is seated). Table with dark green cloth (looks like a chart table; a Quest would use it for plane detection).
-- Gear VR phone charged ≥ 90% and cool, Do Not Disturb on, brightness ~70%, `<domain>/xr` open and paired with the headset code from Rae's phone (**Show headset code**; re‑pair after each re‑seed), a charger at the station, **alcohol wipes** for the lenses and face pad. Full list: doc 10 §8.
+- Headset iPhone charged ≥ 90% and cool, case off, Do Not Disturb on, silent off, Low Power Mode off, brightness up, Safari on `<domain>/xr` paired with the headset code from Rae's phone (**Show headset code**; re‑pair after each re‑seed), **aA → Hide Toolbar**, motion allowed; paper/foam padding in the shell, a charger at the station (never charge in the shell), **alcohol wipes** for the lenses and face pad. Full list: doc 10 §9.
+- The wearer only looks; **Rae's phone drives** *Weigh anchor*, the pick and the seals (dwell picks whatever the wearer stares at).
 - The Gallery on the laptop is **projected / turned to the aisle**, so judges see the scene the wearer sees.
 - Laptop: Gallery view full‑screen facing the aisle; second tab `/api/debug/<code>` (sign in once with the dev key).
 - Phones: Organizer (Rae) + Maya logged into seeded trip; Dev pre‑sealed.
@@ -187,7 +189,7 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 ## 7. Demo run checklist (use at CP4 and every rehearsal)
 - [ ] `/api/health` with `X-Dev-Key` all green (mongo, gemini, eleven, backboard, `payments` mode shown, `persistence.degraded` false, budgets `ok`)
 - [ ] Fresh seeded trip; 3 crew shown; Dev pre‑sealed
-- [ ] Gear VR phone: `/xr` paired, **Enter VR** → side‑by‑side chart room in ≤ 10 s; table straight ahead (or one **Recenter**); reticle visible; touchpad tap and a 1.6 s dwell both select; Back leaves VR
+- [ ] Headset iPhone: `/xr` paired, **Enter VR** → motion allowed → landscape → side‑by‑side chart room in ≤ 10 s; one image (not two) through the shell; table straight ahead (or a 3.2 s gaze on the wheel to **Recenter**); reticle visible; a 1.6 s dwell selects; the **Exit VR** plaque leaves VR back to the Enter card
 - [ ] Phone not hot, fps ≥ 45 in the debug overlay through the Dry Run
 - [ ] Captain opens with no individual numbers
 - [ ] Early exit after Watch 2 (8 voiced lines), ≤ 70 s, voices audible, captions synced
@@ -204,7 +206,7 @@ Total A ≈ 21.75h, B ≈ 24.25h of the ~30 awake hours each → ~20–25% buffe
 ---
 
 ## 8. Definition of done (per P0 story)
-- Works on the Gear VR phone (or `?vr=cardboard`, or the Gallery if R1b), phones (iOS Safari + Android Chrome), and survives a page reload mid‑phase.
+- Works on the headset iPhone in the Gear VR shell (or the Gallery if R1b), phones (iOS Safari + Android Chrome), and survives a page reload mid‑phase.
 - Private data verified absent from `trip:{id}` room (socket privacy test green).
 - Copy checked against doc 02 §11 voice rules.
 - No console errors in `/debug` during a full run.

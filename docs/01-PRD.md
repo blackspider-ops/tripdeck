@@ -36,7 +36,7 @@ All Ayes turns trip planning into a short, structured, *visible* negotiation bet
 | Pillar | What happens | Why it's different |
 |---|---|---|
 | **Sealed Terms (Brief)** | Each member tells *their own* agent their real cap, dates, must‑haves, dealbreakers — privately on their own phone. | The group never sees anyone's number. |
-| **The Table** | In a VR chart room on a Samsung Gear VR (a Galaxy phone in a lens shell), a paper globe sits on a chart table in front of you. (On a Quest 3 the same table lands on your real table in mixed reality; stretch.) Each member's Advocate is a carved piece; they speak (ElevenLabs voices), propose, object, concede. Humans can Hail in. The Captain forces a decision within 3 Watches. | One advocate **per person**, negotiating visibly. Competitors use one central AI. Structured protocol fixes the "agents never compromise" problem. |
+| **The Table** | In a VR chart room on an iPhone clamped into a Samsung Gear VR shell, a paper globe sits on a chart table in front of you. (On a Quest 3 the same table lands on your real table in mixed reality; stretch.) Each member's Advocate is a carved piece; they speak (ElevenLabs voices), propose, object, concede. Humans can Hail in. The Captain forces a decision within 3 Watches. | One advocate **per person**, negotiating visibly. Competitors use one central AI. Structured protocol fixes the "agents never compromise" problem. |
 | **Dry Run** | The top two Charts appear as miniature cities under glass cloches (Google Photorealistic 3D Tiles). Each member's token walks the day; a brass clock ticks; long walks ink in red; each member privately sees "fits your terms ✓". | You *see* tradeoffs before paying. Not found in any product. |
 | **The Seal (all‑or‑nothing)** | Each member approves their own share on their own phone (a tap, or their passkey if they added one). Each share is paid by a **Visa agent token capped at that member's private limit**. Once every seal is set, all shares are authorized together; only if every one authorizes do we capture; any decline voids everyone, and nobody learns whose it was. | Nobody fronts money. Uses Visa Intelligent Commerce primitives (agent tokens, spending controls, passkeys). No consumer group‑trip app does this. |
 | **Absent friend** | A member who can't join live still has an Advocate at the table speaking for them. | Includes people, not just the loudest in the room. |
@@ -56,7 +56,7 @@ All Ayes turns trip planning into a short, structured, *visible* negotiation bet
 - Real money. Visa **sandbox** only (or clearly labeled simulation).
 - Accounts/auth beyond a trip join code. No password system.
 - More than 4 members, more than 3 candidate cities, more than 2 date windows, more than 4 nights.
-- Native Quest or Gear VR (Oculus Mobile) app / Unity. WebXR only; the Gear VR runs our page in Samsung Internet or Chrome (doc 10).
+- Native Quest, Gear VR (Oculus Mobile) or iOS app / Unity. Web only: the headset iPhone runs our page in Safari through webxr-polyfill (doc 10).
 - Android/iOS native apps. Phones use the web.
 
 ### 3.3 Success metrics (measured at Expo)
@@ -69,7 +69,7 @@ All Ayes turns trip planning into a short, structured, *visible* negotiation bet
 | Budget leaks (any member's cap spoken/shown to others) | **0** (enforced by filter, doc 05 §7) |
 | Prices not from dataset (hallucinated) | **0** (validator, doc 05 §7) |
 | Judge understands the pitch in first 20 s | Yes (test on 3 strangers Sat night) |
-| XR frame rate on the Gear VR phone (S9/S10 class) | ≥ 60 fps in Table scene; ≥ 45 fps in Dry Run with *Photoreal cities* off (on a Quest 3: ≥ 72 / ≥ 60) |
+| XR frame rate on the headset iPhone (16 Pro, polyfill Cardboard mode) | ≥ 60 fps in Table scene; ≥ 45 fps in Dry Run with *Photoreal cities* off (on a Quest 3: ≥ 72 / ≥ 60) |
 
 ---
 
@@ -78,7 +78,7 @@ All Ayes turns trip planning into a short, structured, *visible* negotiation bet
 ### P1 — The Organizer ("Rae", in the headset)
 - Gets the group going. Usually ends up fronting money.
 - Wants: momentum, a fair plan, no chasing payments.
-- Uses: the Gear VR headset (Table, Dry Run, Seal ceremony) + own phone for their Brief.
+- Uses: the headset (iPhone in the Gear VR shell: Table, Dry Run, Seal ceremony, by looking) + own phone for their Brief, *Weigh anchor*, the pick and the seal.
 
 ### P2 — The Budget‑Tight Friend ("Maya", on a phone)
 - Has a real cap ($900 all‑in — the tightest in the Expo crew, doc 07 §8). Doesn't want to be "the poor one".
@@ -119,13 +119,13 @@ IDs are referenced in doc 08 tasks. **P0 = must ship for demo**, P1 = ship if ti
 ### Epic C — The Table (negotiation)
 | ID | Story | Acceptance criteria | Pri |
 |---|---|---|---|
-| C1 | As the Organizer, I put on the Gear VR and I'm sitting at the chart table in a VR chart room. | After **Enter VR** the table is already in front of me at a fixed seated pose (no placement); a gaze reticle shows what I'll select; **Recenter** in the menu puts the table in front of wherever I face; the Back button leaves VR. No WebXR in the browser → `?vr=cardboard` gives the same view. | P0 |
+| C1 | As the Organizer, I put on the headset (iPhone in a Gear VR shell) and I'm sitting at the chart table in a VR chart room. | After **Enter VR** (iOS asks for motion access) the table is already in front of me at a fixed seated pose (no placement); a gaze reticle shows what I'll select and a 1.6 s dwell selects; **Recenter** (menu, or a 3.2 s gaze on the ship's wheel) puts the table in front of wherever I face; the red **Exit VR** plaque below the table leaves VR. Safari has no WebXR, so the webxr-polyfill Cardboard mode gives the view (`?vr=cardboard` forces it elsewhere). | P0 |
 | C1b | On a Quest 3, I place the chart table on my real table in MR. | Plane detection finds horizontal surface; pinch to place; anchor persists for session. | P2 (stretch, only if a Quest turns up) |
 | C2 | When all briefs are sealed, the crew pieces arrive around the globe. | One piece per member incl. absent; each piece has member's color band + name flag. | P0 |
 | C3 | The Captain opens with group‑level constraints only. | Opening line mentions shared dates + candidate cities; contains **no** individual numbers. | P0 |
 | C4 | Advocates take turns proposing/objecting/conceding with voices. | Each turn ≤ 35 words (≤ 20 in Expo mode), typed (`PROPOSE`/`OBJECT`/`CONCEDE`/`SUPPORT`), references a plan id; voice plays; ink ribbon caption renders. | P0 |
 | C5 | Budgets never leak. | Automated filter redacts; 0 leaks across 20 scripted runs. | P0 |
-| C6 | I can Hail (interrupt) by voice. | Push‑to‑talk (phone button; in the headset, select empty space → set hail lines) → transcript turn → Advocates respond next Watch. Max 2 Hails per Watch. | P1 (text Hail from phone = P0) |
+| C6 | I can Hail (interrupt) by voice. | Push‑to‑talk (phone button; in the headset, dwell on the "Hail the table" tag → set hail lines) → transcript turn → Advocates respond next Watch. Max 2 Hails per Watch. | P1 (text Hail from phone = P0) |
 | C7 | Negotiation always ends. | Hard cap 3 Watches; Captain names The Two Charts; bell sound; `status=DRY_RUN`. | P0 |
 | C8 | Phones mirror the Table. | Phone shows 2D chart with pieces, current speaker highlighted, caption. | P0 |
 
@@ -136,7 +136,7 @@ IDs are referenced in doc 08 tasks. **P0 = must ship for demo**, P1 = ship if ti
 | D2 | The day walks under the cloche; a brass clock ticks. | 1 real second = 15 in‑trip minutes; route segments from dataset walking times. As built the shared scene walks the group-level day (anonymous beads, public indicative times, S2-002); each member's own day is on their phone. | P0 |
 | D3 | Long walks and early starts are flagged. | Segments > 25 min or starts < 8:00 inked in Sounding Red with a margin note. | P0 |
 | D4 | Each member privately sees fit for each Chart. | Phone shows "Fits your terms ✓" / "Over your terms by a little" (no numbers to others). | P0 |
-| D5 | The group picks one Chart. | Organizer looks at a cloche and taps the touchpad or holds their gaze (headset), or taps (phone); majority of members' taps within 20 s or Organizer decides. | P0 |
+| D5 | The group picks one Chart. | Organizer taps on their phone (safest), or holds their gaze 1.6 s on a cloche in the headset; majority of members' taps within 20 s or Organizer decides. | P0 |
 
 ### Epic E — The Seal (checkout)
 | ID | Story | Acceptance criteria | Pri |
@@ -198,7 +198,7 @@ IDs are referenced in doc 08 tasks. **P0 = must ship for demo**, P1 = ship if ti
 
 | Prize | What they will literally see in the demo | Talking point |
 |---|---|---|
-| **Lighthouse** | A VR chart room on a Gear VR: carved pieces around you, ink ribbons, cloched cities, wax seals; the Gallery projects the same scene for the room. | "VR is how the group *sees* the tradeoff together, and it runs on a phone headset people already own." |
+| **Lighthouse** | A VR chart room on an iPhone in a Gear VR shell: carved pieces around you, ink ribbons, cloched cities, wax seals; the Gallery projects the same scene for the room. | "VR is how the group *sees* the tradeoff together, and it runs on a phone and a lens shell people already own." |
 | **Visa** | Per‑member agent token with cap, passkey approval, all‑or‑nothing capture/void, a live decline demo. | "Agentic commerce for groups: trusted, capped, nobody fronts money." |
 | **Meta** | Three friends (one absent) reach a plan with no awkward budget talk; AI is the crew — remove it and the product disappears. | "Connection without the money awkwardness; absent friends still have a voice." Requires video + repo + write‑up (doc 09). |
 | **Gemini** | Every Advocate + Captain are Gemini calls with JSON‑schema structured outputs over a priced chart book (function‑calling tools in P1 "deeper" mode, doc 05 §6.3). | Structured outputs; model chooses and argues, code does the math. |
@@ -211,7 +211,7 @@ IDs are referenced in doc 08 tasks. **P0 = must ship for demo**, P1 = ship if ti
 ---
 
 ## 9. Constraints & assumptions
-- **Hardware:** we could not get a Quest 3. We have a **Samsung Gear VR** + a compatible Galaxy phone (S6–S10 / Note 5–9 era). The phone is the display and the computer; VR only (no cameras, no passthrough), 3DoF head tracking, a side touchpad + Back button. Oculus no longer supports it and its own browser dates from 2018, so the page runs in Samsung Internet (WebXR since 11.2) or Chrome as WebXR `immersive-vr`, Cardboard‑style side by side, with a webxr‑polyfill Cardboard fallback. Full setup: doc 10.
+- **Hardware:** we could not get a Quest 3, and we have no Galaxy phone. The headset is an **iPhone 16 Pro** (iOS 18, Safari) clamped into a **Samsung Gear VR shell** used only as a lens viewer: no USB plug, so the shell's touchpad and Back button do nothing. VR only (no cameras, no passthrough), 3DoF head tracking from the phone's motion sensors (iOS asks for motion access on **Enter VR**). Safari has no WebXR, so the page runs webxr-polyfill's Cardboard mode (side by side, Cardboard lens values, adjustable lens spacing). All headset input is gaze: reticle + 1.6 s dwell. The organizer's phone drives picks and seals. Full setup: doc 10 (with an appendix for a borrowed Galaxy phone, which would add the touchpad).
 - **Quest 3 (optional):** if one appears, `/xr` still opens `immersive-ar` with plane detection, hit test, anchors and hand tracking in Quest Browser. Camera access is not used on any headset.
 - **Team of 2, 36 hours.** Every P0 must be buildable by 2 people; see doc 08 cut lines.
 - **Network:** venue Wi‑Fi may be poor → phone hotspot backup; all demo audio can be pre‑cached (doc 04 §13, "Demo mode cache").
@@ -222,13 +222,13 @@ IDs are referenced in doc 08 tasks. **P0 = must ship for demo**, P1 = ship if ti
 | # | Question | Ask whom | Why it matters |
 |---|---|---|---|
 | Q1 | Do you expect Visa Intelligent Commerce sandbox, or is a faithful simulation OK? | Visa table | Decides how much time goes to real API integration |
-| Q2 | How many Quest 3s, when does the desk open, can we keep it all weekend? | Hardware desk | Answered: none for us. We run on our Gear VR (doc 10) |
+| Q2 | How many Quest 3s, when does the desk open, can we keep it all weekend? | Hardware desk | Answered: none for us. We run an iPhone in our Gear VR shell (doc 10) |
 | Q3 | Can one project win a track + sponsor prizes + grand? | Organizers | Stacking strategy |
 | Q4 | For Meta: does the video need voiceover? Any length tolerance? | Meta table | Video plan |
 | Q5 | Any Aramco/other challenge we're missing? | Organizers | Free extra entries |
 
 ## 11. Risks (top 5; full register in doc 08)
-1. Gear VR phone fails (no WebXR, overheats, Oculus service hijacks it) → `?vr=cardboard`, a second Galaxy, or the Gallery; track weaker only if all three fail.
+1. Headset iPhone fails (motion access denied, double image, overheats) → reopen the tab and allow motion, **Lens spacing** / `?ipd=`, cool it down, or the Gallery; track weaker only if the headset can't run at all.
 2. Visa sandbox onboarding slow → SIM mode with identical UX, labeled.
 3. Agents loop or leak → deterministic scorer + Captain + output filter.
 4. 3D Tiles quota/billing issue → low‑poly procedural city fallback.

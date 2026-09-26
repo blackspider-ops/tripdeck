@@ -1,7 +1,7 @@
 # 03 — UX Flows & Screens
 
 Surfaces:
-- **Q** = the headset: a Galaxy phone in a **Samsung Gear VR** (Samsung Internet or Chrome, WebXR `immersive-vr`, a VR chart room; doc 10) — the Organizer. On a Quest 3, if we get one: Quest Browser, `immersive-ar` on the real table
+- **Q** = the headset: an **iPhone 16 Pro in a Samsung Gear VR shell** used as a lens viewer (Safari, webxr-polyfill Cardboard mode, a VR chart room, gaze only; doc 10) — worn by the Organizer or a judge, who only looks; the Organizer's phone drives. On a Quest 3, if we get one: Quest Browser, `immersive-ar` on the real table
 - **P** = Phone web app (every member, including the Organizer for their private Brief)
 - **S** = Spectator/Gallery (laptop) — judges, audience, video capture
 
@@ -28,7 +28,7 @@ BRIEFING → AT_TABLE → DRY_RUN → SEALING → BOOKED
       ├─► [P: Organizer] Brief (sealed) ───────────────┤
       └─► [link: Dev (absent)] Brief (sealed) ─────────┤  (pre-done before demo)
                                                        ▼
-[Q] Enter VR, phone into the Gear VR ─► seated at the chart table ─► Crew arrives (all briefs sealed)
+[Q] Enter VR, iPhone into the Gear VR shell ─► seated at the chart table ─► Crew arrives (all briefs sealed)
       │
       ▼
 [Q/P/S] THE TABLE: Captain opens ─► Watch 1..3 (advocates speak; humans may Hail)
@@ -175,8 +175,8 @@ Name, color band (taken bands disabled), **Join the crew** → P4.
 ### P5 — Sealed (waiting) (`/t/:code/wait`)
 Sealed‑letter illustration; "Sealed. Your mate knows what you can do." Crew list with seal statuses; hourglass for pending ones. Auto‑advance to P6 when `trip.status = AT_TABLE`.
 - **Add a passkey** (optional, LIVE-001): a quiet link, shown only on phones that can hold a passkey (the same control sits under the seal button on the Brief). It only registers a passkey — never seals anything. Without it, the member later seals with a tap; with it, *Set your seal* asks for Face ID / Touch ID.
-- **Organizer only:** when every Brief is sealed, a red **Weigh anchor** button appears → `table:start`. (This is the demo trigger; the wearer can also select the Captain piece in the headset.)
-- **Organizer only:** **Show headset code** reveals the 8‑character **headset code** (doc 04 §6) to type at `<domain>/xr` on the Gear VR phone (or in Quest Browser). Later screens keep a quiet **Headset code or unpair** link.
+- **Organizer only:** when every Brief is sealed, a red **Weigh anchor** button appears → `table:start`. (This is the demo trigger; the wearer can also hold their gaze on the Captain's tag in the headset.)
+- **Organizer only:** **Show headset code** reveals the 8‑character **headset code** (doc 04 §6) to type at `<domain>/xr` on the headset iPhone in Safari (or in Quest Browser). Later screens keep a quiet **Headset code or unpair** link.
 - **Organizer only, after 2 min with someone unsealed:** "Sail without them" (see §6).
 
 ### P6 — The Table (mirror) (`/t/:code/table`)
@@ -282,16 +282,17 @@ Broken seal illustration. Shared copy: "One share didn't clear, so nobody was ch
 
 ## 4. Headset scenes (Q)
 
-The headset is a **Samsung Gear VR**: a Galaxy phone in a lens shell, VR only, 3DoF, a side touchpad and a Back button. Setup, pairing and fixes live in doc 10. A Quest 3 still works if one turns up (mixed reality on the real table, below each scene as *On a Quest*).
+The headset is an **iPhone 16 Pro clamped into a Samsung Gear VR shell**, used as a plain lens viewer: VR only, 3DoF, and **no USB plug**, so the shell's side touchpad and Back button do nothing. Every headset action is a gaze: a centre reticle and a **1.6 s dwell**. Setup, pairing and fixes live in doc 10. A Quest 3 still works if one turns up (mixed reality on the real table, below each scene as *On a Quest*).
 
-Entry: on the Gear VR phone, in Samsung Internet or Chrome, open `https://<domain>/xr` (short, easy to type) → type the 8‑character **headset code** shown on the Organizer's phone (P5: **Show headset code**, or the **Headset code or unpair** link later) → the headset gets a **device token** with Organizer controls but **no access to anyone's private data**, including the Organizer's (doc 04 §7) → big paper card with **Enter VR** → requests WebXR `immersive-vr` (Cardboard‑style side by side). The wearer turns the phone to landscape and slots it into the Gear VR. A browser without WebXR gets the same view from the webxr‑polyfill Cardboard mode; `?vr=cardboard` forces it. Rationale for the device token: at Expo a judge wears the headset, so it must never render a share, cap or fit.
+Entry: on the headset iPhone, in Safari, open `https://<domain>/xr` (short, easy to type) → type the 8‑character **headset code** shown on the Organizer's phone (P5: **Show headset code**, or the **Headset code or unpair** link later) → the headset gets a **device token** with Organizer controls but **no access to anyone's private data**, including the Organizer's (doc 04 §7) → big paper card (*"Checking for mixed reality and VR…"*, then **Enter VR** and **Laptop view**). Safari has no WebXR, so on a phone the page loads **webxr-polyfill in Cardboard mode** (side by side with lens distortion, head pose from the motion sensors); a browser with native `immersive-vr` uses that instead, and `?vr=cardboard` forces the polyfill anywhere. Before tapping, the wearer hides Safari's toolbar (**aA → Hide Toolbar**). The **Enter VR** tap asks iOS for motion access; if it's denied the card says *"Head tracking needs motion access. Tap Enter VR again and choose Allow. If Safari doesn't ask, close this tab and open the link again (…)."* In portrait the card shows **"Turn your phone sideways"**; in landscape the chart room appears, and a screen wake lock keeps the phone awake. The wearer clamps the phone into the shell. Rationale for the device token: at Expo a judge wears the headset, so it must never render a share, cap or fit.
 
-*On a Quest:* the same button requests `immersive-ar` with required `local-floor`, optional `plane-detection`, `hit-test`, `anchors`, `hand-tracking`.
+*On a Quest:* the card offers **Enter the chart room** instead, which requests `immersive-ar` with required `local-floor`, optional `plane-detection`, `hit-test`, `anchors`, `hand-tracking`.
 
 ### Q0 — The chart room
-- No placement. The wearer is seated at a chart table in a quiet, paper‑toned virtual room; the chart disc sits at a fixed seated pose (in front, a little below eye level, all of it within an easy downward glance).
+- No placement. The wearer is seated at a round walnut chart table in a dark, warm‑lit room (doc 02 §5); the chart disc sits at a fixed seated pose (in front, a little below eye level, all of it within an easy downward glance).
 - A small ink **reticle** sits at the centre of view. What it rests on gets a faint pencil outline; that's what a select will hit.
-- **Recenter** (menu) turns the room so the table is straight ahead of wherever the wearer faces now. 3DoF drifts; recentering is normal, not an error.
+- **Recenter** (menu, or keep the gaze on the brass wheel for 3.2 s) turns the room so the table is straight ahead of wherever the wearer faces now. 3DoF drifts; recentering is normal, not an error.
+- A red **Exit VR** plaque sits straight below the eyes, in front of the chest: look down and dwell to leave VR.
 - *On a Quest:* passthrough view; a faint ink ring follows the hit‑test point on horizontal surfaces; "Find a table. Pinch to lay down the chart."; pinch/trigger → chart disc lays down (paper unroll 700 ms) → anchor created. No plane detection: 0.75 m in front at waist height −0.3 m.
 
 ### Q1 — Muster on the chart
@@ -312,17 +313,17 @@ Layout (top view, Organizer at south):
 ```
 - Speaker behavior per doc 02 §7.3: tip + slide + ink ribbon + voice; globe auto‑rotates to city in the line; pencil arcs from the home port.
 - Compass rose shows Watch progress.
-- **Hail:** select empty space (on a Quest: pinch‑and‑hold ≥ 400 ms) → a paper hail card with four set lines; select one to send it as the Organizer's hail. Free text or voice: use the phone.
+- **Hail:** in VR, a **"Hail the table"** tag on the table's near‑left edge (shown only while hails are open) → dwell on it → the **HAIL THE TABLE** card with four set lines and **Never mind**; dwell on one to send it as the Organizer's hail. On a Quest: pinch‑and‑hold ≥ 400 ms on empty space. Free text or voice: use the phone.
 - End: Captain line + bell; two pins get ink circles (the Two Charts); transition to Q3.
 
 ### Q3 — Dry Run
-- Two cloches slide out left/right, inside the wearer's comfortable gaze range (no turning more than ~40° either side). The low‑poly paper city appears immediately. On the Gear VR it stays: **Photoreal cities** is off by default in VR (frame rate and heat on an old phone) and can be turned on in the menu. When it's on (always on a Quest and in the Gallery, if a tile key is built in), Google tiles replace the paper city tile‑by‑tile as they arrive (no cross‑fade — each tile simply "prints in"). If no tile arrives within 4 s, the low‑poly city stays.
+- Two cloches slide out left/right, inside the wearer's comfortable gaze range (no turning more than ~40° either side). The low‑poly paper city appears immediately. In the VR chart room it stays: **Photoreal cities** is off by default in VR (frame rate and heat on a phone inside a shell) and can be turned on in the menu. When it's on (always on a Quest and in the Gallery, if a tile key is built in), Google tiles replace the paper city tile‑by‑tile as they arrive (no cross‑fade — each tile simply "prints in"). If no tile arrives within 4 s, the low‑poly city stays.
 - Brass clock between them starts: 08:00 → 23:00 on Day 1 in 60 s (1 s = 15 min); both cloches run in sync, and every device shows the same minute (the clock is shared and persisted). Control: select the clock to pause/resume. There is no day jump.
 - Stops outside the cloche (Cascais, Belém, Frida Kahlo museum, Xochimilco) appear as edge arrows on the rim with travel time; beads walk to the rim and wait (doc 02 §7.6).
 - Unlabeled ink beads walk the group route (one neutral bead per pick); no band colours or names, because the public plan never says who goes where (SEC-001). Each member's own schedule is on their phone.
 - A paper tag under each cloche: city · hotel · group total range (public, e.g. "$2,650–3,100"). Picks walk at the public plan's indicative times, not the crew's real ones (S2-002).
 - "Fits everyone ✓" brass plaque appears on a cloche only if every member fits.
-- Pick: select a cloche (it lifts; the other slides back), or the organizer picks on the phone; a clear majority of phone votes auto‑picks after a countdown. → Q4.
+- Pick: select a cloche (it lifts; the other slides back), or the organizer picks on the phone — at Expo, **the phone** (a dwell picks whatever the wearer stares at); a clear majority of phone votes auto‑picks after a countdown. → Q4.
 
 ### Q4 — Seal ceremony
 - Chosen chart unrolls in front of Organizer: title, dates, city, and one line per member with "— sealed —" amount.
@@ -331,34 +332,34 @@ Layout (top view, Organizer at south):
 - `VOIDED`: every seal lifts together (nobody's seal is singled out, SEC-002), caption with the public reason ("One share didn't clear…", "Not every seal was set in time…", "The organizer called it off…"; always "nobody was charged" or "Refunded"). Card: "Back to the charts".
 
 ### Q5 — Menu (always available)
-Opened on the Gear VR by selecting the small brass ship's wheel on the chart's south‑east edge. On a Quest: left palm up for 600 ms, **squeeze** (grip) on either controller, or pinching the wheel. In the laptop view: the **Menu** button in the toolbar. Items: *Recenter* · *Captions: S / M / L* (0.85 / 1 / 1.3) · *Reduce motion* · *Sound: on/off* (mutes voices **and** effects; there is no separate ambience toggle) · *Photoreal cities* (off by default in VR) · *Debug* (fps, draw calls, socket, last event) · *Exit*.
+Opened in VR by a 1.6 s gaze on the small brass ship's wheel on the chart's south‑east edge (a 3.2 s gaze on it recenters directly). On a Quest: left palm up for 600 ms, **squeeze** (grip) on either controller, or pinching the wheel. In the laptop view: the **Menu** button in the toolbar. Items (VR labels): **Recenter** · **Captions: M** (cycles S / M / L = 0.85 / 1 / 1.3) · **Reduce motion: off** · **Sound: on** (mutes voices **and** effects; there is no separate ambience toggle) · **Photoreal cities: off** (off by default in VR) · **Lens spacing: normal** (VR only: narrow 58 / normal 62 / wide 66 mm; `?ipd=<mm>`, 50–75, replaces *normal*) · **Debug: off** (fps, draw calls, socket, last event) · **Exit** (back to the Enter card; the pairing is kept).
 
 ### Headset interaction summary
-A screen tap in the Cardboard view and a Quest pinch or trigger arrive as a WebXR `select`; the Gear VR touchpad tap and the Enter key are mapped onto the same select, so every surface shares one code path. On the Gear VR the target is whatever the gaze reticle rests on; holding the gaze on a target for **1.6 s** (a ring fills round the reticle) is a select too, for when the phone isn't on the headset's plug or the touchpad is dead.
+In VR (the iPhone in the shell) the only input is the gaze: the target is whatever the reticle rests on, and holding it there **1.6 s** (a red ring fills round the reticle) selects. Dwell acts on anything, so risky choices (the pick, the seal) belong on the Organizer's phone. A screen tap in the Cardboard view, a Quest pinch or trigger, and the Enter key (or a Galaxy phone's touchpad on the shell's plug, doc 10 appendix) all arrive as the same `select`, so every surface shares one code path.
 
-| Input | Gear VR (gaze) | Quest hands / controllers | Laptop view |
+| Input | VR: iPhone in a Gear VR shell (gaze) | Quest hands / controllers | Laptop view |
 |---|---|---|---|
 | Aim | Turn your head; the reticle follows | Hand ray / controller ray | Mouse |
-| Select | Tap the side touchpad, tap the screen, press Enter, or hold your gaze 1.6 s | Pinch / trigger | Click |
+| Select | Hold your gaze 1.6 s (a screen tap also works, but not once the phone is in the shell) | Pinch / trigger | Click |
 | Place chart | — (fixed seated pose; **Recenter** to turn it to you) | Pinch / trigger on the surface | — (placed automatically) |
-| Weigh anchor (`table:start`) | Select the Captain's tag / piece | Pinch / trigger | Click |
-| Hail | Select empty space → hail card with four set lines (*I'd pay more for the beach.* · *Let's keep it cheap.* · *Food matters most to me.* · *Nothing too early, please.*) + Cancel. Free text or voice: from the phone | Pinch‑hold / hold trigger ≥ 400 ms | Still press ≥ 650 ms, or the **Hail the table** button |
-| Pick a chart (`plan:pick`) | Select a cloche (it lifts; lowered again if the helm refuses) | Pinch / trigger | Click |
+| Weigh anchor (`table:start`) | Dwell on the Captain's tag / piece (usually Rae taps it on the phone) | Pinch / trigger | Click |
+| Hail | Dwell on the **Hail the table** tag (near‑left table edge, only while hails are open) → **HAIL THE TABLE** card with four set lines (*I'd pay more for the beach.* · *Let's keep it cheap.* · *Food matters most to me.* · *Nothing too early, please.*) + **Never mind**. Free text or voice: from the phone | Pinch‑hold / hold trigger ≥ 400 ms | Still press ≥ 650 ms, or the **Hail the table** button |
+| Pick a chart (`plan:pick`) | Dwell on a cloche (it lifts; lowered again if the helm refuses). Safer on the Organizer's phone | Pinch / trigger | Click |
 | Pause / resume the clock | Select the carriage clock | Pinch / trigger | Click |
 | Back to the charts (VOIDED) | Select the card button | Pinch / trigger | Click |
-| Menu | Select the brass wheel | Palm up, pinch the wheel, or grip | **Menu** button |
-| Recenter | Menu → *Recenter* | Menu → *Recenter* | — |
-| Leave the headset view | Gear VR **Back** button (Android Back), or Escape | Menu → *Exit* | — |
+| Menu | Dwell on the brass wheel | Palm up, pinch the wheel, or grip | **Menu** button |
+| Recenter | Keep the gaze on the wheel 3.2 s, or menu → *Recenter* | Menu → *Recenter* | — |
+| Leave the headset view | Look down at the red **Exit VR** plaque and dwell, or menu → *Exit* (Escape / Android Back also work) | Menu → *Exit* | — |
 | Orbit the view | — | — | Drag (> 6 px cancels the click / hail) |
 
-Not built (the earlier design): rotating the globe by hand (it only turns itself to the city being discussed), grab‑and‑lift of a cloche, swiping the clock to jump days (`dryrun:control` accepts `pause`/`resume`/`restart`, and only pause/resume are sent), a speaking‑trumpet hail with free text, a headset call‑off or crew‑close control (the server accepts both from the paired headset; only the phone has buttons), the Gear VR Bluetooth controller (it pairs only through the Oculus app, which no longer works). The headset shows server refusals on the caption card in red for 3 s. The Weigh‑anchor tag appears only with ≥ 2 crew, and the hail card only while the table is running.
+Not built (the earlier design): rotating the globe by hand (it only turns itself to the city being discussed), grab‑and‑lift of a cloche, swiping the clock to jump days (`dryrun:control` accepts `pause`/`resume`/`restart`, and only pause/resume are sent), a speaking‑trumpet hail with free text, a headset call‑off or crew‑close control (the server accepts both from the paired headset; only the phone has buttons), the Gear VR's touchpad, Back button and Bluetooth controller with the iPhone (they only talk to a Galaxy phone on the plug, or through the dead Oculus app). The headset shows server refusals on the caption card in red for 3 s. The Weigh‑anchor tag appears only with ≥ 2 crew, and the hail card only while the table is running.
 
 ---
 
 ## 5. Spectator (S) — `/t/:code/gallery`
 - Full‑screen three.js scene (same components, non‑XR), slow orbit camera, paper subtitle strip at bottom (speaker name + line), top‑right: Watch indicator + trip status.
 - Keyboard: `Space` pause orbit, `1/2/3` camera presets (overhead / Organizer POV / close on speaker), `0` back to the orbit, `C` toggle captions. A failed table (`table:failed`) is not shown as an error here.
-- Used for: judges watching while one wears the Gear VR (projected, so the room sees the same scene), the Meta video, and the **full fallback demo** if the headset phone fails.
+- Used for: judges watching while one wears the headset (projected, so the room sees the same scene), the Meta video, and the **full fallback demo** if the headset iPhone fails.
 
 ---
 
@@ -370,8 +371,9 @@ Not built (the earlier design): rotating the globe by hand (it only turns itself
 | No plan fits everyone | Captain says so (privacy‑safe): "No chart fits every purse. Closest two:"; Dry Run shows red "Over" stamps privately; members can adjust terms. |
 | Agents disagree through Watch 3 | Captain decides by maximin fairness score (doc 05 §5). Always ends. |
 | Hail during Captain's closing line | Refused, not queued: from Watch 3 / the DECIDE the phone shows "Captain's calling it. Hails are closed for this table." and keeps the words in the box. One pending hail per member ("Your mate still has your last hail…"). |
-| Headset session ends/crashes (Back pressed, phone slept, browser killed) | Re‑open `/xr` and tap **Enter VR** → scene restores from `trip.status` + last events (server is source of truth); the pairing is kept. |
-| Headset browser has no WebXR | `/xr?vr=cardboard` → webxr‑polyfill Cardboard mode, same scene (doc 10 §6). |
+| Headset session ends/crashes (Exit VR, phone slept, Safari reloaded the tab) | Re‑open `/xr` and tap **Enter VR** → scene restores from `trip.status` + last events (server is source of truth); the pairing is kept. |
+| Headset browser has no WebXR | Normal on the iPhone: phones get the webxr‑polyfill Cardboard mode automatically; `?vr=cardboard` forces it elsewhere (doc 10 §7). |
+| Motion access denied (iOS) | The card says *"Head tracking needs motion access…"*; close the tab, reopen `/xr`, **Enter VR**, **Allow** (doc 10 §4). |
 | Tiles fail to load | Low‑poly fallback city, same routes. |
 | Voice fails | Captions continue; pieces still tip; log still updates. |
 | Payment API timeout | The seal reads "set" at its tap (the outcome is never public). Authorizations start only once every seal is set; one with no answer after 15 s is treated as DECLINED → void all → VOIDED ("nobody was charged"), published for everyone together (later than the usual 2.5 s settle point); only its owner learns why. |

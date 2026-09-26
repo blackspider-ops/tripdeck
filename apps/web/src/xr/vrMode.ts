@@ -91,7 +91,7 @@ export function requestMotionPermission(
 
 /** Shown on the Enter card when motion access was refused (the Enter VR button stays there to try again). */
 export const MOTION_DENIED =
-  "Head tracking needs motion access. Allow it: Settings → Safari → Motion & Orientation Access (on iOS 13+ the prompt appears on Enter VR; if you tapped Don't Allow, close and reopen this tab), then tap Enter VR again.";
+  "Head tracking needs motion access. Tap Enter VR again and choose Allow. If Safari doesn't ask, close this tab and open the link again (or clear this site under Settings → Apps → Safari → Advanced → Website Data).";
 
 // ---------------------------------------------------------------- lens spacing (Cardboard viewer fit)
 

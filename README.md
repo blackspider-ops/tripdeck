@@ -2,7 +2,7 @@
 
 **Everyone's in, or nobody pays.** *Send your mate to the table.*
 
-Group trips die in the group chat: nobody wants to say "too expensive", and one person ends up fronting the money. In All Ayes each friend privately briefs their own **mate** (an AI advocate) with their real budget and wishes. The mates negotiate out loud around a paper globe in a VR chart room (a Samsung Gear VR with a Galaxy phone; on a Meta Quest 3 it sits on your real table in mixed reality), show the two best trips as miniature cities playing out a day (**Dry Run**), then book with an **all‑or‑nothing checkout**: each share is paid by a Visa agent card capped at that friend's private limit, and if any share fails, nobody is charged.
+Group trips die in the group chat: nobody wants to say "too expensive", and one person ends up fronting the money. In All Ayes each friend privately briefs their own **mate** (an AI advocate) with their real budget and wishes. The mates negotiate out loud around a paper globe in a VR chart room (an iPhone clamped into a Samsung Gear VR shell; on a Meta Quest 3 it sits on your real table in mixed reality), show the two best trips as miniature cities playing out a day (**Dry Run**), then book with an **all‑or‑nothing checkout**: each share is paid by a Visa agent card capped at that friend's private limit, and if any share fails, nobody is charged.
 
 Built for HackGT 13. Full specs in [`docs/`](docs/00-README.md).
 
@@ -14,11 +14,11 @@ cp .env.example .env        # optional — runs without any keys; one root .env 
 npm run dev                 # helm on :8787, web on :5173 (localhost only; LAN: see dev:lan below)
 ```
 
-Open **http://localhost:5173/demo** → *Seed the Expo voyage* → open the links (Rae on this device, Maya on a phone, the Gallery on a laptop). Each phone link carries a one-time handoff code in the fragment (`/t/CODE#as=…&m=…`), good for one open within 2 h; the member token itself never appears in a URL. On the headset phone (Galaxy in a Gear VR): open `https://<your-https-host>/xr`, type the 8-character headset code, tap **Enter VR**, turn the phone to landscape and slot it into the Gear VR. No WebXR in that browser? Add `?vr=cardboard`. Step by step: [`docs/10-gear-vr.md`](docs/10-gear-vr.md).
+Open **http://localhost:5173/demo** → *Seed the Expo voyage* → open the links (Rae on this device, Maya on a phone, the Gallery on a laptop). Each phone link carries a one-time handoff code in the fragment (`/t/CODE#as=…&m=…`), good for one open within 2 h; the member token itself never appears in a URL. On the headset iPhone (Safari, clamped into a Gear VR shell, no USB plug): open `https://<your-https-host>/xr`, type the 8-character headset code, tap **aA → Hide Toolbar**, tap **Enter VR**, allow motion access, turn the phone to landscape and clamp it into the shell. Selecting is by gaze (hold 1.6 s). Step by step: [`docs/10-gear-vr.md`](docs/10-gear-vr.md).
 
 In production (and from any other machine, even in dev mode), seeding needs the dev key: open `/demo#key=<DEV_KEY>` once. Only the fragment works, because it never leaves the browser; `?key=` is ignored (it would already be in proxy and CDN request logs) and just wiped from the address bar. The page moves the key into this tab's `sessionStorage`, strips it from the address bar and sends it as the `X-Dev-Key` header.
 
-WebXR (and the phone's orientation sensor) needs HTTPS, on the Gear VR phone and on a Quest. **For a demo, tunnel a production-mode build, not `npm run dev`:**
+Head tracking (the phone's motion sensors) and WebXR need HTTPS, on the headset iPhone and on a Quest. **For a demo, tunnel a production-mode build, not `npm run dev`:**
 
 ```bash
 cloudflared tunnel --url http://localhost:8787      # prints https://<random>.trycloudflare.com; leave it running
@@ -26,7 +26,7 @@ npm run build
 APP_ENV=production SERVE_WEB=1 PUBLIC_BASE_URL=https://<random>.trycloudflare.com DEV_KEY=$(openssl rand -hex 24) npm run start:prod
 ```
 
-Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, and `/xr` on the Gear VR phone. For a quick look while developing, `cloudflared tunnel --url http://localhost:5173` in front of `npm run dev` also works: the Vite dev server serves only `apps/web`, `packages/shared` and `node_modules` (never `apps/server/data`, `docs/` or the rest of the repo), and the helm opens its dev routes (`/api/demo/seed`, `/api/debug/*`, the `/api/health` details) without the key only to a client on this machine. Through the tunnel or from the LAN they need `DEV_KEY` like in production.
+Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, and `/xr` on the headset iPhone. For a quick look while developing, `cloudflared tunnel --url http://localhost:5173` in front of `npm run dev` also works: the Vite dev server serves only `apps/web`, `packages/shared` and `node_modules` (never `apps/server/data`, `docs/` or the rest of the repo), and the helm opens its dev routes (`/api/demo/seed`, `/api/debug/*`, the `/api/health` details) without the key only to a client on this machine. Through the tunnel or from the LAN they need `DEV_KEY` like in production.
 
 | Command | What |
 |---|---|
@@ -57,7 +57,7 @@ Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, 
 ```
 packages/shared   types, socket events, constants (the contract)
 apps/server       the helm: pricing & fairness, negotiation engine, privacy filter, payments, voice, memory, REST + sockets
-apps/web          phones (React), headset (WebXR/three.js: VR on a Gear VR phone, MR on a Quest), gallery
+apps/web          phones (React), headset (three.js + WebXR / webxr-polyfill: VR on an iPhone in a Gear VR shell, MR on a Quest), gallery
 docs/             PRD, design language, UX, tech design, agent/payments/dataset specs, build plan, demo kit
 ```
 
@@ -66,7 +66,7 @@ See [`DEPLOY.md`](DEPLOY.md) — one Docker container (Render blueprint included
 
 ## Known limits
 - Visa Intelligent Commerce needs credentials from Visa (token service, VIC, token requestor, MLE keys); until then payments run in a labeled simulation with the same contract (`apps/server/src/payments/visaVic.ts`).
-- The headset is a **Samsung Gear VR** (phone VR: 3DoF, no passthrough, side touchpad + Back button). The chart room is VR only, with the table at a fixed seated pose; there's no real-table placement. The Gear VR's own browser and Oculus software are dead, so it runs in Samsung Internet or Chrome in Cardboard-style side by side, with a webxr-polyfill fallback (`?vr=cardboard`). The Gear VR controller needs the Oculus app and isn't used. Frame rate and heat on older Galaxy phones limit the scene: *Photoreal cities* is off by default in VR. Setup and fixes: `docs/10-gear-vr.md`.
+- The headset is an **iPhone 16 Pro in a Samsung Gear VR shell** used as a plain lens viewer: 3DoF, no passthrough, and no USB link, so the shell's touchpad and Back button do nothing. Safari has no WebXR, so the page runs webxr-polyfill's Cardboard mode (side by side, head pose from the motion sensors; iOS asks for motion access on **Enter VR**). All input is gaze: a centre reticle and a 1.6 s dwell, which selects whatever it rests on (so picks and seals are safer on the organizer's phone). The chart room is VR only, the table at a fixed seated pose. The lens distortion uses Cardboard values, not measured for Gear VR lenses; **Lens spacing** in the menu or `?ipd=<mm>` fixes a double image. *Photoreal cities* is off by default in VR (heat, frame rate). A Galaxy phone on the shell's plug would add the touchpad. Setup and fixes: `docs/10-gear-vr.md`.
 - The Quest 3 mixed-reality path (`immersive-ar`, table placement/anchors, hand input) is still in the code but unverified on hardware; in-headset text legibility is also unchecked (some labels are below the 12 mm target in doc 02 §4.2).
 - The Docker image is built and smoke-tested (full Expo voyage in the container). Render persistent disk ownership and the polling fallback with WebSockets blocked haven't been verified end to end (see `docs/review/REVIEW-REPORT.md`, "Still open").
 - The browser tile tokens (`VITE_GOOGLE_MAP_TILES_KEY`, `VITE_CESIUM_ION_TOKEN`) ship in the bundle; restrict them at the provider (DEPLOY.md, *Browser tile tokens*). Everything else still open after the round-2 fixes is listed in `docs/review-2/REVIEW-REPORT.md`, *Still open / needs outside help*.
