@@ -203,7 +203,8 @@ export function speakFallback(text: string, band: number | "captain"): VoiceHand
   const voices = synth.getVoices().filter((v) => v.lang.startsWith("en"));
   const idx = band === "captain" ? 0 : band;
   if (voices.length) u.voice = voices[idx % voices.length];
-  u.pitch = band === "captain" ? 0.75 : [1, 1.1, 0.9, 1.2, 0.95][idx] ?? 1;
+  // bands 1–4 keep their pitches; 5–12 cycle a wider set (with the voice index) so twelve still sound distinct
+  u.pitch = band === "captain" ? 0.75 : idx <= 4 ? [1, 1.1, 0.9, 1.2, 0.95][idx] ?? 1 : [0.85, 1.15, 0.95, 1.25, 0.8, 1.05, 1.3, 0.9][(idx - 5) % 8];
   u.rate = band === "captain" ? 0.92 : 1.05;
   const done = new Promise<void>((resolve) => {
     u.onend = () => resolve();

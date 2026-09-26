@@ -4,7 +4,7 @@
  * filter and the memory/note text that goes into prompts.
  */
 import type { Dataset, Plan } from "@all-ayes/shared";
-import { publicTotalRange, type PricingMember } from "../fit/pricing.js";
+import { publicTotalRange, roomsFor, type PricingMember } from "../fit/pricing.js";
 import { publicFlights } from "../fit/flights.js";
 import { indexOf } from "../data/loader.js";
 import type { PrivacyContext } from "./filter.js";
@@ -32,7 +32,11 @@ export function buildPrivacyContext(ds: Dataset, crew: PricingMember[], plans: P
   const cities = [...new Set(plans.map((p) => p.cityId))];
   const windows = [...new Set(plans.map((p) => p.dateWindowId))];
   for (const c of cities) for (const w of windows) for (const f of publicFlights(ds, c, w)) if (f.priceCents) allowed.add(f.priceCents / 100);
-  for (const c of cities) for (const h of ix.hotelsOf(c)) allowed.add(h.nightlyCents / 100);
+  // a stay's listing price, and its nightly for the rooms/units this crew books (a public count: crew size ÷ sleeps)
+  for (const c of cities) for (const h of ix.hotelsOf(c)) {
+    allowed.add(h.nightlyCents / 100);
+    allowed.add((h.nightlyCents * roomsFor(h, crew.length)) / 100);
+  }
   for (const c of cities) for (const a of ix.activitiesOf(c)) allowed.add(a.priceCents / 100);
   for (const p of plans) {
     const r = publicTotalRange(ds, p);

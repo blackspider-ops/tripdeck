@@ -68,8 +68,8 @@ This fits HackGT 13's seaside theme (tracks are named Oracle of the Deep, The Sh
 | `--graphite` | `#8A8A8A` |
 | `--ok-green` | `#7FB28F` |
 
-### 3.3 Crew color bands (one per member, max 4)
-Pigments, not neon. Each band appears on the piece's collar, the member's flag, their route line in Dry Run, and their name in the log.
+### 3.3 Crew color bands (one per member, max 12)
+Pigments, not neon. Each band appears on the piece's collar, the member's flag, their route line in Dry Run, and their name in the log. Bands 1–4 are the original four (the Expo crew and the snapshots use them). Bands 5–12 extend the ink set for crews of up to 12: each is ≥ 17 ΔE (CIELAB) from every other band and from the reserved inks (Sounding Red, verdigris `--ok-green`, sealing wax, walnut, brass), and ≥ 3.9:1 on `--paper`. No neon, no purple gradients.
 
 | Band | Hex | Name |
 |---|---|---|
@@ -77,6 +77,16 @@ Pigments, not neon. Each band appears on the piece's collar, the member's flag, 
 | 2 | `#A0522D` | Sienna |
 | 3 | `#556B2F` | Olive |
 | 4 | `#7A4E7A` | Madder (muted, not "AI purple") |
+| 5 | `#1F7474` | Teal |
+| 6 | `#882840` | Carmine |
+| 7 | `#484890` | Indigo |
+| 8 | `#8F6B1C` | Ochre |
+| 9 | `#A85078` | Rose |
+| 10 | `#1F5064` | Slate |
+| 11 | `#886868` | Rosewood |
+| 12 | `#686850` | Terre Verte |
+
+On the phone the band picker is a 6‑across grid of swatches (two rows for 12). Above 6 crew, the Table's top‑down chart draws smaller seats with the member's initial and a key of band + name below it; in the chart room pieces shrink (to ~0.8× at 12) so 12 fit round the table.
 
 ### 3.4 Contrast rules
 Computed WCAG 2.x ratios (checked Sep 24):

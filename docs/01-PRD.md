@@ -55,7 +55,7 @@ All Ayes turns trip planning into a short, structured, *visible* negotiation bet
 - Real airline/hotel inventory or real bookings. Industry agents in 2026 still only book reliably inside bounded ecosystems; multi‑supplier booking is unsolved. We use a **curated dataset** (doc 07) and say so honestly.
 - Real money. Visa **sandbox** only (or clearly labeled simulation).
 - Accounts/auth beyond a trip join code. No password system.
-- More than 4 members, more than 3 candidate cities, more than 2 date windows, more than 4 nights.
+- More than 12 members (the organizer + up to 11, absent friends included: `MAX_CREW`), more than 4 candidate ports on one chart, more than 3 date windows. A crew larger than a stay sleeps books several rooms/units of the same stay (doc 05 §2); the Expo crew is 3.
 - Native Quest, Gear VR (Oculus Mobile) or iOS app / Unity. Web only: the headset iPhone runs our page in Safari through webxr-polyfill (doc 10).
 - Android/iOS native apps. Phones use the web.
 
@@ -102,7 +102,7 @@ IDs are referenced in doc 08 tasks. **P0 = must ship for demo**, P1 = ship if ti
 | ID | Story | Acceptance criteria | Pri |
 |---|---|---|---|
 | A1 | As the Organizer, I create a Voyage and get a join code/QR. | `POST /api/trips` returns `tripId` + 6‑char `joinCode`; QR visible on the Organizer phone; trip `status=BRIEFING`. | P0 |
-| A2 | As a member, I join from my phone by scanning the QR or typing the code. | Phone shows my crew slot, I pick a name + color band; every client gets the updated crew in `trip:state` within 1 s (there is no separate `member:joined` event). The organizer can close the crew to further joins by code. | P0 |
+| A2 | As a member, I join from my phone by scanning the QR or typing the code. | Phone shows my crew slot, I pick a name + color band (12 bands, one per seat; the 13th join is refused `CREW_FULL`); every client gets the updated crew in `trip:state` within 1 s (there is no separate `member:joined` event). The organizer can close the crew to further joins by code. | P0 |
 | A3 | As the Organizer, I add an absent member with a share link. | Absent member gets `role=absent`, link (`/t/CODE/brief#m=…&k=…`, key in the fragment, shown once) opens Briefing directly; the organizer can re-issue it until it's opened. | P0 |
 | A4 | As the Organizer, I pick candidate cities (default 3 from dataset). | Cities list stored on trip; appears as ink pins on the globe. | P1 (default preset is P0) |
 

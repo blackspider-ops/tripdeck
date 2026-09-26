@@ -5,6 +5,7 @@ import { TripService } from "../src/trips/service.js";
 import { HelmError } from "../src/util/errors.js";
 import { SimProvider } from "../src/payments/sim.js";
 import { seedExpo } from "../src/demo/seed.js";
+import { MAX_CREW, type Band } from "@all-ayes/shared";
 
 function helmWithBus() {
   const helm = new TripService();
@@ -43,14 +44,19 @@ describe("voyage setup", () => {
     if (five.length === 5) expect(await code(() => helm.createTrip({ name: "x", organizerName: "Rae", band: 1, origin: "ATL", cityIds: five }))).toBe("BAD_INPUT");
   });
 
-  it("rejects a taken band, a fifth crew member, and bad briefs", async () => {
+  it("rejects a taken band, a thirteenth crew member, and bad briefs", async () => {
     const { helm } = helmWithBus();
     const { trip, member } = helm.createTrip({ name: "x", organizerName: "Rae", band: 1, origin: "ATL" });
     expect(await code(() => helm.join(trip._id, { name: "Maya", band: 1, origin: "ORD" }))).toBe("BAND_TAKEN");
-    helm.join(trip._id, { name: "B", band: 2, origin: "ORD" });
-    helm.join(trip._id, { name: "C", band: 3, origin: "ORD" });
-    helm.join(trip._id, { name: "D", band: 4, origin: "ORD" });
+    expect(await code(() => helm.join(trip._id, { name: "Maya", band: 13 as never, origin: "ORD" }))).toBe("BAD_INPUT");
+    // organizer + 11: joins and absent seats both count toward MAX_CREW (12)
+    for (let b = 2; b <= 12; b++) {
+      if (b % 4 === 0) helm.addAbsent(trip._id, { memberId: member._id }, { name: `Away${b}`, band: b as Band, origin: "JFK" });
+      else helm.join(trip._id, { name: `M${b}`, band: b as Band, origin: "ORD" });
+    }
+    expect(helm.activeMembers(helm.trip(trip._id))).toHaveLength(MAX_CREW);
     expect(await code(() => helm.join(trip._id, { name: "E", band: 2, origin: "ORD" }))).toBe("CREW_FULL");
+    expect(await code(() => helm.addAbsent(trip._id, { memberId: member._id }, { name: "F", band: 3, origin: "ORD" }))).toBe("CREW_FULL");
     expect(await code(() => helm.submitBrief(trip._id, member._id, { capCents: 100, dateWindowIds: ["W1"], mustHaves: [], dealbreakers: [] }))).toBe("BAD_INPUT");
     expect(await code(() => helm.submitBrief(trip._id, member._id, { capCents: 90_000, dateWindowIds: ["W9"], mustHaves: [], dealbreakers: [] }))).toBe("BAD_INPUT");
   });

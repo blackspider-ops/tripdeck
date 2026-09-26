@@ -82,13 +82,23 @@ export const config = {
     model: env("ELEVEN_MODEL", "eleven_flash_v2_5"),
     sttModel: env("ELEVEN_STT_MODEL", "scribe_v1"),
     // Default voices every account has, free plan included (free plans get 402 on library voices via the API).
-    // Captain George (British storyteller); mates Liam, Sarah, Chris, Jessica. Override with your picks (doc 05 §8).
+    // Captain George (British storyteller); mates Liam, Sarah, Chris, Jessica (bands 1–4), then Roger, Laura, Charlie,
+    // Alice, Will, Matilda, Eric, Lily (bands 5–12): one distinct premade voice per band. Override with your picks
+    // (ELEVEN_VOICE_BAND1…12, doc 05 §8).
     voices: {
       captain: env("ELEVEN_VOICE_CAPTAIN", "JBFqnCBsd6RMkjVDRZzb"),
       1: env("ELEVEN_VOICE_BAND1", "TX3LPaxmHKxFdv7VOQHJ"),
       2: env("ELEVEN_VOICE_BAND2", "EXAVITQu4vr4xnSDxMaL"),
       3: env("ELEVEN_VOICE_BAND3", "iP95p4xoKVk53GoZ742B"),
       4: env("ELEVEN_VOICE_BAND4", "cgSgspJ2msm6clMCkdW9"),
+      5: env("ELEVEN_VOICE_BAND5", "CwhRBWXzGAHq8TQ4Fs17"),
+      6: env("ELEVEN_VOICE_BAND6", "FGY2WhTYpPnrIDTdsKH5"),
+      7: env("ELEVEN_VOICE_BAND7", "IKne3meq5aSn9XLyUdCD"),
+      8: env("ELEVEN_VOICE_BAND8", "Xb7hH8MSUJpSbSDYk0k2"),
+      9: env("ELEVEN_VOICE_BAND9", "bIHbv24MWmeRgasZH58o"),
+      10: env("ELEVEN_VOICE_BAND10", "XrExE9yKIg1WjnnlVkGX"),
+      11: env("ELEVEN_VOICE_BAND11", "cjVigY5qzO86Huf0OWal"),
+      12: env("ELEVEN_VOICE_BAND12", "pFZP5JQG7iQjIQuC4Bku"),
     } as Record<string, string>,
   },
   backboard: { apiKey: env("BACKBOARD_API_KEY"), baseUrl: env("BACKBOARD_BASE_URL") },

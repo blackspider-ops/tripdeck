@@ -169,7 +169,10 @@ function readWords(run: string[]): number[] {
   return readings;
 }
 
-const SMALL: Record<string, number> = { two: 2, three: 3, four: 4, five: 5, six: 6 };
+/** Crew-sized divisors in words (a crew is 2–12: MAX_CREW). */
+const SMALL: Record<string, number> = {
+  two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12,
+};
 
 /** "450 plus 450", "a grand minus a hundred", "2869 split three ways" → the result as an extra reading. */
 function foldArithmetic(t: string, out: Amount[]) {
@@ -177,7 +180,7 @@ function foldArithmetic(t: string, out: Amount[]) {
   for (let k = 0; k < sorted.length; k++) {
     const a = sorted[k];
     // division by a small count
-    const div = /^\s*(?:dollars|bucks)?\s*(?:split|divided|shared|\/|over)\s*(?:up\s+)?(?:by|between|among|in|into)?\s*(?:the\s+)?(\d{1,2}|two|three|four|five|six)\b/i.exec(t.slice(a.end, a.end + 40));
+    const div = /^\s*(?:dollars|bucks)?\s*(?:split|divided|shared|\/|over)\s*(?:up\s+)?(?:by|between|among|in|into)?\s*(?:the\s+)?(\d{1,2}|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\b/i.exec(t.slice(a.end, a.end + 40));
     if (div && a.value >= 20) {
       const n = /\d/.test(div[1]) ? Number(div[1]) : SMALL[div[1].toLowerCase()];
       if (n >= 2) out.push({ value: Math.round(a.value / n), currency: false, start: a.start, end: a.end + div[0].length });

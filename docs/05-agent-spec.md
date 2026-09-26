@@ -22,8 +22,8 @@ Model: a fast Gemini Flash‑class model via `@google/genai`, `temperature 0.7` 
 A voyage set to regions, US states or "anywhere" has no ports until the table meets. At `table:start` the helm scores
 every curated port in scope for this crew (`fit/prerank.ts`) and keeps the **top 4** as the ports on the chart, so
 the chart book stays at ≤ 60 candidates and 12 plans. Per member: must‑have coverage among the port's activities
-(40 pts), a rough all‑in share (cheapest route option from their home airport + the cheapest stay that sleeps the
-crew split evenly + group moments + two picks) against their cap (+25 well under … −70 far over), −25 per dealbreaker
+(40 pts), a rough all‑in share (cheapest route option from their home airport + the cheapest stay for the whole crew —
+as many rooms/units of it as the crew needs — split evenly + group moments + two picks) against their cap (+25 well under … −70 far over), −25 per dealbreaker
 the best flight breaks, −30 when only hostels are left for a no‑hostel member, −8 for hills when long walks are out,
 +18 for a loved place (the port, its region or state) and −35 for a skipped one, −6 for beach / outdoors wishes in the
 port's cold months. A port's score is the crew's mean + half its lowest member, plus a hash of (voyage id, port) × 6 to
@@ -38,7 +38,7 @@ fitting plan) and reach its prompt as `wishes.places_loved` / `places_skipped` (
 `fit/pricing.ts` builds a finite set of **candidate Plans** so agents can only reference real, priced options:
 
 1. For each `cityId ∈ trip.candidateCityIds` × each `dateWindow` acceptable to ≥ 1 member:
-2. For each hotel in that city that sleeps ≥ group size (or combinations of 2 units if needed) and is **not a dealbreaker for anyone** (e.g. hostel):
+2. For each hotel in that city that is **not a dealbreaker for anyone** (e.g. hostel): the crew books `rooms = ceil(crew ÷ sleeps)` rooms/units of that one stay (`roomsFor` in `fit/pricing.ts`). A crew that fits in one (every crew ≤ 3; ≤ 4 in an apartment) books one, exactly as before; a crew of 9 in a 3‑sleeper books 3. The public plan names it "Casa Alfama ×3" (`PlanPublic.hotelName`, plus `rooms` when > 1) — a count from public facts (crew size and the listing), never who sleeps where:
 3. Per member: pick the **cheapest flight** from their origin for that window that violates none of their dealbreakers (red‑eye, 2+ layovers). If none → plan invalid for that member (fit=false, reason).
 4. Activities (`fit/pricing.ts`, greedy, matches doc 07 §6):
    - **Group moments:** the city's activities with `role:"group"` — everyone attends (one per day, max 2 in the trip).
@@ -50,9 +50,9 @@ fitting plan) and reach its prompt as `wishes.places_loved` / `places_skipped` (
 
 ### 2.1 Share rule (fair split)
 - Flights: each member pays their own flight.
-- Lodging: total nights × nightly ÷ number of members (equal split of the unit; if 2 units, split per unit occupants).
+- Lodging: rooms × nightly × nights ÷ number of members — one bill for the stay, split equally across the whole crew (nobody's share depends on which room they sleep in, so the split says nothing about anyone). `lodgingShares` in `fit/pricing.ts`; the shares sum to the bill exactly.
 - Activities: each member pays for the activities they attend (group moments → everyone; picks → only the members attending).
-- Rounding: to the cent; remainder cents assigned to the organizer's share.
+- Rounding: to the cent; remainder cents (< crew size) assigned to the organizer's share — the same rule for one room or several.
 
 ---
 
@@ -101,6 +101,14 @@ WATCH 3  each Advocate final position: SUPPORT | CONCEDE (OBJECT allowed only wi
 DECIDE   Captain names The Two Charts (shortlist) using the fairness rule; bell.
 ```
 Order within a Watch: seating order starting left of the Organizer; the Organizer's Advocate speaks **last** in each Watch (reduces host bias). Absent members' Advocates speak like anyone else.
+
+### 4.1 Big tables: the speaking budget (crews of 7–12)
+A crew of up to 12 (`MAX_CREW`) would be 38 lines if every mate spoke every Watch. Above `TABLE_VOICES_PER_WATCH` = 6 crew, **every Advocate still decides every Watch** (the backing, objections, early exit and the Captain's shortlist and its fairness — maximin, then sum — are exactly what the protocol decides), but at most 6 lines are voiced per Watch:
+- **Watch 1:** the first 6 *distinct* proposals are voiced. A mate seconding a chart already proposed, or proposing past the budget, backs it without a line.
+- **Watch 2/3:** a mate whose member hailed speaks first, always (a hail is always answered aloud). Then, in seating order up to the budget: moves that change something (OBJECT, CONCEDE, a switched SUPPORT) and mates the table hasn't heard yet (their SUPPORT). Repeating a hold is silent.
+- **Early exit** after Watch 2 also waits until every mate has been heard, so a crew of 12 hears (nearly) everyone once.
+
+A table is therefore at most 1 + 3 × 6 + 1 = 20 lines (+ answered hails) at any crew size: ~1.5–2 min at Expo pacing (measured 43–96 s by word estimate for crews of 7–12 in `test/crew12.test.ts`). Crews of ≤ 6 are unchanged (the Expo crew of 3 still hears 8 turns).
 
 **Backing:** each Advocate's *backed plan* = the plan of its latest PROPOSE, SUPPORT or CONCEDE. An OBJECT doesn't change what it backs.
 
@@ -219,6 +227,16 @@ Advocates never insult members, never pressure ("just pay more"), never mention 
 | Band 2 (Sienna) | Dry humor, relaxed | Sarah `EXAVITQu4vr4xnSDxMaL` (`ELEVEN_VOICE_BAND2`) | stability 0.5 |
 | Band 3 (Olive) | Gentle, thoughtful | Chris `iP95p4xoKVk53GoZ742B` (`ELEVEN_VOICE_BAND3`) | stability 0.55 |
 | Band 4 (Madder) | Brisk, confident | Jessica `cgSgspJ2msm6clMCkdW9` (`ELEVEN_VOICE_BAND4`) | stability 0.45 |
+| Band 5 (Teal) | Easygoing, casual | Roger `CwhRBWXzGAHq8TQ4Fs17` (`ELEVEN_VOICE_BAND5`) | default |
+| Band 6 (Carmine) | Bright, clear | Laura `FGY2WhTYpPnrIDTdsKH5` (`ELEVEN_VOICE_BAND6`) | default |
+| Band 7 (Indigo) | Laid‑back, warm | Charlie `IKne3meq5aSn9XLyUdCD` (`ELEVEN_VOICE_BAND7`) | default |
+| Band 8 (Ochre) | Crisp, confident | Alice `Xb7hH8MSUJpSbSDYk0k2` (`ELEVEN_VOICE_BAND8`) | default |
+| Band 9 (Rose) | Relaxed, friendly | Will `bIHbv24MWmeRgasZH58o` (`ELEVEN_VOICE_BAND9`) | default |
+| Band 10 (Slate) | Knowing, warm | Matilda `XrExE9yKIg1WjnnlVkGX` (`ELEVEN_VOICE_BAND10`) | default |
+| Band 11 (Rosewood) | Smooth, steady | Eric `cjVigY5qzO86Huf0OWal` (`ELEVEN_VOICE_BAND11`) | default |
+| Band 12 (Terre Verte) | Soft, playful | Lily `pFZP5JQG7iQjIQuC4Bku` (`ELEVEN_VOICE_BAND12`) | default |
+
+Every band has its own premade voice (12 distinct mates); an unset or unknown band falls back to band 1's.
 
 - The defaults are ElevenLabs premade voices that every account has, free plan included (a free plan gets HTTP 402 when the API asks for a Voice Library voice). A blank `ELEVEN_VOICE_*=` line in `.env` means "use the default", the same as leaving it out. To use library voices, add them to your account ("My Voices") on a paid plan and set the IDs.
 

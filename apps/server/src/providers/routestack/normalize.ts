@@ -4,6 +4,7 @@
  */
 import { createHash } from "node:crypto";
 import type { FlightOption, HotelOption } from "@all-ayes/shared";
+import { MAX_CREW } from "@all-ayes/shared";
 
 // ---------- shapes we read (documented in RouteStack's openapi.yaml + FLIGHT_SEARCH_FIELDS.md) ----------
 export interface RsHotel {
@@ -63,11 +64,12 @@ const shortHash = (s: string) => createHash("sha256").update(s).digest("hex").sl
 /**
  * The rooming rule (one billable search per city × window): RouteStack prices the whole occupancy we send, for the
  * whole stay (`ourprice` = all rooms × all nights). We send 1–2 guests as one room, 3 guests as one triple room (only
- * properties that sleep 3 in a room or apartment come back), and 4+ as rooms of two (4 → 2×2, 5 → 2+2+1).
+ * properties that sleep 3 in a room or apartment come back), and 4+ as rooms of two (4 → 2×2, 5 → 2+2+1; a full crew
+ * of MAX_CREW 12 → 6 rooms).
  * nightlyCents = ourprice / nights for that whole occupancy, so it is the group's nightly cost, and sleeps = guests.
  */
 export function roomsFor(guests: number): { adults: number; children: number; childAges: number[] }[] {
-  const g = Math.max(1, Math.min(8, Math.round(guests) || 1));
+  const g = Math.max(1, Math.min(MAX_CREW, Math.round(guests) || 1));
   if (g <= 3) return [{ adults: g, children: 0, childAges: [] }];
   const rooms: number[] = [];
   for (let left = g; left > 0; left -= 2) rooms.push(Math.min(2, left));

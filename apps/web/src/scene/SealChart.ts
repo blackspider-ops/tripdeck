@@ -12,6 +12,9 @@ import { cardText, foldedLetter, hangingTag } from "./props";
 
 const W = 0.3;
 const ROW = 0.032;
+/** Rows for a crew of more than COMPACT_FROM: 12 rows fit a sheet that stays on the chart. */
+const COMPACT_FROM = 6;
+const COMPACT_ROW = 0.022;
 const HEAD = 0.062;
 /** Just above the paper, where everything written on the chart lies. */
 const ON_PAPER = 0.0008;
@@ -128,12 +131,15 @@ export class SealChart {
   private twine: THREE.Mesh;
   private refTag: THREE.Group | null = null;
   private length: number;
+  private pitch: number;
   private footer: Text;
   private headTexts: Text[] = [];
   private state: "rolled" | "open" | "tied" = "rolled";
 
   constructor(private tw: Tweens, plan: PlanPublic, crew: CrewPublic[], dates: string) {
-    this.length = HEAD + ROW * crew.length + 0.03;
+    // a big crew (7–12) gets tighter, smaller rows so the sheet still ends on the chart
+    this.pitch = crew.length > COMPACT_FROM ? COMPACT_ROW : ROW;
+    this.length = HEAD + this.pitch * crew.length + 0.03;
     this.paper = paperCard(W, this.length);
     this.paper.add(ruledLines(this.length));
     // pivot at the north edge; unrolls toward the Organizer
@@ -147,7 +153,7 @@ export class SealChart {
     this.headTexts = [title, sub];
 
     crew.forEach((m, i) => this.buildRow(m, i));
-    this.footer = flatText({ text: CARD.sealFooter, font: "body", size: 0.0072, color: PALETTE.inkSoft, anchorX: "center", anchorY: "top" }, 0, HEAD + ROW * crew.length + 0.004);
+    this.footer = flatText({ text: CARD.sealFooter, font: "body", size: 0.0072, color: PALETTE.inkSoft, anchorX: "center", anchorY: "top" }, 0, HEAD + this.pitch * crew.length + 0.004);
     this.sheet.add(this.footer);
 
     this.roll = new THREE.Mesh(G.roll, M.paper());
@@ -166,7 +172,8 @@ export class SealChart {
   /** One line per crew member: band swatch, name, "— sealed —", the seal's slot, the seal and its tick. */
   private buildRow(m: CrewPublic, i: number) {
     const row = new THREE.Group();
-    row.position.z = HEAD + i * ROW;
+    row.position.z = HEAD + i * this.pitch;
+    if (this.pitch !== ROW) row.scale.setScalar(this.pitch / ROW);
     const swatch = new THREE.Mesh(G.swatch, bandMaterial(BANDS[m.band].hex));
     swatch.rotation.x = -Math.PI / 2;
     swatch.position.set(-W / 2 + 0.018, ON_PAPER, 0);

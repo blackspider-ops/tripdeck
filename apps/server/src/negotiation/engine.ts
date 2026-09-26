@@ -64,6 +64,21 @@ const MAX_WORDS = 35;
  */
 const PACE = { msPerWord: 380, minEstimateMs: 2_500, maxEstimateMs: 9_000, breathMs: 400, minLineMs: 2_500 } as const;
 
+/**
+ * A big table (MAX_CREW is 12) keeps the meeting short with a speaking budget: every mate still decides every watch
+ * (so the backing, the objections, the shortlist and its fairness are exactly what they'd be with everyone talking),
+ * but at most TABLE_VOICES_PER_WATCH lines are voiced per watch. Crews of up to TABLE_VOICES_PER_WATCH are unaffected
+ * (everyone speaks every watch, as before). On a bigger table:
+ *   Watch 1   the first TABLE_VOICES_PER_WATCH distinct proposals are voiced; a mate seconding a chart already on the
+ *             table, or proposing past the budget, backs it without a line (their mate speaks in Watch 2).
+ *   Watch 2/3 a mate whose member hailed speaks first, always; then, in seating order and up to the budget, moves
+ *             that change something (object, concede, switch support) and mates the table hasn't heard yet (their
+ *             SUPPORT). Holding the same chart again is silent. The early exit after Watch 2 waits for Watch 3 while
+ *             some mate hasn't been heard, so a crew of 12 still hears (nearly) every mate once.
+ * So a table is at most 1 + 3 × 6 + 1 = 20 lines (+ answered hails) at any size: about two minutes at Expo pacing.
+ */
+export const TABLE_VOICES_PER_WATCH = 6;
+
 export class NegotiationEngine {
   private st = newTableState();
   private maxWords = config.expoMode ? MAX_WORDS_EXPO : MAX_WORDS;
@@ -90,11 +105,16 @@ export class NegotiationEngine {
     this.privacy = privacy ?? buildPrivacyContext(ds, crew, plans);
   }
 
-  /** Seating order: everyone left of the Organizer, Organizer last (doc 05 §4). */
-  private order(): EngineCrew[] {
+  /**
+   * Seating order: everyone left of the Organizer, Organizer last (doc 05 §4). `hailedFirst` (a big table's Watch 2/3):
+   * mates whose member hailed go first, so a hail is always answered inside the speaking budget.
+   */
+  private order(hailedFirst = false): EngineCrew[] {
     const others = this.crew.filter((c) => c.role !== "organizer");
     const org = this.crew.filter((c) => c.role === "organizer");
-    return [...others, ...org];
+    const seats = [...others, ...org];
+    if (!hailedFirst) return seats;
+    return [...seats.filter((c) => this.hails.has(c.memberId)), ...seats.filter((c) => !this.hails.has(c.memberId))];
   }
 
   async run(): Promise<EngineResult> {
@@ -105,24 +125,31 @@ export class NegotiationEngine {
       this.captainPrompt("OPEN", openInstruction(this.datesLabel, cities, scope), noAmounts));
 
     let lastWatch = 0;
+    const big = this.crew.length > TABLE_VOICES_PER_WATCH;
+    const heard = new Set<string>(); // mates who have spoken this meeting (a big table's budget favours the unheard)
     for (let watch = 1; watch <= MAX_WATCHES; watch++) {
       if (this.io.cancelled()) break;
       lastWatch = watch;
       this.io.onWatch(watch);
       if (watch > 1) this.collectHails();
-      for (const c of this.order()) {
+      let voiced = 0;
+      for (const c of this.order(big && watch > 1)) {
         if (this.io.cancelled()) break;
         const hail = this.hails.get(c.memberId);
         let d = watch === 1 ? decideWatch1(this.plans, this.st, c.memberId, placeBias(this.ds, c)) : decideResponse(this.ds, this.plans, this.st, c.memberId, watch, hail);
         if (config.agentDecisions === "model" && features.gemini()) d = await this.modelChoice(c, d, watch, hail) ?? d;
         apply(this.st, c.memberId, d);
         if (hail) this.hails.delete(c.memberId);
+        if (big && !speaks(d, watch, Boolean(hail), voiced, heard.has(c.memberId))) continue;
+        voiced++;
+        heard.add(c.memberId);
         const plan = planById(this.plans, d.planId);
         await this.say({ kind: "advocate", memberId: c.memberId }, d.act, plan, watch, this.template(c, d, watch), (noAmounts) => this.advocatePrompt(c, d, watch, hail, noAmounts));
       }
       // Early exit after Watch 2 when everyone backs the same plan and no hail is waiting
       this.collectHails();
-      if (watch >= 2 && consensus(this.st) && this.hails.size === 0) break;
+      const everyoneHeard = !big || this.crew.every((c) => heard.has(c.memberId));
+      if (watch >= 2 && consensus(this.st) && this.hails.size === 0 && everyoneHeard) break;
     }
 
     this.io.closeHails?.();
@@ -266,6 +293,14 @@ export class NegotiationEngine {
 }
 
 type Prompt = (noAmounts: boolean) => Promise<LineOut | null>;
+
+/** A big table's speaking budget (TABLE_VOICES_PER_WATCH): is this decision voiced? */
+function speaks(d: Decision, watch: number, hailed: boolean, voicedSoFar: number, heard: boolean): boolean {
+  if (hailed) return true; // a member's hail is always answered aloud
+  if (voicedSoFar >= TABLE_VOICES_PER_WATCH) return false;
+  if (watch === 1) return d.why.kind === "propose" && !d.why.seconding;
+  return d.why.kind !== "support_hold" || !heard;
+}
 
 /**
  * A member's loved / skipped places nudge which chart their mate proposes first (+8 / −15 preference points), so a

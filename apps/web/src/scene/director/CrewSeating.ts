@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { BANDS, type CrewPublic, type Turn } from "@all-ayes/shared";
 import { CrewPiece } from "../CrewPiece";
 import { sound } from "../audio";
-import { seatAngle } from "../../shared-ui/seating";
+import { pieceScale, seatAngle } from "../../shared-ui/seating";
 import { CAPTAIN_POS, seatMap, seatPoint } from "../seats";
 import type { DirectorContext } from "./context";
 
@@ -25,6 +25,8 @@ export class CrewSeating {
     // seats are recomputed only when who is aboard changes, not per store event (OPT-051)
     const key = `${organizerId}|${crew.map((c) => c.memberId).join(",")}`;
     if (key !== this.rosterKey) { this.rosterKey = key; this.seats = seatMap(crew, organizerId); }
+    // a big crew (7–12) stands a little smaller so every piece and flag fits round the ring
+    const scale = pieceScale(crew.length);
 
     for (const [id, piece] of this.pieces) {
       if (!this.seats.has(id)) { piece.dispose(); this.pieces.delete(id); } // O2-050: free it, not just unlink it
@@ -41,6 +43,7 @@ export class CrewSeating {
       } else if (!piece.seat.equals(seat)) {
         void piece.placeAt(seat);
       }
+      piece.group.scale.setScalar(scale);
       if (c.briefSealed && !piece.isSealed) {
         piece.setSealed(true);
         if (!instant) { void piece.placeAt(piece.seat.clone(), true); sound.play("click"); }
@@ -61,7 +64,7 @@ export class CrewSeating {
     const trip = this.ctx.store.state.trip;
     const id = t.speaker.memberId;
     const seat = this.pieces.get(id)?.seat ?? this.seats.get(id);
-    if (seat) return out.copy(seat).setY(CREW_HEAD_Y);
+    if (seat) return out.copy(seat).setY(CREW_HEAD_Y * pieceScale(trip?.crew.length ?? 0));
     if (!trip) return null;
     return seatPoint(seatAngle(trip.crew, trip.organizerId, id), out).setY(CREW_HEAD_Y);
   }

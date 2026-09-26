@@ -10,9 +10,9 @@ exports[`chart book snapshot (b-) > expo: plans, public and private views are un
 
 exports[`chart book snapshot (b-) > four: plans, public and private views are unchanged 1`] = `
 {
-  "book": "c3ac25ddb96b9cc8",
-  "plans": 6,
-  "views": "a3a7d7a195d5754f",
+  "book": "dbd9338c3e8970e1",
+  "plans": 12,
+  "views": "b436b1c88e545375",
 }
 `;
 

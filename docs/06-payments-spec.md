@@ -195,6 +195,7 @@ the voyage still owes a refund or has an unreleased hold, `booking:retry`, `plan
 8. Every provider call is preceded by a persisted intent and re‑driven idempotently on restart (§4.2), so no hold outlives a VOIDED booking across a crash.
 9. The *timing* of public events doesn't depend on whose seal failed (S2-001): no authorization starts before every seal is set (standing seals included), and the outcome is published at the fixed settle point (last "set" + `SEAL_SETTLE_MS`, or later for everyone if the provider is slower).
 10. Nobody is asked to pay again while any earlier booking of the voyage still owes a refund or holds an unreleased authorization (retry, pick and a new table answer `NEEDS_ATTENTION`).
+11. All of the above hold for any crew size up to `MAX_CREW` (12 seals, any number of them standing seals for absent members): the settle point and the per-seal sequence don't depend on the crew size or on which seat declined (`test/crew12.test.ts` runs the SEC-002 sequence check for crews of 8 and 12, declining the organizer, a member, an absent member's standing seal and the last seat). A crew in several rooms of one stay still has one lodging bill split evenly (doc 05 §2.1), so (1) holds exactly.
 
 ---
 

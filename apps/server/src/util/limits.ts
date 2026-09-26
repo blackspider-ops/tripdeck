@@ -11,6 +11,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { config } from "../config.js";
 import { dbConnected, loadWhere, persist, type SpendDoc } from "../store/db.js";
 import { HelmError } from "./errors.js";
+import { MAX_CREW } from "@all-ayes/shared";
 
 export const MINUTE_MS = 60_000;
 export const HOUR_MS = 60 * MINUTE_MS;
@@ -25,7 +26,8 @@ export const LIMITS = {
   /** REST (api/routes.ts, passkeyRoutes.ts), per client address unless noted. */
   http: {
     jsonBody: "32kb",
-    createPerMinute: 10, lookupPerMinute: 60, lookupMissPerMinute: 20, joinPerMinute: 20,
+    /** joinPerMinute: a full crew (MAX_CREW 12: 11 joins) on one venue Wi-Fi fits well inside a minute's budget. */
+    createPerMinute: 10, lookupPerMinute: 60, lookupMissPerMinute: 20, joinPerMinute: 30,
     claimFailPerMinute: 10, handoffFailPerMinute: 10, pairFailPerMinute: 10, passkeyPerMinute: 30,
     /** TR3-014 / SEC-005: spoken hails per member: 2 per 5 s and 6 per minute; 2 uploads in flight per address. */
     hailBurst: 2, hailBurstWindowMs: 5_000, hailPerMinute: 6, uploadsInFlight: 2,
@@ -39,6 +41,7 @@ export const LIMITS = {
     /** One message ≤ 64 kB (socket.io's default is 1 MB): nothing the clients send comes close. */
     maxMessageBytes: 64_000,
     connectPerMinute: 120, socketsPerAddress: 64,
+    /** joinPerMinute: 12 phones + the Gallery + a headset (14 sockets) can each rejoin ~4× a minute from one address. */
     joinPerMinute: 60, joinMissPerMinute: 20, joinPerSocketPerMinute: 10,
     /** Per socket: 60 events per 10 s, and client:log's own 5 a second (SEC-014). */
     events: 60, eventsWindowMs: 10_000, logsPerSecond: 5,
@@ -47,7 +50,7 @@ export const LIMITS = {
    * SEC-020: the longest field a socket payload may carry before the handler refuses it as BAD_INPUT (the service then
    * cleans and cuts it to its real cap, e.g. NOTE_MAX_CHARS / HAIL_MAX_CHARS).
    */
-  fields: { id: 200, joinCode: 40, text: 2_000, listItems: 16, listItem: 64, memberIds: 8 },
+  fields: { id: 200, joinCode: 40, text: 2_000, listItems: 16, listItem: 64, memberIds: MAX_CREW },
   /** Dev routes (api/devAccess.ts): the sign-in cookie's life and wrong keys per address per minute. */
   dev: { sessionMs: HOUR_MS, loginFailPerMinute: 10 },
   /** SEC-015 (index.ts): how often idle voyages are swept from memory, and the voice cache is pruned. */

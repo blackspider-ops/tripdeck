@@ -6,6 +6,8 @@ Group trips die in the group chat: nobody wants to say "too expensive", and one 
 
 Built for HackGT 13. Full specs in [`docs/`](docs/00-README.md).
 
+A crew is the organizer plus up to 11 friends (12 seats, absent friends included), each with their own colour band, mate and voice. Bigger crews book several rooms of one stay ("Casa Alfama ×3") and split the bill evenly; above 6, the table voices at most 6 lines a Watch so it still decides in about two minutes ([`docs/05`](docs/05-agent-spec.md) §2, §4.1).
+
 ## Run it
 
 ```bash
@@ -32,7 +34,7 @@ Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, 
 |---|---|
 | `npm run dev` | server (tsx watch) + web (Vite on localhost); counts as development mode (dev routes open to this machine only; other clients need `DEV_KEY`) |
 | `npm run dev:lan -w @all-ayes/web` | the Vite dev server on every interface (`vite --host`), for a phone on the same Wi-Fi |
-| `npm test` | server + web: **568 server tests** (44 files: pricing, city files + flight model + course + random voyages, fairness, privacy filter, negotiation rules, payments invariants, service rules, restart/restore, persistence, sweep and write queue, socket budgets, memory/voice fallbacks, limits, hardening, contract, end‑to‑end sockets) and **251 web tests** (38 files: socket store, reducers, phone hooks and screens (happy-dom), routing, error copy, formatting, seating, labels, scene/director and XR logic) |
+| `npm test` | server + web: **595 server tests** (46 files: pricing, multi-room lodging and 12-person crews, city files + flight model + course + random voyages, fairness, privacy filter, negotiation rules, payments invariants, service rules, restart/restore, persistence, sweep and write queue, socket budgets, memory/voice fallbacks, limits, hardening, contract, end‑to‑end sockets) and **266 web tests** (41 files: socket store, reducers, phone hooks and screens (happy-dom), routing, error copy, formatting, seating, labels, scene/director and XR logic) |
 | `npm run typecheck` | `tsc --noEmit` in every workspace |
 | `npm run check` | typecheck + tests + build + bundle budget (`scripts/bundle-budget.mjs`; run before pushing) |
 | `npm run build` | web production build + server bundle (esbuild → `apps/server/dist/index.js`) |
@@ -46,7 +48,7 @@ Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, 
 | Integration | With key | Without key |
 |---|---|---|
 | Gemini | Every mate and the Captain speak in their own words | Protocol lines from templates (same decisions) |
-| ElevenLabs | A voice per crew member (defaults George, Liam, Sarah, Chris, Jessica work on any plan; `ELEVEN_VOICE_*` to override); spoken hails | Captions + browser speech; typed hails |
+| ElevenLabs | A voice per crew member (13 premade defaults — Captain George and a distinct mate per band 1–12 — work on any plan; `ELEVEN_VOICE_*` to override); spoken hails | Captions + browser speech; typed hails |
 | MongoDB Atlas | Voyages persist and resume after restart | In memory |
 | Backboard | Mates remember you across voyages | Local memory in MongoDB, or `DATA_DIR/memory.json` (default `apps/server/data`) |
 | Visa Intelligent Commerce | Agent card + capped instruction (wire `visaVic.ts`) | Simulated with the same contract, labeled "Sandbox simulation" |

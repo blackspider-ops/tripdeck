@@ -106,7 +106,7 @@ body      = { apiKey, hmac, timestamp, nonce }
 
 ### Normalization rules
 - **Hotels:** `_id = "RS-h-<id>"`, `kind:"hotel"`, `neighborhood:""` (the list has no area field).
-  - **Rooming rule:** 1–3 guests are searched as one room (3 = a triple, so only properties that sleep 3 in one unit come back). 4 or more are searched as rooms of two (4 → 2×2, 5 → 2+2+1). RouteStack prices that whole occupancy for the whole stay, so `nightlyCents = USD(ourprice) / nights` is the **group's** nightly cost, and `sleeps = guests`. A hotel without a price is dropped.
+  - **Rooming rule:** 1–3 guests are searched as one room (3 = a triple, so only properties that sleep 3 in one unit come back). 4 or more are searched as rooms of two (4 → 2×2, 5 → 2+2+1, up to a full crew of 12 → 6 rooms). RouteStack prices that whole occupancy for the whole stay, so `nightlyCents = USD(ourprice) / nights` is the **group's** nightly cost, and `sleeps = guests`. A hotel without a price is dropped.
   - **`stayType`** comes from the name or chain, because the list has no type field:
     - hostel / backpacker / dorm → `hostel`
     - apartment / flat / residence / loft / studio / villa → `apartment`

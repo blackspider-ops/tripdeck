@@ -137,6 +137,6 @@ Help desk: Klaus Atrium · Emergencies: GTPD 404‑894‑2500 · MLH incidents: 
 |---|---|---|
 | Exact Visa Intelligent Commerce calls from `visa/mcp` + reference agent | doc 06 §4.3 table | B |
 | Visa mode decision (A / B / C) | doc 06 §2, Devpost, pitch | B (Sat 2 PM) |
-| ElevenLabs voice IDs (Captain + 4 bands) | `.env`, doc 05 §8 | A |
+| ElevenLabs voice IDs (Captain + 12 bands) | `.env`, doc 05 §8 | A |
 | Final `.tech` domain name | `.env`, doc 09 §6, `WEBAUTHN_RP_ID` | A |
 | Answers to the Sponsor Fair questions | PRD §10 | both (Fri 5:30–7 PM) |

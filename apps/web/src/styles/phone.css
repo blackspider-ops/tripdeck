@@ -98,14 +98,18 @@ textarea.input { min-height: 78px; border: 1px solid var(--ink-soft); resize: ve
 .hint { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
 
 /* band swatches */
-.swatches { display: flex; gap: 12px; }
+/* twelve bands: a grid of up to six a row at phone width (names under each, two lines at most) */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 34px 8px; max-width: 400px; padding-bottom: 14px; }
 .swatch {
-  width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--paper-deep); cursor: pointer;
-  display: grid; place-items: center; padding: 0; position: relative;
+  width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--paper-deep); cursor: pointer;
+  display: grid; place-items: center; padding: 0; position: relative; justify-self: center;
 }
 .swatch[aria-checked="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--brass); }
 .swatch:disabled { opacity: .25; cursor: not-allowed; }
-.swatch .swatch-name { position: absolute; top: 52px; font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
+.swatch .swatch-name {
+  position: absolute; top: 48px; left: 50%; transform: translateX(-50%); width: 56px;
+  font-size: 11px; line-height: 12px; color: var(--ink-soft); text-align: center; overflow-wrap: anywhere;
+}
 
 /* chips: paper tags with a punched hole + string */
 .chips { display: flex; flex-wrap: wrap; gap: 10px 8px; }
@@ -189,6 +193,11 @@ textarea.input { min-height: 78px; border: 1px solid var(--ink-soft); resize: ve
 /* ---------- table (negotiation mirror) ---------- */
 .chart-svg { width: 100%; max-width: 300px; display: block; margin: 0 auto; }
 .chart-svg text { font-family: var(--f-heading); }
+/* a big crew's key under the top-down chart: band dot + name, wrapping */
+.chart-key { list-style: none; margin: 6px auto 0; padding: 0; max-width: 320px; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; font-size: 13px; color: var(--ink); }
+.chart-key li { display: inline-flex; align-items: center; gap: 5px; }
+.chart-key li.speaking { text-decoration: underline; text-decoration-color: var(--brass); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.chart-key .band-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
 .caption-card { border-left: 3px solid var(--brass); padding: 8px 12px; margin: 12px 0; min-height: 76px; }
 .caption-card .who { font-family: var(--f-heading); font-size: 14px; color: var(--ink-soft); }
 .caption-card .line { font-size: 18px; line-height: 26px; }

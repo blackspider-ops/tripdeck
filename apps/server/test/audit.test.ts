@@ -275,7 +275,7 @@ describe("helm guards", () => {
   it("a bad organizer input leaves no organizer-less orphan voyage behind", async () => {
     const { helm } = helmWithBus();
     const before = helm.trips.size;
-    expect(await code(() => helm.createTrip({ name: "x", organizerName: "Rae", band: 9 as never, origin: "ATL" }))).toBe("BAD_INPUT");
+    expect(await code(() => helm.createTrip({ name: "x", organizerName: "Rae", band: 13 as never, origin: "ATL" }))).toBe("BAD_INPUT");
     expect(await code(() => helm.createTrip({ name: "x", organizerName: "", band: 1, origin: "ATL" }))).toBe("BAD_INPUT");
     expect(helm.trips.size).toBe(before);
   });

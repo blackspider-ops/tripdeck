@@ -8,7 +8,13 @@ import { memoryForPrompt, noteForPrompt, promptName } from "../privacy/guard.js"
 import { cityName, indexOf } from "../data/loader.js";
 import { highlights } from "./phrasing.js";
 import { view, type Decision, type HailNote } from "./rules.js";
-import { publicTotalLabel, publicTotalRange, type PricingMember } from "../fit/pricing.js";
+import { publicTotalLabel, publicTotalRange, roomsFor, stayName, type PricingMember } from "../fit/pricing.js";
+
+/** The stay as the table may name it: "Casa Alfama", or "Casa Alfama ×3" when the crew books three rooms. */
+const stayOf = (ds: Dataset, p: Plan) => {
+  const h = indexOf(ds).hotel.get(p.hotelId);
+  return h ? stayName(h, roomsFor(h, p.members.length)) : undefined;
+};
 
 /** What generateLine (gemini.ts) takes. */
 export interface LineRequest { system: string; user: string; temperature: number; allowChoice: boolean }
@@ -63,7 +69,7 @@ export function advocateFacts(
     decided_act: d.act,
     reason: d.why.kind === "concede" && d.why.hailFrom ? { ...d.why, hailFrom: promptName(d.why.hailFrom) } : d.why,
     plan: {
-      city: cityName(ds, p.cityId), group_total: publicTotalLabel(publicTotalRange(ds, p)), stay: indexOf(ds).hotel.get(p.hotelId)?.name,
+      city: cityName(ds, p.cityId), group_total: publicTotalLabel(publicTotalRange(ds, p)), stay: stayOf(ds, p),
       what_your_friend_would_do: highlights(ds, p, c.memberId),
       fits_your_friend: mine.fits, your_friends_missing_wishes: mine.missing,
     },

@@ -361,6 +361,8 @@ describe("normalization", () => {
     expect(roomsFor(3).map((r) => r.adults)).toEqual([3]);
     expect(roomsFor(4).map((r) => r.adults)).toEqual([2, 2]);
     expect(roomsFor(5).map((r) => r.adults)).toEqual([2, 2, 1]);
+    expect(roomsFor(12).map((r) => r.adults)).toEqual([2, 2, 2, 2, 2, 2]); // a full crew (MAX_CREW)
+    expect(roomsFor(40)).toHaveLength(6);
     expect(nightsBetween("2027-03-12", "2027-03-16")).toBe(4);
   });
 

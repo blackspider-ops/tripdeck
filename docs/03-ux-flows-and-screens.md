@@ -103,7 +103,7 @@ All phone screens: ruled logbook paper, red margin line, Caslon headings, Plex M
 States: default · offline ("Lost the signal. Holding your place.")
 
 ### P1 — Create voyage (`/new`)
-Fields: Voyage name ("Spring Break '27"), your name, your color band (4 swatches), **flying from** (a searchable
+Fields: Voyage name ("Spring Break '27"), your name, your color band (12 swatches, 6 across), **flying from** (a searchable
 home‑airport picker over ~37 US / Canada airports: type a code — "sea" — or a city — "Seattle"), then the course:
 
 - **Where** — three ways (segmented chips):
@@ -141,6 +141,7 @@ Primary: **Set sail** → creates trip (`BRIEFING`), goes to P2.
 │ [ Seal my terms ] (red)    │
 └────────────────────────────┘
 ```
+- A crew holds up to 12 seats (the organizer + 11, absent friends included). The crew list wraps; **Add an absent friend** is offered until the 12th seat is taken, and the 13th join by code is refused ("This crew is full (12 aboard).", `CREW_FULL`).
 - "Add an absent friend" → name + band → copyable link `/t/:code/brief#m=:memberId&k=:inviteKey`. The key is in the fragment, so no server log sees it, and it is shown only this once. The phone strips it from the address bar on open (SEC-019). Opening it on the organizer's own phone is refused ("This invite is for your friend…"). Re-opening it on the phone that already claimed it just opens the voyage (TR1-002).
 - Organizer: **Close the crew** / **Reopen the crew** under the Muster. A closed crew refuses joins by code ("The organizer has closed this crew"). Absent invites still work (SEC-010).
 - Live updates via `trip:state` (sent after every join and sealed brief; its crew list carries `briefSealed`, never the terms).
@@ -228,6 +229,7 @@ Sealed‑letter illustration; "Sealed. Your mate knows what you can do." Crew li
 └────────────────────────────┘
 ```
 - Current speaker's flag highlighted with brass ring; caption = full line.
+- Seats are spread round the chart ring for any crew size (2–12). Above 6, seats are drawn smaller with the member's initial, and a key below the chart lists each band + name (the speaker's highlighted, "away" marked). On a big table not every mate speaks every Watch (at most 6 lines a Watch, doc 05 §4.1): a mate who backs a chart already on the table does so without a line.
 - Hail: hold button → recording indicator (dividers walking) → release → transcript preview 1.5 s → sent. Text hail always available.
 - The watch pill reads "Opening" while the Captain opens the table; the hail dock is off then ("The Captain is opening the table. Hail once the mates start speaking.", `TABLE_OPENING`) and opens at Watch 1.
 - Disabled once Watch 3 starts or the Captain decides, with the note "Captain's calling it." A refused hail still counts toward the one-hail-every-5-s pace.
@@ -336,6 +338,7 @@ Layout (top view, Organizer at south):
                      ◉ Rae (you)
    ───────── caption strip (faces you) ─────────
 ```
+- Pieces for any crew size (2–12) stand on the table ring clear of the Captain, the compass and the Dry Run cloches: crews of ≤ 4 keep the positions above; bigger crews are spread evenly along the free arcs, and pieces (and their flags) shrink to ~0.8× at 12 so none overlap (`shared-ui/seating.ts`, `scene/seats.ts`).
 - Speaker behavior per doc 02 §7.3: tip + slide + ink ribbon + voice; globe auto‑rotates to city in the line; pencil arcs from the home port.
 - Compass rose shows Watch progress.
 - **Hail:** in VR, a **"Hail the table"** tag on the table's near‑left edge (shown only while hails are open) → dwell on it → the **HAIL THE TABLE** card with four set lines and **Never mind**; dwell on one to send it as the Organizer's hail. On a Quest: pinch‑and‑hold ≥ 400 ms on empty space. Free text or voice: use the phone.

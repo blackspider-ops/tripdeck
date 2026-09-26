@@ -6,7 +6,7 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import type { CityId } from "@all-ayes/shared";
-import { loadDataset } from "../src/data/loader.js";
+import { indexOf, loadDataset } from "../src/data/loader.js";
 import { buildChartBook, toPrivate, toPublic, type PricingMember } from "../src/fit/pricing.js";
 import { EXPO_CREW } from "./fixtures.js";
 
@@ -38,4 +38,12 @@ describe("chart book snapshot (b-)", () => {
       expect({ plans: book.length, book: digest(book), views: digest(views) }).toMatchSnapshot();
     });
   }
+
+  it("four: a crew that fits in one room prices exactly as before multi-room stays (the one-room plans are unchanged)", () => {
+    // before MAX_CREW 12 a crew of four only saw stays that sleep four; those plans must be byte-for-byte the same
+    const crew = SCENARIOS.four;
+    const book = buildChartBook(ds, crew, CITIES, 50).filter((p) => indexOf(ds).hotel.get(p.hotelId)!.sleeps >= crew.length);
+    const views = book.map((p) => ({ pub: toPublic(ds, p, "A"), mine: crew.map((m) => toPrivate(p, m.memberId)) }));
+    expect({ plans: book.length, book: digest(book), views: digest(views) }).toEqual({ plans: 6, book: "c3ac25ddb96b9cc8", views: "a3a7d7a195d5754f" });
+  });
 });

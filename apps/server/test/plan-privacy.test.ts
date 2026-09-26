@@ -14,7 +14,7 @@ import { io as connect, type Socket } from "socket.io-client";
 import { ORIGINS, TAGS, type CityId, type Dataset, type Dealbreaker, type Origin, type Plan, type PlanPublic, type Role, type Tag } from "@all-ayes/shared";
 import { loadDataset } from "../src/data/loader.js";
 import {
-  buildChartBook, buildPlan, chooseFlight, choosePicks, publicTotalRange, toPrivate, toPublic, type PricingMember,
+  buildChartBook, buildPlan, chooseFlight, choosePicks, lodgingTotalCents, publicTotalRange, toPrivate, toPublic, type PricingMember,
 } from "../src/fit/pricing.js";
 import { TripService } from "../src/trips/service.js";
 import { apiRouter } from "../src/api/routes.js";
@@ -42,7 +42,7 @@ type CrewInfo = { memberId: string; origin?: string; role: string };
 function repro1(d: Dataset, pub: any, crew: CrewInfo[]): Record<string, number | null> {
   const win = d.dateWindows.find((w) => w.id === pub.dateWindowId)!;
   const hotel = d.hotels.find((h) => h._id === pub.hotelId)!;
-  const lodging = hotel.nightlyCents * win.nights;
+  const lodging = lodgingTotalCents(hotel, crew.length, win.nights); // rooms = ceil(crew / sleeps): public
   const base = Math.floor(lodging / crew.length);
   const out: Record<string, number | null> = {};
   for (const m of crew) {
@@ -63,7 +63,7 @@ function repro1(d: Dataset, pub: any, crew: CrewInfo[]): Record<string, number |
 function candidateShares(d: Dataset, pub: PlanPublic, m: CrewInfo, crewSize: number): Set<number> {
   const win = d.dateWindows.find((w) => w.id === pub.dateWindowId)!;
   const hotel = d.hotels.find((h) => h._id === pub.hotelId)!;
-  const lodging = hotel.nightlyCents * win.nights;
+  const lodging = lodgingTotalCents(hotel, crewSize, win.nights);
   const base = Math.floor(lodging / crewSize) + (m.role === "organizer" ? lodging - Math.floor(lodging / crewSize) * crewSize : 0);
   const items = pub.days.flatMap((day) => day.items);
   const price = (id: string) => d.activities.find((a) => a._id === id)!.priceCents;
@@ -213,7 +213,7 @@ function inferShares(pub: { cityId: CityId; dateWindowId: string; hotelId: strin
   crew: Seen[], view: ((p: Plan) => string) | null, total: [number, number]): Record<string, number[]> {
   const win = ds.dateWindows.find((w) => w.id === pub.dateWindowId)!;
   const h = ds.hotels.find((x) => x._id === pub.hotelId)!;
-  const lodging = h.nightlyCents * win.nights;
+  const lodging = lodgingTotalCents(h, crew.length, win.nights);
   const base = Math.floor(lodging / crew.length);
   const rem = lodging - base * crew.length;
   const acts = ds.activities.filter((a) => a.cityId === pub.cityId);
@@ -368,6 +368,33 @@ describe("S2-002: public plan + crew list can't narrow anyone's share", () => {
       }
     }
   }, 60_000);
+
+  it("crews of 8 (several rooms of one stay): no share is pinned; each is only as narrow as the public listings allow", () => {
+    // the rooms count ("Casa Alfama ×3") is public — crew size ÷ sleeps — and the attacker models it; it adds nothing
+    let seed = 8_2026;
+    const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+    const DBS: Dealbreaker[] = ["red_eye", "early_start", "long_walks", "layovers_2plus"];
+    let multiRoom = 0;
+    for (let k = 0; k < 2; k++) {
+      const crew = Array.from({ length: 8 }, (_, i): PricingMember => ({
+        memberId: `m${i}`, name: `m${i}`, role: i === 0 ? "organizer" : "member", origin: ORIGINS[Math.floor(rnd() * 3)],
+        brief: { capCents: 250_000, dateWindowIds: ["W1"], mustHaves: TAGS.map((t) => t.id).sort(() => rnd() - 0.5).slice(0, Math.floor(rnd() * 3)), dealbreakers: DBS.filter(() => rnd() < 0.2) },
+      }));
+      for (const p of buildChartBook(ds, crew, ["LIS", "MEX", "YUL"], 3)) {
+        const pub = toPublic(ds, p);
+        if ((pub.rooms ?? 1) > 1) multiRoom++;
+        expect(JSON.stringify(pub)).not.toMatch(/"m\d"/); // nobody's id (so nobody's room) in the public plan
+        const a = attackCurrent(p, crew);
+        for (const m of p.members) {
+          const c = a.got[m.memberId];
+          expect(c, `${p._id} ${m.memberId}`).toContain(a.truth[m.memberId]);
+          expect(c, `${p._id} ${m.memberId}`).toEqual(a.floor[m.memberId]);
+          expect(c.length, `${p._id} ${m.memberId}`).toBeGreaterThanOrEqual(3);
+        }
+      }
+    }
+    expect(multiRoom).toBeGreaterThan(0);
+  }, 120_000);
 
   it("the public total is a range from public facts only: it holds the real total and ignores who the crew are", () => {
     const rotated = EXPO_CREW.map((m, i) => ({ ...m, origin: EXPO_CREW[(i + 1) % EXPO_CREW.length].origin }));

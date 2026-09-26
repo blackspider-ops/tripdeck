@@ -136,12 +136,18 @@ function FlagDot({ turn, crewOf }: { turn: Turn; crewOf: (id: string) => CrewPub
   );
 }
 
+/** Up to this many aboard, each seat on the top-down chart carries its name; beyond, an initial and a key below. */
+const COMPACT_FROM = 6;
+
 /**
  * Top-down chart: paper disc, globe, compass rose + Captain at north, crew seated around. Organizer at south.
  * Seats follow the 3D table's seating plan (shared-ui/seating.ts: x = cos, SVG y = sin, so south is down).
  */
-const TopDownChart = memo(function TopDownChart({ crew, organizerId, speakingId }: { crew: CrewPublic[]; organizerId: string; speakingId: string | null }) {
+export const TopDownChart = memo(function TopDownChart({ crew, organizerId, speakingId }: { crew: CrewPublic[]; organizerId: string; speakingId: string | null }) {
   const cx = 150, cy = 150;
+  // a big crew (7–12) seats smaller pieces with just an initial on each; the names go in a key under the chart
+  const compact = crew.length > COMPACT_FROM;
+  const pr = compact ? 9 : 12;
   // names go under a seat unless it sits well up the chart (a seat just north of east keeps its name clear of the one above)
   const seats = crew.map((c) => {
     const a = (seatAngle(crew, organizerId, c.memberId) * Math.PI) / 180;
@@ -150,6 +156,7 @@ const TopDownChart = memo(function TopDownChart({ crew, organizerId, speakingId 
   });
 
   return (
+    <>
     <svg className="chart-svg" viewBox="0 0 300 300" role="img" aria-label="The chart table, seen from above">
       <circle cx={cx} cy={cy} r="140" fill="var(--paper)" stroke="var(--paper-deep)" strokeWidth="2" />
       <circle cx={cx} cy={cy} r="134" fill="none" stroke="var(--ink)" strokeOpacity=".35" strokeDasharray="1 4" />
@@ -167,17 +174,31 @@ const TopDownChart = memo(function TopDownChart({ crew, organizerId, speakingId 
       {seats.map(({ c, x, y }) => {
         const speaking = speakingId === c.memberId;
         return (
-          <g key={c.memberId} transform={`translate(${x} ${y})${speaking ? " translate(0 -3)" : ""}`}>
-            {speaking ? <circle r="17" fill="none" stroke="var(--brass)" strokeWidth="3" /> : null}
-            <circle r="12" fill="var(--wood)" />
-            <circle r="12" fill="none" stroke={BANDS[c.band].hex} strokeWidth="4" />
-            <text y="4" textAnchor="middle" fontSize="11" fill={PALETTE.paper} fontFamily="var(--f-heading)">{c.name.slice(0, 1).toUpperCase()}</text>
-            <text y={y > cy - 32 ? 28 : -18} textAnchor="middle" fontSize="11" fill="var(--ink)">
-              {c.name}{c.role === "absent" ? " (away)" : ""}
-            </text>
+          <g key={c.memberId} transform={`translate(${x} ${y})${speaking ? " translate(0 -3)" : ""}`} data-seat={c.memberId}>
+            {compact ? <title>{c.name}{c.role === "absent" ? " (away)" : ""}</title> : null}
+            {speaking ? <circle r={pr + 5} fill="none" stroke="var(--brass)" strokeWidth="3" /> : null}
+            <circle r={pr} fill="var(--wood)" />
+            <circle r={pr} fill="none" stroke={BANDS[c.band].hex} strokeWidth={compact ? 3 : 4} />
+            <text y={compact ? 3.5 : 4} textAnchor="middle" fontSize={compact ? 9 : 11} fill={PALETTE.paper} fontFamily="var(--f-heading)">{c.name.slice(0, 1).toUpperCase()}</text>
+            {compact ? null : (
+              <text y={y > cy - 32 ? 28 : -18} textAnchor="middle" fontSize="11" fill="var(--ink)">
+                {c.name}{c.role === "absent" ? " (away)" : ""}
+              </text>
+            )}
           </g>
         );
       })}
     </svg>
+    {compact ? (
+      <ul className="chart-key" aria-label="Who sits where">
+        {crew.map((c) => (
+          <li key={c.memberId} className={speakingId === c.memberId ? "speaking" : undefined}>
+            <span className="band-dot" style={{ background: BANDS[c.band].hex }} aria-hidden />
+            {c.name}{c.role === "absent" ? " (away)" : ""}
+          </li>
+        ))}
+      </ul>
+    ) : null}
+    </>
   );
 });

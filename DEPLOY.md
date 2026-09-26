@@ -54,7 +54,7 @@ Full table of limits: docs/04 §12 *Limits*.
 | `RESTORE_RECENT_DAYS` | 7 | Settled voyages touched this recently are loaded at boot; older ones load on demand. |
 | `MONGODB_DB` | `all_ayes` | Database name. |
 | `GEMINI_MODEL` / `AGENT_DECISIONS` | `gemini-2.5-flash` / `rules` | Model, and whether Gemini may pick moves (`model`) or only word them (`rules`, the demo default). |
-| `ELEVEN_MODEL` / `ELEVEN_STT_MODEL` / `ELEVEN_VOICE_CAPTAIN` / `ELEVEN_VOICE_BAND1..4` | `eleven_flash_v2_5` / `scribe_v1` / premade voices | Voice models and voice IDs (blank = default). |
+| `ELEVEN_MODEL` / `ELEVEN_STT_MODEL` / `ELEVEN_VOICE_CAPTAIN` / `ELEVEN_VOICE_BAND1..12` | `eleven_flash_v2_5` / `scribe_v1` / premade voices | Voice models and voice IDs (blank = default). |
 | `BACKBOARD_BASE_URL` | Backboard's API | Override the Backboard endpoint. |
 | `VISA_VIC_API_BASE` / `VISA_VIC_API_KEY` | — | Visa sandbox, once `visaVic.ts` is wired (`PAYMENTS_MODE=visa_sandbox` falls back to `sim` until then). |
 | `SIM_DECLINE_MEMBER` / `SIM_TIMEOUT_MEMBER` | — | Force a SIM decline / timeout for one member id (tests). |

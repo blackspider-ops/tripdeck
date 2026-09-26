@@ -166,7 +166,7 @@ export class Table {
     // (fit/prerank.ts). Only the ranking leaves the helm, never anyone's terms.
     const scoped = t.destination && t.destination.kind !== "cities";
     const ports = scoped ? pickPorts(helm.ds, this.pricingCrew(t), scopeOf(helm.ds, t.destination!).map((c) => c._id), tripWindowIds(t), t._id) : null;
-    if (ports && !ports.length) throw new HelmError("BAD_INPUT", "No port in range can sleep the whole crew. Start a voyage with more ports.");
+    if (ports && !ports.length) throw new HelmError("BAD_INPUT", "No port in range has a stay for this crew. Start a voyage with more ports.");
     helm.transition(t, "AT_TABLE", { from: ["BRIEFING"] });
     if (ports) t.candidateCityIds = ports; // (regions / anywhere take curated ports only, so no world packs to add)
     this.clearCharts(t);

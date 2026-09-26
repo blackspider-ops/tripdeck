@@ -178,7 +178,7 @@ interface Member {
   _id: string; tripId: string;
   name: string;                // ≤ 24 chars
   role: "organizer"|"member"|"absent";
-  band: 1|2|3|4;               // color band (doc 02 §3.3); the Advocate's voice follows the band (config, not stored)
+  band: 1|2|…|12;              // color band (doc 02 §3.3), one per seat (MAX_CREW 12); the Advocate's voice follows the band (config, not stored)
   origin: "ATL"|"ORD"|"JFK";   // home airport — server-only: never in CrewPublic or a prompt (S2-002)
   tokenHash: string;           // sha256 of the member session token
   inviteKeyHash?: string;      // absent-friend link (single use; cleared on claim or removal)
@@ -363,7 +363,7 @@ Base `/api`. JSON bodies ≤ 32 kB. Member auth = `Authorization: Bearer <member
 |---|---|---|---|
 | `POST /trips` | `{name, organizerName, band, origin, cityIds?, crewKey?}` | `{tripId, joinCode, memberId, memberToken, crewKey}` | Status → BRIEFING. `cityIds`: the ports (≥ 2 of `LIS`/`MEX`/`YUL`; omitted = all). 10/min per address |
 | `GET /trips/by-code/:code` | — | `{tripId, joinCode, name, status, crew:[{memberId,name,role,band,briefSealed}], takenBands, crewClosed}` | Public info only. 60/min; 20 wrong codes/min |
-| `POST /trips/:tripId/members` | `{name, band, origin, crewKey?}` | `{memberId, memberToken, crewKey}` | Join. `403 CREW_CLOSED`, `409 BAD_PHASE` once the table has met, `CREW_FULL`, `BAND_TAKEN` |
+| `POST /trips/:tripId/members` | `{name, band, origin, crewKey?}` | `{memberId, memberToken, crewKey}` | Join. `403 CREW_CLOSED`, `409 BAD_PHASE` once the table has met, `CREW_FULL` (12 seats, absent ones included: `MAX_CREW`), `BAND_TAKEN` |
 | `POST /trips/:tripId/absent` | `{name, band, origin}` (organizer) | `{memberId, inviteKey, invitePath}` | `invitePath` = `/t/CODE/brief#m=<id>&k=<key>`; shown once |
 | `POST /trips/:tripId/absent/:memberId/invite` | — (organizer) | `{memberId, inviteKey, invitePath}` | Re-issue an unclaimed invite; the old link stops working (TR1-001). `404 NOT_FOUND`, `409 INVITE_CLAIMED` |
 | `POST /trips/:tripId/absent/:memberId/claim` | `{inviteKey, crewKey?}` | `{memberToken, crewKey}` | Absent friend (or a reset seat) opens the link; sets the passkey-claim cookie. `403 OWN_INVITE` from the organizer's crew key, `403 BAD_INVITE` |
@@ -466,6 +466,7 @@ Organizer(xr)   Server/Engine            Gemini              ElevenLabs         
    │             │◄──────── mp3 stream ────┼────────────────────│                    │
    │             │ cache /api/audio/:id ───┼────────────────────┼─ turn:audioReady ─►│ (XR plays spatial audio)
    │             │ for watch 1..3: for each advocate: act → filter → persist → emit → tts
+   │             │   (crew > 6: every advocate acts, ≤ 6 are voiced per watch — doc 05 §4.1)
    │             │ (next turn LLM call starts while current audio plays — pipelined)
    │             │ Captain DECIDE → fairness.rank → shortlist[2]
    │             │ status DRY_RUN ─────────┼────────────────────┼─ table:decided ───►│
@@ -600,7 +601,7 @@ MONGODB_URI=  MONGODB_DB=all_ayes
 # Providers
 GEMINI_API_KEY=  GEMINI_MODEL=gemini-2.5-flash  AGENT_DECISIONS=rules   # rules | model (doc 05 §2.3)
 ELEVENLABS_API_KEY=  ELEVEN_MODEL=  ELEVEN_STT_MODEL=scribe_v1
-ELEVEN_VOICE_CAPTAIN=  ELEVEN_VOICE_BAND1..4=   # default George · Liam · Sarah · Chris · Jessica (premade, any plan; doc 05 §8)
+ELEVEN_VOICE_CAPTAIN=  ELEVEN_VOICE_BAND1..12=  # default George · Liam · Sarah · Chris · Jessica · Roger · Laura · Charlie · Alice · Will · Matilda · Eric · Lily (premade, any plan; doc 05 §8)
 BACKBOARD_API_KEY=  BACKBOARD_BASE_URL=
 PAYMENTS_MODE=sim            # visa_sandbox falls back to sim (with a warning) until visaVic.ts is wired
 VISA_VIC_API_BASE=  VISA_VIC_API_KEY=

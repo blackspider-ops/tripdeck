@@ -310,7 +310,7 @@ describe("the random demo voyage", () => {
     expect(new Set(plans.map((p) => p.ports.join())).size).toBeGreaterThan(1);
     for (const p of plans) {
       expect(p.crew.length).toBeGreaterThanOrEqual(3);
-      expect(p.crew.length).toBeLessThanOrEqual(4);
+      expect(p.crew.length).toBeLessThanOrEqual(8);
       expect(p.crew.filter((c) => c.role === "absent")).toHaveLength(1);
       expect(p.crew[0].role).toBe("organizer");
       expect(new Set(p.crew.map((c) => c.name)).size).toBe(p.crew.length);

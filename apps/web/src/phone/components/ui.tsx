@@ -1,5 +1,5 @@
 import { useId, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode } from "react";
-import { BANDS, ORIGIN_COORDS, SIGNAL_LOST, searchAirports, type Band, type Origin } from "@all-ayes/shared";
+import { BANDS, BAND_IDS, ORIGIN_COORDS, SIGNAL_LOST, searchAirports, type Band, type Origin } from "@all-ayes/shared";
 import { Dividers } from "./icons";
 import "../../styles/phone.css";
 
@@ -60,9 +60,6 @@ export function Plotting({ label = "Plotting…" }: { label?: string }) {
 export function SignalStrip() {
   return <div className="signal-strip" role="status">{SIGNAL_LOST}</div>;
 }
-
-/** The four crew colour bands, in order. */
-const BAND_IDS = [1, 2, 3, 4] as const satisfies readonly Band[];
 
 export function BandSwatches({ value, onChange, taken = [], label = "Your color band" }: { value: Band; onChange: (b: Band) => void; taken?: Band[]; label?: string }) {
   return (

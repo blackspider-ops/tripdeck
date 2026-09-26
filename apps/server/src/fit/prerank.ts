@@ -4,19 +4,20 @@
  * A cheap heuristic, deterministic for a voyage (the only noise is a hash of the voyage id and the port):
  *
  *   wishes     each member's must-have coverage among the port's activities (40 points at full coverage)
- *   cost       a rough all-in share (cheapest route option, cheapest stay that sleeps the crew split evenly, the group
+ *   cost       a rough all-in share (cheapest route option, cheapest stay for the whole crew — as many rooms/units of it
+ *              as the crew needs — split evenly, the group
  *              moments and two picks) against the member's cap: up to +25 well under it, down to −70 far over it
  *   dealbreakers  −25 for each one the port's best flight breaks; −30 when every stay is a hostel for a no-hostel
  *              member; −8 for hills when long walks are out
  *   places     +18 for a place the member would love (the port, its region or state), −35 for one they'd skip
  *   season     −6 for beach / outdoors wishes in a port's cold months
  *
- * A port's score is the crew's mean plus half its lowest member (a port one member can't do sinks). Ports whose
- * stays can't sleep the crew are left out. Caps never leave this function: only the ranking does.
+ * A port's score is the crew's mean plus half its lowest member (a port one member can't do sinks). Ports with no
+ * usable stay are left out. Caps never leave this function: only the ranking does.
  */
 import type { City, CityId, Dataset } from "@all-ayes/shared";
 import { indexOf } from "../data/loader.js";
-import { chooseFlight, type PricingMember } from "./pricing.js";
+import { chooseFlight, lodgingTotalCents, type PricingMember } from "./pricing.js";
 import { hash01 } from "./flights.js";
 
 /** How many ports the table puts on the chart from a region / anywhere scope. */
@@ -53,13 +54,13 @@ function memberScore(ds: Dataset, c: City, m: PricingMember, windowId: string, c
   if (!flight) score -= 60;
   score -= 25 * violates.length;
 
-  const stays = ix.hotelsOf(c._id).filter((h) => h.sleeps >= crewSize);
+  const stays = ix.hotelsOf(c._id);
   const usable = noHostel ? stays.filter((h) => h.stayType !== "hostel") : stays;
   if (noHostel && m.brief.dealbreakers.includes("hostel") && stays.length && !usable.length) score -= 30;
-  const nightly = Math.min(...(usable.length ? usable : stays).map((h) => h.nightlyCents));
+  const lodging = Math.min(...(usable.length ? usable : stays).map((h) => lodgingTotalCents(h, crewSize, win?.nights ?? 4)));
   const groups = acts.filter((a) => a.role === "group").slice(0, 2).reduce((s, a) => s + a.priceCents, 0);
   const picks = acts.filter((a) => a.role === "pick").map((a) => a.priceCents).sort((a, b) => a - b).slice(0, 2).reduce((s, x) => s + x, 0);
-  const est = (flight?.priceCents ?? 0) + (nightly * (win?.nights ?? 4)) / crewSize + groups + picks;
+  const est = (flight?.priceCents ?? 0) + lodging / crewSize + groups + picks;
   const ratio = est / Math.max(1, m.brief.capCents);
   score += ratio <= 1 ? 10 + 15 * (1 - ratio) : -10 - 40 * Math.min(1.5, ratio - 1);
 
@@ -79,7 +80,7 @@ export function rankPorts(ds: Dataset, crew: PricingMember[], cityIds: CityId[],
   for (const id of cityIds) {
     const c = ix.city.get(id);
     if (!c || !crew.length) continue;
-    if (!ix.hotelsOf(id).some((h) => h.sleeps >= crew.length && !(noHostel && h.stayType === "hostel"))) continue; // no plan possible
+    if (!ix.hotelsOf(id).some((h) => !(noHostel && h.stayType === "hostel"))) continue; // no plan possible
     let best = -Infinity;
     for (const w of windows) {
       const s = crew.map((m) => memberScore(ds, c, m, w, crew.length, noHostel));

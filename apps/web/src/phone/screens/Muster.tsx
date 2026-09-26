@@ -20,7 +20,7 @@ export default function Muster() {
   const joinCode = useTripSelector((s) => s.trip!.joinCode);
   const navigate = useNavigate();
   const joinUrl = `${location.origin}/t/${joinCode}`;
-  // TR1-001: the invite links live here, not inside the add-friend form, so filling the crew to 4 (which hides the
+  // TR1-001: the invite links live here, not inside the add-friend form, so filling the crew to MAX_CREW (which hides the
   // form) can't take the link with it. Kept for this tab so leaving Muster and coming back still shows them.
   const [invites, keepInvite] = useInvites(session.tripId);
   const [justMade, setJustMade] = useState<string | null>(null);

@@ -2,7 +2,8 @@
 
 export type TripStatus = "BRIEFING" | "AT_TABLE" | "DRY_RUN" | "SEALING" | "BOOKED" | "VOIDED";
 export type Role = "organizer" | "member" | "absent";
-export type Band = 1 | 2 | 3 | 4;
+/** A crew color band: one per member, 1–12 (MAX_CREW). */
+export type Band = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 /** A home airport's IATA code (ORIGINS in constants.ts lists the ones a crew can fly from). */
 export type Origin = string;
 /** A port's id (its three-letter code in the dataset: "LIS", "BCN", "NYC", …). */
@@ -181,7 +182,14 @@ export interface Plan {
 }
 /** What anyone may see about a plan (doc 04 §7.2 table:decided). */
 export interface PlanPublic {
-  planId: string; label?: "A" | "B"; cityId: CityId; cityName: string; hotelName: string; neighborhood: string;
+  planId: string; label?: "A" | "B"; cityId: CityId; cityName: string;
+  /** The stay's name; "Casa Alfama ×3" when the crew needs several rooms/units of it (see `rooms`). */
+  hotelName: string; neighborhood: string;
+  /**
+   * Rooms/units booked at the stay when the crew outnumbers what one sleeps (ceil(crew / sleeps)); absent for one.
+   * A count only, from public facts (crew size and the listing): never who sleeps where.
+   */
+  rooms?: number;
   hotelId: string; hotelLat: number; hotelLng: number; dateWindowId: string;
   /**
    * The group total as a range computed from public facts only (S2-002): the lowest and highest total any crew of

@@ -1,7 +1,7 @@
 /**
  * Demo voyages for the /demo page (docs/09):
  *
- *   seedRandom (default)  a fresh crew each time: 3–4 people from a list of names, random home airports, budget
+ *   seedRandom (default)  a fresh crew each time: 3–8 people from a list of names, random home airports, budget
  *                         bands and caps, must-haves, dealbreakers and notes, 3 random ports, 1–3 random windows, and
  *                         one member away with a standing instruction. Deterministic for a given seed.
  *   seedExpo              the scripted Expo scenario (docs/07-dataset-spec.md §8): Rae (organizer, ATL), Maya (ORD),
@@ -78,6 +78,10 @@ const TRIP_NAMES = ["Long weekend", "The big one", "Crew escape", "Group trip", 
 /** Budget bands (dollars): the cap is drawn inside one, on the dial's $50 steps. */
 const BANDS_USD: [number, number][] = [[700, 1100], [1100, 1700], [1700, 2600]];
 
+/** A random demo crew has 3–8 people (MAX_CREW allows 12; 8 keeps the demo table short). */
+export const RANDOM_CREW_MIN = 3;
+export const RANDOM_CREW_MAX = 8;
+
 /** mulberry32: a small, fast PRNG — the whole random voyage follows from its seed. */
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
@@ -94,7 +98,7 @@ export function mulberry32(seed: number): () => number {
 export function randomVoyagePlan(seed: number, cityIds: string[], windowIds: string[]) {
   const r = mulberry32(seed);
   const pick = <T>(xs: readonly T[]) => xs[Math.floor(r() * xs.length) % xs.length];
-  const size = 3 + Math.floor(r() * 2); // 3–4
+  const size = RANDOM_CREW_MIN + Math.floor(r() * (RANDOM_CREW_MAX - RANDOM_CREW_MIN + 1)); // 3–8
   const shuffled = [...NAMES];
   for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
   const ports = sample(cityIds, 3, r);

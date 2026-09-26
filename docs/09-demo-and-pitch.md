@@ -7,7 +7,7 @@ Roles at Expo: **Person A = Narrator** (talks, hands the judge the headset — t
 ## 1. The 3‑minute Expo demo
 
 **Two kinds of demo voyage.** `/demo` has two buttons:
-- **Seed a random voyage** (the default, `POST /api/demo/seed` or `?kind=random`): a fresh crew every time — 3–4
+- **Seed a random voyage** (the default, `POST /api/demo/seed` or `?kind=random`): a fresh crew every time — 3–8
   people drawn from a list of names, random home airports (any of the ~37), random budget bands and caps,
   must‑haves, dealbreakers and notes, 3 random ports, 1–3 random date windows, and one member away with a standing
   instruction. The table lands wherever that crew's terms lead. `?seed=<n>` replays one exactly

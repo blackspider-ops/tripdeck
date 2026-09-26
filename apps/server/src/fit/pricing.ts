@@ -219,22 +219,47 @@ function legsAndFlags(ds: Dataset, crew: PricingMember[], placed: Placed[], hote
   return { days, memberFlags };
 }
 
+/**
+ * Rooms (or units) of one stay a crew needs: ceil(crew / sleeps). A crew that fits in one (every crew of ≤3, and ≤4 in
+ * an apartment) books one, exactly as before; a crew of 9 in a 3-bed hotel books three of the same stay. The count is
+ * public (crew size and the listing are), never who sleeps where.
+ */
+export function roomsFor(hotel: Pick<HotelOption, "sleeps">, crewSize: number): number {
+  return Math.max(1, Math.ceil(Math.max(1, crewSize) / Math.max(1, hotel.sleeps)));
+}
+
+/** The whole crew's lodging bill for a stay: rooms × nightly × nights. */
+export function lodgingTotalCents(hotel: Pick<HotelOption, "sleeps" | "nightlyCents">, crewSize: number, nights: number): number {
+  return hotel.nightlyCents * nights * roomsFor(hotel, crewSize);
+}
+
+/**
+ * The fair lodging split: everyone pays floor(total / crew), the organizer also carries the few-cent remainder, so the
+ * shares sum to the bill exactly. Same rule for one room or several (rooms only change the total).
+ */
+export function lodgingShares(totalCents: number, memberIds: string[], organizerId: string): Map<string, number> {
+  const n = Math.max(1, memberIds.length);
+  const base = Math.floor(totalCents / n);
+  const remainder = totalCents - base * n;
+  return new Map(memberIds.map((id) => [id, base + (id === organizerId ? remainder : 0)]));
+}
+
+/** "Casa Alfama" for one room, "Casa Alfama ×3" for three. */
+export const stayName = (hotel: Pick<HotelOption, "name">, rooms: number) => (rooms > 1 ? `${hotel.name} ×${rooms}` : hotel.name);
+
 /** Step 6: one member's share lines, fit, coverage, flags and satisfaction. The organizer carries the lodging remainder. */
 function memberView(
   m: PricingMember,
-  ctx: { cityId: CityId; airport: string; windowId: string; hotel: HotelOption; nights: number; crewSize: number; organizerId: string; flight: FlightChoice; placed: Placed[]; flags: PlanFlag[] },
+  ctx: { cityId: CityId; airport: string; windowId: string; hotel: HotelOption; nights: number; crewSize: number; rooms: number; lodgingShare: number; flight: FlightChoice; placed: Placed[]; flags: PlanFlag[] },
 ): MemberPlanView {
-  const { airport, windowId, hotel, nights, crewSize, organizerId } = ctx;
+  const { airport, windowId, hotel, nights, crewSize, rooms } = ctx;
   const { flight, violates } = ctx.flight;
-  const lodgingTotal = hotel.nightlyCents * nights;
-  const baseShare = Math.floor(lodgingTotal / crewSize);
-  const remainder = lodgingTotal - baseShare * crewSize;
   const fraction = crewSize === 1 ? "" : ` ${["", "", "½", "⅓", "¼"][crewSize] ?? `1/${crewSize}`}`;
 
   const lines: ShareLine[] = [];
   // a home port has no flight line (nothing to pay); the label names the port's airport (NYC → JFK)
   if (flight && !flight.homePort) lines.push({ kind: "flight", label: `Flight ${m.origin}⇄${airport}`, amountCents: flight.priceCents });
-  lines.push({ kind: "lodging", label: `${hotel.name}${fraction} ×${nights}n`, amountCents: baseShare + (m.memberId === organizerId ? remainder : 0) });
+  lines.push({ kind: "lodging", label: `${stayName(hotel, rooms)}${rooms > 1 ? "," : ""}${fraction} ×${nights}n`, amountCents: ctx.lodgingShare });
   const attended = ctx.placed.filter((p) => p.attendees.includes(m.memberId)).sort((x, y) => x.day - y.day || x.start - y.start);
   for (const p of attended) lines.push({ kind: "activity", label: p.a.short, amountCents: p.a.priceCents });
   const amountCents = lines.reduce((s, l) => s + l.amountCents, 0);
@@ -285,8 +310,10 @@ export function buildPlan(ds: Dataset, crew: PricingMember[], cityId: CityId, wi
   const placed = placePicks(ds, cityId, crew, freeFrom, placeGroupMoments(ds, cityId, crew, crewFrom), placeable);
   const { days, memberFlags } = legsAndFlags(ds, crew, placed, hotelPt, day1Date, arrivals, shown);
   const airport = indexOf(ds).city.get(cityId)?.airport?.code ?? cityId;
+  const rooms = roomsFor(hotel, crew.length);
+  const shares = lodgingShares(lodgingTotalCents(hotel, crew.length, win.nights), crew.map((m) => m.memberId), organizerId);
   const members = crew.map((m) => memberView(m, {
-    cityId, airport, windowId, hotel, nights: win.nights, crewSize: crew.length, organizerId,
+    cityId, airport, windowId, hotel, nights: win.nights, crewSize: crew.length, rooms, lodgingShare: shares.get(m.memberId) ?? 0,
     flight: flights.get(m.memberId) ?? { flight: null, violates: ["no_flight"] }, placed, flags: memberFlags.get(m.memberId) ?? [],
   }));
 
@@ -307,14 +334,16 @@ const hotelSlug = (hotelId: string) => hotelId.split("-h-")[1];
 /** O2-043: one cached formatter (shared format.ts), not a new one per day label. */
 const labelFor = (startDate: string, offset: number): string => dayLabel(startDate, offset);
 
-/** All candidate plans, best first (the "chart book"). */
+/**
+ * All candidate plans, best first (the "chart book"). Every stay is a candidate: a crew larger than a stay sleeps books
+ * several rooms/units of it (roomsFor), and the dearer bill simply scores lower.
+ */
 export function buildChartBook(ds: Dataset, crew: PricingMember[], cityIds: CityId[], limit = 12): Plan[] {
   const noHostel = crew.some((m) => m.brief.dealbreakers.includes("hostel"));
   const plans: Plan[] = [];
   for (const windowId of usableWindows(ds, crew)) {
     for (const cityId of cityIds) {
       for (const h of indexOf(ds).hotelsOf(cityId)) {
-        if (h.sleeps < crew.length) continue;
         if (noHostel && h.stayType === "hostel") continue;
         plans.push(buildPlan(ds, crew, cityId, windowId, h));
       }
@@ -414,7 +443,7 @@ export function publicTotalRange(ds: Dataset, p: Plan): { lowCents: number; high
     reach = next;
   }
   const [lo, hi] = reach.get((1 << pickIds.length) - 1) ?? [0, 0];
-  const fixed = hotel.nightlyCents * win.nights + n * groupEach;
+  const fixed = lodgingTotalCents(hotel, n, win.nights) + n * groupEach;
   const step = PUBLIC_RANGE_STEP_CENTS, off = PUBLIC_RANGE_OFFSET_CENTS;
   return {
     lowCents: Math.floor((fixed + lo - off) / step) * step + off,
@@ -492,8 +521,10 @@ export function toPublic(ds: Dataset, p: Plan, label?: "A" | "B"): PlanPublic {
   const h = mustFind(ix.hotel.get(p.hotelId), "hotel", p.hotelId);
   const city = mustFind(ix.city.get(p.cityId), "city", p.cityId);
   const days = publicDays(ds, p);
+  const rooms = roomsFor(h, p.members.length);
   return {
-    planId: p._id, label, cityId: p.cityId, cityName: cityName(ds, p.cityId), hotelName: h.name, neighborhood: h.neighborhood,
+    planId: p._id, label, cityId: p.cityId, cityName: cityName(ds, p.cityId), hotelName: stayName(h, rooms), ...(rooms > 1 ? { rooms } : {}),
+    neighborhood: h.neighborhood,
     hotelId: h._id, hotelLat: h.lat, hotelLng: h.lng, dateWindowId: p.dateWindowId, groupRange: publicTotalRange(ds, p),
     fitsEveryone: p.fitsEveryone, publicFlags: publicPlanFlags(ds, p, days), cityNotes: city.publicFlags,
     cityCenter: { lat: city.centerLat, lng: city.centerLng }, tileRadiusKm: city.tileRadiusKm, days,

@@ -34,7 +34,7 @@ Nothing is seeded into MongoDB. `apps/server/src/demo/seed.ts` (`POST /api/demo/
 ## 1. Conventions
 - Money: **USD cents** in JSON (`priceCents`), dollars in this doc for readability.
 - Flights are **round‑trip, per person**, for date window `W1` unless noted.
-- Hotels: `nightlyCents` is for the **whole unit**; `sleeps` = max people. 4 nights in W1.
+- Hotels: `nightlyCents` is for the **whole unit**; `sleeps` = max people. 4 nights in W1. A crew larger than `sleeps` books `ceil(crew ÷ sleeps)` units of the same stay (a crew of 12 in a 3‑sleeper: 4 units; the plan reads "Casa Alfama ×4"), and the bill (units × nightly × nights) is split evenly with the remainder cents on the organizer (doc 05 §2.1). The Expo crew of 3 fits every stay in one unit, so its numbers are unchanged.
 - Activities: price per person; `durationMin`; `startEarliest`/`startLatest` local time.
 - Coordinates WGS84 (used for Dry Run placement + walking times).
 - `id` format: `<CITY>-<kind>-<slug>`.
@@ -233,7 +233,7 @@ Dataset `overrides` (checked first):
 
 The scripted voyage: Lisbon / Mexico City / Montréal, W1 + W2, this crew. Its briefs lead to Lisbon **by design**
 (the tests and the pitch depend on its numbers); the engine is generic. `/demo` seeds a **random** voyage by default
-(docs/09): 3–4 crew from a list of names, random home airports, budget bands and caps, must‑haves, dealbreakers and
+(docs/09): 3–8 crew from a list of names, random home airports, budget bands and caps, must‑haves, dealbreakers and
 notes, 3 random curated ports, 1–3 random windows, one member away with a standing instruction —
 `seedRandom(helm, seed)` is deterministic for a seed (`?seed=<n>` replays one).
 

@@ -1,7 +1,8 @@
 import type { Band, Dealbreaker, Region, Tag } from "./types.js";
 import airportsJson from "./data/airports.json" with { type: "json" };
 
-export const MAX_CREW = 4;
+/** Organizer + up to 11 (absent seats included). One color band each. */
+export const MAX_CREW = 12;
 export const MAX_WATCHES = 3;
 export const MAX_MUST_HAVES = 3;
 export const MAX_DEALBREAKERS = 3;
@@ -41,13 +42,27 @@ export const DEALBREAKERS: { id: Dealbreaker; label: string }[] = [
   { id: "long_walks", label: "long walks" },
 ];
 
-/** Crew color bands (doc 02 §3.3). */
+/**
+ * Crew color bands (doc 02 §3.3): twelve pigment inks, one per seat. Bands 1–4 are the original four (the Expo crew and
+ * the snapshots use them); 5–12 were chosen for ≥17 ΔE from each other and from the reserved inks (sounding red,
+ * verdigris "fits", wax, wood, brass), and ≥3.9:1 on paper.
+ */
 export const BANDS: Record<Band, { hex: string; name: string }> = {
   1: { hex: "#2F5D8A", name: "Prussian" },
   2: { hex: "#A0522D", name: "Sienna" },
   3: { hex: "#556B2F", name: "Olive" },
   4: { hex: "#7A4E7A", name: "Madder" },
+  5: { hex: "#1F7474", name: "Teal" },
+  6: { hex: "#882840", name: "Carmine" },
+  7: { hex: "#484890", name: "Indigo" },
+  8: { hex: "#8F6B1C", name: "Ochre" },
+  9: { hex: "#A85078", name: "Rose" },
+  10: { hex: "#1F5064", name: "Slate" },
+  11: { hex: "#886868", name: "Rosewood" },
+  12: { hex: "#686850", name: "Terre Verte" },
 };
+/** Every band id, in order (1…MAX_CREW). */
+export const BAND_IDS: readonly Band[] = Object.keys(BANDS).map(Number) as Band[];
 
 export const PALETTE = {
   paper: "#EFE6D2",
