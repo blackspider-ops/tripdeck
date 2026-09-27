@@ -16,8 +16,36 @@ export const PANEL_M = { w: 0.44, h: 0.6 } as const;
 /** The grab bar along the top and the scroll footer along the bottom (px). */
 export const BAR_PX = 76;
 export const FOOT_PX = 96;
-/** Where the panel opens, in the chart's frame (m): right of the chart, raised, a little toward the viewer. */
-export const PANEL_HOME = new THREE.Vector3(0.52, 0.3, 0.14);
+/**
+ * Where the panel opens (user report, Quest 3S: "it should show up somewhere else"): upright, off the table on the
+ * viewer's LEFT, clear of the globe, the pieces, the cloches and the seal chart. Worked out from where the viewer
+ * stands, not the chart's axes (the chart turns the wearer's own seat toward them, which need not be its +z).
+ */
+export const PANEL_PLACE = {
+  /** From the chart's centre, to the viewer's left (m): the table's edge (~0.35) plus ~0.35. */
+  side: 0.7,
+  /** From the chart's centre, toward the viewer (m). */
+  toward: 0.1,
+  /** Height of its centre above the table (m): at least `minUp`, at most `maxUp`, else `belowEye` under the eye. */
+  minUp: 0.35, maxUp: 0.65, belowEye: 0.2,
+  /** Turned toward the viewer from square-on to the table's side (rad, 30°). */
+  turn: Math.PI / 6,
+} as const;
+
+/** The panel's pose for a chart centred at `center` and a viewer at `eye` (world): position and yaw. */
+export function panelHome(center: THREE.Vector3, eye: THREE.Vector3): { at: THREE.Vector3; yaw: number } {
+  const toward = new THREE.Vector3(eye.x - center.x, 0, eye.z - center.z);
+  if (toward.lengthSq() < 1e-6) toward.set(0, 0, 1);
+  toward.normalize();
+  // the viewer faces −toward; their left is up × facing
+  const left = new THREE.Vector3(0, 1, 0).cross(toward.clone().negate()).normalize();
+  const P = PANEL_PLACE;
+  const at = center.clone().addScaledVector(left, P.side).addScaledVector(toward, P.toward);
+  at.y = Math.min(center.y + P.maxUp, Math.max(center.y + P.minUp, eye.y - P.belowEye));
+  // face back along `toward`, then turn toward the viewer (to their right, i.e. −left)
+  const n = toward.clone().multiplyScalar(Math.cos(P.turn)).addScaledVector(left, -Math.sin(P.turn));
+  return { at, yaw: Math.atan2(n.x, n.z) };
+}
 
 export interface SideOpts {
   viewer: Viewer;
@@ -78,11 +106,12 @@ export class SidePanel {
 
   get open() { return this.group.visible; }
 
-  /** Open beside the chart (`anchor` = the chart's frame), turned to face the viewer at `eye`. */
+  /** Open beside the chart (`anchor` = the chart's frame), on the viewer's left, turned toward the viewer at `eye`. */
   openBeside(anchor: THREE.Object3D, eye: THREE.Vector3) {
     anchor.updateMatrixWorld();
-    this.group.position.copy(anchor.localToWorld(this.tmp.copy(PANEL_HOME)));
-    this.face(eye);
+    const { at, yaw } = panelHome(anchor.getWorldPosition(this.tmp), eye);
+    this.group.position.copy(at);
+    this.group.rotation.set(0, yaw, 0);
     this.group.visible = true;
     this.dirty = true;
   }

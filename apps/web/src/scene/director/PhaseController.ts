@@ -74,6 +74,12 @@ export class PhaseController {
       object: cl.dome,
       enabled: () => controls && st() === "DRY_RUN",
       onSelect: () => {
+        if (this.ctx.opts.canVote?.()) {
+          // a seat's headset: one pinch is a vote for this chart (the tally and my mark come back in plan:votes/myVote)
+          sound.play("pencil");
+          this.ctx.store.emit("plan:vote", { planId }, (ack) => { if (!ack.ok) this.ctx.caption("Chart", ack.message, PALETTE.soundingRed); });
+          return;
+        }
         for (const other of this.cloches.values()) void other.lift(other === cl);
         this.pickPending = true; // optimistic lift: undone if the helm refuses the pick
         this.ctx.store.emit("plan:pick", { planId });

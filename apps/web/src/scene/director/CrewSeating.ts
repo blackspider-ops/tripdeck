@@ -10,12 +10,24 @@ import type { DirectorContext } from "./context";
 /** Where the Gallery's "follow the speaker" camera looks: head height above the seat. */
 const CAPTAIN_HEAD_Y = 0.08;
 const CREW_HEAD_Y = 0.06;
+/** During the Seal (SEALING, BOOKED, VOIDED) the pieces step back to this ring so the seal chart lies clear of them
+ *  (user report, Quest 3S: the seal paper clipped into the pieces). Still on the chart (radius 0.35). */
+export const SEAL_RING_R = 0.325;
+
+/** A seat pushed out to at least `r` from the chart's centre (same angle). */
+export function spreadSeat(seat: THREE.Vector3, r: number, out = new THREE.Vector3()): THREE.Vector3 {
+  const d = Math.hypot(seat.x, seat.z);
+  if (d >= r || d < 1e-6) return out.copy(seat);
+  return out.set((seat.x / d) * r, seat.y, (seat.z / d) * r);
+}
 
 export class CrewSeating {
   private pieces = new Map<string, CrewPiece>();
   private rosterKey = "";
   private seats = new Map<string, THREE.Vector3>();
   private lastCrew: CrewPublic[] | null = null;
+  /** The pieces stand back on SEAL_RING_R (the Seal ceremony). */
+  private spread = false;
 
   constructor(private ctx: DirectorContext) {}
 
@@ -32,7 +44,7 @@ export class CrewSeating {
       if (!this.seats.has(id)) { piece.dispose(); this.pieces.delete(id); } // O2-050: free it, not just unlink it
     }
     for (const c of crew) {
-      const seat = this.seats.get(c.memberId)!;
+      const seat = this.seatOf(c.memberId)!;
       let piece = this.pieces.get(c.memberId);
       if (!piece) {
         piece = new CrewPiece(this.ctx.tweens, c.memberId, c.name, BANDS[c.band].hex, c.role === "absent");
@@ -49,6 +61,25 @@ export class CrewSeating {
         piece.setSealed(true);
         if (!instant) { void piece.placeAt(piece.seat.clone(), true); sound.play("click"); }
       } else if (!c.briefSealed) piece.setSealed(false);
+    }
+  }
+
+  private seatOf(id: string): THREE.Vector3 | undefined {
+    const s = this.seats.get(id);
+    return s && this.spread ? spreadSeat(s, SEAL_RING_R) : s;
+  }
+
+  /** Step the pieces back for the Seal ceremony (or home again): a short slide, or at once. */
+  setSpread(on: boolean, instant: boolean) {
+    if (on === this.spread) return;
+    this.spread = on;
+    for (const [id, piece] of this.pieces) {
+      const to = this.seatOf(id);
+      if (!to) continue;
+      const from = piece.group.position.clone();
+      if (instant) { void piece.placeAt(to); continue; }
+      piece.seat.copy(to);
+      void this.ctx.tweens.to(500, (t) => { piece.group.position.lerpVectors(from, to, t); }, undefined, `spread-${id}`).then(() => piece.placeAt(to));
     }
   }
 

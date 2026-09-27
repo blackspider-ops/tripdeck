@@ -16,6 +16,8 @@ export interface DirectorOptions {
   /** Stream Google photoreal 3D tiles into the Dry Run cloches (when a key is configured). Default on; the VR
    *  chart room turns it off on phones (menu "Photoreal cities"). */
   photoreal?: () => boolean;
+  /** This headset is a member's own seat: pinching a cloche votes for it (plan:vote) instead of picking it. */
+  canVote?: () => boolean;
 }
 
 export interface DirectorContext {

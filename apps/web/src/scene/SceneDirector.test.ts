@@ -28,7 +28,7 @@ vi.mock("./Instruments", async () => {
   };
 });
 vi.mock("./audio", () => ({ sound: { play: () => undefined } }));
-vi.mock("./director/CrewSeating", () => ({ CrewSeating: class { sync = parts.crewSync; update() { /* */ } dispose() { /* */ } } }));
+vi.mock("./director/CrewSeating", () => ({ CrewSeating: class { sync = parts.crewSync; setSpread() { /* */ } update() { /* */ } dispose() { /* */ } } }));
 vi.mock("./director/TurnPlayer", () => ({ TurnPlayer: class { sync = parts.turnsSync; dispose() { /* */ } } }));
 vi.mock("./director/PhaseController", () => ({
   PhaseController: class {

@@ -24,8 +24,18 @@ import { alignYaw, rayOnPlane } from "./placement";
 import { pinAt, type PinPort } from "./pins";
 import { seatAngle } from "../shared-ui/seating";
 
-/** The tag on the table's near-right edge that opens and closes the side panel (the log book). */
+/** The tag at the table's near-LEFT corner (as the wearer sees it) that opens and closes the side panel (the log book),
+ *  on the same side the panel opens (SidePanel.panelHome). */
 export const LOG_TAG_LABEL = "Log book";
+/** The log book tag in the chart's frame for a wearer at seat `seatDeg`: 0.27 m toward their seat, 0.25 m to their
+ *  left, tilted up to them. */
+export function logTagPose(seatDeg: number): { x: number; z: number; yaw: number } {
+  const r = (seatDeg * Math.PI) / 180;
+  const sx = Math.cos(r), sz = Math.sin(r);
+  // facing the chart from the seat (−s), the wearer's left is up × (−s) = (−sz, 0, sx)
+  const lx = -sz, lz = sx;
+  return { x: sx * 0.27 + lx * 0.25, z: sz * 0.27 + lz * 0.25, yaw: Math.atan2(sx, sz) };
+}
 /** The alignment step's card (Quest MR, after the chart is laid down). */
 export const ALIGN_TITLE = "Pinch the table corner nearest you";
 /** A held pinch on the globe pins the whole region (ms). */
@@ -109,11 +119,14 @@ export class XRApp {
   private alignCard: PaperMenu;
   /** Quest MR: the chart is down, waiting for "the table corner nearest you". */
   private alignPending = false;
+  /** The corner step was offered this session (it isn't asked again after a Recenter). */
+  private alignAsked = false;
   private viewer: Viewer;
   private pinPorts: PinPort[] | null = null;
   private pendingPin: string | null = null;
   private globePress: { at: THREE.Vector3; moved: boolean } | null = null;
   private lastAsk: string | null = null;
+  private lastStatus: string | undefined;
   onExit?: () => void;
 
   /** `gfx.antialias: false` on phones (XRPage decides from the user agent before the renderer exists). `vrMenu`: this
@@ -121,7 +134,7 @@ export class XRApp {
    *  "Lens spacing"; the Quest / laptop menu is unchanged. */
   constructor(container: HTMLElement, readonly store: TripStore, gfx: { antialias?: boolean; vrMenu?: boolean } = {},
     seat: { viewer: Viewer; rest?: SideOpts["rest"]; api?: SideOpts["api"]; ports?: () => Promise<PinPort[]> } = { viewer: { organizer: true } }) {
-    this.stage = new Stage(container, store, { controls: true, voices: true, speechFallback: true, photoreal: () => this.photoreal }, true, gfx);
+    this.stage = new Stage(container, store, { controls: true, voices: true, speechFallback: true, photoreal: () => this.photoreal, canVote: () => Boolean(this.viewer?.memberId) }, true, gfx);
     const { scene, renderer, anchor } = this.stage;
     // Without this, three renders an immersive session with the flat desk camera (no stereo, no head
     // tracking) and never updates renderer.xr.getCamera(). Harmless while not presenting.
@@ -131,20 +144,23 @@ export class XRApp {
     this.viewer = seat.viewer;
     this.loadPorts = seat.ports ?? null;
     this.placement = new Placement(anchor);
+    // the wearer's own seat faces them when the chart is laid down or recentred (a shared headset: the Organizer's)
+    this.placement.seatDeg = () => this.viewerSeatDeg();
     scene.add(this.placement.reticle);
     this.placement.onPlaced = () => {
       sound.play("paper");
       void this.stage.director.table.unroll();
-      // Quest MR: line the chart up with the real table (co-located crews share its centre and turn it to their seat)
-      if (this.session && !this.vr) this.startAlign();
+      this.placeLogTag();
+      // Quest MR: line the chart up with the real table (co-located crews share its centre and turn it to their seat).
+      // Once per session: after a Recenter the next pinch is for the ring (set it down on the table), not a corner.
+      if (this.session && !this.vr && !this.alignAsked) { this.alignAsked = true; this.startAlign(); }
     };
 
     const origin = typeof location !== "undefined" ? location.origin : "";
     this.panel = new SidePanel(store, { viewer: seat.viewer, rest: seat.rest, api: seat.api, host: typeof location !== "undefined" ? location.host : "", origin });
     scene.add(this.panel.group);
     this.logTag = new PaperButton(this.stage.tweens, LOG_TAG_LABEL, 0.12, 0.028);
-    this.logTag.group.position.set(0.25, 0.03, 0.27);
-    this.logTag.group.rotation.x = -0.75;
+    this.placeLogTag();
     anchor.add(this.logTag.group);
     this.alignCard = new PaperMenu(this.stage.tweens, ALIGN_TITLE, [
       { label: "Skip", onSelect: () => this.endAlign("Skipped. Recenter from the menu any time.") },
@@ -165,7 +181,7 @@ export class XRApp {
     anchor.add(this.debug.group);
 
     this.hailTag = new PaperButton(this.stage.tweens, HAIL_TAG_LABEL, 0.13, 0.026);
-    this.hailTag.group.position.set(-0.25, 0.03, 0.27);
+    this.hailTag.group.position.set(0.25, 0.03, 0.27); // near-right: the log book tag has the near-left corner
     this.hailTag.group.rotation.x = -0.75;
     this.hailTag.group.visible = false;
     anchor.add(this.hailTag.group);
@@ -215,9 +231,14 @@ export class XRApp {
     this.unsubStore = store.subscribe(() => {
       // a headset seat has the organizer's controls only if it is the organizer's seat
       if (this.viewer.memberId) this.viewer.organizer = store.state.trip?.organizerId === this.viewer.memberId;
+      if (this.logTag) this.placeLogTag();
       // the hail card only makes sense while the Captain is still listening (else CAPTAINS_CALLING)
       if (this.hailCard.group.visible && !this.canHail()) this.hailCard.group.visible = false;
       // a headset asking to sit in my seat: the panel opens on it (one tap to answer)
+      // the Dry Run: a seat's headset opens the log book on the Vote page (once per Dry Run)
+      const st = store.state.trip?.status;
+      if (st === "DRY_RUN" && this.lastStatus !== "DRY_RUN" && this.viewer.memberId && this.placement.placed) this.panel.show("vote", this.stage.anchor, this.eye());
+      this.lastStatus = st;
       const ask = store.state.headsetRequest?.requestId ?? null;
       if (ask && ask !== this.lastAsk && this.viewer.memberId && this.placement.placed) this.panel.show(this.panel.state.tab, this.stage.anchor, this.eye());
       this.lastAsk = ask;
@@ -365,6 +386,13 @@ export class XRApp {
     sound.play("click");
     this.endAlign("Lined up. Your piece is on your side of the table.");
     return true;
+  }
+  /** The log book tag to the wearer's near-left corner (their seat can change as the crew musters). */
+  private placeLogTag() {
+    const { x, z, yaw } = logTagPose(this.viewerSeatDeg());
+    const g = this.logTag.group;
+    g.position.set(x, 0.03, z);
+    g.rotation.set(-0.75, yaw, 0, "YXZ");
   }
   private viewerSeatDeg(): number {
     const t = this.store.state.trip;
@@ -635,6 +663,7 @@ export class XRApp {
       this.session = null;
       this.refSpace = null;
       this.alignPending = false;
+      this.alignAsked = false;
       this.alignCard.group.visible = false;
       this.placement.adjusting = false;
       this.placement.stop();

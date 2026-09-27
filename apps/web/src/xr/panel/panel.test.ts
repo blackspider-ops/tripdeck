@@ -204,3 +204,27 @@ describe("side panel views", () => {
     expect(f2.sent.at(-1)).toMatchObject({ ev: "seal:set", body: { bookingId: "b1" } });
   });
 });
+
+describe("voting from the headset (Dry Run)", () => {
+  const shortlist = [{ planId: "pA", label: "A", cityName: "Lisbon" }, { planId: "pB", label: "B", cityName: "Mexico City" }] as never;
+  it("a seat's headset gets a Vote page: A/B buttons with tallies and my vote; a tap sends plan:vote", () => {
+    const s = state({ shortlist, votes: { pA: 2, pB: 1 }, myVote: "pB" }, { status: "DRY_RUN" });
+    const viewer = { memberId: "maya", organizer: false };
+    expect(tabsFor(s, viewer)).toContain("vote");
+    const p = newPanelState(); p.tab = "vote";
+    const f = frame(s, viewer, p);
+    const text = f.g.texts.join(" ");
+    expect(text).toContain("Vote A — Lisbon");
+    expect(text).toContain("2 ayes");
+    expect(text).toContain("✓ Vote B — Mexico City");
+    expect(text).toContain("Your vote: B");
+    f.click("vote:pA");
+    expect(f.sent.at(-1)).toMatchObject({ ev: "plan:vote", body: { planId: "pA" } });
+    f.sent.at(-1)!.ack!({ ok: false, code: "NOPE", message: "Voting has closed." });
+    expect(p.note).toBe("Voting has closed.");
+  });
+  it("a shared headset (no seat) has no Vote page; nor does anyone outside the Dry Run", () => {
+    expect(tabsFor(state({ shortlist }, { status: "DRY_RUN" }), { organizer: true })).not.toContain("vote");
+    expect(tabsFor(state({ shortlist }, { status: "AT_TABLE" }), { memberId: "maya", organizer: false })).not.toContain("vote");
+  });
+});

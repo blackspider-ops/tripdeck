@@ -152,6 +152,8 @@ export class SceneDirector {
       this.globe.setOrigins([HOME_PORT]); // S2-002: one home port, never anyone's own airport
     }
     this.crew.sync(trip.crew, trip.organizerId, instant);
+    // the Seal ceremony: the pieces step back so the seal chart lies clear of them (SealCeremony fits it inside)
+    this.crew.setSpread(trip.status === "SEALING" || trip.status === "BOOKED" || trip.status === "VOIDED", instant);
 
     const allSealed = trip.crew.length > 0 && trip.crew.every((c) => c.briefSealed);
     if (allSealed || trip.status !== "BRIEFING") void this.captain.rise(CAPTAIN_POS, instant);

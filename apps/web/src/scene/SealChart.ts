@@ -10,7 +10,7 @@ import { ease, type Tweens } from "./tween";
 import { sound } from "./audio";
 import { cardText, foldedLetter, hangingTag } from "./props";
 
-const W = 0.3;
+import { SEAL_W as W, SEAL_TILT as TILT } from "./sealLayout";
 const ROW = 0.032;
 /** Rows for a crew of more than COMPACT_FROM: 12 rows fit a sheet that stays on the chart. */
 const COMPACT_FROM = 6;
@@ -169,7 +169,7 @@ export class SealChart {
 
     this.group.add(this.sheet, this.roll);
     this.group.position.set(0, 0.006, -0.01);
-    this.group.rotation.x = -0.18; // lectern tilt: the south (Organizer's) edge lifts off the chart
+    this.group.rotation.x = -TILT; // lectern tilt: the south (Organizer's) edge lifts off the chart
     this.setOpen(0);
   }
 
@@ -257,6 +257,9 @@ export class SealChart {
     this.group.add(tag);
     this.refTag = tag;
   }
+
+  /** The sheet's full length when open (m), before any scale. */
+  get sheetLength() { return this.length; }
 
   dispose() { this.group.removeFromParent(); disposeObject(this.group); }
 }

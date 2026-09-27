@@ -328,6 +328,21 @@ describe("PhaseController", () => {
     expect(reg.charts[0].args[1]).toBe(shortlist[1]);
   });
 
+  it("a seat's headset (canVote): one pinch on a cloche votes for it (plan:vote), lifts nothing; a refusal is captioned", async () => {
+    const s = setup();
+    (s.raw.opts as { canVote?: () => boolean }).canVote = () => true;
+    await go(s, trip("DRY_RUN"));
+    const [, , c2] = s.pc.targets(true, () => "DRY_RUN");
+    c2.onSelect();
+    const call = s.raw.store.emit.mock.calls.at(-1) as unknown as [string, unknown, (r: unknown) => void];
+    expect(call[0]).toBe("plan:vote");
+    expect(call[1]).toEqual({ planId: "p2" });
+    expect(s.raw.store.emit).not.toHaveBeenCalledWith("plan:pick", expect.anything());
+    expect(reg.cloches.every((c) => !(c.lift as ReturnType<typeof vi.fn>).mock.calls.some((a) => a[0] === true))).toBe(true);
+    call[2]({ ok: false, code: "X", message: "Voting has closed." });
+    expect(s.raw.caption).toHaveBeenCalledWith("Chart", "Voting has closed.", expect.any(String));
+  });
+
   it("picking a cloche lifts it and emits plan:pick; cancelPick lowers them once (the helm refused)", async () => {
     const s = setup();
     await go(s, trip("DRY_RUN"));

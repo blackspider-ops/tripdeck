@@ -10,7 +10,7 @@ import {
 import type { ClientState, TripStore } from "../../net/tripStore";
 import { DIGITS, QWERTY, SIZE, applyKey, type PanelUI } from "./PanelUI";
 
-export type Tab = "trip" | "crew" | "terms" | "seal";
+export type Tab = "trip" | "crew" | "terms" | "vote" | "seal";
 
 /** The terms being drafted in the headset (like the phone Brief's draft). */
 export interface Draft {
@@ -93,12 +93,13 @@ export function tabsFor(state: ClientState, viewer: Viewer): Tab[] {
   if (viewer.memberId) {
     tabs.push("terms");
     const st = state.trip?.status;
+    if (st === "DRY_RUN") tabs.push("vote");
     if (st === "SEALING" || st === "BOOKED" || st === "VOIDED") tabs.push("seal");
   }
   return tabs;
 }
 
-const TAB_LABEL: Record<Tab, string> = { trip: "Trip", crew: "Crew", terms: "My terms", seal: "My seal" };
+const TAB_LABEL: Record<Tab, string> = { trip: "Trip", crew: "Crew", terms: "My terms", vote: "Vote", seal: "My seal" };
 
 /** May this headset pin ports on the globe? The organizer, or anyone while crewPins is on; BRIEFING only. */
 export function canPin(state: ClientState, viewer: Viewer): boolean {
@@ -128,6 +129,7 @@ export function drawPanel(ui: PanelUI, p: PanelState, c: PanelCtx) {
   if (p.tab === "trip") tripView(ui, p, c);
   else if (p.tab === "crew") crewView(ui, c);
   else if (p.tab === "terms") termsView(ui, p, c);
+  else if (p.tab === "vote") voteView(ui, p, c);
   else sealView(ui, p, c);
 }
 
@@ -171,6 +173,31 @@ function tripView(ui: PanelUI, p: PanelState, c: PanelCtx) {
     if (!all) ui.small(waitingOnTerms(t.crew.filter((m) => !m.briefSealed).map((m) => m.name)));
     else if (!enough) ui.small("The table needs at least two aboard.");
   }
+}
+
+/** The Two Charts' A/B letter (the plan's own label, else its place in the shortlist). */
+export function planLetter(shortlist: ClientState["shortlist"], planId: string): string {
+  const i = shortlist.findIndex((x) => x.planId === planId);
+  return shortlist[i]?.label ?? (i === 1 ? "B" : "A");
+}
+
+/** Send this seat's vote (plan:vote); a refusal shows under the tabs. */
+export function castVote(c: PanelCtx, planId: string, p?: PanelState) {
+  c.emit("plan:vote", { planId }, (ack) => { if (!ack.ok && p) { p.note = ack.message; c.redraw(); } });
+}
+
+/** The Dry Run vote (a seat's own headset): one big button per chart with its tally; mine is marked. */
+function voteView(ui: PanelUI, p: PanelState, c: PanelCtx) {
+  const s = c.state;
+  ui.heading("Vote for a chart");
+  if (!s.shortlist.length) { ui.text("The two charts are on their way."); return; }
+  for (const plan of s.shortlist) {
+    const n = s.votes[plan.planId] ?? 0;
+    const mine = s.myVote === plan.planId;
+    ui.button(`${mine ? "✓ " : ""}Vote ${planLetter(s.shortlist, plan.planId)} — ${plan.cityName}   (${n} ${n === 1 ? "aye" : "ayes"})`, () => castVote(c, plan.planId, p), { primary: mine, pressed: mine, id: `vote:${plan.planId}` });
+  }
+  ui.small(s.myVote ? `Your vote: ${planLetter(s.shortlist, s.myVote)} — ${s.shortlist.find((x) => x.planId === s.myVote)?.cityName ?? ""}. Tap the other chart to change it.`
+    : "You haven't voted yet. You can also pinch a cloche on the table to vote for it.");
 }
 
 function statusLine(s: ClientState): string {

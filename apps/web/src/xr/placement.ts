@@ -31,6 +31,19 @@ export function alignYaw(center: THREE.Vector3, corner: THREE.Vector3, seatDeg: 
   return Math.atan2(corner.x - center.x, corner.z - center.z) - Math.atan2(Math.cos(r), Math.sin(r));
 }
 
+/**
+ * The chart's yaw with the seat at `seatDeg` pointing straight at the viewer's eye (the seat nearest them). Depends only
+ * on where the chart and the eye are, so recentring twice gives the same turn.
+ */
+export function faceSeatYaw(center: THREE.Vector3, eye: THREE.Vector3, seatDeg: number): number {
+  return normAngle(alignYaw(center, eye, seatDeg));
+}
+function normAngle(a: number): number {
+  while (a > Math.PI) a -= Math.PI * 2;
+  while (a <= -Math.PI) a += Math.PI * 2;
+  return a;
+}
+
 /** Where a ray meets the horizontal plane y = `y`, or null (parallel, or behind the ray). */
 export function rayOnPlane(ray: THREE.Ray, y: number): THREE.Vector3 | null {
   const out = new THREE.Vector3();
@@ -146,6 +159,10 @@ export class Placement {
    *  the ring can move it onto the real table (docs/03 §4). Ends by itself after ADJUST_MS. */
   adjusting = false;
   onPlaced?: () => void;
+  /** The wearer's own seat angle (seating.ts; 90 = the Organizer's, the chart's +z). The chart is laid down and
+   *  recentred with THIS seat toward the viewer, never whichever seat happens to sit at +z (user report: "the recenter
+   *  actually goes to Hana's view"). */
+  seatDeg: () => number = () => 90;
 
   constructor(private target: THREE.Object3D) {
     const ink = new THREE.MeshBasicMaterial({ color: PALETTE.ink, transparent: true, opacity: 0.85 });
@@ -313,8 +330,10 @@ export class Placement {
       this.dropAnchor();
       if (this.session) this.wantAnchorAt = at.clone(); // world-lock the fallback spot too
     }
-    // the Organizer sits "south": the table's +z points at the user
-    this.putAt(at, Math.atan2(camPos.x - at.x, camPos.z - at.z));
+    // adjusting after a Recenter: the chart only slides onto the table; its turn (the wearer's seat toward them, or the
+    // alignment) is kept. The first lay-down turns the wearer's own seat toward them.
+    const wasAdjusting = this.adjusting;
+    this.putAt(at, wasAdjusting ? this.yaw : faceSeatYaw(at, camPos, this.seatDeg()));
     this.target.visible = true;
     this.reticle.visible = false;
     this.placed = true;
@@ -336,7 +355,8 @@ export class Placement {
     camera.getWorldPosition(eye);
     fwd.applyQuaternion(camera.getWorldQuaternion(new THREE.Quaternion()));
     const tableY = this.placed ? this.target.position.y : undefined;
-    const { at, yaw } = snapInFront(eye, fwd, tableY);
+    const { at } = snapInFront(eye, fwd, tableY);
+    const yaw = faceSeatYaw(at, eye, this.seatDeg());
     // the old anchor would pull the chart back to where it was
     this.dropAnchor();
     this.putAt(at, yaw);

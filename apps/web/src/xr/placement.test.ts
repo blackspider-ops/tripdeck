@@ -378,3 +378,86 @@ describe("Placement: world-locked once down", () => {
     expect(t2.position.x).toBeCloseTo(0.1, 9);
   });
 });
+
+// User report (Quest 3S): "after Recenter the chart turns 90°" / "the recenter actually goes to Hana's view". Recenter
+// turned the chart's +z (the seat at 90°) to the viewer, whoever sat there, instead of the wearer's own seat.
+import { faceSeatYaw } from "./placement";
+import { seatAngle } from "../shared-ui/seating";
+import { GlobeSpin } from "../scene/globeSpin";
+import type { CrewPublic } from "@all-ayes/shared";
+
+describe("recenter keeps the wearer's own seat toward them", () => {
+  const crew5 = ["org", "hana", "ivo", "june", "kai"].map((id, i) => ({ memberId: id, name: id, role: "member", band: ((i % 3) + 1) as 1, briefSealed: true })) as unknown as CrewPublic[];
+  /** The world direction (flat) from the chart's centre to the seat at `deg`, with the chart turned by `yaw`. */
+  const seatDir = (deg: number, yaw: number) => {
+    const r = (deg * Math.PI) / 180;
+    return new THREE.Vector3(Math.cos(r), 0, Math.sin(r)).applyAxisAngle(new THREE.Vector3(0, 1, 0), yaw);
+  };
+  const toEye = (at: THREE.Vector3, eye: THREE.Vector3) => eye.clone().sub(at).setY(0).normalize();
+
+  it("faceSeatYaw points each member's seat (5 aboard) straight at the eye", () => {
+    const at = new THREE.Vector3(0.3, 0.74, -0.6), eye = new THREE.Vector3(-0.2, 1.5, 0.1);
+    for (const m of crew5) {
+      const deg = seatAngle(crew5, "org", m.memberId);
+      expect(seatDir(deg, faceSeatYaw(at, eye, deg)).dot(toEye(at, eye)), m.memberId).toBeCloseTo(1, 9);
+    }
+    // the organizer's seat (90°) keeps the old behaviour: +z at the viewer
+    expect(faceSeatYaw(at, eye, 90)).toBeCloseTo(Math.atan2(eye.x - at.x, eye.z - at.z), 9);
+  });
+
+  it("Placement.recenter: Hana's headset gets Hana's seat, not whoever sits at +z; twice gives the same turn", async () => {
+    const target = new THREE.Group();
+    const p = new Placement(target);
+    const hana = seatAngle(crew5, "org", "hana");
+    expect(hana).not.toBe(90);
+    p.seatDeg = () => hana;
+    const { s } = session("yes");
+    await p.start(s);
+    const cam = camera(); cam.position.set(1, 1.6, 0.5); cam.rotation.set(0, 0.7, 0); cam.updateMatrixWorld();
+    p.recenter(cam, s);
+    const yaw1 = target.rotation.y;
+    const eye = cam.getWorldPosition(new THREE.Vector3());
+    expect(seatDir(hana, yaw1).dot(toEye(target.position, eye))).toBeCloseTo(1, 6);
+    p.recenter(cam, s);
+    expect(target.rotation.y).toBeCloseTo(yaw1, 9);
+    expect(p.currentYaw).toBeCloseTo(yaw1, 9);
+  });
+
+  it("setting it down on the ring after a Recenter keeps the turn (no 90° jump)", async () => {
+    const target = new THREE.Group();
+    const p = new Placement(target);
+    p.seatDeg = () => 20;
+    const { s } = session("yes");
+    await p.start(s);
+    p.recenter(camera(), s);
+    const yaw = target.rotation.y;
+    // a surface under the ring, a pinch aimed at it
+    const ring = new THREE.Vector3(0.3, 0.74, -0.8);
+    p.reticle.matrix.makeTranslation(ring.x, ring.y, ring.z);
+    p.reticle.visible = true;
+    const eye = new THREE.Vector3(0, 1.6, 0);
+    expect(await p.place(camera(), new THREE.Ray(eye, ring.clone().sub(eye).normalize()))).toBe(true);
+    expect(target.rotation.y).toBeCloseTo(yaw, 9);
+  });
+});
+
+describe("the globe's spin never turns the chart", () => {
+  it("drags, flicks and inertia change only the globe's spin/tilt groups", () => {
+    const root = new THREE.Group(); root.rotation.set(0, 0.4, 0); root.position.set(0.2, 0.74, -0.6);
+    const stand = new THREE.Group(), tilt = new THREE.Group(), spin = new THREE.Group();
+    tilt.position.y = 0.2;
+    root.add(stand); stand.add(tilt); tilt.add(spin);
+    root.updateMatrixWorld(true);
+    const before = { root: root.quaternion.clone(), stand: stand.quaternion.clone(), pos: root.position.clone() };
+    const g = new GlobeSpin(stand, tilt, spin, 0.16);
+    const onGlobe = (a: number) => stand.localToWorld(new THREE.Vector3(Math.sin(a) * 0.16, 0.2, Math.cos(a) * 0.16));
+    g.grabAt(onGlobe(0), 0);
+    for (let i = 1; i <= 10; i++) g.dragTo(onGlobe(i * 0.2), i * 16);
+    g.release(170);
+    for (let i = 0; i < 100; i++) g.tick(1 / 60);
+    expect(spin.rotation.y).not.toBe(0);
+    expect(root.quaternion.equals(before.root)).toBe(true);
+    expect(stand.quaternion.equals(before.stand)).toBe(true);
+    expect(root.position.equals(before.pos)).toBe(true);
+  });
+});
