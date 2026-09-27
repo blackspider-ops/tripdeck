@@ -124,3 +124,7 @@
   .lp-way { grid-template-columns: 1fr; }
 }
 @media (max-width: 420px) { .lp-nav__link { display: none; } }
+
+/* the Quest start page (/xr): bigger targets for pinch and ray */
+.lp--quest .lp-btn { font-size: 22px; padding: 18px 30px; min-height: 64px; }
+.lp--quest .lp-hero__quest, .lp--quest .lp-hero__back { font-size: 18px; }

@@ -11,6 +11,8 @@ import { firstFreeBand } from "../phone/components/ui";
 import { PinPad } from "../phone/components/PinPad";
 import { passkeysUsable, pinOk } from "./questMode";
 import "./xr.css";
+import "../phone/screens/landing.css";
+import { ChartTable, Logo } from "../phone/screens/Landing";
 
 /** How often the headset asks whether its seat request was answered. */
 export const ATTACH_POLL_MS = 1500;
@@ -25,22 +27,42 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Q-1: Start a trip · Join a trip (· back to the voyage this headset is on). */
+/** Q-1: Start a trip · Join a trip (· back to the voyage this headset is on), with the landing page's hero. */
 export default function QuestStart() {
   const last = lastJoinCode();
   const seat = last ? loadSession(last) : null;
   return (
-    <Shell>
-      <h1>The chart room</h1>
-      <p>Plan a trip with your crew around a chart on your real table.</p>
-      <div className="cr-choices">
-        <Link className="cr-btn primary block" to="/xr/new">Start a trip</Link>
-        <Link className="cr-btn block" to="/xr/join">Join a trip</Link>
-        {seat ? <Link className="cr-btn block" to={`/t/${seat.joinCode}/xr`}>Back to voyage <span className="mono">{seat.joinCode}</span></Link> : null}
-      </div>
-      <p className="muted">Starting here makes this headset your own seat. Friends join with their phones or their own headsets.</p>
-      <p className="muted"><Link to="/xr/code">Pair with a headset code instead</Link> (a shared headset that shows the table, never anyone's terms).</p>
-    </Shell>
+    <div className="lp lp--quest">
+      <header className="lp-nav">
+        <Link to="/" className="lp-nav__home" aria-label="Tripdeck home"><Logo /></Link>
+      </header>
+      <main>
+        <section className="lp-hero" aria-labelledby="q-h">
+          <div className="lp-hero__words">
+            <p className="lp-eyebrow">On your Meta Quest</p>
+            <h1 id="q-h" className="lp-hero__title">Your table is the chart room.</h1>
+            <p className="lp-hero__lede">
+              Start a trip or join your crew's. The chart lies down on the table in front of you, the mates argue it
+              out, and your own terms and seal stay in the headset.
+            </p>
+            <div className="lp-hero__cta">
+              <Link to="/xr/new" className="lp-btn">Start a trip</Link>
+              <Link to="/xr/join" className="lp-btn lp-btn--ghost">Join a trip</Link>
+            </div>
+            {seat ? (
+              <p className="lp-hero__back">
+                <Link to={`/t/${seat.joinCode}/xr`} className="lp-link">Back to your trip <span className="lp-mono">{seat.joinCode}</span></Link>
+              </p>
+            ) : null}
+            <p className="lp-hero__quest">
+              Starting here makes this headset your own seat. Friends join with their phones or their own headsets.
+              Only watching? <Link to="/xr/code" className="lp-link">Pair with a headset code</Link>.
+            </p>
+          </div>
+          <ChartTable className="lp-hero__art" />
+        </section>
+      </main>
+    </div>
   );
 }
 

@@ -14,7 +14,7 @@ const STEPS = [
 
 const WORKS_WITH = ["Meta Quest", "Gemini", "ElevenLabs", "MongoDB Atlas", "Backboard", "Visa Developer sandbox"] as const;
 
-function Logo({ className }: { className?: string }) {
+export function Logo({ className }: { className?: string }) {
   return (
     <picture className={className}>
       <source srcSet="/logo-light.svg" media="(prefers-color-scheme: dark)" />
@@ -136,7 +136,7 @@ export default function Landing() {
 }
 
 /** The hero picture: a chart table seen from above, the route pencilled between ports, three mates' cards and a cloche. */
-function ChartTable({ className }: { className?: string }) {
+export function ChartTable({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 480 440" role="img" aria-label="A chart table from above: a route pencilled between three ports, three mates' cards around it and a small city under glass">
       <ellipse cx="240" cy="236" rx="222" ry="190" className="art-wood" />
