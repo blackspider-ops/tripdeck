@@ -199,7 +199,7 @@ function SealLedger() {
   ];
   return (
     <figure className="lp-ledger" aria-label="Example: three shares, two sealed, one waiting, so nothing is charged yet">
-      <div className="lp-ledger__head"><span>Lisbon, 4 nights</span><span className="lp-mono">AA-LIS</span></div>
+      <div className="lp-ledger__head"><span>Lisbon, 4 nights</span><span className="lp-mono">TD-LIS</span></div>
       <table>
         <tbody>
           {rows.map((r) => (
