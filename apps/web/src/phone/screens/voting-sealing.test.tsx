@@ -94,6 +94,26 @@ describe("DryRun vote (L1-003)", () => {
   });
 });
 
+describe("DryRun: the crew's majority picks (no organizer privilege)", () => {
+  it("both charts get a vote button with its city and tally; nobody gets a Pick button", async () => {
+    await mount(<DryRun />, { trip: trip(), shortlist, votes: { "MEX-1": 1, "LIS-1": 2 } }); // m1 is the organizer
+    expect(screen.getByRole("button", { name: /vote a — mexico city \(1\)/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /vote b — lisbon \(2\)/i })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^pick/i })).toBeNull();
+    expect(screen.getByText("The crew's majority picks.")).toBeTruthy();
+    expect(screen.queryByText(/organizer makes the final pick/i)).toBeNull();
+  });
+
+  it("shows X of N have voted, whose mate voted (never why), the countdown and the tie-break note", async () => {
+    const board = { voted: 3, eligible: 4, mates: ["Jae"], note: "It's a tie, so the chart that fits more of the crew's terms wins: Lisbon." };
+    await mount(<DryRun />, { trip: trip(), shortlist, board, autoPick: { planId: "LIS-1", at: Date.now() + 10_000 } });
+    expect(screen.getByText(/have voted/).textContent).toBe("3 of 4 have voted.");
+    expect(screen.getByText("Jae's mate voted.")).toBeTruthy();
+    expect(screen.getByText(/It's a tie, so the chart that fits more/)).toBeTruthy();
+    expect(screen.getByText(/The crew chose Lisbon\. Picking it in/)).toBeTruthy();
+  });
+});
+
 describe("DryRun chart cards: where the prices come from (docs/12)", () => {
   it("a live chart says \"Live prices\"; an estimated or older one says \"Estimated\"", async () => {
     const live = { ...(chart("MEX-1", "A", "Mexico City") as object), priceSource: "live", priceFeed: "sandbox" } as never;

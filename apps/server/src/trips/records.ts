@@ -62,6 +62,12 @@ export interface TripRec {
   negotiation: { watch: number; running: boolean; seq: number; round?: number; turns: Turn[] };
   shortlistIds?: [string, string];
   votes: Record<string, string>; autoPick?: { planId: string; at: number } | null; chosenPlanId?: string; bookingId?: string; attempt: number;
+  /**
+   * The crew's majority picks. `mateVotes`: away seats whose mate voted per their terms; `mateAbstain`: away seats
+   * whose mate abstained (both charts fit them), so they don't count toward the majority; `voteNote`: the public
+   * tie-break announcement. Absent on older docs.
+   */
+  mateVotes?: string[]; mateAbstain?: string[]; voteNote?: string | null;
   /** WP-07 follow-up: table meetings started on this voyage (capped by TABLE_RUNS_MAX). Absent on older docs = 0. */
   tableRuns?: number;
   /**

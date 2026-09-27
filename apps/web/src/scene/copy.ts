@@ -6,7 +6,7 @@ import {
 } from "@all-ayes/shared";
 
 /** Speaker name on the caption card for the app's own lines (phase captions, rejections). */
-export const NARRATOR = "All Ayes";
+export const NARRATOR = "Tripdeck";
 
 /** Caption for a phase, or nothing (the table's own lines speak for AT_TABLE). */
 export function phaseCaption(trip: TripState): string | undefined {

@@ -44,7 +44,7 @@ describe("all-or-nothing seal (doc 06 §10)", () => {
     expect(b.status).toBe("CAPTURED");
     expect(sim.calls.capture).toBe(3);
     expect(results).toEqual([{ status: "CAPTURED" }]);
-    expect(b.reference).toMatch(/^AA-LIS-[A-Z2-9]{4}$/);
+    expect(b.reference).toMatch(/^TD-LIS-[A-Z2-9]{4}$/);
   });
 
   it("2. one lifts their seal → all voided at the all-set point, nothing authorized, no capture", async () => {

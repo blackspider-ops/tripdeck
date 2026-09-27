@@ -1,98 +1,110 @@
-# All Ayes
+<p align="center"><img src="apps/web/public/logo.svg" alt="Tripdeck" width="360"></p>
 
-**Everyone's in, or nobody pays.** *Send your mate to the table.*
+# Tripdeck
 
-Group trips die in the group chat: nobody wants to say "too expensive", and one person ends up fronting the money. In All Ayes each friend privately briefs their own **mate** (an AI advocate) with their real budget and wishes. The mates negotiate out loud around a paper globe in a VR chart room (an iPhone clamped into a Samsung Gear VR shell; on a Meta Quest 3 it sits on your real table in mixed reality), show the two best trips as miniature cities playing out a day (**Dry Run**), then book with an **all‑or‑nothing checkout**: each share is paid by a Visa agent card capped at that friend's private limit, and if any share fails, nobody is charged.
+**Everyone's in, or nobody pays.**
 
-Built for HackGT 13. Full specs in [`docs/`](docs/00-README.md).
+Live at **[tripdeck.tech](https://tripdeck.tech)**. Built at HackGT 13.
 
-A crew is the organizer plus up to 11 friends (12 seats, absent friends included), each with their own colour band, mate and voice. Bigger crews book several rooms of one stay ("Casa Alfama ×3") and split the bill evenly; above 6, the table voices at most 6 lines a Watch so it still decides in about two minutes ([`docs/05`](docs/05-agent-spec.md) §2, §4.1).
+## Why we made this
 
-## Run it
+Every friend group has a trip that died in the group chat. It usually goes the same way. Nobody wants to be the one who says "that's too expensive", so the plan drifts toward whatever the loudest person wants. Then one person books everything on their card and spends the next month chasing Venmo requests.
+
+Tripdeck fixes both halves of that. Each friend privately tells their own AI mate what they can spend, what they want and what they won't do. The mates then sit around a chart table and argue it out loud, on a Meta Quest sitting on your actual table or on a laptop. Nobody's budget is ever said out loud, only "that's outside what my person can do". When the crew picks a trip, everyone approves their own share on their own card, capped at the limit they set. If one share doesn't go through, nobody is charged.
+
+## How a trip goes
+
+1. **Start a trip.** The organizer picks a few cities (or a region, or "anywhere") and a date range. They can do this on a phone or right inside the Quest.
+2. **Everyone joins.** Friends scan a QR code or type a six-letter code. Each person joins on their own phone or their own headset.
+3. **Brief your mate.** You tell your mate your budget, the days you're free, what you'd love and what you'd skip. Only you and your mate ever see this.
+4. **The table.** The mates propose, object and back each other around a paper globe. Everyone hears it in their mate's own voice. You can jump in and hail your mate if it's missing something.
+5. **Dry Run.** The two best trips play out as small cities under glass, a day at a time, so you can see the actual itinerary before anyone pays.
+6. **Vote.** Everyone votes. A majority picks the trip after a short countdown. Friends who couldn't make it have their mate vote based on their terms.
+7. **Seal.** Each person sees their own share and approves it with Face ID, a passkey or a PIN in the headset. Holds only turn into charges once every seal is set.
+8. **Booked.** You get the full day-by-day itinerary, your own receipt and a calendar file.
+
+## Try it
+
+The fastest way is the hosted version at [tripdeck.tech](https://tripdeck.tech). It runs on Render's free plan, so the first load after a quiet spell can take up to a minute while it wakes up.
+
+On a Meta Quest 3 or 3S, open the Quest Browser and go to `tripdeck.tech/xr`:
+
+- **Start a trip** makes the headset the organizer's seat.
+- **Join a trip** takes the six-letter code. Pick "I'm new" for a fresh seat, or pick your name if you already joined on a phone. Your phone then gets a one-tap "Let this headset in?" prompt.
+- **Enter the chart room** starts mixed reality. Pinch the middle of your table to lay the chart down, then pinch the corner nearest you so everyone in the same room lines up.
+- The **Log book** tag on the table opens a side panel with the trip, the crew, your terms, the vote and your seal.
+
+Run room setup on the Quest first (Settings, Physical Space, Space Setup) and mark your table. The table snaps to it much better.
+
+## Running it locally
+
+You need Node 22 or newer.
 
 ```bash
 npm install
-cp .env.example .env        # optional — runs without any keys; one root .env for server + Vite, blank line = default
-npm run dev                 # helm on :8787, web on :5173 (localhost only; LAN: see dev:lan below)
+cp .env.example .env   # every key is optional; it runs without any of them
+npm run dev            # server on :8787, web on :5173
 ```
 
-Open **http://localhost:5173/demo** → *Seed a random voyage* (a fresh crew, ports and dates each time) or *Seed the scripted Expo voyage* (Rae, Maya and Dev on Lisbon / Mexico City / Montréal, the pitch script) → open the links (Rae on this device, Maya on a phone, the Gallery on a laptop). Each phone link carries a one-time handoff code in the fragment (`/t/CODE#as=…&m=…`), good for one open within 2 h; the member token itself never appears in a URL. On the headset iPhone (Safari, clamped into a Gear VR shell, no USB plug): open `https://<your-https-host>/xr/code`, type the 8-character headset code, tap **aA → Hide Toolbar**, tap **Enter VR**, allow motion access, turn the phone to landscape and clamp it into the shell. Selecting is by gaze (hold 1.6 s). Step by step: [`docs/10-gear-vr.md`](docs/10-gear-vr.md).
+Open `http://localhost:5173/demo` and seed a random trip. That gives you a crew with one-time links for each person. Each link works once, so open each one on a different device or in a private window.
 
-In production (and from any other machine, even in dev mode), seeding needs the dev key: open `/demo#key=<DEV_KEY>` once. Only the fragment works, because it never leaves the browser; `?key=` is ignored (it would already be in proxy and CDN request logs) and just wiped from the address bar. The page moves the key into this tab's `sessionStorage`, strips it from the address bar and sends it as the `X-Dev-Key` header.
-
-### Running on a Quest (Quest-first)
-
-A Quest 3 / 3S is a crew member's own seat. In Quest Browser open `https://<your-https-host>/xr` (HTTPS: the tunnel below):
-
-- **Start a trip**: the phone's Create form, larger. Set sail and the headset is the organizer's seat *and* the voyage's headset (no code). The Enter card, and the **Trip** page of the side panel in the chart room, show the join **QR and code** big so friends scan with their phones without anyone taking the headset off.
-- **Join a trip**: type the 6-character voyage code. **I'm new: take a seat** gives this headset its own seat. **I'm {name}** asks that seat's own phone (or headset) for a one-tap **Let this headset in?**. Say yes there and the headset becomes that seat, with that member's private terms and nobody else's. This works for an organizer who started on a phone, and for the `/demo` crews too: seed, then on the Quest pick **I'm Rae** and approve on the seeding device.
-- If the browser can't hold a passkey, the member sets a **4–6 digit seal PIN** and approves their share with it in the headset. Face ID on their phone still works.
-- In the chart room, **Enter the chart room** starts mixed reality. Pinch the centre of the real table to lay the chart down, then **pinch the table corner nearest you** so co-located crews line up (Skip is fine for a remote friend). The **Log book** tag on the table opens the side panel beside it: trip, crew, **My terms** (the whole brief, with an in-headset keyboard and keypad) and **My seal**. Drag the globe to spin it. A pinch pins the nearest port (the organizer, or the crew once *Crew can pin* is on), and a held pinch pins its whole region. Menu → **Recenter** brings the chart back in front of you; then pinch the table to set it down exactly.
-- Any number of headsets can sit at one table. The old shared headset (the organizer's controls, never anyone's terms) is still at `/xr/code`, paired with the organizer phone's **Show headset code**.
-
-Head tracking (the phone's motion sensors) and WebXR need HTTPS, on the headset iPhone and on a Quest. **For a demo, tunnel a production-mode build, not `npm run dev`:**
+A Quest needs HTTPS. The easiest way to get it during development is a Cloudflare quick tunnel:
 
 ```bash
-cloudflared tunnel --url http://localhost:8787      # prints https://<random>.trycloudflare.com; leave it running
-npm run build
-APP_ENV=production SERVE_WEB=1 PUBLIC_BASE_URL=https://<random>.trycloudflare.com DEV_KEY=$(openssl rand -hex 24) npm run start:prod
+cloudflared tunnel --url http://localhost:5173
 ```
 
-Then open `https://<random>.trycloudflare.com/demo#key=<that DEV_KEY>` to seed, and `/xr` on the headset iPhone. For a quick look while developing, `cloudflared tunnel --url http://localhost:5173` in front of `npm run dev` also works: the Vite dev server serves only `apps/web`, `packages/shared` and `node_modules` (never `apps/server/data`, `docs/` or the rest of the repo), and the helm opens its dev routes (`/api/demo/seed`, `/api/debug/*`, the `/api/health` details) without the key only to a client on this machine. Through the tunnel or from the LAN they need `DEV_KEY` like in production.
+Then open the printed `https://....trycloudflare.com/xr` in the Quest Browser.
 
-| Command | What |
+Useful commands:
+
+| Command | What it does |
 |---|---|
-| `npm run dev` | server (tsx watch) + web (Vite on localhost); counts as development mode (dev routes open to this machine only; other clients need `DEV_KEY`) |
-| `npm run dev:lan -w @all-ayes/web` | the Vite dev server on every interface (`vite --host`), for a phone on the same Wi-Fi |
-| `npm test` | server + web: **657 server tests** (51 files: Quest-first headset seats, approvals and seal PINs, pricing, multi-room lodging and 12-person crews, city files + flight model + course + random voyages, fairness, privacy filter, negotiation rules, payments invariants, service rules, restart/restore, persistence, sweep and write queue, socket budgets, memory/voice fallbacks, limits, hardening, contract, end‑to‑end sockets) and **327 web tests** (48 files: the Quest start screens, the side panel, globe pins, MR recenter and alignment, socket store, reducers, phone hooks and screens (happy-dom), routing, error copy, formatting, seating, labels, scene/director and XR logic) |
-| `npm run typecheck` | `tsc --noEmit` in every workspace |
-| `npm run check` | typecheck + tests + build + bundle budget (`scripts/bundle-budget.mjs`; run before pushing) |
-| `npm run build` | web production build + server bundle (esbuild → `apps/server/dist/index.js`) |
-| `npm run start:prod` | the compiled server; serves `apps/web/dist` (production mode, see DEPLOY.md) |
-| `npm start` | the server from source via tsx (local use) |
-| `GET /api/health` | public: `{ok, eleven, degraded}`; with `X-Dev-Key`: which integrations are live, storage, budgets |
-| `GET /api/debug/<code>` | live event log, seals and booking state (needs attention, seal deadline) for a voyage. Open in dev mode from this machine, else send `X-Dev-Key` or sign in once in the browser (a 1-hour cookie); `?key=` is not accepted |
+| `npm run dev` | Server and web app with hot reload |
+| `npm test` | Server and web test suites |
+| `npm run check` | Typecheck, tests, production build and the bundle size budget. Run this before pushing |
+| `npm run build` | Production build of the web app and the server |
+| `npm run start:prod` | Runs the built server, which also serves the web app |
 
-## What works without keys
+## What each service does
 
-| Integration | With key | Without key |
+Everything works without keys. Each integration makes it better when it's there.
+
+| Service | With a key | Without one |
 |---|---|---|
-| Gemini | Every mate and the Captain speak in their own words | Protocol lines from templates (same decisions) |
-| ElevenLabs | A voice per crew member (13 premade defaults — Captain George and a distinct mate per band 1–12 — work on any plan; `ELEVEN_VOICE_*` to override); spoken hails | Captions + browser speech; typed hails |
-| MongoDB Atlas | Voyages persist and resume after restart | In memory |
-| Backboard | Mates remember you across voyages | Local memory in MongoDB, or `DATA_DIR/memory.json` (default `apps/server/data`) |
-| Visa Intelligent Commerce | Agent card + capped instruction (wire `visaVic.ts`) | Simulated with the same contract, labeled "Sandbox simulation" |
-| Google 3D Tiles (`VITE_GOOGLE_MAP_TILES_KEY`, or a free `VITE_CESIUM_ION_TOKEN`; build-time) | Photoreal cities under the cloches | Paper low‑poly cities |
+| Gemini | Every mate and the Captain talk in their own words, with natural filler like "um" and "okay so" | Template lines, still with plenty of variety |
+| ElevenLabs | A distinct voice for every seat, and spoken hails | Captions and the browser's built-in speech |
+| MongoDB Atlas | Trips survive restarts and can be picked back up | Kept in memory |
+| Backboard | Your mate remembers you across trips | Local memory |
+| Visa Developer sandbox | Each card is verified against the Visa sandbox when you seal | A clearly labelled simulation |
+| RouteStack | Live hotel and flight prices where available | Hand-written city data and modelled fares |
+| Google 3D Tiles or Cesium ion | Photoreal cities in the Dry Run | Paper low-poly cities |
 
-## Layout
+## About the payments
+
+We want to be upfront about what is real here. When a member sets their seal with `PAYMENTS_MODE=visa_sandbox`, the server makes a real call to the Visa Developer sandbox (mutual TLS plus message-level encryption) to validate the card. The Visa sandbox test card stands in for the member's real card. The holds, captures and the all-or-nothing rule on top of that are our own simulation of Visa Intelligent Commerce's agent card model: a card capped at your limit, locked to travel purchases, and approved by you. No real money moves. Every money screen says which parts are sandbox and which are simulated.
+
+## Project layout
 
 ```
-packages/shared   types, socket events, constants (the contract)
-apps/server       the helm: pricing & fairness, negotiation engine, privacy filter, payments, voice, memory, REST + sockets
-apps/web          phones (React), headset (three.js + WebXR / webxr-polyfill: VR on an iPhone in a Gear VR shell, MR on a Quest), gallery
-docs/             PRD, design language, UX, tech design, agent/payments/dataset specs, build plan, demo kit
+packages/shared   types, socket events and constants shared by both sides
+apps/server       the "helm": pricing and fairness, the negotiation engine, the privacy filter,
+                  payments, voice, memory, REST and WebSocket APIs
+apps/web          phone screens (React), the headset (three.js and WebXR), and the laptop view
 ```
 
-## Deploy
-See [`DEPLOY.md`](DEPLOY.md) — one Docker container (Render blueprint included) + the `allayes.tech` domain.
+## Deploying
+
+One Docker container. `render.yaml` is a Render blueprint for it, and [`DEPLOY.md`](DEPLOY.md) covers the details, including where the Visa certificates go (Render secret files).
 
 ## Known limits
-- Visa Intelligent Commerce needs credentials from Visa (token service, VIC, token requestor, MLE keys); until then payments run in a labeled simulation with the same contract (`apps/server/src/payments/visaVic.ts`).
-- The headset is an **iPhone 16 Pro in a Samsung Gear VR shell** used as a plain lens viewer: 3DoF, no passthrough, and no USB link, so the shell's touchpad and Back button do nothing. Safari has no WebXR, so the page runs webxr-polyfill's Cardboard mode (side by side, head pose from the motion sensors; iOS asks for motion access on **Enter VR**). All input is gaze: a centre reticle and a 1.6 s dwell, which selects whatever it rests on (so picks and seals are safer on the organizer's phone). The chart room is VR only, the table at a fixed seated pose. The lens distortion uses Cardboard values, not measured for Gear VR lenses; **Lens spacing** in the menu or `?ipd=<mm>` fixes a double image. *Photoreal cities* is off by default in VR (heat, frame rate). A Galaxy phone on the shell's plug would add the touchpad. Setup and fixes: `docs/10-gear-vr.md`.
-- The Quest mixed-reality path (`immersive-ar`, table placement/anchors, hand input, the side panel, globe spin and pins, the corner alignment, the MR recenter) is built and unit-tested but still to be verified on a Quest. The side panel's text is sized for ~15 mm at arm's length; some older in-scene labels are below the 12 mm target in doc 02 §4.2.
-- The Docker image is built and smoke-tested (full Expo voyage in the container). Render persistent disk ownership and the polling fallback with WebSockets blocked haven't been verified end to end (see `docs/review/REVIEW-REPORT.md`, "Still open").
-- The browser tile tokens (`VITE_GOOGLE_MAP_TILES_KEY`, `VITE_CESIUM_ION_TOKEN`) ship in the bundle; restrict them at the provider (DEPLOY.md, *Browser tile tokens*). Everything else still open after the round-2 fixes is listed in `docs/review-2/REVIEW-REPORT.md`, *Still open / needs outside help*.
-- Passkeys are optional: members seal with a tap unless they chose **Add a passkey** (Wait or Brief screen); then *Set your seal* asks for it.
-- Memory identity is a private **crew key** kept in the phone's browser storage (no accounts). It is minted at the first join and sent on later joins; the server keeps only its hash. Clearing the browser or switching phones starts a fresh memory, and two people sharing one browser share a key (their threads stay apart only by name).
 
-## Honesty notes
-- Trip inventory is curated sample data: the three original ports plus dozens of city files (stays and activities written by hand, prices are ballparks). Nothing is live inventory.
-- **Flights are modelled**, except the original Lisbon / Mexico City / Montréal table from Atlanta, Chicago and New York: every other route and date window is priced by a deterministic formula (great-circle distance, a season factor per window, a hashed ±8 %), with plausible airlines and local times ([`docs/07`](docs/07-dataset-spec.md) §2b). They are illustrative, never quotes. A crew member within 150 km of a port has no flight ($0).
-- Ports built from OpenStreetMap ("any city", [`docs/11`](docs/11-world-cities.md)) have modelled prices too, and carry the © OpenStreetMap contributors attribution.
-- Payments run in simulation unless the Visa sandbox is wired — no real money moves.
-- The scripted Expo voyage always leads to Lisbon by design (its numbers are pinned by tests); `/demo` seeds a random voyage by default to show the engine is generic.
-- The project was started before the HackGT hacking window.
+- Hotel and activity data is a hand-written sample for over a hundred cities, plus any city from OpenStreetMap. Flights that aren't live-priced come from a formula based on distance and season. Treat prices as illustrative.
+- The mixed reality side has been tested on a Quest 3S, but a few things are still rough: two headsets in the same room, and text size on some of the older table labels.
+- The free Render plan sleeps when idle, so give it a minute on the first visit.
+- Passkeys are optional. Without one, setting your seal is a tap on your phone, or your PIN in the headset.
+- Your mate's memory is tied to a private key stored in your browser. There are no accounts, so clearing the browser starts a fresh memory.
 
-### Payments: Visa sandbox
+## Credits
 
-Payments run on a simulation of Visa Intelligent Commerce by default, labelled "Simulated" on every money screen. Set `PAYMENTS_MODE=visa_sandbox` and add Visa Developer credentials (`VISA_USER_ID`, `VISA_PASSWORD`, and the PEMs in `.visa/`) to switch on a real Visa sandbox Payment Account Validation of each member's card when they set their seal. Holds and charges stay simulated and all-or-nothing. `GET /api/health` shows the sandbox status under `visa`. See docs/06-payments-spec.md.
+Map data from OpenStreetMap contributors. Voices by ElevenLabs.

@@ -6,7 +6,7 @@
 import { HelmError } from "../util/errors.js";
 import { config } from "../config.js";
 
-export const WORLD_USER_AGENT = "AllAyes/1.0 (hackathon demo)";
+export const WORLD_USER_AGENT = "Tripdeck/1.0 (hackathon demo)";
 export const WORLD_REFERER = () => config.publicBaseUrl || "https://github.com/all-ayes";
 
 export type Fetcher = (url: string, init: RequestInit) => Promise<Response>;

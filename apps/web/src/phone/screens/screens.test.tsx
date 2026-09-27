@@ -55,7 +55,7 @@ describe("Booked: Save to your log (.ics)", () => {
     const ics = await blobs[0].text();
     const lines = ics.split("\r\n");
     expect(lines[0]).toBe("BEGIN:VCALENDAR");
-    expect(lines).toContain("UID:AA-LIS-7K2Q@allayes");
+    expect(lines).toContain("UID:AA-LIS-7K2Q@tripdeck");
     expect(lines).toContain("DTSTART;VALUE=DATE:20270312");
     expect(lines).toContain("DTEND;VALUE=DATE:20270317"); // the day after the last night
     expect(lines).toContain("SUMMARY:Spring\\; crew\\, \\\\ go — Lisbon");

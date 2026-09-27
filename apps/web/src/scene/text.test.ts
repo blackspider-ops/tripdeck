@@ -33,9 +33,9 @@ describe("coverText", () => {
   });
 
   it("drops anything else (emoji, CJK) and collapses the gap it leaves", () => {
-    expect(coverText("Hi 🎉 there")).toBe("Hi there");
+    expect(coverText("Hi \u{1F389} there")).toBe("Hi there");
     expect(coverText("東京 Tokyo")).toBe("Tokyo");
-    expect(coverText("🎉")).toBe("");
+    expect(coverText("\u{1F389}")).toBe("");
   });
 
   it("turns other whitespace (tab, narrow no-break space) into a plain space", () => {

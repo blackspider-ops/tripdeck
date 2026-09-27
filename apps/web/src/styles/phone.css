@@ -335,3 +335,32 @@ html.quest-ui { zoom: 1.3; }
 .pin-pad .btn { min-height: 56px; font-size: 22px; }
 .pin-dots { font-family: var(--f-mono); font-size: 28px; letter-spacing: .4em; text-align: center; min-height: 36px; }
 .quest-back { position: fixed; top: 12px; right: 12px; z-index: 15; min-height: 56px; display: inline-flex; align-items: center; text-decoration: none; }
+
+/* ---------- Booked: whole-stay itinerary ---------- */
+.itinerary { margin-top: 10px; display: grid; gap: 12px; }
+.itin-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin: 0 0 2px; font-family: var(--f-heading); font-size: 15px; font-weight: 600; border-bottom: 1px solid var(--ink-soft); padding-bottom: 2px; }
+.itin-role { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brass-dark); }
+.itinerary .timeline li { font-size: 14px; padding: 5px 0; }
+.itinerary .timeline li .t { font-variant-numeric: tabular-nums; }
+.itinerary .timeline li.k-activity { font-weight: 600; }
+.itinerary .timeline li.k-free, .itinerary .timeline li.k-meal { color: var(--ink-soft); }
+
+/* ---------- Booked: receipt ---------- */
+.receipt-card { font-size: 14px; line-height: 1.35; }
+.receipt-card .amt { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+.receipt-head { border-bottom: 3px double var(--ink); padding-bottom: 8px; margin-bottom: 4px; }
+.receipt-meta { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 6px 0 0; font-size: 13px; }
+.receipt-meta dt { color: var(--ink-soft); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; align-self: center; }
+.receipt-meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.receipt-group { padding: 8px 0 4px; border-bottom: 1px solid var(--paper-deep); }
+.receipt-group-title { margin: 0 0 4px; font-family: var(--f-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brass-dark); }
+.receipt-lines { list-style: none; margin: 0; padding: 0; }
+.receipt-line, .receipt-subtotal, .receipt-total { display: grid; grid-template-columns: minmax(0, 1fr) 11ch; column-gap: 12px; align-items: baseline; }
+.receipt-line { padding: 4px 0; }
+.receipt-line .desc { min-width: 0; overflow-wrap: anywhere; }
+.receipt-line .conf { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--ink-soft); }
+.receipt-line .conf i { font-style: normal; }
+.receipt-subtotal { margin: 2px 0 0; padding-top: 4px; border-top: 1px dotted var(--ink-soft); font-size: 13px; color: var(--ink-soft); }
+.receipt-total { margin: 8px 0 4px; padding-top: 8px; border-top: 3px double var(--ink); font-family: var(--f-heading); font-size: 16px; font-weight: 600; }
+.receipt-status { margin: 4px 0 0; font-family: var(--f-mono); font-size: 11px; color: var(--ok-green); }
+.receipt-privacy { margin: 4px 0 0; color: var(--ink-soft); }

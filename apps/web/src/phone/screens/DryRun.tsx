@@ -1,13 +1,13 @@
 import { memo, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { DRYRUN_DAY1_LABEL, minToClock, formatDollars, type MyScheduleItem, type PlanPublic, type PlanPrivate } from "@all-ayes/shared";
+import { DRYRUN_DAY1_LABEL, minToClock, formatDollars, type MyScheduleItem, type PlanPublic, type PlanPrivate, type VoteBoard } from "@all-ayes/shared";
 import type { TripStore } from "../../net/tripStore";
-import { useCrew, useSendGuard, useTripSelector } from "../TripContext";
+import { useCrew, useTripSelector } from "../TripContext";
 import { COUNTDOWN_TICK_MS, DRYRUN_TICK_MS } from "../timing";
 import { useNow } from "../useNow";
 import { FitStamp } from "../components/money";
 import { HeadsetControls } from "../components/organizer";
-import { Cloche, WaxSeal } from "../components/icons";
-import { Button, Card, Eyebrow, Page, Plotting, StampButton } from "../components/ui";
+import { Cloche } from "../components/icons";
+import { Button, Card, Eyebrow, Page, Plotting } from "../components/ui";
 import { windowLabel } from "../format";
 
 /**
@@ -76,13 +76,14 @@ function DryRunClock() {
 /** P7 — Dry Run: the two charts side by side, private fit, a live timeline, votes. */
 export default function DryRun() {
   // O2-046: the charts, my stamps and the votes; a voice or an error elsewhere doesn't redraw the screen
-  const { store, isOrganizer } = useCrew();
+  const { store } = useCrew();
   const shortlist = useTripSelector((s) => s.shortlist);
   const planPrivate = useTripSelector((s) => s.planPrivate);
   // R2-WP-14: a static field (the store keeps it from the last full snapshot: the generated windows come with the table's)
   const dateWindows = useTripSelector((s) => s.trip!.dateWindows);
   const votes = useTripSelector((s) => s.votes);
   const autoPick = useTripSelector((s) => s.autoPick);
+  const board = useTripSelector((s) => s.board ?? null);
   const serverVote = useTripSelector((s) => s.myVote);
   const [selected, setSelected] = useState<string | null>(null);
   // optimistic tap, then the helm's private echo (plan:myVote), which also restores it after a reload.
@@ -96,7 +97,6 @@ export default function DryRun() {
     setMyVote(planId);
     store.emit("plan:vote", { planId }, () => { if (voteSeq.current === id) setMyVote(null); });
   };
-  const [picked, sendPick] = useSendGuard("plan:pick");
 
   useEffect(() => {
     if (!selected && shortlist.length) setSelected(shortlist[shortlist.length > 1 ? 1 : 0].planId);
@@ -130,37 +130,42 @@ export default function DryRun() {
         {mine && mine.lines.length ? <p className="small mt-s">Your share is ready on the next screen once a chart is picked.</p> : null}
       </Card>
 
-      <div className="votes">
+      {/* The crew's majority picks: no organizer privilege. Everyone votes; the counts are public, the reasons aren't. */}
+      <div className="votes" role="group" aria-label="Vote for a chart">
         {shortlist.map((p) => (
           <Button
             key={p.planId} block aria-pressed={myVote === p.planId}
             className={myVote === p.planId ? "stamp" : ""}
             onClick={() => vote(p.planId)}
           >
-            Vote {p.label ?? ""} <span className="mono">({votes[p.planId] ?? 0})</span>
+            Vote {p.label ?? ""} — {p.cityName} <span className="mono">({votes[p.planId] ?? 0})</span>
           </Button>
         ))}
       </div>
+      <VoteBoardNote board={board} />
 
       <AutoPickNote shortlist={shortlist} autoPick={autoPick} />
 
-      {isOrganizer ? (
-        <div className="mt-m">
-          <StampButton disabled={picked} onClick={() => { sendPick({ planId: plan.planId }); }}>
-            <WaxSeal size={20} /> Pick {plan.cityName}
-          </StampButton>
-          <p className="small center">Or lift the cloche on the headset.</p>
-        </div>
-      ) : (
-        <p className="small center">The organizer makes the final pick.</p>
-      )}
+      <p className="small center">The crew's majority picks.</p>
       {/* L1-006: the organizer keeps the headset code and "Unpair headset" once the table meets */}
       <HeadsetControls />
     </Page>
   );
 }
 
-/** PRD D5 — a clear majority picks the chart after a short countdown unless the organizer picks first. */
+/** "X of N have voted", whose mate voted (never why), and the tie-break announcement. */
+function VoteBoardNote({ board }: { board: VoteBoard | null }) {
+  if (!board) return null;
+  return (
+    <div className="small center mt-xs" role="status" aria-live="polite">
+      <p><span className="mono">{board.voted}</span> of <span className="mono">{board.eligible}</span> have voted.</p>
+      {board.mates.map((name) => <p key={name}>{name}'s mate voted.</p>)}
+      {board.note ? <p>{board.note}</p> : null}
+    </div>
+  );
+}
+
+/** PRD D5 — the crew's majority picks the chart after a short countdown, for everyone to see. */
 function AutoPickNote({ shortlist, autoPick }: { shortlist: PlanPublic[]; autoPick: { planId: string; at: number } | null }) {
   const now = useNow(COUNTDOWN_TICK_MS, !!autoPick);
   if (!autoPick) return null;
@@ -168,7 +173,7 @@ function AutoPickNote({ shortlist, autoPick }: { shortlist: PlanPublic[]; autoPi
   const secs = Math.max(0, Math.ceil((autoPick.at - now) / 1000));
   return (
     <p className="small center" role="status" aria-live="polite">
-      Most of the crew chose {city}. Picking it in <span className="mono">{secs}s</span> unless the organizer chooses first.
+      The crew chose {city}. Picking it in <span className="mono">{secs}s</span>.
     </p>
   );
 }

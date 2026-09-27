@@ -47,7 +47,8 @@ describe("chart book snapshot (b-)", () => {
     const book = buildChartBook(ds, crew, CITIES, 50).filter((p) => indexOf(ds).hotel.get(p.hotelId)!.sleeps >= crew.length);
     const views = book.map((p) => ({ pub: toPublic(ds, p, "A"), mine: crew.map((m) => toPrivate(p, m.memberId)) }));
     // (views moved once since: the public layout no longer stacks a pick on a group moment — e.g. Belém at 09:30 on
-    // top of the Cascais beach day — it moves to the next day; the travel between moments is counted. Plans unchanged.)
-    expect({ plans: book.length, book: digest(book), views: digest(views) }).toEqual({ plans: 6, book: "c3ac25ddb96b9cc8", views: "3a175d72170f334e" });
+    // top of the Cascais beach day — it moves to the next day; the travel between moments is counted. Plans unchanged.
+    // Moved again: picks spread over the stay's days, and share lines read in plain words. Prices unchanged.)
+    expect({ plans: book.length, book: digest(book), views: digest(views) }).toEqual({ plans: 6, book: "e3ea217e1cb5c276", views: "38388aa008a69587" });
   });
 });

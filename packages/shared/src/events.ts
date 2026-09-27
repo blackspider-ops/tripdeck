@@ -1,7 +1,7 @@
 // Socket.io event names + payloads (docs/04-technical-design.md §7). Keep in sync with the doc.
 import type {
   Brief, BriefInput, BookingPublic, DeclineReason, PlanPrivate, PlanPublic, SealStatus,
-  Surface, TripStateUpdate, Turn, DryRunScript, ShareLine,
+  Surface, TripStateUpdate, Turn, DryRunScript, ShareLine, VoteBoard,
 } from "./types.js";
 
 /**
@@ -47,6 +47,7 @@ export interface ClientToServer {
   "table:hail": (p: { text: string }, ack?: AckFn) => void;
   "dryrun:control": (p: { action: "pause" | "resume" | "restart" }, ack?: AckFn) => void;
   "plan:vote": (p: { planId: string }, ack?: AckFn) => void;
+  /** The crew's majority picks: a "pick" (the headset lifting a cloche) is that seat's vote, never a manual pick. */
   "plan:pick": (p: { planId: string }, ack?: AckFn) => void;
   /**
    * `pin`: the member's seal PIN (4–6 digits, set on a headset whose browser can't use passkeys). A member with a
@@ -102,10 +103,11 @@ export interface ServerToClient {
    */
   "dryrun:control": (p: { action: "pause" | "resume" | "restart"; at: number; startedAt: number; pausedAt: number | null; serverNow: number }) => void;
   /**
-   * autoPick: a clear majority agrees → that chart is picked at `at` (server ms) unless the organizer picks first
-   * (PRD D5). serverNow lets a phone with a skewed clock count down correctly (TR1-008).
+   * autoPick: a strict majority of the crew agrees (or everyone voted and the tie was broken) → that chart is picked
+   * at `at` (server ms). Nobody picks by hand: the crew's majority picks. serverNow lets a phone with a skewed clock
+   * count down correctly (TR1-008). board: X of N have voted, whose mate voted, the tie-break note.
    */
-  "plan:votes": (p: { tallies: Record<string, number>; autoPick?: { planId: string; at: number } | null; serverNow: number }) => void;
+  "plan:votes": (p: { tallies: Record<string, number>; autoPick?: { planId: string; at: number } | null; board?: VoteBoard; serverNow: number }) => void;
   /** Member room only: the chart this member voted for (live and on replay), so their highlight survives a reload (TR1-009). */
   "plan:myVote": (p: { planId: string | null }) => void;
   /** serverNow (server ms) lets a phone with a skewed clock count down to sealDeadlineAt correctly (like plan:votes). */

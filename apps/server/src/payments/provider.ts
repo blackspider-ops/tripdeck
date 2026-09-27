@@ -31,4 +31,4 @@ export interface PaymentProvider {
   verifyAccount?(memberId: string): Promise<{ result: "verified" | "not_verified" | "unavailable"; label: string } | null>;
 }
 
-export const MERCHANT = "All Ayes Voyages";
+export const MERCHANT = "Tripdeck Voyages";

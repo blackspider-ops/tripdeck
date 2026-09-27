@@ -84,7 +84,7 @@ export default function Seal() {
       ) : (
         <>
           {status === "AUTHORIZED" || status === "AUTHORIZING" ? (
-            <div className="margin-note" role="status" aria-label="Seal confirmation">
+            <div className="margin-note" role="group" aria-label="Seal confirmation">
               <p className="body"><b>{sealSetLine(mine.amountCents, mine.cardLast4)}</b></p>
             </div>
           ) : null}

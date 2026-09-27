@@ -30,7 +30,7 @@ const LIVE_INSTRUCTION_TTL_MS = 30 * 60_000;
  * or releases on a normal day (SIM: 0.6 to 1.2 s), fixed (no jitter), and scaled by PACE_SCALE (tests run near 0).
  */
 export const SEAL_SETTLE_MS = 2_500;
-/** A booking reference: `AA-<city>-` plus this many characters. */
+/** A booking reference: `TD-<city>-` plus this many characters. */
 const REFERENCE_CHARS = 4;
 
 /**
@@ -528,7 +528,7 @@ export class PaymentsOrchestrator {
     if (isFinal(b.status)) return;
     if (results.every((r) => r.ok)) {
       for (const { s } of results) s.status = "CAPTURED";
-      b.reference = `AA-${b.cityId}-${newRef(REFERENCE_CHARS)}`;
+      b.reference = `TD-${b.cityId}-${newRef(REFERENCE_CHARS)}`;
       await this.finish(b, "CAPTURED");
       return;
     }

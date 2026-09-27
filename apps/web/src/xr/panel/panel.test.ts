@@ -45,7 +45,7 @@ function frame(s: ClientState, viewer: Viewer, p = newPanelState(), seal: PanelC
   const g = fakeCtx();
   const sent: { ev: string; body: unknown; ack?: (r: Ack) => void }[] = [];
   const ctx: PanelCtx = {
-    state: s, viewer, qr: null, host: "allayes.tech", seal, redraw: vi.fn(),
+    state: s, viewer, qr: null, host: "tripdeck.tech", seal, redraw: vi.fn(),
     emit: ((ev: string, body: unknown, ack?: (r: Ack) => void) => { sent.push({ ev, body, ack }); }) as never,
     setSealPin: vi.fn(async () => null),
   };

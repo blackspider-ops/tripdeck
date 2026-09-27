@@ -27,6 +27,7 @@ let helm: TripService;
 
 beforeAll(async () => {
   helm = new TripService();
+  helm.dryrun.autoPickMs = 50; // the crew's majority picks after a (here short) countdown
   // fast, deterministic payments
   const sim = (helm.payments as unknown as { provider: SimProvider }).provider;
   sim.latency = [5, 10];
@@ -105,7 +106,7 @@ describe("Expo run over the wire", () => {
     expect(mayaMex.missing).toEqual(["beach"]);
     await rae.waitFor((e) => e.ev === "dryrun:script");
 
-    // votes, then the headset picks Lisbon
+    // votes; the headset lifting Lisbon's cloche is the organizer's vote, and the crew's majority picks it
     maya.s.emit("plan:vote", { planId: "LIS-W1-casa-alfama" });
     await gallery.waitFor((e) => e.ev === "plan:votes" && e.p.tallies["LIS-W1-casa-alfama"] === 1);
     expect(await maya.waitFor((e) => e.ev === "plan:myVote")).toEqual({ planId: "LIS-W1-casa-alfama" }); // private echo (TR1-009)
@@ -127,7 +128,7 @@ describe("Expo run over the wire", () => {
     maya.s.emit("seal:set", { bookingId: booking.bookingId });
     const result = await gallery.waitFor((e) => e.ev === "booking:result");
     expect(result.status).toBe("CAPTURED");
-    expect(result.reference).toMatch(/^AA-LIS-/);
+    expect(result.reference).toMatch(/^TD-LIS-/);
     await gallery.waitFor((e) => e.ev === "trip:state" && e.p.status === "BOOKED");
 
     // PRIVACY: headset + gallery never received a private event or any secret number
@@ -152,7 +153,8 @@ describe("Expo run over the wire", () => {
     await maya.waitFor((e) => e.ev === "trip:state");
     rae.s.emit("table:start", {});
     await rae.waitFor((e) => e.ev === "table:decided", 15000);
-    rae.s.emit("plan:pick", { planId: "LIS-W1-casa-alfama" });
+    rae.s.emit("plan:pick", { planId: "LIS-W1-casa-alfama" }); // a vote, not a pick
+    maya.s.emit("plan:vote", { planId: "LIS-W1-casa-alfama" }); // the majority picks
     const b1 = await rae.waitFor((e) => e.ev === "booking:created");
     rae.s.emit("seal:set", { bookingId: b1.bookingId });
     await rae.waitFor((e) => e.ev === "seal:status" && e.p.memberId === seed.organizer.memberId && e.p.status === "AUTHORIZED");
@@ -167,7 +169,8 @@ describe("Expo run over the wire", () => {
 
     rae.s.emit("booking:retry", {});
     await rae.waitFor((e) => e.ev === "trip:state" && e.p.status === "DRY_RUN");
-    rae.s.emit("plan:pick", { planId: "LIS-W1-casa-alfama" });
+    rae.s.emit("plan:vote", { planId: "LIS-W1-casa-alfama" });
+    maya.s.emit("plan:vote", { planId: "LIS-W1-casa-alfama" });
     const b2 = await rae.waitFor((e) => e.ev === "booking:created" && e.p.attempt === 2);
     rae.s.emit("seal:set", { bookingId: b2.bookingId });
     maya.s.emit("seal:set", { bookingId: b2.bookingId });
@@ -182,8 +185,9 @@ describe("Expo run over the wire", () => {
     await maya.waitFor((e) => e.ev === "trip:state");
     maya.s.emit("table:start", {});
     expect((await maya.waitFor((e) => e.ev === "error")).code).toBe("NOT_ORGANIZER");
+    // nobody picks by hand: a pick is a vote, and there is nothing to vote on yet
     maya.s.emit("plan:pick", { planId: "x" });
-    await maya.waitFor((e) => e.ev === "error" && e.p.code === "NOT_ORGANIZER");
+    await maya.waitFor((e) => e.ev === "error" && e.p.event === "plan:pick" && e.p.code === "BAD_PHASE");
     maya.s.close();
   });
 });

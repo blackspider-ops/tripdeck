@@ -183,6 +183,10 @@ export interface MyDay { day: number; label: string; items: MyScheduleItem[] }
 export interface MemberPlanView {
   memberId: string;
   flightId: string;
+  /** My flight's route (home airport → the port's) when I fly; absent for a home port or older plans. */
+  route?: { origin: string; airport: string };
+  /** When my flight home leaves the port (minutes, local), when known. */
+  departMin?: number;
   amountCents: number;
   lines: ShareLine[];
   fits: boolean;
@@ -252,6 +256,10 @@ export interface PlanPrivate {
   days: MyDay[];
   /** Day 1: when I land and reach the stay. */
   arrival?: { landMin: number; atStayMin: number };
+  /** The last day: when my flight home leaves (absent without a flight or from older builds). */
+  departure?: { departMin: number };
+  /** My flight's route, for the itinerary's flight lines (absent for a home port). */
+  route?: { origin: string; airport: string };
 }
 
 // ---------- negotiation ----------
@@ -310,6 +318,8 @@ export interface TripState {
   shortlistIds?: [string, string];
   votes?: Record<string, number>;
   autoPick?: { planId: string; at: number } | null;
+  /** The crew's majority picks (not the organizer): who has voted, of how many, and any public note. */
+  board?: VoteBoard;
   /** Only while a booking is live or final (SEALING, BOOKED, VOIDED): after "back to the charts" it's history (TR4-013). */
   chosenPlanId?: string;
   booking?: BookingPublic;
@@ -332,3 +342,9 @@ export interface DryRunScript {
   /** Server clock (ms) when the day started / was paused, and the server's "now" — so every device and reload shows the same minute. */
   startedAt?: number; pausedAt?: number | null; serverNow?: number;
 }
+
+/**
+ * The Dry Run's public vote board: counts only. `mates` names the away members whose mate voted for them per their
+ * terms (never why); `note` is a plain-words public announcement, e.g. how a tie was broken.
+ */
+export interface VoteBoard { voted: number; eligible: number; mates: string[]; note: string | null }

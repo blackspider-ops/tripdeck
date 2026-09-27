@@ -2,56 +2,56 @@
 
 exports[`chart book snapshot (b-) > expo: plans, public and private views are unchanged 1`] = `
 {
-  "book": "19e5216994d7f60b",
+  "book": "cd954e59c5e9e4fd",
   "plans": 12,
-  "views": "5886e2484ed85cf5",
+  "views": "8eaa1e064fd3d726",
 }
 `;
 
 exports[`chart book snapshot (b-) > four: plans, public and private views are unchanged 1`] = `
 {
-  "book": "dbd9338c3e8970e1",
+  "book": "ea4822515ee0130d",
   "plans": 12,
-  "views": "0c2a835f5877d38b",
+  "views": "2caa65e2d5fc2fa9",
 }
 `;
 
 exports[`chart book snapshot (b-) > noCommonWindow: plans, public and private views are unchanged 1`] = `
 {
-  "book": "8f07f11ccf376f48",
+  "book": "a2954c9bdbc34397",
   "plans": 24,
-  "views": "f12baa73c94da358",
+  "views": "e61c22b4bcd85294",
 }
 `;
 
 exports[`chart book snapshot (b-) > pair: plans, public and private views are unchanged 1`] = `
 {
-  "book": "e10719967517d9bf",
+  "book": "400ebbcb76f81180",
   "plans": 12,
-  "views": "dda57dee6df0960d",
+  "views": "595048eecebc89d6",
 }
 `;
 
 exports[`chart book snapshot (b-) > picky: plans, public and private views are unchanged 1`] = `
 {
-  "book": "212d52a35487fd38",
+  "book": "6b0254d7010f400f",
   "plans": 12,
-  "views": "39e0c2076e67a392",
+  "views": "be9b1895b25c65d3",
 }
 `;
 
 exports[`chart book snapshot (b-) > solo: plans, public and private views are unchanged 1`] = `
 {
-  "book": "1b5e24e6f20132e4",
+  "book": "325a2ef0d7ceb67b",
   "plans": 30,
-  "views": "9ce1d43d761e0504",
+  "views": "c0aee9c1efde37c2",
 }
 `;
 
 exports[`chart book snapshot (b-) > w2: plans, public and private views are unchanged 1`] = `
 {
-  "book": "6d775075d07a2011",
+  "book": "bfcb158b140db199",
   "plans": 12,
-  "views": "4d0372bef497c017",
+  "views": "8a6043828a89999a",
 }
 `;

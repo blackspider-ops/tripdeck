@@ -47,7 +47,7 @@ http.requestTimeout = 60_000;
 attachRealtime(http, helm);
 
 http.listen(config.port, () => {
-  console.log(`\n⚓ All Ayes helm on http://localhost:${config.port}`);
+  console.log(`\nTripdeck helm on http://localhost:${config.port}`);
   console.log(`   gemini: ${features.gemini() ? config.gemini.model : "off (rule-based lines)"} · voices: ${features.eleven() ? "ElevenLabs" : "off (captions + browser speech)"}`);
   console.log(`   mongo: ${features.mongo() ? "on" : "off (memory)"} · payments: ${helm.payments.mode} · memory: ${features.backboard() ? "Backboard" : "local file"}`);
   console.log(`   mode: ${config.production ? "production" : config.devMode ? "development (dev routes open)" : "local (dev routes need DEV_KEY)"}\n`);

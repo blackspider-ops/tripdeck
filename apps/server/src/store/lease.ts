@@ -78,7 +78,7 @@ export class HelmLease {
     if (!ok && this.state === "held") {
       this.state = "lost";
       clearInterval(this.renewTimer);
-      console.error("[db] ⚠ another helm took the lease: this instance stops writing to MongoDB (restart it to recover)");
+      console.error("[db] WARNING: another helm took the lease: this instance stops writing to MongoDB (restart it to recover)");
       this.onLost?.();
     }
   }

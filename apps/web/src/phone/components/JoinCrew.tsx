@@ -50,7 +50,7 @@ export function JoinCrew({ joinCode, onJoined }: { joinCode: string; onJoined: (
   if (err) {
     return (
       <Page>
-        <Eyebrow icon={<Anchor size={18} />}>All Ayes</Eyebrow>
+        <Eyebrow icon={<Anchor size={18} />}>Tripdeck</Eyebrow>
         <MarginNote>{err}</MarginNote>
         <button type="button" className="link" onClick={() => navigate("/join")}>Enter a different code</button>
       </Page>

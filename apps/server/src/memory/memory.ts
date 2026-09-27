@@ -190,7 +190,7 @@ async function assistantFor(key: string): Promise<string> {
   if (!p) {
     p = (async () => {
       const created = await bb<{ assistant_id: string }>("POST", "/assistants", {
-        name: `All Ayes mate · ${key.split("|").pop()}`.slice(0, 255),
+        name: `Tripdeck mate · ${key.split("|").pop()}`.slice(0, 255),
         system_prompt: "You remember one traveller's preferences across group trips: what they liked, what they conceded, and their budget band (never exact amounts).",
       });
       await local().assistants.update((m) => { m[key] = created.assistant_id; });

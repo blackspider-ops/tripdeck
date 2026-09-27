@@ -196,7 +196,7 @@ describe("flight model", () => {
     expect(a.lines.some((l) => l.kind === "flight")).toBe(false);
     expect(a.fits).toBe(true);
     const b = plan.members.find((m) => m.memberId === "b")!;
-    expect(b.lines.find((l) => l.kind === "flight")?.label).toBe(`Flight ATL⇄${Z("HOME")}`);
+    expect(b.lines.find((l) => l.kind === "flight")?.label).toBe(`Round-trip flight · ATL ⇄ ${Z("HOME")}`);
     expect(plan.days[0].arrivals?.map((x) => x.memberId)).toEqual(["b"]); // the home-port member has no landing
     // the public range still holds the real total
     const r = toPublic(ds, plan).groupRange;

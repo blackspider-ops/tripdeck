@@ -12,7 +12,7 @@ export default function Join() {
   const clean = code.replace(/[^A-Z0-9]/g, "").slice(0, JOIN_CODE_LEN);
   return (
     <Page>
-      <Eyebrow icon={<Anchor size={18} />}>All Ayes</Eyebrow>
+      <Eyebrow icon={<Anchor size={18} />}>Tripdeck</Eyebrow>
       <h1 className="h1">Join a voyage</h1>
       <p className="body">Type the six‑character code your organizer shared, or scan their QR.</p>
       <form onSubmit={(e) => { e.preventDefault(); if (clean.length === JOIN_CODE_LEN) navigate(`/t/${clean}`); }}>

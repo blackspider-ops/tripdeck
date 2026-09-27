@@ -129,7 +129,7 @@ describe("SceneDirector rejections", () => {
       const err = { code: "BAD_PHASE", message: "Too late" };
       store.set({ error: err });
       expect(parts.cancelPick).toHaveBeenCalledOnce();
-      expect(parts.captionSet).toHaveBeenLastCalledWith("All Ayes", "Too late", expect.any(String));
+      expect(parts.captionSet).toHaveBeenLastCalledWith("Tripdeck", "Too late", expect.any(String));
       store.set({ votes: { p1: 2 } }); // same error object still set
       expect(parts.cancelPick).toHaveBeenCalledOnce();
       vi.advanceTimersByTime(3000);

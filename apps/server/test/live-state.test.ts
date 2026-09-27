@@ -118,7 +118,7 @@ describe("TR3-003 — the booking outcome survives a reload", () => {
     expect(names.indexOf("booking:created")).toBeLessThan(names.indexOf("booking:result"));
     const res = got.find((e) => e.ev === "booking:result")!.p;
     expect(res).toMatchObject({ bookingId: t.bookingId, status: "CAPTURED" });
-    expect(res.reference).toMatch(/^AA-LIS-/);
+    expect(res.reference).toMatch(/^TD-LIS-/);
   });
 
   it("VOIDED: replay sends the same public reason; after 'back to the charts' the voided booking is gone from trip:state", async () => {

@@ -7,7 +7,7 @@ import type {
   MyDay, MyScheduleItem, Plan, PlanDay, PlanFlag, PlanPrivate, PlanPublic, PublicDay, PublicScheduleItem, Role, ScheduleItem,
   ShareLine, Tag,
 } from "@all-ayes/shared";
-import { EARLY_START_BEFORE, MAX_MUST_HAVES, ORIGINS, TAGS, clockToMin, dayLabel, formatDollars } from "@all-ayes/shared";
+import { EARLY_START_BEFORE, MAX_MUST_HAVES, ORIGINS, TAGS, clockToMin, dayLabel, flightLabel, formatDollars, lodgingLabel } from "@all-ayes/shared";
 import { travel, type Point } from "../dryrun/walking.js";
 import { compareFairness, fairness, satisfaction } from "./fairness.js";
 import { flightsFor, publicFlights } from "./flights.js";
@@ -23,6 +23,8 @@ export interface PricingMember {
 }
 
 const BUFFER_MIN = 30;
+/** The arrival day counts as this many moments already (the flight in, the transfer, check-in) when spreading picks. */
+const ARRIVAL_DAY_LOAD = 2;
 const DAY2_FREE_FROM = 7 * 60;
 
 // ---------- helpers ----------
@@ -233,9 +235,13 @@ function placeInOrder(ds: Dataset, entries: { a: ActivityOption; attendees: stri
       }
       return null;
     };
-    let day = 1;
-    let start = tryDay(1);
-    while (start === null && day < lastDay) start = tryDay(++day);
+    // spread over the stay: the least-loaded day first (the arrival day counts as already half full), ties to the
+    // earlier day, so a 3-night trip isn't three picks crammed into one day and two empty ones
+    const load = (d: number) => placed.filter((p) => p.day === d && p.attendees.some((x) => attendees.includes(x))).length + (d === 1 ? ARRIVAL_DAY_LOAD : 0);
+    const order = Array.from({ length: Math.max(1, lastDay) }, (_, i) => i + 1).sort((x, y) => load(x) - load(y) || x - y);
+    let day = 0;
+    let start: number | null = null;
+    for (const d of order) { start = tryDay(d); if (start !== null) { day = d; break; } }
     if (start === null) continue;
     placed.push({ a, day, start, end: start + a.durationMin, attendees });
   }
@@ -307,12 +313,11 @@ function memberView(
 ): MemberPlanView {
   const { airport, windowId, hotel, nights, crewSize, rooms } = ctx;
   const { flight, violates } = ctx.flight;
-  const fraction = crewSize === 1 ? "" : ` ${["", "", "½", "⅓", "¼"][crewSize] ?? `1/${crewSize}`}`;
 
   const lines: ShareLine[] = [];
   // a home port has no flight line (nothing to pay); the label names the port's airport (NYC → JFK)
-  if (flight && !flight.homePort) lines.push({ kind: "flight", label: `Flight ${m.origin}⇄${airport}`, amountCents: flight.priceCents });
-  lines.push({ kind: "lodging", label: `${stayName(hotel, rooms)}${rooms > 1 ? "," : ""}${fraction} ×${nights}n`, amountCents: ctx.lodgingShare });
+  if (flight && !flight.homePort) lines.push({ kind: "flight", label: flightLabel(m.origin, airport), amountCents: flight.priceCents });
+  lines.push({ kind: "lodging", label: lodgingLabel(hotel.name, rooms, nights, crewSize), amountCents: ctx.lodgingShare });
   const attended = ctx.placed.filter((p) => p.attendees.includes(m.memberId)).sort((x, y) => x.day - y.day || x.start - y.start);
   for (const p of attended) lines.push({ kind: "activity", label: p.a.short, amountCents: p.a.priceCents });
   const amountCents = lines.reduce((s, l) => s + l.amountCents, 0);
@@ -333,7 +338,9 @@ function memberView(
   const fits = reasons.length === 0;
   const coverage = m.brief.mustHaves.length ? covered.length / m.brief.mustHaves.length : 1;
   return {
-    memberId: m.memberId, flightId: flight?._id ?? "", amountCents, lines, fits, reasons: fits ? ["ok"] : reasons,
+    memberId: m.memberId, flightId: flight?._id ?? "",
+    ...(flight && !flight.homePort ? { route: { origin: m.origin, airport }, departMin: minOf(flight.returnLocal) } : {}),
+    amountCents, lines, fits, reasons: fits ? ["ok"] : reasons,
     covered, missing, flags,
     satisfaction: satisfaction({ fits, coverage, capCents: m.brief.capCents, shareCents: amountCents, flagCount: flagTypes.size, hotelRating: hotel.rating }),
   };
@@ -627,6 +634,7 @@ export function toPrivate(p: Plan, memberId: string): PlanPrivate | null {
   return {
     planId: p._id, amountCents: m.amountCents, lines: m.lines, fits: m.fits, reasons: m.reasons, covered: m.covered, missing: m.missing, flags: m.flags,
     ...myDays(p, memberId),
+    ...(m.route ? { route: m.route } : {}), ...(m.departMin !== undefined ? { departure: { departMin: m.departMin } } : {}),
   };
 }
 

@@ -25,7 +25,7 @@ afterEach(() => Object.assign(config, saved));
 
 describe("SEC-013 / OPT-073: one production switch, fail closed", () => {
   it("NODE_ENV=development can't switch production off when PUBLIC_BASE_URL is a real host", () => {
-    expect(resolveMode({ NODE_ENV: "development", PUBLIC_BASE_URL: "https://allayes.tech" })).toMatchObject({ production: true, dev: false });
+    expect(resolveMode({ NODE_ENV: "development", PUBLIC_BASE_URL: "https://tripdeck.tech" })).toMatchObject({ production: true, dev: false });
     expect(resolveMode({ APP_ENV: "production" })).toMatchObject({ production: true, dev: false });
     expect(resolveMode({ NODE_ENV: "production", APP_ENV: "development" })).toMatchObject({ production: true, dev: false });
   });
@@ -37,10 +37,10 @@ describe("SEC-013 / OPT-073: one production switch, fail closed", () => {
     expect(resolveMode({ NODE_ENV: "test", PUBLIC_BASE_URL: "http://localhost:8787" })).toMatchObject({ production: false, dev: true });
     // a dev tunnel may say so explicitly
     expect(resolveMode({ APP_ENV: "development", PUBLIC_BASE_URL: "https://x.trycloudflare.com" })).toMatchObject({ production: false, dev: true });
-    expect(resolveMode({ PUBLIC_BASE_URL: "https://allayes.tech/path" }).publicBaseUrl).toBe("https://allayes.tech");
+    expect(resolveMode({ PUBLIC_BASE_URL: "https://tripdeck.tech/path" }).publicBaseUrl).toBe("https://tripdeck.tech");
   });
   it("production refuses a guessable DEV_KEY or a missing PUBLIC_BASE_URL", () => {
-    const ok = { production: true, devKey: KEY, publicBaseUrl: "https://allayes.tech" };
+    const ok = { production: true, devKey: KEY, publicBaseUrl: "https://tripdeck.tech" };
     expect(productionProblems(ok)).toEqual([]);
     expect(productionProblems({ ...ok, devKey: "" })).toEqual([]); // no key = dev routes simply off
     expect(productionProblems({ ...ok, devKey: "change-me" })).toHaveLength(1);
@@ -57,7 +57,7 @@ describe("HTTP hardening", () => {
   beforeAll(async () => {
     dist = mkdtempSync(join(tmpdir(), "aa-dist-"));
     mkdirSync(join(dist, "assets"));
-    writeFileSync(join(dist, "index.html"), "<!doctype html><title>All Ayes</title>");
+    writeFileSync(join(dist, "index.html"), "<!doctype html><title>Tripdeck</title>");
     writeFileSync(join(dist, "assets", "app-abc123.js"), "export {}");
     writeFileSync(join(dist, "assets", "app-abc123.js.map"), "{}");
     writeFileSync(join(dist, "favicon.svg"), "<svg/>");
@@ -148,7 +148,7 @@ describe("HTTP hardening", () => {
     expect(await res.json()).toMatchObject({ code: "NOT_FOUND" });
     const app = await fetch(base + "/apiary");
     expect(app.status).toBe(200);
-    expect(await app.text()).toContain("<title>All Ayes");
+    expect(await app.text()).toContain("<title>Tripdeck");
   });
 
   it("OPT-059: hashed assets are immutable, index.html is no-cache, maps and missing files 404", async () => {
@@ -165,10 +165,10 @@ describe("HTTP hardening", () => {
   it("SEC-026: a foreign Origin can't open a socket in production; same origin and tokens-only clients can", async () => {
     const poll = (origin?: string) => fetch(`${base}/socket.io/?EIO=4&transport=polling`, { headers: origin ? { origin } : {} });
     config.production = true;
-    config.publicBaseUrl = "https://allayes.tech";
+    config.publicBaseUrl = "https://tripdeck.tech";
     expect((await poll("https://evil.example")).status).toBe(403);
     expect((await poll("http://192.168.1.5:5173")).status).toBe(403);
-    expect((await poll("https://allayes.tech")).status).toBe(200);
+    expect((await poll("https://tripdeck.tech")).status).toBe(200);
     expect((await poll(base)).status).toBe(200); // same origin (Origin host = Host)
     expect((await poll()).status).toBe(200);
     config.production = false;

@@ -321,6 +321,7 @@ export class Table {
     t.shortlistIds = [a._id, b._id];
     t.shortlistPlans = [a, b]; // TR5-022: the prices the crew saw survive a dataset change
     helm.dryrun.startClock(t);
+    helm.dryrun.openVoting(t); // the crew's majority picks; away seats' mates vote per their terms
     helm.save(t);
     helm.persistShortlist(t); // O2-036: stored once, in its own doc (the trip doc carries only the ids)
     try {

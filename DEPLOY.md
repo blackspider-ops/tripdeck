@@ -1,4 +1,4 @@
-# Deploying All Ayes to allayes.tech
+# Deploying Tripdeck to tripdeck.tech
 
 The server serves the API, the sockets and the built web app from one origin — one container, one domain.
 
@@ -14,7 +14,7 @@ Copy `.env.example` → `.env` locally, or set the same variables on your host. 
 | `BACKBOARD_API_KEY` | backboard.io (promo `13HACKGT`) | Mates remember you across voyages |
 | `VITE_GOOGLE_MAP_TILES_KEY` | Google Cloud → Map Tiles API (needs a billing account; restrict to your domain) — **build-time** | Photoreal cities in the Dry Run |
 | `VITE_CESIUM_ION_TOKEN` | ion.cesium.com → Access Tokens (free, no card) — **build-time**; used when no Google key is set | The same Google photoreal cities, via Cesium ion |
-| `ROUTESTACK_API_KEY` / `ROUTESTACK_API_SECRET` (+ optional `ROUTESTACK_ACCOUNT_ID`, `ROUTESTACK_MODE`, `ROUTESTACK_BASE_URL`) | routestack.ai dashboard (partner API key + secret). `ROUTESTACK_MODE` = `off` / `sandbox` / `live`; blank = sandbox (`https://evolvemcp.routestack.ai`, limited tokens) when both keys are set. `live` uses `https://mcp.routestack.ai` unless `ROUTESTACK_BASE_URL` says otherwise | Live hotel and flight prices on the chart (see docs/12-routestack.md); without them, curated/modelled prices |
+| `ROUTESTACK_API_KEY` / `ROUTESTACK_API_SECRET` (+ optional `ROUTESTACK_ACCOUNT_ID`, `ROUTESTACK_MODE`, `ROUTESTACK_BASE_URL`) | routestack.ai dashboard (partner API key + secret). `ROUTESTACK_MODE` = `off` / `sandbox` / `live`; blank = sandbox (`https://evolvemcp.routestack.ai`, limited tokens) when both keys are set. `live` uses `https://mcp.routestack.ai` unless `ROUTESTACK_BASE_URL` says otherwise | Live hotel and flight prices on the chart; without them, curated/modelled prices |
 | `PAYMENTS_MODE` | `sim` until Visa sandbox credentials arrive (see `apps/server/src/payments/visaVic.ts`) | — |
 
 `VITE_*` variables are baked in at build time — rebuild after changing them.
@@ -40,7 +40,6 @@ Copy `.env.example` → `.env` locally, or set the same variables on your host. 
 | `TABLE_RUNS_MAX` | 6 | Table meetings per voyage; after that `table:start` is refused with `TOO_MANY_RUNS`. |
 | `SEAL_DEADLINE_MS` | 600000 | How long the crew has to set every seal before the attempt voids ("nobody was charged"). |
 
-Full table of limits: docs/04 §12 *Limits*.
 
 ### Everything else the server reads (all optional)
 | Variable | Default | What it does |
@@ -72,12 +71,12 @@ Any host with HTTPS and long-lived WebSockets works (Render, Railway, Fly, a VM)
 - `VITE_CESIUM_ION_TOKEN` / `VITE_GOOGLE_MAP_TILES_KEY` are **build-time**: Render passes service env vars to `docker build` as build args, and the Dockerfile declares both `ARG`s before the web build. After changing one, use *Manual Deploy → Deploy latest commit* (a rebuild), not a restart.
 - `MONGODB_URI`: in Atlas → Network Access, allow Render's outbound IPs (service → Connect → Outbound) or `0.0.0.0/0`. If Mongo is unreachable the server still starts, in memory (check the logs for `[db] MongoDB connected`).
 - Health check: `/api/health` (public, minimal). `TRUST_PROXY_HOPS=1` (Render's load balancer).
-- `PUBLIC_BASE_URL=https://allayes.tech`: the app also works on `https://all-ayes.onrender.com` before the domain is live (the page's own origin is always allowed for sockets and CSP), but passkeys only work on the `PUBLIC_BASE_URL` domain.
+- `PUBLIC_BASE_URL=https://tripdeck.tech`: the app also works on `https://all-ayes.onrender.com` before the domain is live (the page's own origin is always allowed for sockets and CSP), but passkeys only work on the `PUBLIC_BASE_URL` domain.
 
 **Any Docker host:**
 ```bash
 docker build -t all-ayes --build-arg VITE_GOOGLE_MAP_TILES_KEY=$VITE_GOOGLE_MAP_TILES_KEY --build-arg VITE_CESIUM_ION_TOKEN=$VITE_CESIUM_ION_TOKEN .
-docker run -p 8787:8787 --env-file .env.docker -e PUBLIC_BASE_URL=https://allayes.tech -e DEV_KEY=$(openssl rand -hex 24) all-ayes
+docker run -p 8787:8787 --env-file .env.docker -e PUBLIC_BASE_URL=https://tripdeck.tech -e DEV_KEY=$(openssl rand -hex 24) all-ayes
 ```
 `docker --env-file` does **not** strip inline `# comments` the way the server's `.env` loader does (`EXPO_MODE=true   # …` would reach the server as `true   # …`, and `DATA_DIR=   # …` as a path). Give Docker a copy without comments, e.g. `sed -E 's/[[:space:]]+#.*$//; /^[[:space:]]*#/d; /=$/d' .env > .env.docker`.
 The image is multi-stage: the runtime stage has production dependencies only, runs the compiled server (`apps/server/dist/index.js`, built by `npm run build`) as the unprivileged `node` user (uid 1000), with `NODE_ENV=production` baked in. The container starts as root only for `apps/server/scripts/docker-entrypoint.mjs`, which creates `DATA_DIR`/`CACHE_DIR` and chowns them to uid 1000 (only under `/var/data`, `/app/apps/server/data` or `/app/apps/server/.cache`; any other path, e.g. `DATA_DIR=/app`, stops the container before anything is chowned) (host disks such as Render's are mounted root-owned), then drops to `node` before the server loads. With `docker run --user node` that step is skipped and a mounted `DATA_DIR`/`CACHE_DIR` must already be writable by uid 1000; if it isn't, the server logs `[store] … not writable` and memory stays in RAM (`memory.degraded` in the `/api/health` details, sent with `X-Dev-Key`; the public `degraded` flag is about MongoDB persistence).
@@ -105,12 +104,12 @@ Container disks are wiped on every deploy. What the server keeps, and where:
 - If `DATA_DIR` is read-only or full, memory still works. It stays in RAM for that process, the server logs one `[store] … not writable` warning, and the Backboard copy is still written.
 
 ## 3. Domain
-1. Register `allayes.tech` with the MLH .Tech promo (turn auto-renew off).
+1. Register `tripdeck.tech` with the MLH .Tech promo (turn auto-renew off).
 2. At your host, add the custom domain and copy the DNS target.
 3. At get.tech DNS: `CNAME www → <host target>` and the apex record your host asks for (ALIAS/ANAME or A).
-4. Wait for HTTPS to issue, then open `https://allayes.tech/api/health`.
+4. Wait for HTTPS to issue, then open `https://tripdeck.tech/api/health`.
 
-Passkeys are bound to the domain they were created on — register them on `allayes.tech`, not on a tunnel URL.
+Passkeys are bound to the domain they were created on — register them on `tripdeck.tech`, not on a tunnel URL.
 
 ### A demo over a tunnel
 
@@ -119,11 +118,11 @@ Point a tunnel at a **production-mode build**, not at the dev servers: `npm run 
 ### Browser tile tokens (S2-015)
 
 `VITE_CESIUM_ION_TOKEN` and `VITE_GOOGLE_MAP_TILES_KEY` are baked into the public bundle; anyone can copy them. Restrict them at the provider (the account owner has to do this):
-- **Cesium ion** → Access Tokens: scope `assets:read` only, asset **2275207** (Google Photorealistic 3D Tiles) only, and allowed URLs = the production origin (`https://allayes.tech`, plus a tunnel origin only while a demo needs it).
-- **Google Cloud** → Credentials → the Map Tiles key: *Application restriction* = HTTP referrers (`https://allayes.tech/*`), *API restriction* = Map Tiles API only; set a daily quota.
+- **Cesium ion** → Access Tokens: scope `assets:read` only, asset **2275207** (Google Photorealistic 3D Tiles) only, and allowed URLs = the production origin (`https://tripdeck.tech`, plus a tunnel origin only while a demo needs it).
+- **Google Cloud** → Credentials → the Map Tiles key: *Application restriction* = HTTP referrers (`https://tripdeck.tech/*`), *API restriction* = Map Tiles API only; set a daily quota.
 - If either token was ever deployed unrestricted, rotate it (new token → rebuild → revoke the old one).
 
 ## 4. Expo checklist
-- `https://allayes.tech/demo#key=$DEV_KEY` → *Seed a fresh voyage*. The page keeps the key in this tab's sessionStorage, strips it from the address bar and sends it as the `X-Dev-Key` header.
-- Headset iPhone (Safari) → `https://allayes.tech/xr` → headset code (**Show headset code** on the organizer's phone) → **aA → Hide Toolbar** → **Enter VR** → allow motion access → landscape → clamp it into the Gear VR shell (no USB plug; select by gaze). A Quest, if one turns up, uses the same URL in Quest Browser. Setup and fixes: `docs/10-gear-vr.md`.
+- `https://tripdeck.tech/demo#key=$DEV_KEY` → *Seed a fresh voyage*. The page keeps the key in this tab's sessionStorage, strips it from the address bar and sends it as the `X-Dev-Key` header.
+- Headset iPhone (Safari) → `https://tripdeck.tech/xr` → headset code (**Show headset code** on the organizer's phone) → **aA → Hide Toolbar** → **Enter VR** → allow motion access → landscape → clamp it into the Gear VR shell (no USB plug; select by gaze). A Quest, if one turns up, uses the same URL in Quest Browser.
 - Optional: `npm run warm-voices --workspace @all-ayes/server` with the ElevenLabs key, then `DEMO_REPLAY=cached` is the emergency button if the Wi‑Fi dies (template lines, cached voices, no network calls).

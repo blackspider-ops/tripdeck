@@ -1,10 +1,10 @@
 # One-click deploy on Render (Blueprint). Long-lived WebSockets + HTTPS, which the Quest needs.
-# Dashboard → New → Blueprint → pick this repo. Then add the custom domain allayes.tech.
+# Dashboard → New → Blueprint → pick this repo. Then add the custom domain tripdeck.tech.
 services:
   - type: web
-    name: all-ayes
+    name: tripdeck
     runtime: docker
-    plan: starter
+    plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
     # L5-002: single writer — exactly one instance (see the disk note below and DEPLOY.md "One helm at a time")
@@ -15,15 +15,11 @@ services:
     # Keep it even with MongoDB (L5-002): a disk turns off zero-downtime deploys, so the old helm stops before the new
     # one restores. The helm must be the ONLY writer (restore voids "abandoned" seals); a MongoDB lease backs this up
     # (a new instance waits for the old one's lease), but never run two instances or remove the disk.
-    disk:
-      name: all-ayes-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
       - key: PUBLIC_BASE_URL
-        value: https://allayes.tech
+        value: https://tripdeck.tech
       # Render generates a random 256-bit value (44 chars, over the 32-char production minimum). The /demo page needs it.
       - key: DEV_KEY
         generateValue: true
@@ -34,23 +30,50 @@ services:
       - key: TRUST_PROXY_HOPS
         value: "1"
       - key: DATA_DIR
-        value: /var/data/data
+        value: /app/apps/server/data
       - key: CACHE_DIR
-        value: /var/data/cache
+        value: /app/apps/server/.cache
       - key: EXPO_MODE
         value: "true"
       - key: PAYMENTS_MODE
-        value: sim
+        value: visa_sandbox
+      # Visa Developer sandbox: upload the 5 PEMs as Render Secret Files (mounted at /etc/secrets/<name>)
+      - key: VISA_CERT_PATH
+        value: /etc/secrets/cert.pem
+      - key: VISA_KEY_PATH
+        value: /etc/secrets/key.pem
+      - key: VISA_MLE_SERVER_CERT_PATH
+        value: /etc/secrets/mle-server-cert.pem
+      - key: VISA_MLE_PRIVATE_KEY_PATH
+        value: /etc/secrets/mle-client-key.pem
+      - key: VISA_USER_ID
+        sync: false
+      - key: VISA_PASSWORD
+        sync: false
+      - key: VISA_MLE_KEY_ID
+        sync: false
       # Atlas → Network Access must allow Render's outbound IPs (or 0.0.0.0/0), else the server runs without Mongo.
       - key: MONGODB_URI
         sync: false
       - key: MONGODB_DB
-        value: all_ayes
+        value: tripdeck
       - key: GEMINI_API_KEY
         sync: false
       - key: ELEVENLABS_API_KEY
         sync: false
       - key: BACKBOARD_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: ELEVEN_MODEL
+        value: eleven_multilingual_v2
+      - key: ROUTESTACK_MODE
+        value: sandbox
+      - key: ROUTESTACK_ACCOUNT_ID
+        sync: false
+      - key: ROUTESTACK_API_SECRET
+        sync: false
+      - key: ROUTESTACK_API_KEY
         sync: false
       # VITE_* are build-time: Render passes env vars to `docker build` as build args, and the Dockerfile declares
       # both ARGs before `npm run build`. Changing one needs a redeploy (rebuild), not just a restart.

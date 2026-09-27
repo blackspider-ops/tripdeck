@@ -20,7 +20,7 @@ import { fileURLToPath } from "node:url";
 export const env = (k: string, d = "") => process.env[k]?.trim() || d;
 const num = (k: string, d: number) => { const v = Number(env(k)); return env(k) !== "" && Number.isFinite(v) && v > 0 ? v : d; };
 
-/** The All Ayes repo root: the nearest folder up from here whose package.json is the monorepo's (src and dist alike). */
+/** The Tripdeck repo root: the nearest folder up from here whose package.json is the monorepo's (src and dist alike). */
 function findRepoRoot(): string {
   let dir = dirname(fileURLToPath(import.meta.url));
   for (let i = 0; i < 8; i++) {

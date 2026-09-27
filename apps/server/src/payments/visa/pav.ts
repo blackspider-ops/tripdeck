@@ -3,7 +3,7 @@
  * account verification (no money moves). Endpoint: POST /pav/v1/cardvalidation (Two-Way SSL; MLE only if the project
  * requires it). Docs: https://developer.visa.com/capabilities/pav
  *
- * All Ayes never holds a cardholder's card number. In sandbox we validate the documented Visa **test** card
+ * Tripdeck never holds a cardholder's card number. In sandbox we validate the documented Visa **test** card
  * (overridable with VISA_PAV_TEST_PAN / VISA_PAV_TEST_EXPIRY), standing in for the card behind an agent token: the
  * verdict is real Visa sandbox output, the card is a Visa test card. The PAN never leaves this module (not logged,
  * not stored, not sent to clients).
@@ -47,7 +47,7 @@ export function pavRequestBody(pan = env("VISA_PAV_TEST_PAN", PAV_SANDBOX_TEST_P
     cardAcceptor: {
       address: { city: "Atlanta", country: "US", state: "GA", zipCode: "30332" },
       idCode: "111111",
-      name: "All Ayes",
+      name: "Tripdeck",
       terminalId: "12345678",
     },
     cardExpiryDate: expiry,

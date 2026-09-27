@@ -64,7 +64,7 @@ function paintRose(g: Paint, rx: number, ry: number) {
   g.fillText("N", rx, ry - 168);
 }
 
-/** The "ALL AYES" cartouche, lower left. */
+/** The "TRIPDECK" cartouche, lower left. */
 function paintCartouche(g: Paint, x: number, y: number) {
   g.save();
   g.translate(x, y);
@@ -72,7 +72,7 @@ function paintCartouche(g: Paint, x: number, y: number) {
   g.strokeStyle = PALETTE.ink; g.lineWidth = 3;
   g.strokeRect(-190, -62, 380, 124); g.lineWidth = 1.2; g.strokeRect(-180, -52, 360, 104);
   g.fillStyle = PALETTE.ink; g.font = "58px Georgia, serif";
-  g.fillText("ALL AYES", 0, 4);
+  g.fillText("TRIPDECK", 0, 4);
   g.font = "italic 26px Georgia, serif"; g.fillStyle = PALETTE.inkSoft;
   g.fillText("a chart for the whole crew", 0, 40);
   g.restore();

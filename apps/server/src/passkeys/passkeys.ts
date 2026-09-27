@@ -218,9 +218,9 @@ function takeChallenge(memberId: string, kind: Challenge["kind"], rpID: string) 
 
 export async function registrationOptions(memberId: string, name: string, o: Origin) {
   const opts = await generateRegistrationOptions({
-    rpName: "All Ayes",
+    rpName: "Tripdeck",
     rpID: o.rpID,
-    userName: `${name} · All Ayes`,
+    userName: `${name} · Tripdeck`,
     userDisplayName: name,
     userID: new TextEncoder().encode(memberId),
     attestationType: "none",

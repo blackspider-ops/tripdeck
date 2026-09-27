@@ -52,7 +52,7 @@ export function resolveMode(e: NodeJS.ProcessEnv) {
   return { production, dev, publicBaseUrl: origin };
 }
 
-/** "https://allayes.tech/x" → "https://allayes.tech"; anything that isn't an http(s) URL → "". */
+/** "https://tripdeck.tech/x" → "https://tripdeck.tech"; anything that isn't an http(s) URL → "". */
 export function originOf(u: string | undefined): string {
   try { const url = new URL((u ?? "").trim()); return /^https?:$/.test(url.protocol) ? url.origin : ""; } catch { return ""; }
 }
@@ -235,6 +235,6 @@ export function productionProblems(c: Pick<typeof config, "production" | "devKey
   if (!c.production) return [];
   const out: string[] = [];
   if (c.devKey && (c.devKey.length < 32 || /^change-?me$/i.test(c.devKey))) out.push("DEV_KEY is too weak (use 32+ random characters, or leave it empty to switch dev routes off)");
-  if (!c.publicBaseUrl) out.push("PUBLIC_BASE_URL is not set (e.g. https://allayes.tech)");
+  if (!c.publicBaseUrl) out.push("PUBLIC_BASE_URL is not set (e.g. https://tripdeck.tech)");
   return out;
 }

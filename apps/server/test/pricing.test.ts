@@ -18,7 +18,7 @@ describe("pricing — doc 07 §9 worked plans", () => {
     expect(p.fitsEveryone).toBe(true);
     // every member: overnight flight + 30-min uphill walk to fado
     for (const m of p.members) {
-      expect(m.flags.map((f) => f.type).sort()).toEqual(["long_walk", "red_eye"]);
+      expect([...new Set(m.flags.map((f) => f.type))].sort()).toEqual(["long_walk", "red_eye"]); // picks now spread over the stay: a walk per day
       expect(m.missing).toEqual([]);
     }
     expect(p.publicFlags.map((f) => f.type).sort()).toEqual(["long_walk", "red_eye"]);

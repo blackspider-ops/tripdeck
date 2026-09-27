@@ -6,7 +6,7 @@ import { io, type Socket } from "socket.io-client";
 import { useSyncExternalStore } from "react";
 import type {
   Ack, AckFn, Brief, BookingPublic, ClientToServer, DeclineReason, DryRunScript, ErrorPayload, JoinRole, PlanPrivate, PlanPublic, S2CPayload,
-  ServerToClient, ShareLine, Surface, TripState, TripStateUpdate, Turn,
+  ServerToClient, ShareLine, Surface, TripState, TripStateUpdate, Turn, VoteBoard,
 } from "@all-ayes/shared";
 
 /**
@@ -43,6 +43,8 @@ export interface ClientState {
   votes: Record<string, number>;
   /** at: device-clock ms (mapped from the server's clock with serverNow), so a skewed phone counts down right. */
   autoPick: { planId: string; at: number } | null;
+  /** The crew's majority picks: X of N have voted, whose mate voted, the tie-break note (optional: older servers). */
+  board?: VoteBoard | null;
   /** The chart I voted for (member room; survives a reload). */
   myVote: string | null;
   booking: BookingPublic | null;
@@ -57,7 +59,7 @@ export interface ClientState {
 
 const initial: ClientState = {
   connected: false, joined: false, role: null, trip: null, turns: [], audio: {}, shortlist: [], planPrivate: {}, brief: null, memory: [],
-  dryrun: null, votes: {}, autoPick: null, myVote: null, booking: null, sealPrivate: null, declined: null, lastResult: null, error: null,
+  dryrun: null, votes: {}, autoPick: null, board: null, myVote: null, booking: null, sealPrivate: null, declined: null, lastResult: null, error: null,
   headsetRequest: null,
 };
 
@@ -255,6 +257,7 @@ export const reducers: { [K in keyof ServerToClient]: Reducer<K> } = {
       shortlist: same ? st.shortlist : [],
       votes: s.votes ?? st.votes,
       autoPick: s.autoPick ? { ...s.autoPick, at: toLocal(s.autoPick.at, s.serverNow) } : null,
+      board: s.board ?? (s.status === "DRY_RUN" ? st.board ?? null : null),
       // votes only exist during one Dry Run: any phase change (incl. back to the charts) clears mine
       myVote: prev === s.status ? st.myVote : null,
       ...(fresh ? { turns: [], audio: {}, planPrivate: {}, dryrun: null } : {}),
@@ -279,7 +282,7 @@ export const reducers: { [K in keyof ServerToClient]: Reducer<K> } = {
   "dryrun:control": (st, p) => (st.dryrun
     ? { dryrun: { ...st.dryrun, startedAt: toLocal(p.startedAt, p.serverNow), pausedAt: p.pausedAt ? toLocal(p.pausedAt, p.serverNow) : null } }
     : undefined),
-  "plan:votes": (_st, p) => ({ votes: p.tallies, autoPick: p.autoPick ? { ...p.autoPick, at: toLocal(p.autoPick.at, p.serverNow) } : null }),
+  "plan:votes": (_st, p) => ({ votes: p.tallies, autoPick: p.autoPick ? { ...p.autoPick, at: toLocal(p.autoPick.at, p.serverNow) } : null, board: p.board ?? null }),
   "plan:myVote": (_st, p) => ({ myVote: p.planId }),
   "booking:created": (st, { serverNow, ...pub }) => {
     const b = localBooking(pub, serverNow);

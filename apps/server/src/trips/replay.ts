@@ -52,6 +52,7 @@ export class Replayer {
       shortlistIds: t.shortlistIds && SHORTLIST_PHASES.includes(t.status) ? t.shortlistIds : undefined,
       votes: tallies(t),
       autoPick: t.autoPick ?? null,
+      ...(t.status === "DRY_RUN" ? { board: helm.dryrun.board(t) } : {}),
       chosenPlanId: live ? t.chosenPlanId : undefined,
       booking: b ? helm.payments.toPublic(b) : undefined,
       paymentsMode: helm.payments.mode,

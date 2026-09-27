@@ -19,6 +19,10 @@ const UNSETTLED_MESSAGE = "A refund or release from an earlier attempt is still 
 export class Sealing {
   constructor(private helm: Helm) {}
 
+  /**
+   * Commits the crew's decision. Internal only: the auto-pick after the majority's countdown calls it. No socket event
+   * reaches it (the crew's majority picks; `plan:pick` from any device is that seat's vote, see Helm.pickAsVote).
+   */
   async pick(tripId: string, actor: Actor, planId: string) {
     const { helm } = this;
     const t = helm.organizerTrip(tripId, actor);
@@ -138,8 +142,7 @@ export class Sealing {
       throw new HelmError("BAD_PHASE", "Those two charts are no longer on the table. Weigh anchor again for new ones.");
     }
     helm.transition(t, "DRY_RUN", { from: ["VOIDED"] });
-    t.votes = {};
-    helm.dryrun.cancelAutoPick(t);
+    helm.dryrun.openVoting(t); // fresh votes (mates vote again for away seats)
     helm.dryrun.startClock(t);
     helm.save(t);
     helm.table.emitShortlist(t);

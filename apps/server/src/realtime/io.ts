@@ -112,7 +112,8 @@ const HANDLERS: { [K in Exclude<keyof ClientToServer, "trip:join" | "client:log"
     c.helm.dryrunControl(c.tripId(), c.actor(), action);
   },
   "plan:vote": (c, p) => c.helm.vote(c.tripId(), c.memberId(), str(p.planId)),
-  "plan:pick": (c, p) => c.helm.pick(c.tripId(), c.actor(), str(p.planId)),
+  // the crew's majority picks: a pick from any device (the headset's cloche) is that seat's vote
+  "plan:pick": (c, p) => c.helm.pickAsVote(c.tripId(), c.actor(), str(p.planId)),
   "seal:set": (c, p) => c.helm.setSeal(c.tripId(), c.memberId(), str(p.bookingId), optStr(p.assertionToken, F.text), optStr(p.pin, 12)),
   "seal:cancel": (c, p) => c.helm.cancelSeal(c.tripId(), c.memberId(), str(p.bookingId)),
   "booking:retry": (c) => c.helm.retry(c.tripId(), c.actor()),

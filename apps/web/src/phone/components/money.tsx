@@ -1,4 +1,4 @@
-import { formatCents, type ShareLine } from "@all-ayes/shared";
+import { formatCents, humanShareLabel, type ShareLine } from "@all-ayes/shared";
 
 export function LedgerTable({ lines, totalLabel = "Your share" }: { lines: ShareLine[]; totalLabel?: string }) {
   const total = lines.reduce((s, l) => s + l.amountCents, 0);
@@ -7,7 +7,7 @@ export function LedgerTable({ lines, totalLabel = "Your share" }: { lines: Share
       <tbody>
         {lines.map((l, i) => (
           <tr key={i}>
-            <td>{l.label}</td>
+            <td>{humanShareLabel(l.label)}</td>
             <td className="amt">{formatCents(l.amountCents)}</td>
           </tr>
         ))}

@@ -34,6 +34,7 @@ const sent: { room: "trip" | "member"; ev: string }[] = [];
 
 beforeAll(async () => {
   helm = new TripService();
+  helm.dryrun.autoPickMs = 50; // the crew's majority picks after a (here short) countdown
   const sim = (helm.payments as unknown as { provider: SimProvider }).provider;
   sim.latency = [5, 10];
   sim.declineMember = "";

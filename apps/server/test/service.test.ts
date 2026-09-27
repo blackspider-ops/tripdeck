@@ -5,7 +5,8 @@ import { TripService } from "../src/trips/service.js";
 import { HelmError } from "../src/util/errors.js";
 import { SimProvider } from "../src/payments/sim.js";
 import { seedExpo } from "../src/demo/seed.js";
-import { MAX_CREW, type Band } from "@all-ayes/shared";
+import { MAX_CREW, type Band, type Plan } from "@all-ayes/shared";
+import { mateChoice } from "../src/trips/dryrun.js";
 
 function helmWithBus() {
   const helm = new TripService();
@@ -127,35 +128,96 @@ describe("review follow-ups", () => {
   });
 });
 
-describe("D5 — majority auto-pick", () => {
-  it("two of three on Lisbon picks it after the countdown", async () => {
+describe("D5 — the crew's majority picks (no organizer privilege)", () => {
+  const LIS = "LIS-W1-casa-alfama", MEX = "MEX-W1-roma-flat";
+  /** Dev is the expo's absent friend: his mate votes (or abstains) per his terms when the Dry Run opens. */
+  const devMate = (helm: TripService, tripId: string) => {
+    const t = helm.trip(tripId);
+    const [a, b] = t.shortlistIds!.map((id) => helm.table.planOf(t, id)!);
+    return { a, b, choice: mateChoice(a, b, t.memberIds.find((id) => helm.members.get(id)!.role === "absent")!) };
+  };
+
+  it("an away member's mate votes per their terms; the board says only that their mate voted", async () => {
     const { helm, seed, trip } = await atDryRun();
+    const t = helm.trip(seed.tripId);
+    const { choice } = devMate(helm, seed.tripId);
+    const board = helm.dryrun.board(t);
+    if (choice) {
+      expect(t.votes[seed.dev.memberId]).toBe(choice);
+      expect(board).toMatchObject({ voted: 1, eligible: 3, mates: ["Dev"], note: null });
+    } else {
+      expect(t.votes[seed.dev.memberId]).toBeUndefined();
+      expect(board).toMatchObject({ voted: 0, eligible: 2, mates: [] });
+    }
+    // the public board carries no reason: nothing about fits, caps or amounts
+    const dump = JSON.stringify(trip.filter((e) => e.ev === "trip:state").at(-1)!.p.board);
+    for (const w of ["fits", "cap", "amount", "cheaper"]) expect(dump).not.toContain(w);
+  });
+
+  it("a strict majority arms the countdown for everyone; the chart is picked when it ends", async () => {
+    const { helm, seed, trip } = await atDryRun();
+    helm.dryrun.autoPickMs = 20_000;
     vi.useFakeTimers();
-    helm.vote(seed.tripId, seed.maya.memberId, "LIS-W1-casa-alfama");
-    expect(helm.trip(seed.tripId).autoPick).toBeNull();
-    helm.vote(seed.tripId, seed.dev.memberId, "LIS-W1-casa-alfama");
-    expect(helm.trip(seed.tripId).autoPick?.planId).toBe("LIS-W1-casa-alfama");
-    expect(trip.at(-1)).toMatchObject({ ev: "plan:votes", p: { autoPick: { planId: "LIS-W1-casa-alfama" } } });
+    helm.vote(seed.tripId, seed.dev.memberId, MEX); // Dev's own vote replaces his mate's
+    helm.vote(seed.tripId, seed.maya.memberId, LIS);
+    expect(helm.trip(seed.tripId).autoPick).toBeNull(); // 1–1 of 3: no majority yet
+    helm.vote(seed.tripId, seed.organizer.memberId, LIS);
+    expect(helm.trip(seed.tripId).autoPick?.planId).toBe(LIS);
+    expect(trip.at(-1)).toMatchObject({ ev: "plan:votes", p: { autoPick: { planId: LIS }, board: { voted: 3, eligible: 3, mates: [] } } });
     await vi.advanceTimersByTimeAsync(20_100);
     vi.useRealTimers();
     for (let i = 0; i < 100 && helm.trip(seed.tripId).status !== "SEALING"; i++) await new Promise((r) => setTimeout(r, 5));
     expect(helm.trip(seed.tripId).status).toBe("SEALING");
-    expect(helm.trip(seed.tripId).chosenPlanId).toBe("LIS-W1-casa-alfama");
+    expect(helm.trip(seed.tripId).chosenPlanId).toBe(LIS);
   });
 
-  it("a split cancels the countdown, and the organizer picking first wins", async () => {
+  it("a split cancels the countdown; a pick from any device is only that seat's vote", async () => {
     const { helm, seed } = await atDryRun();
     vi.useFakeTimers();
-    helm.vote(seed.tripId, seed.maya.memberId, "LIS-W1-casa-alfama");
-    helm.vote(seed.tripId, seed.dev.memberId, "LIS-W1-casa-alfama");
-    helm.vote(seed.tripId, seed.dev.memberId, "MEX-W1-roma-flat");
+    helm.vote(seed.tripId, seed.dev.memberId, LIS);
+    helm.vote(seed.tripId, seed.maya.memberId, LIS);
+    expect(helm.trip(seed.tripId).autoPick?.planId).toBe(LIS);
+    helm.vote(seed.tripId, seed.maya.memberId, MEX);
     expect(helm.trip(seed.tripId).autoPick).toBeNull();
-    helm.vote(seed.tripId, seed.organizer.memberId, "LIS-W1-casa-alfama");
-    expect(helm.trip(seed.tripId).autoPick?.planId).toBe("LIS-W1-casa-alfama");
-    vi.useRealTimers();
-    await helm.pick(seed.tripId, { memberId: seed.organizer.memberId }, "MEX-W1-roma-flat");
-    expect(helm.trip(seed.tripId).chosenPlanId).toBe("MEX-W1-roma-flat");
-    expect(helm.trip(seed.tripId).autoPick).toBeNull();
+    // the organizer "picking" Mexico City is a vote: 2 of 3 on Mexico City now arms Mexico City, nothing is booked
+    helm.pickAsVote(seed.tripId, { memberId: seed.organizer.memberId }, MEX);
+    expect(helm.trip(seed.tripId).status).toBe("DRY_RUN");
+    expect(helm.trip(seed.tripId).votes[seed.organizer.memberId]).toBe(MEX);
+    expect(helm.trip(seed.tripId).autoPick?.planId).toBe(MEX);
+    expect(() => helm.pickAsVote(seed.tripId, {}, LIS)).toThrow(HelmError);
+  });
+
+  it("a tie once everyone voted is broken in public: more fits, then lower group total, then Chart A", async () => {
+    const { helm, seed } = await atDryRun();
+    vi.useFakeTimers();
+    const t = helm.trip(seed.tripId);
+    const [idA, idB] = t.shortlistIds!;
+    // four voters can't be had in the expo crew, so let Dev's mate abstain and split the two who are here
+    t.mateVotes = []; t.mateAbstain = [seed.dev.memberId]; delete t.votes[seed.dev.memberId];
+    helm.vote(seed.tripId, seed.maya.memberId, idA);
+    expect(helm.trip(seed.tripId).autoPick).toBeNull(); // 1 of 2 voted: not everyone yet
+    helm.vote(seed.tripId, seed.organizer.memberId, idB);
+    const { planId, note } = helm.dryrun.tieBreak(t);
+    expect(t.autoPick?.planId).toBe(planId);
+    expect(t.voteNote).toBe(note);
+    expect(note).toMatch(/^It's a tie/);
+    const [a, b] = [idA, idB].map((id) => helm.table.planOf(t, id)!);
+    const fits = (p: typeof a) => p.members.filter((m) => m.fits).length;
+    const want = fits(a) !== fits(b) ? (fits(a) > fits(b) ? idA : idB) : a.groupCents !== b.groupCents ? (a.groupCents < b.groupCents ? idA : idB) : idA;
+    expect(planId).toBe(want);
+    // a member changing their vote to break the tie clears the note
+    helm.vote(seed.tripId, seed.maya.memberId, idB);
+    expect(t.voteNote).toBeNull();
+    expect(t.autoPick?.planId).toBe(idB);
+  });
+
+  it("mateChoice: the chart that fits; if neither, the cheaper; if both fit, abstain", () => {
+    const plan = (id: string, fits: boolean, amountCents: number) => ({ _id: id, members: [{ memberId: "m", fits, amountCents }] }) as unknown as Plan;
+    expect(mateChoice(plan("A", true, 900), plan("B", false, 100), "m")).toBe("A");
+    expect(mateChoice(plan("A", false, 900), plan("B", true, 100), "m")).toBe("B");
+    expect(mateChoice(plan("A", false, 900), plan("B", false, 100), "m")).toBe("B");
+    expect(mateChoice(plan("A", true, 900), plan("B", true, 100), "m")).toBeNull();
+    expect(mateChoice(plan("A", false, 100), plan("B", false, 100), "m")).toBeNull();
   });
 });
 

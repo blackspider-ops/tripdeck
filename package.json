@@ -2,7 +2,7 @@
   "name": "all-ayes",
   "private": true,
   "version": "0.1.0",
-  "description": "All Ayes \u2014 everyone's in, or nobody pays. Group trip planning with private AI mates, a mixed-reality chart table, and all-or-nothing group checkout.",
+  "description": "Tripdeck \u2014 everyone's in, or nobody pays. Group trip planning with private AI mates, a mixed-reality chart table, and all-or-nothing group checkout.",
   "workspaces": [
     "packages/*",
     "apps/*"

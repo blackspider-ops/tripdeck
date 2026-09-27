@@ -14,7 +14,7 @@ export async function restoreOrRetry(helm: Restorable, opts: { baseDelayMs?: num
     await helm.restore();
     return true;
   } catch (e) {
-    log("[helm] ⚠ restore failed; starting anyway and retrying it in the background", e);
+    log("[helm] WARNING: restore failed; starting anyway and retrying it in the background", e);
   }
   let attempt = 0;
   const next = () => {

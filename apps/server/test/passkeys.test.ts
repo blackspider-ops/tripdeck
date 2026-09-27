@@ -157,8 +157,8 @@ describe("relying party resolution (TR3-001 / TR1-003)", () => {
     process.env.WEBAUTHN_ORIGIN = TUNNEL;
     expect(relyingParty({ host }).rpID).toBe("abc.trycloudflare.com");
     // production pins the relying party whatever the request says
-    process.env.NODE_ENV = "production"; process.env.WEBAUTHN_ORIGIN = "https://allayes.tech/";
-    expect(relyingParty({ origin: TUNNEL, host })).toEqual({ origin: "https://allayes.tech", rpID: "allayes.tech" });
+    process.env.NODE_ENV = "production"; process.env.WEBAUTHN_ORIGIN = "https://tripdeck.tech/";
+    expect(relyingParty({ origin: TUNNEL, host })).toEqual({ origin: "https://tripdeck.tech", rpID: "tripdeck.tech" });
   });
 
   it("status, register and auth agree on the tunnel rpID behind the proxy; a second attempt prompts again instead of PASSKEY_REQUIRED", async () => {

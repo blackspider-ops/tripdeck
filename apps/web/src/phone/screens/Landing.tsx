@@ -9,7 +9,7 @@ export default function Landing() {
   const last = lastJoinCode();
   return (
     <Page>
-      <Eyebrow icon={<Anchor size={18} />}>All Ayes</Eyebrow>
+      <Eyebrow icon={<Anchor size={18} />}>Tripdeck</Eyebrow>
       <h1 className="display">Everyone's in, or nobody pays.</h1>
       <p className="body muted">Send your mate to the table.</p>
 

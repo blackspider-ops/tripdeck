@@ -13,8 +13,8 @@ export const CAP_STEP_CENTS = 5_000;
 export const LONG_WALK_MIN = 25;
 export const EARLY_START_BEFORE = "08:00";
 export const SEAL_TIMEOUT_MS = 15_000;
-/** PRD D5: once a clear majority votes the same chart, it is picked after this unless the organizer picks first. */
-export const AUTOPICK_MS = 20_000;
+/** PRD D5: once a strict majority of the crew votes the same chart (or a tie is broken), it is picked after this. */
+export const AUTOPICK_MS = 10_000;
 /** In-trip minutes per real second in the Dry Run clock (doc 03 Q3). */
 export const DRYRUN_MIN_PER_SEC = 15;
 export const DRYRUN_DAY_START_MIN = 8 * 60;

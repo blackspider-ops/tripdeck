@@ -164,14 +164,14 @@ async function tryConnect(): Promise<boolean> {
 
 export async function connectDb(): Promise<boolean> {
   if (!features.mongo()) {
-    if (config.production) console.error("[db] ⚠ NODE_ENV=production without MONGODB_URI: voyages live in memory only and are lost on restart");
+    if (config.production) console.error("[db] WARNING: NODE_ENV=production without MONGODB_URI: voyages live in memory only and are lost on restart");
     return false;
   }
   if (await tryConnect()) {
     console.log(`[db] MongoDB connected (${config.mongoDb})`);
     return true;
   }
-  console.error("[db] ⚠ running in memory only while MongoDB is unreachable; retrying in the background");
+  console.error("[db] WARNING: running in memory only while MongoDB is unreachable; retrying in the background");
   reconnector = startReconnect({
     attempt: tryConnect,
     onConnected: async () => {
@@ -308,7 +308,7 @@ export async function closeDb() {
   queue.stop();
   // L5-001: whatever never reached MongoDB is named, so it can be repaired by hand
   const parked = queue.parked();
-  if (parked.length) console.error(`[db] ⚠ ${parked.length} write(s) never reached MongoDB: ${parked.map((p) => `${p.col}/${p.id}${p.permanent ? " (permanent)" : ""}`).join(", ")}`);
+  if (parked.length) console.error(`[db] WARNING: ${parked.length} write(s) never reached MongoDB: ${parked.map((p) => `${p.col}/${p.id}${p.permanent ? " (permanent)" : ""}`).join(", ")}`);
   await lease?.release(); // L5-002: the next helm can restore at once
   await client?.close();
 }

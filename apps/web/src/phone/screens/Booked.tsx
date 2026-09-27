@@ -1,4 +1,4 @@
-import { BOOKED_HEADLINE, formatCents, minToClock, paymentLabelFor, type PlanPrivate, type PlanPublic } from "@all-ayes/shared";
+import { BOOKED_HEADLINE, buildItinerary, formatCents, minToClock, monthDayLabel, type ItineraryDay, type MyDay, type PlanPrivate, type PlanPublic } from "@all-ayes/shared";
 import { useCrew, useTripSelector } from "../TripContext";
 import { formatWindow } from "../format";
 import { DOWNLOAD_URL_TTL_MS } from "../timing";
@@ -6,6 +6,17 @@ import { Bell } from "../components/icons";
 import { RolledChartArt } from "../components/illustrations";
 import { SealRow } from "../components/SealRow";
 import { Button, Card, Eyebrow, Page } from "../components/ui";
+import { Receipt } from "../components/Receipt";
+
+const ROLE: Record<ItineraryDay["role"], string> = { arrival: "Arrival", full: "", departure: "Departure" };
+/** "Inn at the Park ×2" → "Inn at the Park" (the room count is on the receipt). */
+const stayOnly = (name: string) => name.replace(/ ×\d+$/, "");
+/** "Fri, Feb 19" for the day a chosen moment is on in my itinerary. */
+function activityDate(days: MyDay[], name: string): string | undefined {
+  return days.find((d) => d.items.some((it) => it.name === name))?.label;
+}
+const nightsOf = (w: { start: string; end: string; nights?: number }) =>
+  w.nights ?? Math.max(1, Math.round((Date.parse(`${w.end}T00:00:00Z`) - Date.parse(`${w.start}T00:00:00Z`)) / 86_400_000));
 
 /** P9 — Booked. */
 export default function Booked() {
@@ -22,6 +33,12 @@ export default function Booked() {
   const win = useTripSelector((s) => s.trip!.dateWindows.find((w) => w.id === plan?.dateWindowId));
   // my own itinerary comes from plan:private (the public plan has no per-member schedule, SEC-001)
   const mine = useTripSelector((s) => (planId ? s.planPrivate[planId] : undefined));
+  const nights = win ? nightsOf(win) : 0;
+  // every day of the stay: flight in, check-in and dinner on day 1; full days; check-out and the flight home
+  const itinerary = plan && mine && win ? buildItinerary({
+    days: mine.days ?? [], nights, startDate: win.start, neighborhood: plan.neighborhood, hotelName: stayOnly(plan.hotelName),
+    cityName: plan.cityName, arrival: mine.arrival, departure: mine.departure, route: mine.route ?? routeFromLines(mine.lines),
+  }) : [];
 
   return (
     <Page>
@@ -34,21 +51,23 @@ export default function Booked() {
         {plan ? (
           <>
             <h2 className="h2">{plan.cityName}</h2>
-            <p className="small">{plan.hotelName} · {plan.neighborhood}{win ? ` · ${formatWindow(win.start, win.end, { year: true })} · ${win.nights} night${win.nights === 1 ? "" : "s"}` : ""}</p>
-            {(mine?.days ?? []).map((d) => {
-              const items = d.items;
-              if (!items.length) return null;
-              return (
-                <div key={d.day} className="mt-s">
-                  <div className="small">{d.label}</div>
-                  <ul className="timeline">
-                    {items.map((it) => (
-                      <li key={it.activityId}><span className="t">{minToClock(it.startMin)}</span><span>{it.name}</span></li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
+            <p className="small">{stayOnly(plan.hotelName)} · {plan.neighborhood}{win ? ` · ${formatWindow(win.start, win.end, { year: true })} · ${nights} night${nights === 1 ? "" : "s"}` : ""}</p>
+            {itinerary.length ? (
+              <div className="itinerary" aria-label="Itinerary">
+                {itinerary.map((d) => (
+                  <section key={d.day} className="itin-day" aria-label={d.label}>
+                    <h3 className="itin-head"><span>{d.label}</span><span className="itin-role">{ROLE[d.role]}</span></h3>
+                    <ul className="timeline">
+                      {d.entries.map((e, i) => (
+                        <li key={e.activityId ?? `${e.kind}-${i}`} className={`k-${e.kind}`}>
+                          <span className="t">{e.startMin === null ? "" : minToClock(e.startMin)}</span><span>{e.title}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            ) : null}
           </>
         ) : null}
         {share !== null ? (
@@ -65,14 +84,18 @@ export default function Booked() {
 
       {mySeal ? (
         <Card label="Your receipt">
-          <div className="eyebrow">Your receipt{reference ? ` · ${reference}` : ""}</div>
-          <ul className="receipt" aria-label="Receipt lines">
-            {mySeal.lines.map((l, i) => (
-              <li key={i} className="row spread"><span>{l.label}</span><span className="mono">{formatCents(l.amountCents)}</span></li>
-            ))}
-          </ul>
-          <p className="row spread mt-s"><b>Charged to •••• {mySeal.cardLast4}</b><span className="mono">{formatCents(mySeal.amountCents)}</span></p>
-          <p className="small">Only you see your receipt. {paymentLabelFor(mySeal.mode)}</p>
+          <Receipt
+            reference={reference}
+            tripName={tripName}
+            dates={win ? formatWindow(win.start, win.end, { year: true }) : undefined}
+            lines={mySeal.lines}
+            totalCents={mySeal.amountCents}
+            cardLast4={mySeal.cardLast4}
+            mode={mySeal.mode}
+            captured={booking?.status === "CAPTURED"}
+            dateOf={(name) => activityDate(mine?.days ?? [], name)}
+            flightDates={win ? `${monthDayLabel(win.start)} / ${monthDayLabel(win.end)}` : undefined}
+          />
         </Card>
       ) : null}
 
@@ -86,6 +109,13 @@ export default function Booked() {
   );
 }
 
+/** Older plans carry no route: read it off the flight line ("Flight IAD⇄SDF" or "Round-trip flight · IAD ⇄ SDF"). */
+function routeFromLines(lines: PlanPrivate["lines"] | undefined): { origin: string; airport: string } | undefined {
+  const l = lines?.find((x) => x.kind === "flight");
+  const m = l ? /([A-Z0-9]{3,4})\s*⇄\s*([A-Z0-9]{3,4})/.exec(l.label) : null;
+  return m ? { origin: m[1], airport: m[2] } : undefined;
+}
+
 function downloadIcs(name: string, plan: PlanPublic, mine: PlanPrivate | undefined, win: { start: string; end: string } | undefined, ref?: string) {
   const d = (iso: string, add = 0) => {
     const x = new Date(iso + "T12:00:00Z");
@@ -95,8 +125,8 @@ function downloadIcs(name: string, plan: PlanPublic, mine: PlanPrivate | undefin
   const lines = (mine?.days ?? []).flatMap((day) => day.items.map((it) => `${day.label} ${minToClock(it.startMin)} ${it.name}`));
   const esc = (s: string) => s.replace(/[\\,;]/g, (m) => `\\${m}`).replace(/\n/g, "\\n");
   const body = [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//All Ayes//Voyage//EN", "BEGIN:VEVENT",
-    `UID:${ref ?? plan.planId}@allayes`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Tripdeck//Voyage//EN", "BEGIN:VEVENT",
+    `UID:${ref ?? plan.planId}@tripdeck`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     ...(win ? [`DTSTART;VALUE=DATE:${d(win.start)}`, `DTEND;VALUE=DATE:${d(win.end, 1)}`] : []),
     `SUMMARY:${esc(`${name} — ${plan.cityName}`)}`,
     `LOCATION:${esc(`${plan.hotelName}, ${plan.neighborhood}, ${plan.cityName}`)}`,

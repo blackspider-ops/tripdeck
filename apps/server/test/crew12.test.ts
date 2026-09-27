@@ -147,7 +147,7 @@ describe("lodging for bigger crews: rooms = ceil(crew / sleeps) of one stay, spl
         expect(pub.hotelName).toBe(rooms > 1 ? `${h.name} ×${rooms}` : h.name);
         expect(pub.rooms).toBe(rooms > 1 ? rooms : undefined);
         expect(JSON.stringify(pub)).not.toMatch(/"m\d+"/);
-        if (rooms > 1) expect(lodging[0].label).toContain(`${h.name} ×${rooms}, 1/${n} ×${win.nights}n`);
+        if (rooms > 1) expect(lodging[0].label).toBe(`${h.name} · ${rooms} rooms · ${win.nights} nights · your share (1 of ${n})`);
       }
     }
   });

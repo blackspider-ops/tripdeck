@@ -12,3 +12,6 @@ apps/server/data/
 samewhere/
 .visa/
 *.pem
+
+# internal planning notes, kept local
+docs/

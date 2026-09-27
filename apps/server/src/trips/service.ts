@@ -14,7 +14,8 @@
  *   replay.ts      trip:state and (re)join replay
  *   persistence.ts boot restore, reconnect sync, on-demand hydrate, trip lookups (`archive`)
  */
-import type { Band, BriefInput, Origin } from "@all-ayes/shared";
+import { JOIN_REFUSAL, type Band, type BriefInput, type Origin } from "@all-ayes/shared";
+import { HelmError } from "../util/errors.js";
 import type { BookingRec } from "../payments/orchestrator.js";
 import { HelmCore, type Helm } from "./core.js";
 import { Crew, type CreateTrip } from "./crew.js";
@@ -79,7 +80,20 @@ export class TripService extends HelmCore implements Helm {
   // ---------- dry run & sealing ----------
   vote(tripId: string, memberId: string, planId: string) { return this.dryrun.vote(tripId, memberId, planId); }
   dryrunControl(tripId: string, actor: Actor, action: "pause" | "resume" | "restart") { return this.dryrun.dryrunControl(tripId, actor, action); }
+  /** Internal: commits the crew's decision (the auto-pick uses it). Not reachable from a socket. */
   pick(tripId: string, actor: Actor, planId: string) { return this.sealing.pick(tripId, actor, planId); }
+  /**
+   * The crew's majority picks: nobody (the organizer included) picks by hand. A `plan:pick` (the headset lifting a
+   * cloche) is that seat's vote: the member's own seat, or the organizer's for the paired headset.
+   */
+  pickAsVote(tripId: string, actor: Actor, planId: string) {
+    const memberId = actor.memberId ?? (this.deviceOk(tripId, actor.deviceToken) ? this.trip(tripId).organizerId : undefined);
+    if (!memberId) {
+      if (actor.deviceToken && this.trip(tripId).status !== "BOOKED") throw new HelmError("DEVICE_EXPIRED", JOIN_REFUSAL.DEVICE_EXPIRED);
+      throw new HelmError("NOT_MEMBER", "Only crew can vote.");
+    }
+    return this.dryrun.vote(tripId, memberId, planId);
+  }
   setSeal(tripId: string, memberId: string, bookingId: string, assertionToken?: string, pin?: string) { return this.sealing.setSeal(tripId, memberId, bookingId, assertionToken, pin); }
   cancelSeal(tripId: string, memberId: string, bookingId: string) { return this.sealing.cancelSeal(tripId, memberId, bookingId); }
   callOff(tripId: string, actor: Actor, bookingId?: string) { return this.sealing.callOff(tripId, actor, bookingId); }
