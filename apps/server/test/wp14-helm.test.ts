@@ -36,7 +36,7 @@ const code = async (fn: () => unknown) => { try { await fn(); } catch (e) { retu
 const until = async (ok: () => boolean) => { for (let i = 0; i < 600 && !ok(); i++) await new Promise((r) => setTimeout(r, 5)); expect(ok()).toBe(true); };
 const LIS = "LIS-W1-casa-alfama";
 
-afterEach(() => { vi.restoreAllMocks(); delete process.env.VISA_VIC_API_BASE; delete process.env.VISA_VIC_API_KEY; });
+afterEach(() => { vi.restoreAllMocks(); process.env.VISA_USER_ID = ""; process.env.VISA_PASSWORD = ""; process.env.VISA_CERT_PATH = ""; process.env.VISA_KEY_PATH = ""; });
 
 describe("OPT-070: the hail path and restore edge cases", () => {
   it("a hail stating a cap loses the amount (ribbon has no digits); an over-long hail is cut; two in 5 s are SLOW_DOWN", async () => {
@@ -125,17 +125,20 @@ describe("OPT-068 / OPT-019: text helpers, shared formatters and validateBrief",
 });
 
 describe("OPT-009: the payment provider is chosen explicitly and reported honestly", () => {
-  it("PAYMENTS_MODE=visa_sandbox without credentials, or with them but no adapter, runs the SIM labelled sim", () => {
+  it("PAYMENTS_MODE=visa_sandbox without credentials runs the SIM labelled sim; with them, the Visa sandbox provider", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     expect(selectPaymentProvider("sim").mode).toBe("sim");
     expect(warn).not.toHaveBeenCalled();
+    process.env.VISA_CERT_PATH = "/nonexistent/cert.pem"; process.env.VISA_KEY_PATH = "/nonexistent/key.pem";
     const bare = selectPaymentProvider("visa_sandbox");
     expect(bare).toBeInstanceOf(SimProvider);
     expect(bare.mode).toBe("sim");
-    expect(String(warn.mock.calls.at(-1)?.[0])).toMatch(/VISA_VIC_API_BASE/);
-    process.env.VISA_VIC_API_BASE = "https://sandbox.example"; process.env.VISA_VIC_API_KEY = "k";
-    expect(selectPaymentProvider("visa_sandbox").mode).toBe("sim");
-    expect(String(warn.mock.calls.at(-1)?.[0])).toMatch(/not wired/);
+    expect(String(warn.mock.calls.at(-1)?.[0])).toMatch(/VISA_USER_ID/);
+    process.env.VISA_CERT_PATH = ""; process.env.VISA_KEY_PATH = "";
+    process.env.VISA_API_KEY = "k"; process.env.VISA_SHARED_SECRET = "s"; // X-Pay credentials (fake; no call is made)
+    try {
+      expect(selectPaymentProvider("visa_sandbox").mode).toBe("visa_sandbox");
+    } finally { process.env.VISA_API_KEY = ""; process.env.VISA_SHARED_SECRET = ""; }
     expect(new TripService().payments.mode).toBe("sim");
   });
 });

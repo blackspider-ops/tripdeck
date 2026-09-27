@@ -1,4 +1,4 @@
-import { BOOKED_HEADLINE, formatCents, minToClock, type PlanPrivate, type PlanPublic } from "@all-ayes/shared";
+import { BOOKED_HEADLINE, formatCents, minToClock, paymentLabelFor, type PlanPrivate, type PlanPublic } from "@all-ayes/shared";
 import { useCrew, useTripSelector } from "../TripContext";
 import { formatWindow } from "../format";
 import { DOWNLOAD_URL_TTL_MS } from "../timing";
@@ -16,7 +16,8 @@ export default function Booked() {
   const planId = useTripSelector((s) => s.booking?.planId ?? s.trip!.chosenPlanId);
   const plan = useTripSelector((s) => s.shortlist.find((p) => p.planId === planId));
   const reference = useTripSelector((s) => s.lastResult?.reference ?? s.booking?.reference);
-  const share = useTripSelector((s) => (s.sealPrivate && s.booking && s.sealPrivate.bookingId === s.booking.bookingId ? s.sealPrivate.amountCents : null));
+  const mySeal = useTripSelector((s) => (s.sealPrivate && s.booking && s.sealPrivate.bookingId === s.booking.bookingId ? s.sealPrivate : null));
+  const share = mySeal ? mySeal.amountCents : null;
   // R2-WP-14: dateWindows is a static field (the store keeps it from the join's full snapshot)
   const win = useTripSelector((s) => s.trip!.dateWindows.find((w) => w.id === plan?.dateWindowId));
   // my own itinerary comes from plan:private (the public plan has no per-member schedule, SEC-001)
@@ -61,6 +62,19 @@ export default function Booked() {
         ) : null}
         {plan ? <Button block onClick={() => downloadIcs(tripName, plan, mine, win, reference)}>Save to your log (.ics)</Button> : null}
       </Card>
+
+      {mySeal ? (
+        <Card label="Your receipt">
+          <div className="eyebrow">Your receipt{reference ? ` · ${reference}` : ""}</div>
+          <ul className="receipt" aria-label="Receipt lines">
+            {mySeal.lines.map((l, i) => (
+              <li key={i} className="row spread"><span>{l.label}</span><span className="mono">{formatCents(l.amountCents)}</span></li>
+            ))}
+          </ul>
+          <p className="row spread mt-s"><b>Charged to •••• {mySeal.cardLast4}</b><span className="mono">{formatCents(mySeal.amountCents)}</span></p>
+          <p className="small">Only you see your receipt. {paymentLabelFor(mySeal.mode)}</p>
+        </Card>
+      ) : null}
 
       {booking ? (
         <Card label="Seals">

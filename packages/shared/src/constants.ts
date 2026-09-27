@@ -162,6 +162,15 @@ export const VOID_HEADLINE = "One share didn't clear, so nobody was charged.";
 export const BOOKED_HEADLINE = "Logged. Nobody fronted a cent.";
 /** The promise printed under every seal. */
 export const SEALING_FOOTER = "If any share doesn't clear, nobody is charged.";
+/** Every money surface says which parts are real (docs/06 §2). */
+export const PAYMENT_SIM_LABEL = "Simulated — Visa Intelligent Commerce model · no real card is charged";
+export const PAYMENT_VISA_LABEL = "Visa sandbox: card verified at seal · holds and charges simulated · no real card is charged";
+export const paymentLabelFor = (mode: "visa_sandbox" | "sim") => (mode === "visa_sandbox" ? PAYMENT_VISA_LABEL : PAYMENT_SIM_LABEL);
+/** After a member's seal is set (their own phone or seat headset only). */
+export const sealSetLine = (amountCents: number, last4: string) =>
+  `Your seal is set — ${formatCents(amountCents)} held on •••• ${last4}, not charged until everyone seals.`;
+/** The void confirmation, whatever the reason. */
+export const VOID_RELEASED = "Nobody was charged — every hold released.";
 /** The button that goes back to the Two Charts after a void. */
 export const BACK_TO_CHARTS = "Back to the charts";
 

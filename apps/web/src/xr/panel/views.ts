@@ -4,7 +4,7 @@
 // Pure over the store's state: the panel (SidePanel.ts) calls drawPanel each time something changes.
 import {
   BANDS, CAP_MAX_CENTS, CAP_MIN_CENTS, CAP_STEP_CENTS, DEALBREAKERS, MAX_DEALBREAKERS, MAX_MUST_HAVES, MAX_PLACES, MIN_TABLE_CREW,
-  NOTE_MAX_CHARS, PALETTE, REGIONS, TAGS, addDays, daysBetween, formatDollars, monthDayLabel, waitingOnTerms,
+  NOTE_MAX_CHARS, PALETTE, REGIONS, TAGS, VOID_RELEASED, addDays, daysBetween, formatDollars, monthDayLabel, paymentLabelFor, sealSetLine, waitingOnTerms,
   type BriefInput, type Dealbreaker, type Region, type Tag,
 } from "@all-ayes/shared";
 import type { ClientState, TripStore } from "../../net/tripStore";
@@ -306,15 +306,21 @@ function sealView(ui: PanelUI, p: PanelState, c: PanelCtx) {
   ui.ledger("Your share", money(mine.amountCents), true);
   ui.text(mine.fits ? "Fits your terms ✓" : "Over your terms", { color: mine.fits ? PALETTE.okGreen : PALETTE.soundingRed });
   ui.small(`Visa •••• ${mine.cardLast4} (agent card, capped at your terms)`);
+  ui.small(paymentLabelFor(mine.mode));
   const seal = b.seals.find((x) => x.memberId === c.viewer.memberId);
   // my own lift is private (publicly it still reads "set", S2-001): say it plainly here, and offer to set it again
   const lifted = s.declined?.bookingId === b.bookingId && s.declined.reason === "user_cancelled";
   const status = lifted ? "PENDING" : seal?.status ?? "PENDING";
   const gathering = b.status === "PENDING" || b.status === "AUTHORIZING";
-  if (!gathering) { ui.text(b.status === "CAPTURED" ? "Logged." : "Nobody was charged."); return; }
+  if (!gathering) {
+    if (b.status === "CAPTURED") ui.text(`Logged${s.lastResult?.reference ? ` · ${s.lastResult.reference}` : ""}. Charged ${money(mine.amountCents)} to •••• ${mine.cardLast4}.`);
+    else ui.text(VOID_RELEASED);
+    return;
+  }
   const waiting = b.seals.filter((x) => x.status === "PENDING").length;
   if (status !== "PENDING") {
-    ui.text(waiting ? `Seal set — waiting on ${waiting} seal${waiting === 1 ? "" : "s"}` : "Every seal is set · settling…");
+    ui.text(sealSetLine(mine.amountCents, mine.cardLast4), { color: PALETTE.okGreen });
+    ui.text(waiting ? `Waiting on ${waiting} seal${waiting === 1 ? "" : "s"}` : "Every seal is set · settling…");
     if (waiting) {
       ui.gap(40); // secondary, away from the status line
       if (p.liftArmed) {

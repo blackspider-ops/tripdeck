@@ -92,3 +92,7 @@ See [`DEPLOY.md`](DEPLOY.md) — one Docker container (Render blueprint included
 - Payments run in simulation unless the Visa sandbox is wired — no real money moves.
 - The scripted Expo voyage always leads to Lisbon by design (its numbers are pinned by tests); `/demo` seeds a random voyage by default to show the engine is generic.
 - The project was started before the HackGT hacking window.
+
+### Payments: Visa sandbox
+
+Payments run on a simulation of Visa Intelligent Commerce by default, labelled "Simulated" on every money screen. Set `PAYMENTS_MODE=visa_sandbox` and add Visa Developer credentials (`VISA_USER_ID`, `VISA_PASSWORD`, and the PEMs in `.visa/`) to switch on a real Visa sandbox Payment Account Validation of each member's card when they set their seal. Holds and charges stay simulated and all-or-nothing. `GET /api/health` shows the sandbox status under `visa`. See docs/06-payments-spec.md.

@@ -10,6 +10,7 @@
  *   misc       turn audio, demo seed, cities, health
  *   debug      debug.ts
  */
+import { visaHealth } from "../payments/visa/status.js";
 import express, { type NextFunction, type Request, type Response, type Router } from "express";
 import { AIRPORTS, HAIL_MAX_CHARS, MAX_CREW, NOTE_MAX_CHARS, REGIONS, type Band, type CityId, type Destination, type Origin } from "@all-ayes/shared";
 import type { TripService } from "../trips/service.js";
@@ -393,6 +394,8 @@ function mountMiscRoutes(r: Router, helm: TripService) {
       // RouteStack live inventory configured (docs/12-routestack.md); never the keys
       routestack: routestackStatus().enabled,
       payments: helm.payments.mode,
+      // PAYMENTS_MODE=visa_sandbox: what is configured (booleans) and the last live handshake / PAV outcome, never a secret
+      visa: visaHealth(),
       agentDecisions: config.agentDecisions,
       expoMode: config.expoMode,
       demoReplay: config.demoReplay,

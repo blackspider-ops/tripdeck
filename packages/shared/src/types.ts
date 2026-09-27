@@ -271,7 +271,8 @@ export interface Turn {
 // ---------- payments ----------
 export type BookingStatus = "PENDING" | "AUTHORIZING" | "ALL_AUTHORIZED" | "CAPTURED" | "ANY_DECLINED" | "VOIDED";
 export type SealStatus = "PENDING" | "AUTHORIZING" | "AUTHORIZED" | "DECLINED" | "CAPTURED" | "VOIDED";
-export type DeclineReason = "over_limit" | "timeout" | "provider_error" | "user_cancelled";
+/** `card_not_verified`: PAYMENTS_MODE=visa_sandbox and the Visa sandbox didn't verify the card (or didn't answer). */
+export type DeclineReason = "over_limit" | "timeout" | "provider_error" | "user_cancelled" | "card_not_verified";
 export interface SealPublic { memberId: string; status: SealStatus; standing?: boolean }
 export interface BookingPublic {
   /** No group total here: the exact total of the chosen chart would undo PlanPublic.groupRange (S2-002). */

@@ -59,6 +59,8 @@ interface SealRec {
   memberId: string; amountCents: number; capCents: number; status: SealStatus;
   idempotencyKey: string; instructionRef?: string; authRef?: string; declineReason?: DeclineReason;
   standing: boolean; updatedAt: string;
+  /** visa_sandbox: the Visa sandbox card check's label at seal time ("Visa sandbox: card verified"). Owner-only. */
+  cardCheck?: string;
   /** Last status sent to the trip room (SEC-002: only public transitions are announced). */
   published?: SealStatus;
   /** Durable intents (TR5-006): written before the provider call, so a restart can re-drive it idempotently. */
@@ -330,6 +332,20 @@ export class PaymentsOrchestrator {
         memberId, cardRef: card.cardRef, limitCents, merchantName: MERCHANT, expiresAt: new Date(expiresAt).toISOString(),
         ...(opts.approvedWithPasskey ? { approvedWithPasskey: true } : {}),
       });
+      // PAYMENTS_MODE=visa_sandbox: a REAL Visa sandbox check of the card at seal time. A card Visa doesn't verify (or a
+      // sandbox that doesn't answer) declines this seal privately; publicly it still reads "set" (S2-001), and the
+      // booking voids at the settle point with nobody charged.
+      const check = this.provider.verifyAccount ? await this.provider.verifyAccount(memberId).catch(() => ({ result: "unavailable" as const, label: "Visa sandbox: unavailable" })) : null;
+      if (check) s.cardCheck = check.label;
+      if (check && check.result !== "verified") {
+        if (!this.markSet(b, s, instructionRef)) return "locked";
+        s.declineReason = "card_not_verified";
+        s.status = "DECLINED";
+        s.updatedAt = nowIso();
+        this.persistSoon(b);
+        this.maybeSettle(b);
+        return "ok";
+      }
       // S2-001: the instruction is on file, so the seal is "set"; it is authorized with every other one at the settle point
       if (this.markSet(b, s, instructionRef)) this.maybeSettle(b);
       return "ok";

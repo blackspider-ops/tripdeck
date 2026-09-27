@@ -14,4 +14,4 @@ process.env.CACHE_DIR = join(dir, "cache");
 process.env.TABLE_RUNS_MAX ??= "1000";
 // Tests never reach paid services or a real database, even when a developer's .env holds real keys: set (blank)
 // here, these win over .env (the loader only fills unset vars). Tests that exercise a provider mock it.
-for (const k of ["GEMINI_API_KEY", "ELEVENLABS_API_KEY", "BACKBOARD_API_KEY", "MONGODB_URI", "VISA_VIC_API_KEY", "VISA_VIC_API_BASE", "ROUTESTACK_API_KEY", "ROUTESTACK_API_SECRET"]) process.env[k] = "";
+for (const k of ["PAYMENTS_MODE", "GEMINI_API_KEY", "ELEVENLABS_API_KEY", "BACKBOARD_API_KEY", "MONGODB_URI", "VISA_USER_ID", "VISA_PASSWORD", "VISA_MLE_KEY_ID", "VISA_API_KEY", "VISA_SHARED_SECRET", "VISA_CERT_PATH", "VISA_KEY_PATH", "ROUTESTACK_API_KEY", "ROUTESTACK_API_SECRET"]) process.env[k] = "";

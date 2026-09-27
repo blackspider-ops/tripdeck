@@ -24,6 +24,11 @@ export interface PaymentProvider {
    * a real provider keeps instructions itself; the SIM re-registers the record it lost with the process.
    */
   resumeInstruction?(p: { memberId: string; instructionRef: string; limitCents: number; expiresAt: number }): Promise<boolean>;
+  /**
+   * PAYMENTS_MODE=visa_sandbox (visa/provider.ts): a REAL Visa sandbox Payment Account Validation of the card behind the
+   * member's agent card, at seal time. Anything but "verified" declines that seal (privately). Absent in the SIM.
+   */
+  verifyAccount?(memberId: string): Promise<{ result: "verified" | "not_verified" | "unavailable"; label: string } | null>;
 }
 
 export const MERCHANT = "All Ayes Voyages";

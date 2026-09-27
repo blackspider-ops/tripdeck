@@ -134,8 +134,7 @@ export const config = {
     mode: oneOf("PAYMENTS_MODE", ["sim", "visa_sandbox"] as const, "sim"),
     simDeclineMember: env("SIM_DECLINE_MEMBER"),
     simTimeoutMember: env("SIM_TIMEOUT_MEMBER"),
-    /** OPT-009: Visa Intelligent Commerce sandbox credentials (both needed). Read at call time. */
-    visa: () => ({ apiBase: env("VISA_VIC_API_BASE"), apiKey: env("VISA_VIC_API_KEY") }),
+    // Visa Developer sandbox credentials: read at call time by payments/visa/config.ts (never logged)
   },
   /**
    * WP-08 follow-up / O2-024 (was util/settings.ts): keys the helm, payments and restore paths read at call time, so a

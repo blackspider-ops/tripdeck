@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BACK_TO_CHARTS, VOID_HEADLINE, type DeclineReason } from "@all-ayes/shared";
+import { BACK_TO_CHARTS, VOID_HEADLINE, VOID_RELEASED, type DeclineReason } from "@all-ayes/shared";
 import { useCrew, useInlineError, useSendGuard, useTripSelector } from "../TripContext";
 import { BrokenSeal } from "../components/icons";
 import { BrokenSealArt } from "../components/illustrations";
@@ -12,6 +12,7 @@ const REASON: Record<DeclineReason, string> = {
   user_cancelled: "You lifted your seal, so nobody was charged.",
   timeout: "The card network didn't answer in time.",
   provider_error: "The card network had a problem.",
+  card_not_verified: "The Visa sandbox didn't verify your card, so your seal didn't clear.",
 };
 
 /** P10 — Voided: nobody was charged. */
@@ -38,6 +39,7 @@ export default function Voided() {
       <Eyebrow icon={<BrokenSeal size={18} />}>{tripName}</Eyebrow>
       <BrokenSealArt />
       <h1 className="h1 center">{headline}</h1>
+      <p className="body center" role="status" aria-label="Void confirmation"><b>{VOID_RELEASED}</b></p>
       {mine ? <p className="body center red">{REASON[mine.reason]}</p> : null}
       <p className="body center">Try again when ready.</p>
 

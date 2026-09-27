@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { SEALING_FOOTER } from "@all-ayes/shared";
+import { SEALING_FOOTER, paymentLabelFor, sealSetLine } from "@all-ayes/shared";
 import { useCrew, useInlineError, useSendGuard, useTripSelector } from "../TripContext";
 import { COUNTDOWN_TICK_MS } from "../timing";
 import { useNow } from "../useNow";
@@ -14,10 +14,6 @@ import { useTwoTap } from "../components/useTwoTap";
 import { Card, Eyebrow, LinkButton, MarginNote, Page, Plotting, StampButton } from "../components/ui";
 import { PinPad } from "../components/PinPad";
 
-const FOOTER = {
-  visa_sandbox: "Paid with a Visa agent card, capped at your terms. Sandbox.",
-  sim: "Sandbox simulation of a Visa agent card, capped at your terms.",
-} as const;
 
 /** P8 — Your share & Seal. The share is private to this phone. */
 export default function Seal() {
@@ -61,7 +57,7 @@ export default function Seal() {
   const statusLine =
     settling ? <><Dividers size={18} /> Every seal is set · settling…</>
     : status === "AUTHORIZING" ? <><Dividers size={18} /> Seal set · authorizing…</>
-    : status === "AUTHORIZED" ? <><WaxSeal size={18} /> Seal set — {waitingOn ? `waiting on ${waitingOn} seal${waitingOn === 1 ? "" : "s"}` : "settling…"}</>
+    : status === "AUTHORIZED" ? <><WaxSeal size={18} /> {waitingOn ? `Waiting on ${waitingOn} seal${waitingOn === 1 ? "" : "s"}` : "Settling…"}</>
     : status === "CAPTURED" ? <>Logged.</>
     : null;
 
@@ -75,7 +71,7 @@ export default function Seal() {
         <div className="mt-s"><FitStamp fits={mine.fits} /></div>
         <p className="small mono mt-s">Visa •••• {mine.cardLast4} (agent card, capped)</p>
         <p className="body">Paid by your mate's card, capped at your terms. {SEALING_FOOTER}</p>
-        <p className="small">{FOOTER[mine.mode]}</p>
+        <p className="small">{paymentLabelFor(mine.mode)}</p>
       </Card>
 
       {lifted && gathering ? (
@@ -86,7 +82,14 @@ export default function Seal() {
       {status === "PENDING" && (!lifted || (gathering && !settling)) ? (
         <SealAction bookingId={booking.bookingId} sent={sealSent} send={sendSeal} again={lifted} />
       ) : (
-        <p className="body row" role="status" aria-live="polite">{statusLine}</p>
+        <>
+          {status === "AUTHORIZED" || status === "AUTHORIZING" ? (
+            <div className="margin-note" role="status" aria-label="Seal confirmation">
+              <p className="body"><b>{sealSetLine(mine.amountCents, mine.cardLast4)}</b></p>
+            </div>
+          ) : null}
+          <p className="body row" role="status" aria-live="polite">{statusLine}</p>
+        </>
       )}
 
       <Card label="The crew's seals">

@@ -264,3 +264,18 @@ Ledger footer copy (Mode A/B): "Paid with a Visa agent card, capped at your term
 9. Decline each member in turn (random latencies), the standing seal and a lift included: the public event sequences are identical and `booking:result` lands at the same settle point after the last "set" (S2‑001).
 10. Seal deadline (2 of 3 sealed, +10 min) and organizer call‑off → VOIDED, nothing held.
 11. Restart: SEALING + final booking reconciles; mid‑void / mid‑auth / mid‑capture bookings are re‑driven; a standing instruction keeps its original expiry and an expired one isn't renewed.
+
+---
+
+## Visa Developer sandbox (PAYMENTS_MODE=visa_sandbox)
+
+The Visa client comes from Samewhere (`apps/server/src/payments/visa/`: `config.ts`, `client.ts`, `mle.ts`, `pav.ts`, `status.ts`, `provider.ts`). It uses two-way SSL with HTTP basic auth, and Message Level Encryption (JWE RSA-OAEP-256 / A128GCM) when `VISA_MLE_*` is set.
+
+- **Credentials.** `VISA_USER_ID` and `VISA_PASSWORD` come from the env. The PEMs are in `.visa/` (`cert.pem`, `key.pem`, plus the `mle-*` files), which is gitignored. Relative `VISA_*_PATH` values resolve from the repo root, the same way Samewhere resolves them. No value or PEM content is ever logged.
+- **What is real.** When a member sets their seal, one **Payment Account Validation** call runs on the Visa sandbox test card, which stands in for that member's agent card. The seal only goes through as normal if the actionCode is `00` or `85` ("Visa sandbox: card verified").
+- **What stays simulated.** The instruction, the holds, and the all-or-nothing capture, void and refund all stay in the SIM. Every money screen is labelled `paymentLabelFor(mode)`, which reads either "Simulated — Visa Intelligent Commerce model · …" or "Visa sandbox: card verified at seal · holds and charges simulated · …".
+- **Failure.** A card that Visa doesn't verify declines that seal privately, with the reason `card_not_verified`. The same happens if the sandbox errors or times out. In public the seal still reads "set", so the booking voids at the settle point, nobody is charged, and nobody is blamed.
+- **Health.** `/api/health.visa` reports which settings are configured (booleans only) and the last live handshake or PAV outcome (`live`, `lastLatencyMs`, and a short error that never contains a secret).
+- **Selection.** Setting `PAYMENTS_MODE=visa_sandbox` without credentials logs a warning and runs the SIM with `mode: "sim"`.
+
+Confirmations: once a member's seal is set, their phone and seat headset show "Your seal is set — $X held on •••• NNNN, not charged until everyone seals." Booked shows the booking reference and the member's own receipt lines, which only they can see. Voided shows "Nobody was charged — every hold released." To the member whose seal didn't clear, it also shows their own reason in private.
