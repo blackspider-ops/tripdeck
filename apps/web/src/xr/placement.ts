@@ -354,9 +354,11 @@ export class Placement {
     const eye = new THREE.Vector3(), fwd = new THREE.Vector3(0, 0, -1);
     camera.getWorldPosition(eye);
     fwd.applyQuaternion(camera.getWorldQuaternion(new THREE.Quaternion()));
-    const tableY = this.placed ? this.target.position.y : undefined;
+    const wasPlaced = this.placed;
+    const tableY = wasPlaced ? this.target.position.y : undefined;
     const { at } = snapInFront(eye, fwd, tableY);
-    const yaw = faceSeatYaw(at, eye, this.seatDeg());
+    // user report: Recenter must only bring the chart back in front, never turn it (keep the turn it already has)
+    const yaw = wasPlaced ? this.yaw : faceSeatYaw(at, eye, this.seatDeg());
     // the old anchor would pull the chart back to where it was
     this.dropAnchor();
     this.putAt(at, yaw);
