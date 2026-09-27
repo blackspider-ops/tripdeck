@@ -45,7 +45,7 @@ function buildCsp(host: string | undefined): string {
     "default-src 'self'",
     "script-src 'self' blob:",
     "worker-src 'self' blob:",
-    `connect-src 'self' ${[...ws].join(" ")} ${TILES} ${ION}`.replace(/\s+/g, " "),
+    `connect-src 'self' blob: data: ${[...ws].join(" ")} ${TILES} ${ION}`.replace(/\s+/g, " "),
     `img-src 'self' data: blob: ${TILES}`,
     "media-src 'self' blob: data:",
     "font-src 'self' data:",
