@@ -646,7 +646,9 @@ export const POOLS = {
 } as const;
 
 /** Pick wording `variant` (wraps; negative-safe). */
-export const pick = <S>(pool: Pool<S>, variant: number, s: S): string => pool[((variant % pool.length) + pool.length) % pool.length](s);
+/** "the The National show" → "The National show" when a place name already starts with "The". */
+const tidy = (line: string) => line.replace(/\b(?:the|The) (The) /g, "$1 ").replace(/\b(a|an) (The) /g, "$2 ");
+export const pick = <S>(pool: Pool<S>, variant: number, s: S): string => tidy(pool[((variant % pool.length) + pool.length) % pool.length](s));
 
 // ---------- the humanizer ----------
 /** Spoken openers, said before the line ("Um, Lisbon."). The voice gets commas / ellipses around each. */

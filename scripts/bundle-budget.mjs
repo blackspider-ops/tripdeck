@@ -34,8 +34,9 @@ const BUDGETS = {
   cardboard: 172 * KB, // webxr-polyfill (lazy: the headset route's Cardboard fallback only)
   index: 9.5 * KB, // qrcode (lazy, the headset code card)
   tripstore: 9.5 * KB, // + the seating plan for 2–12 (shared-ui/seating.ts: exclusion windows, even spread, two-ring fallback, flag tiers)
+  Landing: 11 * KB, // the tripdeck.tech front page: hero chart-table SVG, how it works, the seal ledger
   Create: 13 * KB, // the course pickers: ports by region + Surprise me + any city (CitySearch), regions / states, the date-range calendar + trip length
-  shared: 10 * KB, // @all-ayes/shared + dates.ts (date ranges, availability, generated window ids/labels; docs/04 §4.12)
+  shared: 13 * KB, // + itinerary.ts (day-by-day builder); @all-ayes/shared + dates.ts (date ranges, availability, generated window ids/labels; docs/04 §4.12)
 };
 const OTHER_BUDGET = 8 * KB;
 const TOLERANCE = 0.10;

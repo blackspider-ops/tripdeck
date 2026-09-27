@@ -9,7 +9,7 @@ export function SealedLetterArt() {
       <g transform="translate(100 80)">
         <path d="M0-22l6 4 7-1 3 6 6 3-1 7 4 6-4 6 1 7-6 3-3 6-7-1-6 4-6-4-7 1-3-6-6-3 1-7-4-6 4-6-1-7 6-3 3-6 7 1z" fill="var(--sounding-red)" stroke="none" />
         <circle r="12" stroke="var(--paper)" strokeOpacity=".55" />
-        <text y="6" textAnchor="middle" fontFamily="var(--f-display)" fontSize="17" fill="var(--paper)" stroke="none">A</text>
+        <text y="6" textAnchor="middle" fontFamily="var(--f-display)" fontSize="17" fill="var(--paper)" stroke="none">T</text>
       </g>
     </svg>
   );
@@ -25,7 +25,7 @@ export function RolledChartArt() {
       <path d="M105 38c-6 10-6 34 0 44M113 38c6 10 6 34 0 44" stroke="var(--brass-dark)" strokeWidth="2" />
       <path d="M109 82c-8 10-14 16-22 20M109 82c6 9 12 15 20 18" stroke="var(--brass-dark)" strokeWidth="2" />
       <circle cx="109" cy="60" r="11" fill="var(--sounding-red)" stroke="none" />
-      <text x="109" y="65" textAnchor="middle" fontFamily="var(--f-display)" fontSize="14" fill="var(--paper)" stroke="none">A</text>
+      <text x="109" y="65" textAnchor="middle" fontFamily="var(--f-display)" fontSize="14" fill="var(--paper)" stroke="none">T</text>
     </svg>
   );
 }

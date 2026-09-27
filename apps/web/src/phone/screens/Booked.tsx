@@ -101,7 +101,7 @@ export default function Booked() {
 
       {booking ? (
         <Card label="Seals">
-          <div className="eyebrow">All ayes</div>
+          <div className="eyebrow">Everyone sealed</div>
           <SealRow booking={booking} crew={crew} />
         </Card>
       ) : null}
