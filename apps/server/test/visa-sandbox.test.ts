@@ -116,7 +116,7 @@ describe("seal-time card check (visa_sandbox): all-or-nothing still holds", () =
     const sim = new SimProvider();
     sim.latency = [0, 1]; sim.declineMember = ""; sim.timeoutMember = "";
     const provider = new VisaSandboxProvider(sim, async () => null);
-    provider.verifyAccount = async (m: string) => ({ result: verdict(m), label: `Visa sandbox: ${verdict(m)}` });
+    provider.verifyAccount = async (m: string) => ({ result: verdict(m), label: `Visa sandbox: ${verdict(m)}`, at: Date.now() });
     const results: string[] = [];
     const declined: string[] = [];
     const orch = new PaymentsOrchestrator(provider, {

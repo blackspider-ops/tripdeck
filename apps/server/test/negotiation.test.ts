@@ -51,7 +51,7 @@ describe("negotiation — Expo run (doc 05 §12)", () => {
     ]);
     // consensus after Watch 2: the Captain decides straight after the Watch-2 turns (no Watch 3 in the shape above)
     expect(result.shortlist.map((p) => p._id)).toEqual(["MEX-W1-roma-flat", "LIS-W1-casa-alfama"]);
-    expect(turns[6].text).toMatch(/^Heard you, Rae\./); // the meeting's first concede: the classic wording
+    expect(turns[6].text).toMatch(/\bRae\b/); // a hail is answered by name (the wording varies)
     expect(turns[1].text).toMatch(/gave up the city pick/);
   });
 
@@ -82,7 +82,7 @@ describe("negotiation — privacy & quality (WP-12)", () => {
   it("TR4-005: with no common window the Captain doesn't claim one", async () => {
     const turns: EmittedTurn[] = [];
     await new NegotiationEngine(ds, crew, plans, ["LIS", "MEX", "YUL"], null, io(turns)).run();
-    expect(turns[0].text).toMatch(/^No dates suit everyone/);
+    expect(turns[0].text).toMatch(/no dates suit everyone/i);
     expect(turns[0].text).not.toMatch(/works for everyone/);
     expect(turns[0].text.split(/\s+/).length).toBeLessThanOrEqual(20);
   });
@@ -92,8 +92,8 @@ describe("negotiation — privacy & quality (WP-12)", () => {
     // a dates label carrying a secret-looking number makes the OPEN template leak
     await new NegotiationEngine(ds, crew, plans, ["LIS", "MEX", "YUL"], "Mar 900 to 16", io(turns)).run();
     expect(turns[0].act).toBe("OPEN");
-    expect(turns[0].text).toBe("The ports are on the chart. Let's hear it.");
-    expect(turns[0].redactions).toBe(1);
+    expect(turns[0].text).toMatch(/the ports are on the chart\. Let's hear it\.$/i);
+    expect(turns[0].redactions).toBeGreaterThanOrEqual(1); // every OPEN wording tripped the filter
     expect(turns.map((t) => t.text).join(" ")).not.toMatch(/past what my friend can do/);
   });
 

@@ -6,6 +6,7 @@ import type { Act, Dataset, FitReason, Plan, Tag } from "@all-ayes/shared";
 import { cityName, indexOf } from "../data/loader.js";
 import { view } from "./rules.js";
 import { RIBBON_MAX_WORDS, clampWords } from "../util/text.js";
+import * as L from "./lines.js";
 
 export interface LineOut { line: string; ribbon: string }
 
@@ -88,70 +89,72 @@ const nps = (xs: string[]) => list(xs.map(np));
  * voyage whose best window suits most (not all) of the crew says "for most of the crew" — never who is missing.
  * `scope`: a region / anywhere voyage says what was asked for and which ports the pre-rank put on the chart.
  */
-export function openLine(dates: string | null, cities: string[], scope?: string, who: DatesWho = "everyone"): LineOut {
-  const works = `works for ${who}`;
+export function openLine(dates: string | null, cities: string[], scope?: string, who: DatesWho = "everyone", variant = 0): LineOut {
+  const n = String(NUM[cities.length] ?? cities.length), ports = list(cities);
   if (scope) {
     const where = scope === "anywhere" ? "We could go anywhere." : `We're looking at ${scope}.`;
-    const when = dates ? `${dates} ${works}. ` : "No dates suit everyone; we'll weigh the closest. ";
+    const when = dates ? `${dates} works for ${who}. ` : "No dates suit everyone; we'll weigh the closest. ";
     return {
-      line: `${when}${where} ${list(cities)} ${cities.length === 1 ? "is" : "are"} on the chart. Let's hear it.`,
+      line: L.pick(L.OPEN_SCOPE, variant, { when, where, ports, isAre: cities.length === 1 ? "is" : "are" }),
       ribbon: clampRibbon(`${scope === "anywhere" ? "Anywhere" : scope} · ${NUM[cities.length]?.toLowerCase() ?? cities.length} ports`),
     };
   }
   if (!dates) {
     return {
-      line: `No dates suit everyone; we'll weigh the closest. ${NUM[cities.length] ?? cities.length} ports: ${list(cities)}. Let's hear it.`,
+      line: L.pick(L.OPEN_NO_DATES, variant, { n, ports }),
       ribbon: `No common dates · ${NUM[cities.length]?.toLowerCase() ?? cities.length} ports`,
     };
   }
   return {
-    line: `${dates} ${works}. ${NUM[cities.length] ?? cities.length} ports on the chart: ${list(cities)}. Let's hear it.`,
+    line: L.pick(L.OPEN_DATES, variant, { dates, who, n, ports }),
     ribbon: `${dates.replace(" to ", "–")} · ${NUM[cities.length]?.toLowerCase() ?? cities.length} ports`,
   };
 }
 
-export function proposeLine(ds: Dataset, p: Plan, memberId: string, opts: { seconding: boolean; memoryNote?: string }): LineOut {
+const hlSlots = (city: string, hl: string[]): L.HlSlots => ({ city, has: nps(hl), Has: cap(nps(hl)), are: hl.length > 1 ? "are" : "is" });
+
+export function proposeLine(ds: Dataset, p: Plan, memberId: string, opts: { seconding: boolean; memoryNote?: string }, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
   const hl = highlights(ds, p, memberId);
   const m = view(p, memberId);
   const tag = m.covered[0];
   if (opts.seconding) {
     return {
-      line: hl.length ? `Seconding ${city}. ${cap(nps(hl))} — exactly what my friend wanted.` : `Seconding ${city}. It suits my friend well.`,
+      line: hl.length ? L.pick(L.SECOND_HL, variant, hlSlots(city, hl)) : L.pick(L.SECOND_PLAIN, variant, { city }),
       ribbon: `${city}, seconded`,
     };
   }
-  const body = hl.length ? `${cap(nps(hl))} ${hl.length > 1 ? "are" : "is"} right there for my friend.` : `It covers what my friend asked for.`;
+  const body = hl.length ? L.pick(L.PROPOSE_HL, variant, hlSlots(city, hl)) : L.pick(L.PROPOSE_PLAIN, variant, { city });
   return {
-    line: `${city}. ${body}${opts.memoryNote ? ` ${opts.memoryNote}` : ""}`,
+    line: `${body}${opts.memoryNote ? ` ${opts.memoryNote}` : ""}`,
     ribbon: tag ? `${city}, for the ${TAG_WORD[tag]}` : `${city}, for my friend`,
   };
 }
 
-export function objectMissingLine(ds: Dataset, rival: Plan, mine: Plan, tag: Tag): LineOut {
+export function objectMissingLine(ds: Dataset, rival: Plan, mine: Plan, tag: Tag, variant = 0): LineOut {
   const r = cityName(ds, rival.cityId), m = cityName(ds, mine.cityId);
   return {
-    line: `${r} has no ${TAG_WORD[tag]} — the one thing my friend asked for. ${m} has it.`,
+    line: L.pick(L.OBJECT_MISSING, variant, { rival: r, mine: m, thing: TAG_WORD[tag] }),
     ribbon: `No ${TAG_WORD[tag]} in ${r}`,
   };
 }
 
-export function objectUnfitLine(ds: Dataset, rival: Plan, reason: FitReason): LineOut {
-  const r = cityName(ds, rival.cityId);
-  if (reason === "over_cap") return { line: `${r} is past what my friend can do.`, ribbon: `${r} — not for us` };
-  if (reason === "date_mismatch") return { line: `${r} is on dates my friend can't make.`, ribbon: `${r} — wrong dates` };
-  if (reason === "no_flight") return { line: `${r} has no flight that works for my friend.`, ribbon: `${r} — no flight` };
+export function objectUnfitLine(ds: Dataset, rival: Plan, reason: FitReason, variant = 0): LineOut {
+  const r = cityName(ds, rival.cityId), s = { rival: r };
+  if (reason === "over_cap") return { line: L.pick(L.OBJECT_OVER_CAP, variant, s), ribbon: `${r} — not for us` };
+  if (reason === "date_mismatch") return { line: L.pick(L.OBJECT_DATES, variant, s), ribbon: `${r} — wrong dates` };
+  if (reason === "no_flight") return { line: L.pick(L.OBJECT_NO_FLIGHT, variant, s), ribbon: `${r} — no flight` };
   const phrase = DEALBREAKER_PHRASE[reason];
-  if (!phrase) return { line: `${r} breaks one of my friend's terms.`, ribbon: `${r} — not for us` };
-  return { line: `${r} means ${phrase.means} — my friend won't do that.`, ribbon: `${r} — ${phrase.ribbon}` };
+  if (!phrase) return { line: L.pick(L.OBJECT_TERMS, variant, s), ribbon: `${r} — not for us` };
+  return { line: L.pick(L.OBJECT_DEALBREAKER, variant, { rival: r, means: phrase.means }), ribbon: `${r} — ${phrase.ribbon}` };
 }
 
 /**
- * SUPPORT / CONCEDE come in LINE_VARIANTS wordings each, so a table that keeps backing one port doesn't hear the same
- * sentence again ("Still with Milwaukee…" three times). `variantFor` picks a speaker's starting wording from a stable
- * speaker key and the watch (deterministic); the engine walks on from there to one nobody has said yet this meeting.
+ * Every act comes in LINE_VARIANTS or more wordings (lines.ts), so a table never hears the same sentence twice.
+ * `variantFor` picks a speaker's starting wording from a stable speaker key and the watch (deterministic); the engine
+ * walks on from there to one nobody has said yet this meeting.
  */
-export const LINE_VARIANTS = 5;
+export const LINE_VARIANTS = 25;
 /** FNV-1a of the speaker key, plus the watch: a stable, per-speaker rotation through the wordings. */
 export function variantFor(speakerId: string, watch: number): number {
   let h = 0x811c9dc5;
@@ -163,22 +166,7 @@ const nth = <T>(xs: readonly T[], variant: number): T => xs[((variant % xs.lengt
 export function supportSwitchLine(ds: Dataset, p: Plan, memberId: string, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
   const hl = highlights(ds, p, memberId);
-  const has = nps(hl), are = hl.length > 1 ? "are" : "is";
-  const line = hl.length
-    ? nth([
-      `Fair. ${city} still has ${has} for my friend. I'll back ${city}.`,
-      `Fine by us. ${cap(has)} in ${city} will do for my friend.`,
-      `Okay, ${city} from me. My friend still gets ${has}.`,
-      `I can get behind ${city}; ${has} keeps my friend happy.`,
-      `Right, switching to ${city}. ${cap(has)} ${are} there for my friend.`,
-    ], variant)
-    : nth([
-      `Fair. ${city} works for my friend. I'll back it.`,
-      `Fine by us. ${city} will do for my friend.`,
-      `Okay, ${city} from me. My friend can live with it.`,
-      `I can get behind ${city}. It suits my friend.`,
-      `Right, switching to ${city}. It works for my friend.`,
-    ], variant);
+  const line = hl.length ? L.pick(L.SWITCH_HL, variant, hlSlots(city, hl)) : L.pick(L.SWITCH_PLAIN, variant, { city });
   return {
     line,
     ribbon: hl.length ? nth([`${city}, with ${np(hl[0])}`, `${city} will do`, `Backing ${city}`, `${city}, with ${np(hl[0])}`, `Over to ${city}`], variant)
@@ -188,34 +176,15 @@ export function supportSwitchLine(ds: Dataset, p: Plan, memberId: string, varian
 
 export function supportHoldLine(ds: Dataset, p: Plan, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
-  return nth([
-    { line: `Still with ${city}. It covers everything my friend asked for.`, ribbon: `Still ${city}` },
-    { line: `${city} for us, still. Nothing's changed for my friend.`, ribbon: `${city}, still` },
-    { line: `My friend is staying with ${city}. It ticks every box.`, ribbon: `Staying with ${city}` },
-    { line: `No change here: ${city} has all my friend wanted.`, ribbon: `No change: ${city}` },
-    { line: `Holding at ${city}. It's still the right fit for my friend.`, ribbon: `Holding at ${city}` },
-  ], variant);
+  const ribbon = nth([`Still ${city}`, `${city}, still`, `Staying with ${city}`, `No change: ${city}`, `Holding at ${city}`], variant);
+  return { line: L.pick(L.HOLD, variant, { city }), ribbon };
 }
 
 export function concedeLine(ds: Dataset, p: Plan, memberId: string, hailFrom?: string, variant = 0): LineOut {
   const city = cityName(ds, p.cityId);
   const keep = highlights(ds, p, memberId).find((h) => !isGroup(ds, h));
   const keepText = keep ? ` — as long as we keep ${np(keep)}` : "";
-  const line = hailFrom
-    ? nth([
-      `Heard you, ${hailFrom}. ${city} it is${keepText}.`,
-      `Point taken, ${hailFrom}. We'll take ${city}${keepText}.`,
-      `Thanks, ${hailFrom}. ${city} then${keepText}.`,
-      `Understood, ${hailFrom}. My friend is fine with ${city}${keepText}.`,
-      `Right you are, ${hailFrom}. ${city} it is${keepText}.`,
-    ], variant)
-    : nth([
-      `I'll come round to ${city}${keepText}.`,
-      `Alright, ${city} for us${keepText}.`,
-      `My friend can do ${city}${keepText}.`,
-      `Fine, we'll go with ${city}${keepText}.`,
-      `${city} works for us too${keepText}.`,
-    ], variant);
+  const line = hailFrom ? L.pick(L.CONCEDE_HAIL, variant, { city, keep: keepText, name: hailFrom }) : L.pick(L.CONCEDE, variant, { city, keep: keepText });
   return { line, ribbon: keep ? clampRibbon(`${city} — keep ${np(keep)}`) : `${city} it is` };
 }
 
@@ -228,15 +197,13 @@ export const REPEAT_TAILS = ["Aye.", "Count my friend in.", "No change.", "Stead
 /** How two lines compare for "said already": case, spacing and punctuation don't count. */
 export const lineKey = (line: string) => line.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 
-export function decideLine(ds: Dataset, a: Plan, b: Plan, noneFit: boolean): LineOut {
+export function decideLine(ds: Dataset, a: Plan, b: Plan, noneFit: boolean, variant = 0): LineOut {
   const A = cityName(ds, a.cityId), B = cityName(ds, b.cityId);
-  if (noneFit) return { line: `No chart fits every purse. Closest two: ${A} and ${B}. Let's run them dry.`, ribbon: "Closest two. Run them dry." };
+  if (noneFit) return { line: L.pick(L.DECIDE_NONE_FIT, variant, { a: A, b: B }), ribbon: "Closest two. Run them dry." };
   const coverage = (p: Plan) => p.members.reduce((s, m) => s + m.covered.length, 0);
   const cheaper = a.groupCents <= b.groupCents ? A : B;
   const richer = coverage(a) >= coverage(b) ? A : B;
-  const line = cheaper !== richer
-    ? `Two charts, then. ${cheaper} leaves more in everyone's pocket; ${richer} covers the most. Let's run them dry.`
-    : `Two charts, then. ${A} is the fairest; ${B} is the other way to go. Let's run them dry.`;
+  const line = cheaper !== richer ? L.pick(L.DECIDE_SPLIT, variant, { cheaper, richer }) : L.pick(L.DECIDE_SAME, variant, { a: A, b: B });
   return { line, ribbon: DECIDE_RIBBON };
 }
 

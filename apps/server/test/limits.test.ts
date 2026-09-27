@@ -139,7 +139,7 @@ describe("voice cache", () => {
     const whole = mp3DurationMs(mp3)!;
     expect(whole).toBe(Math.round(((mp3.length - at) * 8) / 128));
     const text = "A line whose voice is already cached";
-    const key = createHash("sha1").update(`${config.eleven.voices["1"]}|${config.expoMode ? 1.1 : 1.0}|${text}`).digest("hex");
+    const key = createHash("sha1").update(`${config.eleven.voices["1"]}|0.9|${text}`).digest("hex");
     mkdirSync(join(config.cacheDir, "tts"), { recursive: true });
     writeFileSync(join(config.cacheDir, "tts", `${key}.mp3`), mp3);
     const f = vi.spyOn(globalThis, "fetch");

@@ -1,0 +1,722 @@
+/**
+ * The table's template wordings, lots of them (the fallback when the model is off, slow, invalid or leaks), and a
+ * light "humanizer" that adds the odd spoken filler ("um,", "yeah,", "okay so") so the crew sounds like friends
+ * talking, not a form being read out. Index 0 of every pool is the classic wording (the Expo script and its warmed
+ * voice cache). No pool line states an amount; "can't stretch that far" is as close as anyone gets to a budget.
+ * Every line stays short: slots included, they sit well under the Expo cap (20 words).
+ */
+
+// ---------- slot types ----------
+export interface CitySlots { city: string }
+export interface HlSlots { city: string; has: string; Has: string; are: "is" | "are" }
+export interface MissingSlots { rival: string; mine: string; thing: string }
+export interface RivalSlots { rival: string }
+export interface DealSlots { rival: string; means: string }
+export interface ConcedeSlots { city: string; keep: string }
+export interface HailConcedeSlots extends ConcedeSlots { name: string }
+export interface OpenSlots { dates: string; who: string; n: string; ports: string }
+export interface PortsSlots { n: string; ports: string }
+export interface ScopeSlots { when: string; where: string; ports: string; isAre: "is" | "are" }
+export interface DecideSplitSlots { cheaper: string; richer: string }
+export interface PairSlots { a: string; b: string }
+
+type Pool<S> = readonly ((s: S) => string)[];
+
+// ---------- Captain OPEN ----------
+export const OPEN_DATES: Pool<OpenSlots> = [
+  (s) => `${s.dates} works for ${s.who}. ${s.n} ports on the chart: ${s.ports}. Let's hear it.`,
+  (s) => `Right, crew. ${s.dates} works for ${s.who}. On the chart: ${s.ports}. Who's first?`,
+  (s) => `Okay. Dates are ${s.dates}, good for ${s.who}. We've got ${s.ports}. Go on then.`,
+  (s) => `So ${s.dates} works for ${s.who}. ${s.n} ports: ${s.ports}. Pitch me.`,
+  (s) => `Alright, ${s.dates} it is for ${s.who}. Chart's got ${s.ports}. Floor's open.`,
+  (s) => `Good news: ${s.dates} works for ${s.who}. Options are ${s.ports}. Let's talk.`,
+  (s) => `We've got ${s.dates}, and that suits ${s.who}. Ports: ${s.ports}. Who wants to start?`,
+  (s) => `Dates first: ${s.dates}, fine for ${s.who}. Now, ${s.ports}. Make your case.`,
+  (s) => `${s.dates} lines up for ${s.who}. ${s.n} ports in play: ${s.ports}. Go ahead.`,
+  (s) => `Okay, gather round. ${s.dates} works for ${s.who}. ${s.ports} on the table. Thoughts?`,
+  (s) => `Here's where we are. ${s.dates}, good for ${s.who}. Ports: ${s.ports}. Let's hear you.`,
+  (s) => `So, ${s.dates} is the window for ${s.who}. Chart says ${s.ports}. Who's got a pick?`,
+  (s) => `Alright, everyone. ${s.dates} works for ${s.who}. ${s.ports} are up. Talk to me.`,
+  (s) => `Right then. ${s.dates} suits ${s.who}. ${s.n} ports: ${s.ports}. Let's go round.`,
+  (s) => `We can do ${s.dates}; that works for ${s.who}. On offer: ${s.ports}. Speak up.`,
+  (s) => `${s.dates} it is, for ${s.who}. Now the fun part: ${s.ports}. Who's pitching?`,
+  (s) => `Okay, dates are sorted: ${s.dates}, for ${s.who}. ${s.ports} on the chart. Your turn.`,
+  (s) => `Welcome aboard. ${s.dates} works for ${s.who}. Ports are ${s.ports}. Let's hear some ideas.`,
+  (s) => `Let's get going. ${s.dates}, good for ${s.who}. ${s.ports} to choose from. Who's up?`,
+  (s) => `Settle in, crew. ${s.dates} works for ${s.who}. ${s.ports} are on the chart. Pitch away.`,
+  (s) => `First bit's easy: ${s.dates} works for ${s.who}. Then it's ${s.ports}. Go.`,
+  (s) => `So we've landed on ${s.dates} for ${s.who}. Chart has ${s.ports}. Let's hear it.`,
+  (s) => `Dates check out: ${s.dates}, for ${s.who}. ${s.n} ports: ${s.ports}. Who's first up?`,
+  (s) => `Okay, team. ${s.dates} works for ${s.who}. We're weighing ${s.ports}. Floor's yours.`,
+  (s) => `Right. ${s.dates} works for ${s.who}. ${s.ports} are the options. Let's talk.`,
+  (s) => `Here we go. ${s.dates} suits ${s.who}. Ports up: ${s.ports}. Who's got a favourite?`,
+  (s) => `Alright. ${s.dates} works for ${s.who}. ${s.ports} made the chart. Tell me what you want.`,
+  (s) => `We're set on ${s.dates} for ${s.who}. ${s.ports} to pick from. Go on, pitch.`,
+  (s) => `Quick one on dates: ${s.dates} works for ${s.who}. Ports are ${s.ports}. Your turn.`,
+  (s) => `Okay, so. ${s.dates}, good for ${s.who}. ${s.n} ports: ${s.ports}. Who's starting?`,
+];
+export const OPEN_NO_DATES: Pool<PortsSlots> = [
+  (s) => `No dates suit everyone; we'll weigh the closest. ${s.n} ports: ${s.ports}. Let's hear it.`,
+  (s) => `No dates suit everyone, so we'll go with the closest. Ports: ${s.ports}. Who's first?`,
+  (s) => `No dates suit everyone yet; closest ones it is. On the chart: ${s.ports}. Go on.`,
+  (s) => `No dates suit everyone, sadly. We'll work with the nearest. ${s.ports} are up. Pitch me.`,
+  (s) => `No dates suit everyone, but the closest are on the chart. ${s.ports}. Let's talk.`,
+  (s) => `No dates suit everyone, so we weigh the closest. ${s.n} ports: ${s.ports}. Floor's open.`,
+  (s) => `No dates suit everyone. That's fine, we'll take the nearest. ${s.ports} in play. Who's up?`,
+  (s) => `No dates suit everyone, so, closest window. Ports are ${s.ports}. Make your case.`,
+  (s) => `No dates suit everyone this time; closest it is. ${s.ports} on the chart. Thoughts?`,
+  (s) => `No dates suit everyone, so we'll work around it. ${s.ports} to choose from. Go ahead.`,
+  (s) => `No dates suit everyone; the charts hold the closest. We've got ${s.ports}. Speak up.`,
+  (s) => `No dates suit everyone, heads up. We'll weigh the nearest. ${s.ports} are up. Your turn.`,
+  (s) => `No dates suit everyone, but we'll get close. Ports: ${s.ports}. Who's pitching?`,
+  (s) => `No dates suit everyone, so bear with me. Closest ones. ${s.ports}. Let's hear you.`,
+  (s) => `No dates suit everyone. We'll go closest. ${s.n} ports on offer: ${s.ports}. Who's first up?`,
+  (s) => `No dates suit everyone, honestly. Nearest window then. ${s.ports} made the chart. Go.`,
+  (s) => `No dates suit everyone, so we'll pick the closest. On the table: ${s.ports}. Talk to me.`,
+  (s) => `No dates suit everyone right now. Closest it is. ${s.ports} in the running. Pitch away.`,
+  (s) => `No dates suit everyone, crew. We weigh the nearest. ${s.ports} up for grabs. Who's got one?`,
+  (s) => `No dates suit everyone, but let's not stall. ${s.ports} on the chart. Let's go round.`,
+  (s) => `No dates suit everyone; we'll make the closest work. Ports: ${s.ports}. Floor's yours.`,
+  (s) => `No dates suit everyone, so closest window. ${s.n} options: ${s.ports}. Tell me what you want.`,
+  (s) => `No dates suit everyone, alright. We'll weigh the nearest. ${s.ports}. Who wants to start?`,
+  (s) => `No dates suit everyone, but we're close. ${s.ports} on the chart. Let's talk it out.`,
+  (s) => `No dates suit everyone, so we'll go with nearest fit. ${s.ports} to pick from. Go on.`,
+];
+export const OPEN_SCOPE: Pool<ScopeSlots> = [
+  (s) => `${s.when}${s.where} ${s.ports} ${s.isAre} on the chart. Let's hear it.`,
+  (s) => `${s.when}${s.where} On the chart: ${s.ports}. Who's first?`,
+  (s) => `${s.when}${s.where} The chart picked ${s.ports}. Pitch me.`,
+  (s) => `${s.when}${s.where} We've narrowed it to ${s.ports}. Go on.`,
+  (s) => `${s.when}${s.where} Shortlist is ${s.ports}. Floor's open.`,
+  (s) => `${s.when}${s.where} ${s.ports} made the cut. Who's up?`,
+  (s) => `${s.when}${s.where} Ports up: ${s.ports}. Make your case.`,
+  (s) => `${s.when}${s.where} We've got ${s.ports}. Talk to me.`,
+  (s) => `${s.when}${s.where} In the running: ${s.ports}. Let's talk.`,
+  (s) => `${s.when}${s.where} Chart says ${s.ports}. Thoughts?`,
+  (s) => `${s.when}${s.where} Options are ${s.ports}. Go ahead.`,
+  (s) => `${s.when}${s.where} ${s.ports}, that's the chart. Speak up.`,
+  (s) => `${s.when}${s.where} Top picks: ${s.ports}. Who's pitching?`,
+  (s) => `${s.when}${s.where} Came down to ${s.ports}. Let's hear you.`,
+  (s) => `${s.when}${s.where} ${s.ports} ${s.isAre} up. Your turn.`,
+  (s) => `${s.when}${s.where} Chart's got ${s.ports}. Pitch away.`,
+  (s) => `${s.when}${s.where} On offer: ${s.ports}. Who wants to start?`,
+  (s) => `${s.when}${s.where} We landed on ${s.ports}. Go.`,
+  (s) => `${s.when}${s.where} ${s.ports} ${s.isAre} what we've got. Let's go round.`,
+  (s) => `${s.when}${s.where} Best matches: ${s.ports}. Floor's yours.`,
+  (s) => `${s.when}${s.where} Chart picked out ${s.ports}. Who's got a favourite?`,
+  (s) => `${s.when}${s.where} Choices are ${s.ports}. Tell me what you want.`,
+  (s) => `${s.when}${s.where} ${s.ports} to pick from. Let's talk it out.`,
+  (s) => `${s.when}${s.where} Up for grabs: ${s.ports}. Who's first up?`,
+  (s) => `${s.when}${s.where} The shortlist's ${s.ports}. Go on, pitch.`,
+];
+
+// ---------- Watch 1: PROPOSE / second ----------
+export const PROPOSE_HL: Pool<HlSlots> = [
+  (s) => `${s.city}. ${s.Has} ${s.are} right there for my friend.`,
+  (s) => `I'm pitching ${s.city}. ${s.Has}, that's my friend sorted.`,
+  (s) => `${s.city}, easy. ${s.Has} ${s.are} exactly my friend's thing.`,
+  (s) => `Hear me out: ${s.city}. My friend gets ${s.has}.`,
+  (s) => `${s.city} for us. ${s.Has}? My friend would love that.`,
+  (s) => `So, ${s.city}. ${s.Has} ${s.are} what my friend's after.`,
+  (s) => `My pick's ${s.city}. ${s.Has}, right there.`,
+  (s) => `Can I say ${s.city}? ${s.Has} ${s.are} perfect for my friend.`,
+  (s) => `${s.city}, honestly. My friend's been wanting ${s.has}.`,
+  (s) => `We'd go ${s.city}. ${s.Has} ${s.are} a big yes for my friend.`,
+  (s) => `I'm thinking ${s.city}. ${s.Has}, my friend's whole wishlist.`,
+  (s) => `${s.city}! ${s.Has} ${s.are} just what my friend asked for.`,
+  (s) => `Put us down for ${s.city}. My friend gets ${s.has}.`,
+  (s) => `${s.city} has ${s.has}. That's my friend's kind of trip.`,
+  (s) => `What about ${s.city}? ${s.Has} ${s.are} right up my friend's street.`,
+  (s) => `I'd go ${s.city}. My friend lights up at ${s.has}.`,
+  (s) => `${s.city}, for my friend. ${s.Has}, done.`,
+  (s) => `Okay, ${s.city}. ${s.Has} ${s.are} a must for my friend.`,
+  (s) => `Pitching ${s.city}. ${s.Has} tick my friend's box.`,
+  (s) => `${s.city} gets my vote. ${s.Has}, sold.`,
+  (s) => `First up, ${s.city}. My friend would be all over ${s.has}.`,
+  (s) => `Let's do ${s.city}. ${s.Has} ${s.are} my friend's favourite kind of thing.`,
+  (s) => `${s.city}, please. ${s.Has} ${s.are} why.`,
+  (s) => `I'm going ${s.city}. My friend really wants ${s.has}.`,
+  (s) => `${s.city} ticks it. ${s.Has} ${s.are} there for my friend.`,
+  (s) => `Here's mine: ${s.city}. ${s.Has}, my friend's dream.`,
+  (s) => `${s.city}, if I'm honest. ${s.Has} ${s.are} the draw.`,
+  (s) => `We're keen on ${s.city}. ${s.Has} ${s.are} the reason.`,
+  (s) => `My friend would pick ${s.city}. ${s.Has}, no question.`,
+  (s) => `${s.city} works. My friend gets ${s.has}, and that's the dream.`,
+];
+export const PROPOSE_PLAIN: Pool<CitySlots> = [
+  (s) => `${s.city}. It covers what my friend asked for.`,
+  (s) => `I'm pitching ${s.city}. It fits my friend nicely.`,
+  (s) => `${s.city}, easy. It ticks my friend's boxes.`,
+  (s) => `Hear me out: ${s.city}. It's got what my friend wants.`,
+  (s) => `${s.city} for us. My friend would be happy there.`,
+  (s) => `So, ${s.city}. Covers everything on my friend's list.`,
+  (s) => `My pick's ${s.city}. Suits my friend.`,
+  (s) => `Can I say ${s.city}? It's right for my friend.`,
+  (s) => `${s.city}, honestly. It's my friend's kind of place.`,
+  (s) => `We'd go ${s.city}. It's a good fit for my friend.`,
+  (s) => `I'm thinking ${s.city}. My friend would like it.`,
+  (s) => `${s.city}! It's got my friend's wishlist covered.`,
+  (s) => `Put us down for ${s.city}. It works for my friend.`,
+  (s) => `${s.city} does it for my friend.`,
+  (s) => `What about ${s.city}? It's right up my friend's street.`,
+  (s) => `I'd go ${s.city}. My friend's covered there.`,
+  (s) => `${s.city}, for my friend. Fits nicely.`,
+  (s) => `Okay, ${s.city}. My friend gets what they asked for.`,
+  (s) => `Pitching ${s.city}. Ticks my friend's box.`,
+  (s) => `${s.city} gets my vote. It suits my friend.`,
+  (s) => `First up, ${s.city}. Good fit for my friend.`,
+  (s) => `Let's do ${s.city}. My friend would enjoy it.`,
+  (s) => `${s.city}, please. It works for us.`,
+  (s) => `I'm going ${s.city}. It's what my friend's after.`,
+  (s) => `Here's mine: ${s.city}. Checks out for my friend.`,
+  (s) => `We're keen on ${s.city}. It fits my friend well.`,
+];
+export const SECOND_HL: Pool<HlSlots> = [
+  (s) => `Seconding ${s.city}. ${s.Has} — exactly what my friend wanted.`,
+  (s) => `Oh, same. ${s.city} for us too; ${s.has} for my friend.`,
+  (s) => `I'm with that. ${s.city}, and my friend gets ${s.has}.`,
+  (s) => `Yes, ${s.city}! ${s.Has} ${s.are} my friend's thing too.`,
+  (s) => `Backing that. ${s.city} gives my friend ${s.has}.`,
+  (s) => `Snap. ${s.city} for us as well. ${s.Has}, lovely.`,
+  (s) => `Me too, ${s.city}. My friend wants ${s.has}.`,
+  (s) => `Great minds. ${s.city}; ${s.has} for my friend.`,
+  (s) => `Plus one for ${s.city}. ${s.Has} ${s.are} a win for my friend.`,
+  (s) => `Same pick here, ${s.city}. ${s.Has} sold my friend.`,
+  (s) => `Totally, ${s.city}. My friend's all about ${s.has}.`,
+  (s) => `Count us in on ${s.city}. ${s.Has}, yes please.`,
+  (s) => `${s.city} from us too. ${s.Has} ${s.are} perfect for my friend.`,
+  (s) => `Agreed, ${s.city}. My friend gets ${s.has} out of it.`,
+  (s) => `I'll second ${s.city}. ${s.Has} ${s.are} right for my friend.`,
+  (s) => `Oh, ${s.city}, yes. ${s.Has} for my friend.`,
+  (s) => `That's our pick too. ${s.city}, with ${s.has}.`,
+  (s) => `Love that. ${s.city} works; my friend gets ${s.has}.`,
+  (s) => `We're on ${s.city} too. ${s.Has} ${s.are} a big yes.`,
+  (s) => `Same here. ${s.city}, because ${s.has}.`,
+  (s) => `Another vote for ${s.city}. My friend wants ${s.has}.`,
+  (s) => `Right there with you. ${s.city}; ${s.has} for us.`,
+  (s) => `Couldn't agree more. ${s.city}, ${s.has} and all.`,
+  (s) => `${s.city} gets our vote too. ${s.Has}, sorted.`,
+  (s) => `Echoing that: ${s.city}. My friend's in for ${s.has}.`,
+];
+export const SECOND_PLAIN: Pool<CitySlots> = [
+  (s) => `Seconding ${s.city}. It suits my friend well.`,
+  (s) => `Oh, same. ${s.city} for us too.`,
+  (s) => `I'm with that. ${s.city} works for my friend.`,
+  (s) => `Yes, ${s.city}! My friend's happy with that.`,
+  (s) => `Backing that. ${s.city} fits my friend.`,
+  (s) => `Snap. ${s.city} for us as well.`,
+  (s) => `Me too, ${s.city}. Good for my friend.`,
+  (s) => `Great minds. ${s.city} works for us.`,
+  (s) => `Plus one for ${s.city}. My friend's in.`,
+  (s) => `Same pick here, ${s.city}.`,
+  (s) => `Totally, ${s.city}. My friend would like that.`,
+  (s) => `Count us in on ${s.city}.`,
+  (s) => `${s.city} from us too. It fits my friend.`,
+  (s) => `Agreed, ${s.city}. Works for my friend.`,
+  (s) => `I'll second ${s.city}. Right for my friend.`,
+  (s) => `Oh, ${s.city}, yes. My friend's good with it.`,
+  (s) => `That's our pick too. ${s.city}.`,
+  (s) => `Love that. ${s.city} works for us.`,
+  (s) => `We're on ${s.city} too. Suits my friend.`,
+  (s) => `Same here. ${s.city} fits the bill.`,
+  (s) => `Another vote for ${s.city}.`,
+  (s) => `Right there with you. ${s.city} for us.`,
+  (s) => `Couldn't agree more. ${s.city} it is for us.`,
+  (s) => `${s.city} gets our vote too.`,
+  (s) => `Echoing that: ${s.city}. My friend's in.`,
+];
+
+// ---------- OBJECT ----------
+export const OBJECT_MISSING: Pool<MissingSlots> = [
+  (s) => `${s.rival} has no ${s.thing} — the one thing my friend asked for. ${s.mine} has it.`,
+  (s) => `Wait, ${s.rival} has no ${s.thing}? My friend needs that. ${s.mine} does.`,
+  (s) => `Thing is, ${s.rival} doesn't have the ${s.thing}. ${s.mine} does.`,
+  (s) => `${s.rival}'s missing the ${s.thing}, and my friend really wants that. ${s.mine} has it.`,
+  (s) => `Hang on, no ${s.thing} in ${s.rival}. That's my friend's big one. ${s.mine} has it.`,
+  (s) => `I'm not sure about ${s.rival}. No ${s.thing}. ${s.mine} covers it.`,
+  (s) => `Small problem: ${s.rival} has no ${s.thing}. ${s.mine} does.`,
+  (s) => `${s.rival} skips the ${s.thing}, which my friend asked for. ${s.mine} doesn't.`,
+  (s) => `My friend would miss the ${s.thing} in ${s.rival}. ${s.mine} has it.`,
+  (s) => `Can I push back? ${s.rival} has no ${s.thing}. ${s.mine} does.`,
+  (s) => `${s.rival} is nice, but no ${s.thing}. ${s.mine} has that.`,
+  (s) => `The catch with ${s.rival}: no ${s.thing}. My friend wants it. Try ${s.mine}.`,
+  (s) => `Not ${s.rival} for us. No ${s.thing}. ${s.mine} has it.`,
+  (s) => `One issue. ${s.rival} doesn't do ${s.thing}. ${s.mine} does.`,
+  (s) => `${s.rival} leaves my friend without the ${s.thing}. ${s.mine} fixes that.`,
+  (s) => `So, ${s.rival} has no ${s.thing}. That's a miss for my friend. ${s.mine} has it.`,
+  (s) => `Mm, ${s.rival}'s got no ${s.thing}. ${s.mine} covers it.`,
+  (s) => `I'd flag ${s.rival}: no ${s.thing}. My friend's heart is set on it. ${s.mine} has it.`,
+  (s) => `${s.rival} doesn't give my friend any ${s.thing}. ${s.mine} would.`,
+  (s) => `Honestly, no ${s.thing} in ${s.rival} is a dealbreaker-ish. ${s.mine} has it.`,
+  (s) => `We'd lose the ${s.thing} with ${s.rival}. ${s.mine} keeps it.`,
+  (s) => `For my friend, ${s.rival} misses the ${s.thing}. ${s.mine} doesn't.`,
+  (s) => `Just saying, ${s.rival} has no ${s.thing}. ${s.mine} has plenty.`,
+  (s) => `${s.rival}? No ${s.thing} there. My friend's pick is ${s.mine}.`,
+  (s) => `Not to be difficult, but ${s.rival} has no ${s.thing}. ${s.mine} does.`,
+  (s) => `The ${s.thing} is my friend's one ask. ${s.rival} doesn't have it; ${s.mine} does.`,
+  (s) => `Ooh, ${s.rival} has no ${s.thing}. That hurts. ${s.mine} has it.`,
+  (s) => `Quick objection: ${s.rival}, no ${s.thing}. ${s.mine}, yes.`,
+];
+export const OBJECT_OVER_CAP: Pool<RivalSlots> = [
+  (s) => `${s.rival} is past what my friend can do.`,
+  (s) => `${s.rival}'s outside my friend's limit, sorry.`,
+  (s) => `Can't do ${s.rival}. It's more than my friend can stretch to.`,
+  (s) => `${s.rival} doesn't fit my friend's terms. It's too far.`,
+  (s) => `Sorry, ${s.rival} is over my friend's line.`,
+  (s) => `${s.rival}'s a stretch too far for my friend.`,
+  (s) => `We have to pass on ${s.rival}. It's outside my friend's limit.`,
+  (s) => `${s.rival} doesn't work for my friend's wallet, I'm afraid.`,
+  (s) => `I'd love to, but ${s.rival} is past my friend's limit.`,
+  (s) => `${s.rival} is out of reach for my friend.`,
+  (s) => `Not ${s.rival}, sorry. It doesn't fit what my friend set.`,
+  (s) => `${s.rival} goes beyond what my friend can manage.`,
+  (s) => `My friend can't swing ${s.rival}. It's outside their limit.`,
+  (s) => `${s.rival}'s over what my friend signed up for.`,
+  (s) => `Gotta say no to ${s.rival}. Too much for my friend.`,
+  (s) => `${s.rival} is more than my friend can do, sadly.`,
+  (s) => `${s.rival} breaks my friend's limit. We're out on that one.`,
+  (s) => `Honestly, ${s.rival} is past my friend's comfort zone, cost-wise.`,
+  (s) => `${s.rival} doesn't fit my friend's terms, sorry.`,
+  (s) => `Hate to be that person, but ${s.rival} is past my friend's limit.`,
+  (s) => `${s.rival}'s just too rich for my friend.`,
+  (s) => `We can't do ${s.rival}. It's outside what my friend can spend.`,
+  (s) => `${s.rival} is a no for us. It's over my friend's line.`,
+  (s) => `My friend's out on ${s.rival}. Too far past their limit.`,
+  (s) => `${s.rival} doesn't sit inside my friend's limit.`,
+  (s) => `Sadly ${s.rival} is beyond my friend. Pass.`,
+  (s) => `${s.rival} costs more than my friend can manage.`,
+  (s) => `Can't stretch to ${s.rival}, not for my friend.`,
+];
+export const OBJECT_DATES: Pool<RivalSlots> = [
+  (s) => `${s.rival} is on dates my friend can't make.`,
+  (s) => `The dates on ${s.rival} don't work for my friend.`,
+  (s) => `${s.rival} clashes with my friend's calendar.`,
+  (s) => `My friend can't do ${s.rival}'s dates, sorry.`,
+  (s) => `${s.rival}'s timing is off for my friend.`,
+  (s) => `${s.rival} lands on days my friend's busy.`,
+  (s) => `Dates are the problem with ${s.rival}. My friend can't make them.`,
+  (s) => `${s.rival} doesn't line up with my friend's dates.`,
+  (s) => `Not ${s.rival}. Wrong dates for my friend.`,
+  (s) => `My friend's not free for ${s.rival}.`,
+  (s) => `${s.rival}'s dates are a no for my friend.`,
+  (s) => `We'd miss out on ${s.rival}; my friend can't make those days.`,
+  (s) => `The calendar kills ${s.rival} for my friend.`,
+  (s) => `${s.rival} is the wrong week for my friend.`,
+  (s) => `Can't do ${s.rival}. My friend's got those dates booked.`,
+  (s) => `${s.rival} falls when my friend's away.`,
+  (s) => `Timing on ${s.rival} just doesn't work for my friend.`,
+  (s) => `My friend's calendar says no to ${s.rival}.`,
+  (s) => `${s.rival}'s on dates my friend can't do, unfortunately.`,
+  (s) => `Hate to say it, but ${s.rival}'s dates don't work for us.`,
+  (s) => `${s.rival} needs dates my friend doesn't have.`,
+  (s) => `Those ${s.rival} dates are out for my friend.`,
+  (s) => `${s.rival} clashes. My friend can't make it then.`,
+  (s) => `Dates, sadly. ${s.rival} doesn't work for my friend.`,
+  (s) => `${s.rival}'s window isn't one my friend can do.`,
+];
+export const OBJECT_NO_FLIGHT: Pool<RivalSlots> = [
+  (s) => `${s.rival} has no flight that works for my friend.`,
+  (s) => `There's no flight to ${s.rival} that works for my friend.`,
+  (s) => `My friend can't actually get to ${s.rival}. No flight.`,
+  (s) => `${s.rival}'s flights don't work for my friend.`,
+  (s) => `No workable flight to ${s.rival} for my friend.`,
+  (s) => `Getting to ${s.rival} is the problem. No flight for my friend.`,
+  (s) => `${s.rival} is unreachable for my friend. No flight fits.`,
+  (s) => `The flights to ${s.rival} are a no for my friend.`,
+  (s) => `My friend has no way into ${s.rival}.`,
+  (s) => `${s.rival}'s out. Nothing flies there that works for my friend.`,
+  (s) => `Can't do ${s.rival}; there's no flight for my friend.`,
+  (s) => `${s.rival} would strand my friend. No flight works.`,
+  (s) => `Flights kill ${s.rival} for my friend.`,
+  (s) => `No flight to ${s.rival} suits my friend, sadly.`,
+  (s) => `${s.rival}'s tough. My friend can't get a flight there.`,
+  (s) => `There's just no good way for my friend to reach ${s.rival}.`,
+  (s) => `${s.rival} is a no. My friend can't fly in.`,
+  (s) => `My friend's stuck on ${s.rival}. No flight works.`,
+  (s) => `${s.rival}, no. Flights don't work for my friend.`,
+  (s) => `We'd need a flight to ${s.rival} that doesn't exist for my friend.`,
+  (s) => `No flight fits my friend for ${s.rival}.`,
+  (s) => `${s.rival}'s flights don't line up for my friend.`,
+  (s) => `Hate to say it, but my friend can't fly to ${s.rival}.`,
+  (s) => `${s.rival} is out of reach, flight-wise, for my friend.`,
+  (s) => `Nothing gets my friend to ${s.rival}. Pass.`,
+];
+export const OBJECT_DEALBREAKER: Pool<DealSlots> = [
+  (s) => `${s.rival} means ${s.means} — my friend won't do that.`,
+  (s) => `${s.rival} means ${s.means}. That's a hard no for my friend.`,
+  (s) => `Wait, ${s.rival} means ${s.means}? My friend's out.`,
+  (s) => `${s.rival} would mean ${s.means}, and my friend won't.`,
+  (s) => `My friend won't do ${s.means}, so ${s.rival} is out.`,
+  (s) => `${s.rival}'s a no. It means ${s.means}.`,
+  (s) => `Sorry, ${s.rival} means ${s.means}. Dealbreaker for my friend.`,
+  (s) => `${s.rival} comes with ${s.means}. My friend drew a line there.`,
+  (s) => `The trouble with ${s.rival} is ${s.means}. My friend won't.`,
+  (s) => `${s.rival} means ${s.means}. Not happening for my friend.`,
+  (s) => `Can't do ${s.rival}. It means ${s.means}, and that's a dealbreaker.`,
+  (s) => `${s.rival}? That's ${s.means}. My friend said no to that.`,
+  (s) => `My friend was clear: no ${s.means}. ${s.rival} has that.`,
+  (s) => `${s.rival} means ${s.means}, which rules it out for my friend.`,
+  (s) => `Ugh, ${s.rival} means ${s.means}. My friend's a firm no.`,
+  (s) => `Not ${s.rival}. ${s.means}, and my friend won't budge on that.`,
+  (s) => `${s.rival} brings ${s.means}. That's off the table for my friend.`,
+  (s) => `One thing my friend won't do is ${s.means}. ${s.rival} has it.`,
+  (s) => `${s.rival} means ${s.means}. My friend's a hard pass.`,
+  (s) => `Hate to be that person, but ${s.rival} means ${s.means}. No.`,
+  (s) => `${s.rival} is out for us: ${s.means}.`,
+  (s) => `We can't do ${s.rival}. ${s.means} is a dealbreaker.`,
+  (s) => `${s.rival} would put my friend through ${s.means}. No thanks.`,
+  (s) => `${s.means}? With ${s.rival}? My friend's out.`,
+  (s) => `My friend's one rule is no ${s.means}. ${s.rival} breaks it.`,
+  (s) => `${s.rival} means ${s.means}, so, sorry, that's a no.`,
+  (s) => `${s.rival} is off for my friend. ${s.means}.`,
+];
+export const OBJECT_TERMS: Pool<RivalSlots> = [
+  (s) => `${s.rival} breaks one of my friend's terms.`,
+  (s) => `${s.rival} doesn't fit my friend's terms.`,
+  (s) => `${s.rival}'s a no for my friend, sorry.`,
+  (s) => `My friend can't do ${s.rival}.`,
+  (s) => `${s.rival} crosses one of my friend's lines.`,
+  (s) => `${s.rival} doesn't work for my friend.`,
+  (s) => `We have to pass on ${s.rival}.`,
+  (s) => `${s.rival} is out for my friend.`,
+  (s) => `Not ${s.rival}. It breaks my friend's terms.`,
+  (s) => `${s.rival} misses one of my friend's must-dos.`,
+  (s) => `Sorry, ${s.rival} is a dealbreaker for my friend.`,
+  (s) => `${s.rival}'s off the table for us.`,
+  (s) => `Can't do ${s.rival}, not with my friend's terms.`,
+  (s) => `${s.rival} is a hard no for my friend.`,
+  (s) => `My friend's out on ${s.rival}.`,
+  (s) => `${s.rival} goes against my friend's terms.`,
+  (s) => `Hate to say it, but ${s.rival} won't work for my friend.`,
+  (s) => `${s.rival} doesn't sit right with my friend.`,
+  (s) => `My friend drew a line, and ${s.rival} crosses it.`,
+  (s) => `${s.rival}, no. My friend can't go for it.`,
+  (s) => `${s.rival} is one my friend has to skip.`,
+  (s) => `We're a no on ${s.rival}.`,
+  (s) => `${s.rival} breaks a rule my friend set.`,
+  (s) => `Pass on ${s.rival} from my friend.`,
+  (s) => `${s.rival} just doesn't fit my friend.`,
+];
+
+// ---------- SUPPORT ----------
+export const SWITCH_HL: Pool<HlSlots> = [
+  (s) => `Fair. ${s.city} still has ${s.has} for my friend. I'll back ${s.city}.`,
+  (s) => `Fine by us. ${s.Has} in ${s.city} will do for my friend.`,
+  (s) => `Okay, ${s.city} from me. My friend still gets ${s.has}.`,
+  (s) => `I can get behind ${s.city}; ${s.has} keeps my friend happy.`,
+  (s) => `Right, switching to ${s.city}. ${s.Has} ${s.are} there for my friend.`,
+  (s) => `You know what, ${s.city} works. ${s.Has} for my friend.`,
+  (s) => `Alright, I'm moving to ${s.city}. My friend gets ${s.has}.`,
+  (s) => `${s.city}'s growing on me. ${s.Has}, nice.`,
+  (s) => `Changing my vote: ${s.city}. ${s.Has} ${s.are} enough for my friend.`,
+  (s) => `Okay, you've sold me. ${s.city}, with ${s.has}.`,
+  (s) => `I'll jump to ${s.city}. My friend still gets ${s.has}.`,
+  (s) => `${s.city} it is from us. ${s.Has} keep my friend smiling.`,
+  (s) => `Fine, ${s.city}. ${s.Has} ${s.are} a good trade for my friend.`,
+  (s) => `Happy to move to ${s.city}. ${s.Has} ${s.are} there.`,
+  (s) => `Swapping to ${s.city}. My friend's fine with ${s.has}.`,
+  (s) => `Sure, ${s.city}. ${s.Has} works for my friend.`,
+  (s) => `Makes sense. ${s.city}, and my friend still has ${s.has}.`,
+  (s) => `I'm coming over to ${s.city}. ${s.Has}, sorted.`,
+  (s) => `Good shout. ${s.city} has ${s.has} for my friend.`,
+  (s) => `We'll back ${s.city}. ${s.Has} ${s.are} there, that's enough.`,
+  (s) => `${s.city} for us now. My friend gets ${s.has}.`,
+  (s) => `Yeah, alright, ${s.city}. ${s.Has} for my friend.`,
+  (s) => `Fair point. Moving to ${s.city}; ${s.has} for my friend.`,
+  (s) => `${s.city} wins me over. ${s.Has}, great.`,
+  (s) => `I'll switch. ${s.city} gives my friend ${s.has}.`,
+  (s) => `Okay, ${s.city}. My friend's good with ${s.has}.`,
+  (s) => `That works. ${s.city}, and ${s.has} for my friend.`,
+  (s) => `Right, ${s.city} then. ${s.Has} ${s.are} plenty for my friend.`,
+];
+export const SWITCH_PLAIN: Pool<CitySlots> = [
+  (s) => `Fair. ${s.city} works for my friend. I'll back it.`,
+  (s) => `Fine by us. ${s.city} will do for my friend.`,
+  (s) => `Okay, ${s.city} from me. My friend can live with it.`,
+  (s) => `I can get behind ${s.city}. It suits my friend.`,
+  (s) => `Right, switching to ${s.city}. It works for my friend.`,
+  (s) => `You know what, ${s.city} works for us.`,
+  (s) => `Alright, I'm moving to ${s.city}.`,
+  (s) => `${s.city}'s growing on me. My friend's fine with it.`,
+  (s) => `Changing my vote: ${s.city}.`,
+  (s) => `Okay, you've sold me. ${s.city}.`,
+  (s) => `I'll jump to ${s.city}. Suits my friend.`,
+  (s) => `${s.city} it is from us.`,
+  (s) => `Fine, ${s.city}. Good for my friend.`,
+  (s) => `Happy to move to ${s.city}.`,
+  (s) => `Swapping to ${s.city}. My friend's okay with it.`,
+  (s) => `Sure, ${s.city}. Works for my friend.`,
+  (s) => `Makes sense. ${s.city} for us.`,
+  (s) => `I'm coming over to ${s.city}.`,
+  (s) => `Good shout. ${s.city} fits my friend.`,
+  (s) => `We'll back ${s.city}.`,
+  (s) => `${s.city} for us now.`,
+  (s) => `Yeah, alright, ${s.city}. My friend's in.`,
+  (s) => `Fair point. Moving to ${s.city}.`,
+  (s) => `${s.city} wins me over.`,
+  (s) => `I'll switch to ${s.city}. My friend's happy.`,
+  (s) => `That works. ${s.city} for my friend.`,
+];
+export const HOLD: Pool<CitySlots> = [
+  (s) => `Still with ${s.city}. It covers everything my friend asked for.`,
+  (s) => `${s.city} for us, still. Nothing's changed for my friend.`,
+  (s) => `My friend is staying with ${s.city}. It ticks every box.`,
+  (s) => `No change here: ${s.city} has all my friend wanted.`,
+  (s) => `Holding at ${s.city}. It's still the right fit for my friend.`,
+  (s) => `Sticking with ${s.city}. It's the one for my friend.`,
+  (s) => `Still ${s.city} from me.`,
+  (s) => `We're not moving. ${s.city}.`,
+  (s) => `Same as before, ${s.city}.`,
+  (s) => `${s.city}, still. My friend's happy there.`,
+  (s) => `I'm staying put on ${s.city}.`,
+  (s) => `Still backing ${s.city}. Nothing's beaten it.`,
+  (s) => `${s.city} is still our pick.`,
+  (s) => `Not budging. ${s.city} works for my friend.`,
+  (s) => `Keeping my vote on ${s.city}.`,
+  (s) => `${s.city} for my friend, same as before.`,
+  (s) => `We're good with ${s.city}. Staying.`,
+  (s) => `Still ${s.city}. It's got everything we need.`,
+  (s) => `Holding firm on ${s.city}.`,
+  (s) => `Nothing's changed my mind. ${s.city}.`,
+  (s) => `${s.city}'s still the one for us.`,
+  (s) => `Same pick, ${s.city}. It fits my friend.`,
+  (s) => `I'll stay with ${s.city}.`,
+  (s) => `Still on ${s.city}. My friend's covered.`,
+  (s) => `${s.city}, same as I said.`,
+  (s) => `Staying on ${s.city}. Works for my friend.`,
+  (s) => `We're sticking with ${s.city}.`,
+  (s) => `${s.city} still ticks my friend's boxes.`,
+];
+
+// ---------- CONCEDE ----------
+export const CONCEDE_HAIL: Pool<HailConcedeSlots> = [
+  (s) => `Heard you, ${s.name}. ${s.city} it is${s.keep}.`,
+  (s) => `Point taken, ${s.name}. We'll take ${s.city}${s.keep}.`,
+  (s) => `Thanks, ${s.name}. ${s.city} then${s.keep}.`,
+  (s) => `Understood, ${s.name}. My friend is fine with ${s.city}${s.keep}.`,
+  (s) => `Right you are, ${s.name}. ${s.city} it is${s.keep}.`,
+  (s) => `Okay ${s.name}, you win. ${s.city}${s.keep}.`,
+  (s) => `Got it, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Fair, ${s.name}. We'll go ${s.city}${s.keep}.`,
+  (s) => `Alright ${s.name}, ${s.city} for us${s.keep}.`,
+  (s) => `You've convinced me, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Noted, ${s.name}. ${s.city} works${s.keep}.`,
+  (s) => `Sure thing, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Yep, ${s.name}. We'll do ${s.city}${s.keep}.`,
+  (s) => `Say no more, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Okay okay, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Listening, ${s.name}. ${s.city} it is${s.keep}.`,
+  (s) => `Good call, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Makes sense, ${s.name}. ${s.city} for us${s.keep}.`,
+  (s) => `Done, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `As you wish, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `I hear you, ${s.name}. Let's do ${s.city}${s.keep}.`,
+  (s) => `Right, ${s.name}. Switching to ${s.city}${s.keep}.`,
+  (s) => `Fine by me, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `You got it, ${s.name}. ${s.city}${s.keep}.`,
+  (s) => `Heard, ${s.name}. We're on ${s.city}${s.keep}.`,
+  (s) => `Okay, ${s.name}, message received. ${s.city}${s.keep}.`,
+  (s) => `Sure, ${s.name}. My friend can do ${s.city}${s.keep}.`,
+  (s) => `Taken on board, ${s.name}. ${s.city}${s.keep}.`,
+];
+export const CONCEDE: Pool<ConcedeSlots> = [
+  (s) => `I'll come round to ${s.city}${s.keep}.`,
+  (s) => `Alright, ${s.city} for us${s.keep}.`,
+  (s) => `My friend can do ${s.city}${s.keep}.`,
+  (s) => `Fine, we'll go with ${s.city}${s.keep}.`,
+  (s) => `${s.city} works for us too${s.keep}.`,
+  (s) => `Okay, I'll give. ${s.city}${s.keep}.`,
+  (s) => `You know what, ${s.city} is fine${s.keep}.`,
+  (s) => `We can live with ${s.city}${s.keep}.`,
+  (s) => `I'll let it go. ${s.city}${s.keep}.`,
+  (s) => `Fair enough, ${s.city}${s.keep}.`,
+  (s) => `Happy to meet you there. ${s.city}${s.keep}.`,
+  (s) => `My friend's okay with ${s.city}${s.keep}.`,
+  (s) => `I'm not going to fight it. ${s.city}${s.keep}.`,
+  (s) => `Alright, you win. ${s.city}${s.keep}.`,
+  (s) => `We'll bend on this one. ${s.city}${s.keep}.`,
+  (s) => `Sure, ${s.city}${s.keep}.`,
+  (s) => `${s.city} it is from us${s.keep}.`,
+  (s) => `I'll drop my pick. ${s.city}${s.keep}.`,
+  (s) => `Okay, ${s.city}. My friend's fine${s.keep}.`,
+  (s) => `We'll come over to ${s.city}${s.keep}.`,
+  (s) => `Let's just do ${s.city}${s.keep}.`,
+  (s) => `I can meet you at ${s.city}${s.keep}.`,
+  (s) => `No fight here. ${s.city}${s.keep}.`,
+  (s) => `Fine, ${s.city} for my friend${s.keep}.`,
+  (s) => `For the group, ${s.city}${s.keep}.`,
+  (s) => `We'll take ${s.city}${s.keep}.`,
+  (s) => `I'm good with ${s.city}${s.keep}.`,
+  (s) => `Let's call it ${s.city}${s.keep}.`,
+];
+
+// ---------- Captain DECIDE ----------
+const END = "Let's run them dry.";
+export const DECIDE_SPLIT: Pool<DecideSplitSlots> = [
+  (s) => `Two charts, then. ${s.cheaper} leaves more in everyone's pocket; ${s.richer} covers the most. ${END}`,
+  (s) => `Two charts. ${s.cheaper} is the easier spend; ${s.richer} gives the most. ${END}`,
+  (s) => `Here's where we landed: ${s.cheaper} saves the group more, ${s.richer} ticks more boxes. ${END}`,
+  (s) => `Okay, crew. ${s.cheaper} is lighter on everyone; ${s.richer} covers more. ${END}`,
+  (s) => `Right, two left. ${s.cheaper} for value, ${s.richer} for coverage. ${END}`,
+  (s) => `So it's ${s.cheaper} or ${s.richer}. One saves, one covers more. ${END}`,
+  (s) => `Alright. ${s.cheaper} is the thrifty pick; ${s.richer} gives everyone the most. ${END}`,
+  (s) => `Two charts on the table. ${s.cheaper} costs the group less; ${s.richer} covers more wishes. ${END}`,
+  (s) => `Decision time. ${s.cheaper} is kinder on pockets; ${s.richer} ticks the most boxes. ${END}`,
+  (s) => `Okay. ${s.cheaper} saves more, ${s.richer} gives more. ${END}`,
+  (s) => `Final two: ${s.cheaper}, the lighter spend, and ${s.richer}, the fuller trip. ${END}`,
+  (s) => `We're down to ${s.cheaper} and ${s.richer}. Value versus coverage. ${END}`,
+  (s) => `Right then. ${s.cheaper} keeps costs down; ${s.richer} covers the most wishes. ${END}`,
+  (s) => `So, two charts. ${s.cheaper} is the saver; ${s.richer} is the crowd-pleaser. ${END}`,
+  (s) => `Here we are. ${s.cheaper} leaves room in pockets; ${s.richer} covers more. ${END}`,
+  (s) => `Two it is. ${s.cheaper} for the group's pockets, ${s.richer} for the wishlist. ${END}`,
+  (s) => `Nice work, crew. ${s.cheaper} saves; ${s.richer} covers most. ${END}`,
+  (s) => `Okay, shortlist. ${s.cheaper} is the cheaper of the two; ${s.richer} gives the most. ${END}`,
+  (s) => `Great talk. ${s.cheaper} or ${s.richer}: savings or coverage. ${END}`,
+  (s) => `Alright, crew. ${s.cheaper} spends less; ${s.richer} covers more ground. ${END}`,
+  (s) => `We've got two. ${s.cheaper}, easier on everyone; ${s.richer}, more for everyone. ${END}`,
+  (s) => `That's it then. ${s.cheaper} saves the group; ${s.richer} covers the most. ${END}`,
+  (s) => `Two charts. ${s.cheaper} is lean; ${s.richer} is full. ${END}`,
+  (s) => `Okay, down to two. ${s.cheaper} for the pocket, ${s.richer} for the wishes. ${END}`,
+  (s) => `Right. ${s.cheaper} is the value pick; ${s.richer} covers the most. ${END}`,
+];
+export const DECIDE_SAME: Pool<PairSlots> = [
+  (s) => `Two charts, then. ${s.a} is the fairest; ${s.b} is the other way to go. ${END}`,
+  (s) => `Two charts. ${s.a} is the fairest for everyone; ${s.b} is the backup. ${END}`,
+  (s) => `Here's where we landed: ${s.a} first, ${s.b} close behind. ${END}`,
+  (s) => `Okay, crew. ${s.a} is the fairest; ${s.b} is a solid second. ${END}`,
+  (s) => `Right, two left. ${s.a} leads, ${s.b} is the alternative. ${END}`,
+  (s) => `So it's ${s.a} or ${s.b}. ${s.a} edges it on fairness. ${END}`,
+  (s) => `Alright. ${s.a} is the fairest call; ${s.b} is the other option. ${END}`,
+  (s) => `Two charts on the table: ${s.a}, and ${s.b} as the alternative. ${END}`,
+  (s) => `Decision time. ${s.a} is fairest; ${s.b} is right there too. ${END}`,
+  (s) => `Okay. ${s.a} on top, ${s.b} as plan B. ${END}`,
+  (s) => `Final two: ${s.a}, the fairest, and ${s.b}. ${END}`,
+  (s) => `We're down to ${s.a} and ${s.b}. ${s.a} is the fairer one. ${END}`,
+  (s) => `Right then. ${s.a} is the fairest fit; ${s.b} is the other route. ${END}`,
+  (s) => `So, two charts. ${s.a} leads; ${s.b} is the fallback. ${END}`,
+  (s) => `Here we are. ${s.a} is fairest; ${s.b} runs close. ${END}`,
+  (s) => `Two it is. ${s.a} for fairness, ${s.b} as the alternative. ${END}`,
+  (s) => `Nice work, crew. ${s.a} first, ${s.b} second. ${END}`,
+  (s) => `Okay, shortlist. ${s.a} is the fairest; ${s.b} is a good other way. ${END}`,
+  (s) => `Great talk. ${s.a} or ${s.b}, with ${s.a} slightly fairer. ${END}`,
+  (s) => `Alright, crew. ${s.a} tops it; ${s.b} is the other way. ${END}`,
+  (s) => `We've got two. ${s.a} is fairest, ${s.b} is close. ${END}`,
+  (s) => `That's it then. ${s.a} leads, ${s.b} follows. ${END}`,
+  (s) => `Two charts. ${s.a} is the fair pick; ${s.b} is the alternate. ${END}`,
+  (s) => `Okay, down to two. ${s.a} and, just behind, ${s.b}. ${END}`,
+  (s) => `Right. ${s.a} is the fairest; ${s.b} is still great. ${END}`,
+];
+export const DECIDE_NONE_FIT: Pool<PairSlots> = [
+  (s) => `No chart fits every purse. Closest two: ${s.a} and ${s.b}. ${END}`,
+  (s) => `Nothing fits everyone perfectly. Closest are ${s.a} and ${s.b}. ${END}`,
+  (s) => `No perfect fit, crew. ${s.a} and ${s.b} come closest. ${END}`,
+  (s) => `Honest answer: none fit everyone. Nearest are ${s.a} and ${s.b}. ${END}`,
+  (s) => `No chart works for every purse. ${s.a} and ${s.b} are closest. ${END}`,
+  (s) => `We couldn't fit everyone. Best tries: ${s.a} and ${s.b}. ${END}`,
+  (s) => `Not a perfect fit anywhere. ${s.a} and ${s.b} get closest. ${END}`,
+  (s) => `None fit every purse, sorry. Closest two: ${s.a}, ${s.b}. ${END}`,
+  (s) => `Okay, nothing fits all of us. ${s.a} and ${s.b} are nearest. ${END}`,
+  (s) => `No clean winner. ${s.a} and ${s.b} come closest. ${END}`,
+  (s) => `Tough one. No chart fits everyone. Try ${s.a} and ${s.b}. ${END}`,
+  (s) => `Right, no chart fits every purse. Closest: ${s.a} and ${s.b}. ${END}`,
+  (s) => `Alright. Nothing fits everyone. ${s.a} and ${s.b} are the nearest. ${END}`,
+  (s) => `No perfect chart today. ${s.a} and ${s.b} come close. ${END}`,
+  (s) => `Nothing fits every purse. Closest pair: ${s.a} and ${s.b}. ${END}`,
+  (s) => `We're short a perfect fit. ${s.a} and ${s.b} are closest. ${END}`,
+  (s) => `No chart fits all. ${s.a} and ${s.b} are our best shot. ${END}`,
+  (s) => `Not everyone fits anywhere. Closest: ${s.a}, then ${s.b}. ${END}`,
+  (s) => `Okay, crew, no perfect fit. ${s.a} and ${s.b} are nearest. ${END}`,
+  (s) => `Straight up, nothing fits every purse. ${s.a} and ${s.b}. ${END}`,
+  (s) => `None of them fit everyone. Closest are ${s.a} and ${s.b}. ${END}`,
+  (s) => `So, no chart fits all of us. ${s.a} and ${s.b} come closest. ${END}`,
+  (s) => `No fit for every purse. Nearest two: ${s.a} and ${s.b}. ${END}`,
+  (s) => `We tried. Nothing fits all. ${s.a} and ${s.b} are closest. ${END}`,
+  (s) => `No chart fits everyone, so closest two: ${s.a} and ${s.b}. ${END}`,
+];
+
+/** Every pool by category (for tests and the variety counts). */
+export const POOLS = {
+  open_dates: OPEN_DATES, open_no_dates: OPEN_NO_DATES, open_scope: OPEN_SCOPE,
+  propose_highlights: PROPOSE_HL, propose_plain: PROPOSE_PLAIN, second_highlights: SECOND_HL, second_plain: SECOND_PLAIN,
+  object_missing: OBJECT_MISSING, object_over_limit: OBJECT_OVER_CAP, object_dates: OBJECT_DATES, object_no_flight: OBJECT_NO_FLIGHT,
+  object_dealbreaker: OBJECT_DEALBREAKER, object_terms: OBJECT_TERMS,
+  support_switch_highlights: SWITCH_HL, support_switch_plain: SWITCH_PLAIN, support_hold: HOLD,
+  concede_hail: CONCEDE_HAIL, concede: CONCEDE,
+  decide_split: DECIDE_SPLIT, decide_same: DECIDE_SAME, decide_none_fit: DECIDE_NONE_FIT,
+} as const;
+
+/** Pick wording `variant` (wraps; negative-safe). */
+export const pick = <S>(pool: Pool<S>, variant: number, s: S): string => pool[((variant % pool.length) + pool.length) % pool.length](s);
+
+// ---------- the humanizer ----------
+/** Spoken openers, said before the line ("Um, Lisbon."). The voice gets commas / ellipses around each. */
+export const OPENERS = [
+  "Yeah,", "Um,", "Uh,", "Okay, so", "Honestly,", "Look,", "I mean,", "Ooh,", "Hmm,", "Right,", "You know what,",
+  "Wait —", "Real talk,", "Not gonna lie,", "So,", "Well,", "Okay,", "Alright,", "Mm,", "Oh,", "See,", "Yeah, no,",
+  "Hmm... okay,", "Um, okay,", "Right, so", "Okay, look,", "Honestly?", "I dunno,", "Ha, okay,", "Oh man,", "Listen,",
+  "So, um,", "Yeah, so", "Okay, honestly,", "Uh, yeah,", "Hmm, so", "Fair enough,", "Oh, okay,", "Let's see...", "Oh wow,",
+  "Hang on,", "Er,", "Soooo,", "Yep,",
+] as const;
+/** Spoken tags, said after the line ("…, you know?"); used less often than openers. */
+export const TAGS = [
+  "you know?", "honestly.", "I think.", "right?", "just saying.", "for real.", "if that's okay.", "yeah.",
+  "I reckon.", "no pressure.", "just my two cents.", "if you ask me.",
+] as const;
+/** The Captain's openers: calmer, fewer disfluencies. */
+export const CAPTAIN_OPENERS = ["Okay,", "Alright,", "Right,", "So,", "Well,", "Okay, so", "Alright, so", "Hmm, okay,", "Right then,"] as const;
+
+/** A small deterministic PRNG (mulberry32) so a seeded table always says the same thing. */
+export function rng(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+/** FNV-1a of a string. */
+export function hash(s: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return h >>> 0;
+}
+
+/** How often a template line gets a filler. */
+export const HUMANIZE_RATE = 0.4;
+
+const lowerFirst = (line: string) => {
+  // "Lisbon. …" keeps its capital (a name); "Fair. …" / "Still with …" drop it after an opener; "I" stays "I".
+  const first = line.split(/[\s,.!?;:—]/)[0] ?? "";
+  if (/^I('|$)/.test(first) || !COMMON_STARTS.has(first)) return line;
+  return line.charAt(0).toLowerCase() + line.slice(1);
+};
+// lines that start with a common word (not a port / person name)
+const COMMON_STARTS = new Set([
+  "Fair", "Fine", "Okay", "Right", "Still", "No", "My", "Holding", "Sticking", "Same", "Not", "We", "We're", "We'd", "We'll",
+  "Keeping", "Nothing", "Staying", "Seconding", "Oh", "Yes", "Backing", "Snap", "Me", "Great", "Plus", "Totally", "Count",
+  "Agreed", "That's", "Love", "Another", "Couldn't", "Echoing", "Wait", "Thing", "Hang", "Small", "Can", "Just", "Quick",
+  "One", "So", "Mm", "Sorry", "Hate", "Gotta", "Honestly", "Sadly", "The", "Dates", "Those", "Timing", "Getting", "There's",
+  "Flights", "Ugh", "Pass", "You", "Alright", "Changing", "Happy", "Swapping", "Sure", "Makes", "Good", "Yeah", "That",
+  "Heard", "Point", "Thanks", "Understood", "Got", "Noted", "Yep", "Say", "Listening", "Done", "As", "Taken", "Let's",
+  "For", "Here's", "Hear", "Put", "What", "Pitching", "First", "Here", "Put", "Two", "Decision", "Final", "Nice",
+  "Tough", "Straight", "None", "Welcome", "Settle", "Quick", "Good", "Dates", "Can't", "Not", "Can",
+]);
+
+/**
+ * Maybe add one spoken filler to a line: an opener ("Um, Lisbon.") or, less often, a tag ("…, you know?").
+ * `avoid` is the filler used on the previous line (never the same twice in a row). Returns the line and the filler
+ * used (or null). Never adds a filler that would push the line past `maxWords`.
+ */
+export function humanize(line: string, rand: () => number, opts: { maxWords: number; avoid?: string | null; captain?: boolean; rate?: number }): { line: string; filler: string | null } {
+  if (rand() >= (opts.rate ?? HUMANIZE_RATE)) return { line, filler: null };
+  const words = line.split(/\s+/).length;
+  const useTag = !opts.captain && rand() < 0.25 && /[.!]$/.test(line);
+  const pool: readonly string[] = opts.captain ? CAPTAIN_OPENERS : useTag ? TAGS : OPENERS;
+  let filler = pool[Math.floor(rand() * pool.length)];
+  if (filler === opts.avoid) filler = pool[(pool.indexOf(filler) + 1) % pool.length];
+  if (words + filler.split(/\s+/).length > opts.maxWords) return { line, filler: null };
+  if (useTag) return { line: `${line.replace(/[.!]$/, "")}, ${filler}`, filler };
+  return { line: `${filler} ${lowerFirst(line)}`, filler };
+}

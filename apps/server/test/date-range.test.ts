@@ -198,7 +198,7 @@ describe("generated windows at the table", () => {
       expect(p.members.every((m) => !m.reasons.includes("date_mismatch"))).toBe(true);
     }
     const open = room.find((e) => e.ev === "turn:new" && e.p.act === "OPEN")!;
-    expect(open.p.text).toMatch(/works for everyone/);
+    expect(open.p.text).toMatch(/everyone/);
     expect(h.table.datesLabel(t)).toMatch(/^[A-Z][a-z]{2} \d{1,2} to /);
   }, 20_000);
 
@@ -213,7 +213,7 @@ describe("generated windows at the table", () => {
     await h.submitBrief(trip._id, ids[3], terms({ days: late })); // the absent friend can only do the end
     const t = await toDryRun(h, trip._id, ids[0]);
     const open = room.find((e) => e.ev === "turn:new" && e.p.act === "OPEN")!;
-    expect(open.p.text).toMatch(/works for most of the crew/);
+    expect(open.p.text).toMatch(/most of the crew/);
     expect(open.p.text).not.toContain("Dev");
     const [a] = h.table.shortlist(t);
     const w = parseRangeWindowId(a.dateWindowId)!;

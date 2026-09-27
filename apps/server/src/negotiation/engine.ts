@@ -21,6 +21,7 @@ import {
   LINE_VARIANTS, REPEAT_TAILS, lineKey, proposeLine, safeLine, supportHoldLine, supportSwitchLine, variantFor, type LineOut,
 } from "./phrasing.js";
 import { generateLine } from "./gemini.js";
+import { hash, humanize, rng } from "./lines.js";
 import {
   advocateFacts, advocateLineRequest, captainLineRequest, decideInstruction, legalActs, modelChoiceRequest, openInstruction,
 } from "./prompts.js";
@@ -55,6 +56,10 @@ export interface EngineOptions {
   placeNames?: (entry: string) => string;
   /** Who `datesLabel` suits: everyone (default), or — a date-range voyage with no window for all — most of the crew. */
   datesWho?: "everyone" | "most of the crew";
+  /** Seeds the table's wording and fillers (default: a hash of the crew and ports, so a table is reproducible). */
+  seed?: number;
+  /** Spoken fillers ("um,", "yeah,") on template lines: default on, off in DEMO_REPLAY=cached (warmed voices). */
+  humanize?: boolean;
 }
 
 /** O2-033: words per spoken line (Expo mode keeps them short). */
@@ -92,6 +97,13 @@ export class NegotiationEngine {
   private spoken = new Set<string>();
   /** The varied kinds of line (support_hold, concede, …) said at least once this meeting. */
   private saidKinds = new Set<string>();
+  /** The table's wording seed; each turn derives its own from it (deterministic). */
+  private seed: number;
+  private turnNo = 0;
+  /** The filler on the last humanized line (never the same one twice in a row). */
+  private lastFiller: string | null = null;
+  /** DEMO_REPLAY=cached keeps the classic wordings (its voices come only from the warmed cache). */
+  private classic = features.cached();
 
   constructor(
     private ds: Dataset,
@@ -105,6 +117,22 @@ export class NegotiationEngine {
     private opts: EngineOptions = {},
   ) {
     this.privacy = privacy ?? buildPrivacyContext(ds, crew, plans);
+    this.seed = opts.seed ?? hash([...crew.map((c) => `${c.band}:${c.name}`), ...cityIds, datesLabel ?? ""].join("|"));
+  }
+
+  /** A turn's starting wording: classic (0) for the first of a kind in cached mode, else seeded per speaker + turn. */
+  private start(kind: string, key: string, watch: number): number {
+    const first = !this.saidKinds.has(kind);
+    this.saidKinds.add(kind);
+    if (this.classic) return first ? 0 : variantFor(key, watch);
+    return hash(`${this.seed}|${kind}|${key}|${watch}`) % 997;
+  }
+  private each(kind: string, key: string, watch: number, f: (v: number) => LineOut): LineOut[] {
+    const s = this.start(kind, key, watch);
+    const all = Array.from({ length: LINE_VARIANTS }, (_, k) => f(s + k));
+    // wordings that fit the word cap whole come first (a long port / activity name can push one over)
+    const fits = (l: LineOut) => l.line.split(/\s+/).length <= this.maxWords;
+    return [...all.filter(fits), ...all.filter((l) => !fits(l))];
   }
 
   /**
@@ -123,7 +151,7 @@ export class NegotiationEngine {
     // WATCH 0 — Captain opens with group-level facts only
     const cities = this.cityIds.map((c) => cityName(this.ds, c));
     const scope = this.opts.scopeLabel;
-    await this.say({ kind: "captain" }, "OPEN", undefined, 0, openLine(this.datesLabel, cities, scope, this.opts.datesWho), (noAmounts) =>
+    await this.say({ kind: "captain" }, "OPEN", undefined, 0, this.each("open", "captain", 0, (v) => openLine(this.datesLabel, cities, scope, this.opts.datesWho, v)), (noAmounts) =>
       this.captainPrompt("OPEN", openInstruction(this.datesLabel, cities, scope, this.opts.datesWho), noAmounts));
 
     let lastWatch = 0;
@@ -157,7 +185,7 @@ export class NegotiationEngine {
     this.io.closeHails?.();
     const [a, b] = shortlist(this.plans, this.st);
     const noneFit = !a.fitsEveryone && !b.fitsEveryone;
-    await this.say({ kind: "captain" }, "DECIDE", a, lastWatch, decideLine(this.ds, a, b, noneFit), (noAmounts) =>
+    await this.say({ kind: "captain" }, "DECIDE", a, lastWatch, this.each("decide", "captain", lastWatch, (v) => decideLine(this.ds, a, b, noneFit, v)), (noAmounts) =>
       this.captainPrompt("DECIDE", decideInstruction(this.ds, a, b), noAmounts));
     await this.prepared;
 
@@ -182,29 +210,18 @@ export class NegotiationEngine {
   private template(c: EngineCrew, d: Decision, watch: number): LineOut[] {
     const p = planById(this.plans, d.planId);
     const why = d.why;
-    const start = this.saidKinds.has(why.kind) ? variantFor(`${c.band}:${c.name}`, watch) : 0;
-    this.saidKinds.add(why.kind);
-    const each = (f: (v: number) => LineOut) => Array.from({ length: LINE_VARIANTS }, (_, k) => f(start + k));
+    const each = (f: (v: number) => LineOut) => this.each(why.kind, `${c.band}:${c.name}`, watch, f);
     switch (why.kind) {
+      case "propose": {
+        const mem = this.io.memory(c.memberId).find((m) => /gave up|conceded/i.test(m));
+        const memoryNote = mem ? "My friend gave up the city pick last time." : undefined;
+        return each((v) => proposeLine(this.ds, p, c.memberId, { seconding: why.seconding, memoryNote }, v));
+      }
+      case "object_missing": return each((v) => objectMissingLine(this.ds, planById(this.plans, why.againstPlanId), planById(this.plans, why.minePlanId), why.tag, v));
+      case "object_unfit": return each((v) => objectUnfitLine(this.ds, planById(this.plans, why.againstPlanId), why.reason, v));
       case "support_switch": return each((v) => supportSwitchLine(this.ds, p, c.memberId, v));
       case "support_hold": return each((v) => supportHoldLine(this.ds, p, v));
       case "concede": return each((v) => concedeLine(this.ds, p, c.memberId, why.hailFrom, v));
-      default: return [this.template1(c, d)];
-    }
-  }
-
-  private template1(c: EngineCrew, d: Decision): LineOut {
-    const p = planById(this.plans, d.planId);
-    switch (d.why.kind) {
-      case "propose": {
-        const mem = this.io.memory(c.memberId).find((m) => /gave up|conceded/i.test(m));
-        return proposeLine(this.ds, p, c.memberId, { seconding: d.why.seconding, memoryNote: mem ? "My friend gave up the city pick last time." : undefined });
-      }
-      case "object_missing": return objectMissingLine(this.ds, planById(this.plans, d.why.againstPlanId), planById(this.plans, d.why.minePlanId), d.why.tag);
-      case "object_unfit": return objectUnfitLine(this.ds, planById(this.plans, d.why.againstPlanId), d.why.reason);
-      case "support_switch": return supportSwitchLine(this.ds, p, c.memberId);
-      case "support_hold": return supportHoldLine(this.ds, p);
-      case "concede": return concedeLine(this.ds, p, c.memberId, d.why.hailFrom);
     }
   }
 
@@ -213,7 +230,7 @@ export class NegotiationEngine {
    * The next line is prepared while this one plays (pipelining, doc 04 §8.1).
    */
   private async say(speaker: Speaker, act: Act, plan: Plan | undefined, watch: number, fallback: LineOut | LineOut[], prompt: Prompt) {
-    const phrased = await this.phrase(act, plan, Array.isArray(fallback) ? fallback : [fallback], prompt);
+    const phrased = await this.phrase(act, plan, Array.isArray(fallback) ? fallback : [fallback], prompt, speaker.kind === "captain");
     this.spoken.add(lineKey(phrased.line));
     const turnId = await this.io.emitTurn({
       speaker, act, planId: plan?._id, cityId: plan?.cityId, text: phrased.line, ribbon: phrased.ribbon, voiced: true, redactions: phrased.redactions,
@@ -234,7 +251,7 @@ export class NegotiationEngine {
    * are tried in order (the act's other wordings) for one not yet said; if every wording was said, one gets a
    * sign-off (REPEAT_TAILS) that makes it new.
    */
-  private async phrase(act: Act, plan: Plan | undefined, fallbacks: LineOut[], prompt: Prompt): Promise<LineOut & { redactions: number }> {
+  private async phrase(act: Act, plan: Plan | undefined, fallbacks: LineOut[], prompt: Prompt, captain = false): Promise<LineOut & { redactions: number }> {
     let redactions = 0;
     const clean = (l: LineOut): (LineOut & { redactions: number }) | null => {
       const s = sanitizeSpoken(l, this.privacy);
@@ -243,6 +260,18 @@ export class NegotiationEngine {
     };
     const fresh = (l: LineOut & { redactions: number }) => !this.spoken.has(lineKey(l.line));
     const take = (l: LineOut & { redactions: number }) => ({ line: l.line, ribbon: l.ribbon, redactions: redactions + l.redactions });
+    /** A template line, maybe with one spoken filler (seeded per turn); the filler is filtered too, and kept only if clean. */
+    const turn = this.turnNo++;
+    const human = (l: LineOut & { redactions: number }) => {
+      if (this.classic || this.opts.humanize === false) return take(l);
+      const h = humanize(l.line, rng(hash(`${this.seed}#${turn}`)), { maxWords: this.maxWords, avoid: this.lastFiller, captain });
+      if (!h.filler) return take(l);
+      const c = clean({ line: h.line, ribbon: l.ribbon });
+      if (!c || c.line !== h.line || !fresh(c)) return take(l);
+      this.lastFiller = h.filler;
+      this.spoken.add(lineKey(l.line)); // the bare wording counts as said too
+      return take(c);
+    };
     if (features.gemini()) {
       for (let attempt = 0; attempt < 2; attempt++) {
         const out = await prompt(attempt > 0);
@@ -257,7 +286,7 @@ export class NegotiationEngine {
     for (const l of [...fallbacks, safeLine(act, plan ? cityName(this.ds, plan.cityId) : undefined)]) {
       const c = clean(l);
       if (!c) continue;
-      if (fresh(c)) return take(c);
+      if (fresh(c)) return human(c);
       cleaned.push(c);
     }
     for (const tail of REPEAT_TAILS) for (const c of cleaned) {

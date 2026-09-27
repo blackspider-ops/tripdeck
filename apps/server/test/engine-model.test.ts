@@ -48,7 +48,7 @@ describe("model mode guardrails", () => {
     expect(prompts).toMatch(/"wants":\["beach"\]/);
     for (const t of turns) expect(t.text).not.toMatch(/Captain:|confirmed/);
     // the Expo script (templates) is what's heard instead
-    expect(turns.find((t) => t.act === "CONCEDE")!.text).toMatch(/^Heard you, Rae\./);
+    expect(turns.find((t) => t.act === "CONCEDE")!.text).toMatch(/\bRae\b/);
   });
 
   it("TR4-006 / SEC-017: Maya's note reaches only her Advocate's prompt, with no amounts and no budget band", async () => {
@@ -69,7 +69,7 @@ describe("model mode guardrails", () => {
     const turns = await run();
     const decide = turns.at(-1)!;
     expect(decide.act).toBe("DECIDE");
-    expect(decide.text).toMatch(/^Two charts, then\./);
+    expect(decide.text).toMatch(/Let's run them dry\.$/);
     expect(decide.redactions).toBe(2);
     const captainCalls = calls.filter((c) => c.system.startsWith("You are the Captain"));
     expect(captainCalls.some((c) => /Do not state any amount/.test(c.user))).toBe(true);
