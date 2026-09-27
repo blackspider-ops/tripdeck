@@ -30,6 +30,8 @@ export const LOG_TAG_LABEL = "Log book";
 export const ALIGN_TITLE = "Pinch the table corner nearest you";
 /** A held pinch on the globe pins the whole region (ms). */
 export const REGION_HOLD_MS = 600;
+/** The alignment pinch must land on the table, this close to the chart's centre (m). */
+const ALIGN_MAX_M = 1.5;
 /** A pinch that moves this far on the globe (m) is a spin, not a pin. */
 const SPIN_SLOP_M = 0.012;
 
@@ -198,11 +200,13 @@ export class XRApp {
         const cam = renderer.xr.getCamera();
         this.placement.update(frame, this.refSpace);
         this.input.update();
-        this.menu.update(cam, renderer.xr.getHand(0).userData.handedness === "left" ? renderer.xr.getHand(0) : renderer.xr.getHand(1));
+        // the palm-up wrist menu never pops open mid-gesture (a hand on the globe or a button): its first item is Recenter
+        const left = renderer.xr.getHand(0).userData.handedness === "left" ? renderer.xr.getHand(0) : renderer.xr.getHand(1);
+        this.menu.update(cam, this.input.busy ? null : left);
         // fall back to placing in front of the user if no table was found
         if (!this.placement.placed && this.placement.canFallback && !this.placement.reticle.visible) void this.placement.place(cam);
       }
-      this.orbit?.update();
+      if (!this.session) this.orbit?.update(); // the laptop camera only; never in a headset session
       this.stage.director.globe.tickSpin(dt);
       this.panel.update();
       this.debug.update(dt, this.stage.fps, renderer.info.render.calls);
@@ -271,8 +275,9 @@ export class XRApp {
     input.onEmptySelect = (ray) => {
       if (!this.session) return;
       if (this.alignPending) { this.alignTo(ray); return; }
-      // not down yet, or adjusting after a recenter: lay it at the ring
-      if (!this.placement.placed || this.placement.adjusting) void this.placement.place(renderer.xr.getCamera());
+      // not down yet, or adjusting after a recenter: lay it at the ring. Once down, an ordinary pinch (a missed globe
+      // or button) never moves the chart; while adjusting only a pinch aimed at the ring does (Placement.place).
+      if (!this.placement.placed || this.placement.adjusting) void this.placement.place(renderer.xr.getCamera(), ray);
     };
     input.onLongPress = () => {
       if (!this.placement.placed && this.session) void this.placement.place(renderer.xr.getCamera());
@@ -355,6 +360,7 @@ export class XRApp {
     const corner = rayOnPlane(ray, a.position.y);
     if (!corner) return false;
     if (corner.distanceTo(a.position) < 0.15) { this.stage.director.note("That's the middle of the chart. Pinch a corner of the table."); return false; }
+    if (corner.distanceTo(a.position) > ALIGN_MAX_M) { this.stage.director.note("That's past the table. Pinch the table corner nearest you."); return false; }
     this.placement.setYaw(alignYaw(a.position, corner, this.viewerSeatDeg()));
     sound.play("click");
     this.endAlign("Lined up. Your piece is on your side of the table.");
@@ -615,9 +621,17 @@ export class XRApp {
     await renderer.xr.setSession(session);
     renderer.setClearColor(0x000000, 0); // transparent → passthrough visible
     renderer.xr.setFoveation(1);
+    // the laptop view's orbit camera and mouse (if it was opened first) have no business in a headset session
+    this.mouse?.dispose(); this.mouse = null;
+    this.orbit?.dispose(); this.orbit = null;
     this.session = session;
-    this.refSpace = renderer.xr.getReferenceSpace();
+    const ref = renderer.xr.getReferenceSpace();
+    this.refSpace = ref;
+    // Quest resets 'local-floor' when tracking recovers or the floor is re-found: keep the chart on the real table
+    const onReset = (e: Event) => this.placement.onReset((e as XRReferenceSpaceEvent).transform);
+    ref?.addEventListener("reset", onReset);
     session.addEventListener("end", () => {
+      ref?.removeEventListener("reset", onReset);
       this.session = null;
       this.refSpace = null;
       this.alignPending = false;

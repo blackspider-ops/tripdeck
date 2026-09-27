@@ -148,6 +148,9 @@ export class XRInput {
     }
   }
 
+  /** A pinch / trigger is held on some pointer (a drag, a press on a button). */
+  get busy() { return this.pointers.some((p) => p.down); }
+
   /** Stop listening to the controllers and free the rays and dots (O2-053: the instance used to be dropped). */
   dispose() {
     for (const p of this.pointers) {

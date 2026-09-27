@@ -1,10 +1,11 @@
 // Paper globe on a brass meridian ring (doc 02 §7.2). Never spins on its own — it only turns
-// to face the city under discussion.
+// to face the city under discussion (not while a hand is on it), and a hand only turns it (globeSpin.ts).
 import * as THREE from "three";
 import { ORIGIN_COORDS, PALETTE } from "@all-ayes/shared";
 import { LAND } from "./land";
 import { M, disposeObject, inkA, mergedGeometry, paintPaper, shadowDecal, rng, sharedGeometry, sharedSheet, sheetTexture } from "./materials";
-import { angleDelta, arcPoints, latLngToSphere, sphereToLatLng, spinFor, spinFriction } from "./geo";
+import { arcPoints, latLngToSphere, sphereToLatLng, spinFor } from "./geo";
+import { GlobeSpin, clampPitch } from "./globeSpin";
 import { paperFlag, pinInstances } from "./props";
 import { ease, type Tweens } from "./tween";
 import { billboard } from "./billboard";
@@ -32,6 +33,8 @@ function angleDeg(a: { lat: number; lng: number }, b: { lat: number; lng: number
   return Math.acos(Math.min(1, Math.max(-1, c))) / r;
 }
 const GLOBE_CENTER_Y = 0.052 + GLOBE_R;
+/** After a hand turns the globe, the auto-turn to the city under discussion waits this long (ms). */
+const HAND_QUIET_MS = 4000;
 
 /** Designed at 2048×1024 (1024×512 on a headset, same drawing); painted once per page. */
 function globeTexture() {
@@ -116,9 +119,8 @@ export class Globe {
   private heads: THREE.InstancedMesh | null = null;
   /** The paper sphere (the chart room's spin and pin target). */
   readonly sphere: THREE.Mesh;
-  /** Hand spin (the chart room, docs/03 §4): the grab, and the inertia after it's let go (rad/s). */
-  private grab: { angle: number; rot: number; lastAngle: number; lastAt: number } | null = null;
-  private spinVel = 0;
+  /** Hand spin (the chart room, docs/03 §4): rotation only — yaw and a clamped pitch, bounded inertia. */
+  private hand: GlobeSpin;
   private tmpV = new THREE.Vector3();
 
   constructor(private tw: Tweens) {
@@ -138,6 +140,7 @@ export class Globe {
     this.tilt.add(this.spin);
     this.tilt.position.y = GLOBE_CENTER_Y;
     this.group.add(this.tilt);
+    this.hand = new GlobeSpin(this.group, this.tilt, this.spin, GLOBE_R);
   }
 
   /** Show exactly these pins: new ones are added, ones no longer listed are removed and freed (O2-053). */
@@ -218,59 +221,41 @@ export class Globe {
   latLngAt(world: THREE.Vector3): { lat: number; lng: number } {
     return sphereToLatLng(this.spin.worldToLocal(this.tmpV.copy(world)));
   }
-  /** The angle of a world point about the globe's axis, in the (non-spinning) tilt frame. */
-  private axisAngle(world: THREE.Vector3): number {
-    const p = this.tilt.worldToLocal(this.tmpV.copy(world));
-    return Math.atan2(p.x, p.z);
-  }
-  /** Where a ray meets the globe (world), or — for a drag that slid off it — the point nearest the centre. */
+  /** Where a ray meets the globe (world), or — for a drag that slid off it — the globe's surface point nearest the
+   *  ray (never a point far inside or outside, which would swing the turn). */
   rayPoint(ray: THREE.Ray, out = new THREE.Vector3()): THREE.Vector3 {
     const c = this.sphere.getWorldPosition(new THREE.Vector3());
     const r = GLOBE_R * this.sphere.getWorldScale(new THREE.Vector3()).x;
     if (ray.intersectSphere(new THREE.Sphere(c, r), out)) return out;
-    ray.closestPointToPoint(c, out);
-    return out;
+    ray.closestPointToPoint(c, out).sub(c);
+    if (out.lengthSq() < 1e-12) out.set(0, 0, r); else out.setLength(r);
+    return out.add(c);
   }
-  /** Start a hand spin at this point (stops any inertia). */
+  /** Start a hand spin at this point (stops any inertia and any auto-turn). */
   grabSpin(world: THREE.Vector3, now = performance.now()) {
-    void this.tw.to(0, () => undefined, ease.linear, "globe-turn"); // a running auto-turn finishes first
-    const a = this.axisAngle(world);
-    this.grab = { angle: a, rot: this.spin.rotation.y, lastAngle: a, lastAt: now };
-    this.spinVel = 0;
+    void this.tw.to(0, () => undefined, ease.linear, "globe-turn"); // a running auto-turn stops here
+    this.hand.grabAt(world, now);
   }
-  /** Follow the hand: the point under it stays under it. */
-  dragSpin(world: THREE.Vector3, now = performance.now()) {
-    const g = this.grab;
-    if (!g) return;
-    const a = this.axisAngle(world);
-    this.spin.rotation.y = g.rot + angleDelta(g.angle, a);
-    const dt = Math.max(1e-3, (now - g.lastAt) / 1000);
-    this.spinVel = angleDelta(g.lastAngle, a) / dt;
-    g.lastAngle = a; g.lastAt = now;
-  }
+  /** Follow the hand: the globe turns (yaw, clamped pitch) so the point under it stays under it. Never moves. */
+  dragSpin(world: THREE.Vector3, now = performance.now()) { this.hand.dragTo(world, now); }
   /** Let go: it keeps turning and slows (a flick spins it, a still hand leaves it where it is). */
-  releaseSpin(now = performance.now()) {
-    if (this.grab && now - this.grab.lastAt > 120) this.spinVel = 0; // held still before letting go
-    this.grab = null;
-    this.spinVel = Math.max(-6, Math.min(6, this.spinVel));
-  }
+  releaseSpin(now = performance.now()) { this.hand.release(now); }
   /** Per frame (s): the inertia after a flick. */
-  tickSpin(dt: number) {
-    if (this.grab || !this.spinVel) return;
-    this.spin.rotation.y += this.spinVel * dt;
-    this.spinVel = spinFriction(this.spinVel, dt);
-  }
-  get spinning() { return Boolean(this.grab) || this.spinVel !== 0; }
+  tickSpin(dt: number) { this.hand.tick(dt); }
+  get spinning() { return this.hand.spinning; }
   get spinY() { return this.spin.rotation.y; }
+  get tiltX() { return this.tilt.rotation.x; }
 
   /** Turn to face a place (600 ms ease), tilting partway so its latitude faces the Organizer. */
   private turnTo(lat: number, lng: number, instant = false) {
+    // a hand is on the globe (or just let go): the auto-turn would yank it back and forth under the hand
+    if (this.hand.held || (!instant && performance.now() - this.hand.touchedAt < HAND_QUIET_MS)) return Promise.resolve();
     const fromY = this.spin.rotation.y, fromX = this.tilt.rotation.x;
     let toY = spinFor(lng);
     // shortest way round
     while (toY - fromY > Math.PI) toY -= Math.PI * 2;
     while (toY - fromY < -Math.PI) toY += Math.PI * 2;
-    const toX = ((lat * Math.PI) / 180) * 0.65;
+    const toX = clampPitch(((lat * Math.PI) / 180) * 0.65);
     if (instant) { this.spin.rotation.y = toY; this.tilt.rotation.x = toX; return Promise.resolve(); }
     return this.tw.to(600, (t) => {
       this.spin.rotation.y = fromY + (toY - fromY) * t;
