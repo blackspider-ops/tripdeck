@@ -13,7 +13,7 @@ const FONTS = {
 type FontKey = keyof typeof FONTS;
 
 const CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$.,:;·—–'’\"!?()/×½¼&-…";
-/** The display face draws one thing: the "A" pressed into each wax seal (SealChart). */
+/** The display face is barely used in the room (the seals carry the member's initial in the heading face). */
 const PRELOAD_CHARS: Record<FontKey, string> = { display: "A", heading: CHARSET, body: CHARSET, mono: CHARSET, hand: CHARSET };
 
 const failed = new Set<string>();

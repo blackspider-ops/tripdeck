@@ -183,6 +183,40 @@ describe("Seal", () => {
   });
 });
 
+describe("Seal: lifting a seal (user report: voided twice without knowing)", () => {
+  const sealPrivate = { bookingId: "b1", lines: [{ label: "Stay", amountCents: 10_000, kind: "lodging" }], fits: true, cardLast4: "4242", mode: "sim" } as never;
+  const booking = (seals: [string, string][]) =>
+    ({ bookingId: "b1", planId: "LIS-1", attempt: 1, status: "AUTHORIZING", mode: "sim", seals: seals.map(([memberId, st]) => ({ memberId, status: st })) }) as never;
+
+  it("'Lift my seal' asks first, then lifts; my own screen then says so plainly and offers 'Set my seal again'", async () => {
+    const { sent, patch, store } = await mount(<Seal />, { trip: trip({ status: "SEALING" }), shortlist, booking: booking([["m1", "AUTHORIZED"], ["m2", "PENDING"]]), sealPrivate }, "m1");
+    fireEvent.click(screen.getByRole("button", { name: "Lift my seal" }));
+    expect(sent.filter((x) => x.ev === "seal:cancel")).toHaveLength(0); // the first tap only asks
+    expect(screen.getByText(/Lift your seal\? If you don't set it again before the timer, nobody is booked/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Yes, lift my seal" }));
+    expect(sent.filter((x) => x.ev === "seal:cancel").map((x) => x.body)).toEqual([{ bookingId: "b1" }]);
+    // publicly it still reads "set" (S2-001); privately the lifter is told
+    patch({ declined: { bookingId: "b1", reason: "user_cancelled" } });
+    expect(screen.getByText(/You lifted your seal/)).toBeTruthy();
+    expect(screen.queryByText(/waiting on 1 seal/i)).toBeNull();
+    expect(screen.queryByRole("button", { name: /lift my seal/i })).toBeNull();
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: /set my seal again/i })); });
+    const again = sent.filter((x) => x.ev === "seal:set");
+    expect(again).toHaveLength(1);
+    act(() => again[0].ack!({ ok: true }));
+    expect(store.state.declined).toBeNull();
+    expect(screen.queryByText(/You lifted your seal/)).toBeNull();
+  });
+
+  it("the wax-seal mark is a check, never a letter (an 'A' read as a vote for chart A)", async () => {
+    const { view } = await mount(<Seal />, { trip: trip({ status: "SEALING" }), shortlist, booking: booking([["m1", "AUTHORIZED"], ["m2", "PENDING"]]), sealPrivate }, "m1");
+    const paths = [...view.container.querySelectorAll(".seal-row svg path")].map((p) => p.getAttribute("d"));
+    expect(paths.length).toBeGreaterThan(0);
+    expect(paths).not.toContain("M10 13.8l2-4.4 2 4.4M10.8 12.4h2.4"); // the old "A"
+    expect(paths).toContain("M9.8 12.2l1.6 1.6 2.9-3.2");
+  });
+});
+
 describe("Hail dock in Watch 0 (R2-WP-16)", () => {
   it("off while the Captain opens (says why), on from Watch 1, off once the Captain decides", async () => {
     const { patch } = await mount(<Table />, { trip: trip({ status: "AT_TABLE", negotiation: { watch: 0, running: true } }) });

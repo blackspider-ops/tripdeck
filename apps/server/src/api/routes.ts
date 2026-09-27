@@ -54,6 +54,8 @@ function apiLimiters() {
     // (30 /64s kept it full and blocked every pairing); per address and per IPv6 /48 instead, with the 40-bit,
     // 10-minute, single-use codes doing the rest
     pairFail: perMinute(L.pairFailPerMinute), pairFail48: perMinute(config.limits.pairFailPer48PerMinute),
+    // Quest-first: headset seat requests and their polls per address; seal-PIN changes per member
+    attach: perMinute(10), attachPoll: perMinute(90), attachFail: perMinute(10), pinSet: perMinute(5),
     // R2-WP-12 (S2-007): unknown voyage ids under /trips/:tripId (each one a MongoDB lookup), counted per address
     tripMiss: perMinute(config.limits.tripMissPerMinute),
     // TR3-014 / SEC-005: spoken hails per member
@@ -136,7 +138,7 @@ function mountTripRoutes(r: Router, helm: TripService, lim: Limiters) {
     limitCreate(req);
     const b = jsonBody(req) as {
       name: string; organizerName: string; band: Band; origin: Origin; cityIds?: CityId[]; destination?: Destination; windowIds?: string[];
-      dateRange?: unknown; crewKey?: string;
+      dateRange?: unknown; crewKey?: string; device?: string;
     };
     // the course is validated by the helm (trips/course.ts): named ports, regions / states or anywhere; a date range
     // or 1–3 fixed windows
@@ -147,6 +149,7 @@ function mountTripRoutes(r: Router, helm: TripService, lim: Limiters) {
       windowIds: Array.isArray(b.windowIds) ? b.windowIds : undefined,
       // a date range (new phones) wins over fixed windows (older clients, the Expo); both are validated by the helm
       dateRange: b.dateRange && typeof b.dateRange === "object" ? b.dateRange : undefined, crewKey: b.crewKey,
+      device: b.device === "headset" ? "headset" : undefined, // Quest-first: the organizer's seat is this headset
     });
     issuePasskeyClaim(req, res, trip._id, member._id); // S2-009: only this phone may add the seat's passkey
     // crewKey: the phone's private memory identity (SEC-003), echoed or freshly minted; the phone keeps it
@@ -185,8 +188,10 @@ function mountTripRoutes(r: Router, helm: TripService, lim: Limiters) {
 function mountCrewRoutes(r: Router, helm: TripService, lim: Limiters) {
   r.post("/trips/:tripId/members", asyncRoute((req, res) => {
     take(lim.join, ipOf(req), "Too many joins from here — wait a minute.");
-    const b = jsonBody(req) as { name: string; band: Band; origin: Origin; crewKey?: string };
-    const { member, token, crewKey } = helm.join(param(req, "tripId"), { name: b.name, band: Number(b.band) as Band, origin: b.origin, crewKey: b.crewKey });
+    const b = jsonBody(req) as { name: string; band: Band; origin: Origin; crewKey?: string; device?: string };
+    const { member, token, crewKey } = helm.join(param(req, "tripId"), {
+      name: b.name, band: Number(b.band) as Band, origin: b.origin, crewKey: b.crewKey, device: b.device === "headset" ? "headset" : undefined,
+    });
     issuePasskeyClaim(req, res, param(req, "tripId"), member._id); // S2-009
     res.json({ memberId: member._id, memberToken: token, crewKey });
   }));
@@ -234,6 +239,47 @@ function mountHeadsetRoutes(r: Router, helm: TripService, lim: Limiters) {
   r.delete("/trips/:tripId/headset", asyncRoute((req, res) => {
     helm.unpairHeadset(param(req, "tripId"), { token: bearer(req) });
     res.json({ ok: true });
+  }));
+
+  /**
+   * Quest-first (docs/04 §6): a headset asks to sit in an existing seat of the voyage with this join code. The seat's
+   * own device gets a one-tap "Let this headset in?" (socket `headset:request`); the headset polls with its secret.
+   * Requests per address are limited, and so are wrong secrets on the poll.
+   */
+  r.post("/xr/attach", asyncRoute(async (req, res) => {
+    const b = jsonBody(req) as { joinCode?: unknown; memberId?: unknown };
+    take(lim.attach, ipOf(req), "Too many headset requests from here — wait a minute.");
+    const joinCode = String(b.joinCode ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    await loaded(helm, { joinCode });
+    const out = helm.requestAttach(joinCode, String(b.memberId ?? ""));
+    res.json(out);
+  }));
+  r.post("/xr/attach/status", asyncRoute(async (req, res) => {
+    const b = jsonBody(req) as { requestId?: unknown; secret?: unknown };
+    take(lim.attachPoll, ipOf(req), "Checking too often — wait a moment.");
+    res.json(await failures([[lim.attachFail, ipOf(req)]], "Too many wrong headset requests — wait a minute.",
+      () => helm.attachStatus(String(b.requestId ?? ""), String(b.secret ?? ""))));
+  }));
+  // the seat's own device (phone or the headset itself) ends the headset it let in
+  r.delete("/trips/:tripId/my-headset", asyncRoute((req, res) => {
+    const m = bearerMember(helm, req, "Only crew can do that.");
+    helm.detachHeadset(param(req, "tripId"), m._id);
+    res.json({ ok: true });
+  }));
+
+  /**
+   * Quest-first: the seal PIN, for a headset whose browser can't hold a passkey (4–6 digits, hashed with scrypt, bound
+   * to the member; wrong tries are counted in sealing and here). GET says whether one is set.
+   */
+  r.get("/trips/:tripId/seal-pin", asyncRoute((req, res) => {
+    const m = bearerMember(helm, req, "Only crew can do that.");
+    res.json({ set: Boolean(m.sealPin) });
+  }));
+  r.post("/trips/:tripId/seal-pin", asyncRoute((req, res) => {
+    const m = bearerMember(helm, req, "Only crew can do that.");
+    take(lim.pinSet, m._id, "Too many PIN changes — wait a minute.");
+    const b = jsonBody(req) as { pin?: unknown; currentPin?: unknown };
+    res.json(helm.setSealPin(param(req, "tripId"), m._id, b.pin, b.currentPin));
   }));
 
   r.post("/xr/pair", asyncRoute(async (req, res) => {

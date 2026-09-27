@@ -72,19 +72,25 @@ export class Sealing {
     return t.bookingId ? this.helm.payments.bookings.get(t.bookingId) : undefined;
   }
 
-  async setSeal(tripId: string, memberId: string, bookingId: string, assertionToken?: string) {
+  async setSeal(tripId: string, memberId: string, bookingId: string, assertionToken?: string, pin?: string) {
     const { helm } = this;
-    const { t } = helm.memberTrip(tripId, memberId);
+    const { t, m } = helm.memberTrip(tripId, memberId);
     if (t.status !== "SEALING" || t.bookingId !== bookingId) throw new HelmError("BAD_PHASE", "Nothing to seal right now.");
     // Members who registered a passkey (on any relying party) must approve with it; members with none fall back to
     // the confirm tap (PRD E2). The single-use token is bound to this member and this booking, and carries the rpID
     // it was minted for, so the gate agrees with the phone's status check.
+    // Quest-first: a member with a seal PIN (a headset that can't hold a passkey) approves with the PIN instead; a
+    // passkey still works where they have one (their phone's Face ID). Wrong PINs are counted (identity.ts).
     const needsPasskey = hasPasskey(memberId);
-    if (needsPasskey && !consumeAssertion(memberId, bookingId, assertionToken)) {
-      throw new HelmError("PASSKEY_REQUIRED", "Approve with your passkey to set your seal.");
+    const hasPin = Boolean(m.sealPin);
+    const viaPasskey = needsPasskey && assertionToken ? Boolean(consumeAssertion(memberId, bookingId, assertionToken)) : false;
+    if ((needsPasskey || hasPin) && !viaPasskey) {
+      if (hasPin && pin !== undefined) helm.identity.headsets.checkSealPin(m, pin);
+      else if (needsPasskey) throw new HelmError("PASSKEY_REQUIRED", "Approve with your passkey to set your seal.");
+      else throw new HelmError("PIN_REQUIRED", "Enter your seal PIN to set your seal.");
     }
     // TR4-014: the spent token isn't a WebAuthn assertion, so only the fact that one was verified reaches the provider
-    const outcome = await helm.payments.setSeal(bookingId, memberId, { approvedWithPasskey: needsPasskey });
+    const outcome = await helm.payments.setSeal(bookingId, memberId, { approvedWithPasskey: viaPasskey });
     if (outcome === "locked") throw new HelmError("SEAL_LOCKED", "Your seal can't change now.");
   }
 

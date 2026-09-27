@@ -39,3 +39,46 @@ export function arcPoints(a: THREE.Vector3, b: THREE.Vector3, r: number, lift = 
   }
   return pts;
 }
+
+/** The inverse of latLngToSphere: a point on (or off) the globe, in the spinning sphere's frame → lat/lng (deg). */
+export function sphereToLatLng(v: { x: number; y: number; z: number }): { lat: number; lng: number } {
+  const len = Math.hypot(v.x, v.y, v.z) || 1;
+  const lat = (Math.asin(Math.max(-1, Math.min(1, v.y / len))) * 180) / Math.PI;
+  const phi = Math.atan2(v.z, -v.x); // latLngToSphere: x = −cos φ, z = sin φ
+  let lng = (phi * 180) / Math.PI - 180;
+  while (lng < -180) lng += 360;
+  while (lng >= 180) lng -= 360;
+  return { lat, lng };
+}
+
+/** Great-circle distance (km). */
+export function distanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+  const r = Math.PI / 180;
+  const h = Math.sin(((b.lat - a.lat) * r) / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(((b.lng - a.lng) * r) / 2) ** 2;
+  return 2 * 6371 * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/** The charted port nearest a spot on the globe, within `maxKm` (a pin on open sea finds nothing). */
+export function nearestPort<T extends { lat?: number; lng?: number }>(at: { lat: number; lng: number }, ports: readonly T[], maxKm = 900): T | null {
+  let best: T | null = null, bestKm = maxKm;
+  for (const p of ports) {
+    if (typeof p.lat !== "number" || typeof p.lng !== "number") continue;
+    const km = distanceKm(at, { lat: p.lat, lng: p.lng });
+    if (km <= bestKm) { best = p; bestKm = km; }
+  }
+  return best;
+}
+
+/** The shortest signed turn from angle a to b (rad), in (−π, π]. */
+export function angleDelta(a: number, b: number): number {
+  let d = b - a;
+  while (d > Math.PI) d -= Math.PI * 2;
+  while (d <= -Math.PI) d += Math.PI * 2;
+  return d;
+}
+
+/** Globe spin inertia: velocity (rad/s) after `dt` seconds of friction; below `stop` it rests. */
+export function spinFriction(vel: number, dt: number, friction = 2.6, stop = 0.03): number {
+  const v = vel * Math.exp(-friction * dt);
+  return Math.abs(v) < stop ? 0 : v;
+}

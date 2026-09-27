@@ -18,6 +18,7 @@ import { KEYS, readRaw } from "./storage";
 type PasskeyResult =
   | { kind: "approved"; assertionToken: string }
   | { kind: "fallback" }                          // no passkey on file → the confirm tap seals
+  | { kind: "pin" }                               // Quest-first: a seal PIN on file and no passkey here → ask for the PIN
   | { kind: "cancelled"; message: string }        // user said no, or the prompt failed → don't seal, may retry
   | { kind: "blocked"; message: string; addHere?: boolean }; // this phone/address can't produce the passkey the seal needs
 
@@ -59,6 +60,8 @@ async function platformAuthenticator() {
  */
 export async function approveWithPasskey(tripId: string, memberToken: string, bookingId: string): Promise<PasskeyResult> {
   const status = await api.passkeyStatus(tripId, memberToken); // network failure → caller decides
+  // Quest-first: a seal PIN (set on a headset) approves the seal wherever no passkey is usable
+  if (status.pin && (!status.registered || !webAuthnSupported())) return { kind: "pin" };
   if (!status.registered) {
     if (!status.required) return { kind: "fallback" };
     // a passkey exists, but not on this address: the seal can't be approved here (dev may add one here explicitly)
@@ -81,7 +84,7 @@ export async function approveWithPasskey(tripId: string, memberToken: string, bo
 }
 
 /** What Seal does after a tap: send `seal:set` (with the assertion when there is one), or show a note and don't. */
-export type SealStep = { kind: "send"; assertionToken?: string } | { kind: "note"; message: string; addHere?: boolean };
+export type SealStep = { kind: "send"; assertionToken?: string } | { kind: "pin" } | { kind: "note"; message: string; addHere?: boolean };
 
 export async function prepareSeal(tripId: string, memberToken: string | undefined, bookingId: string): Promise<SealStep> {
   if (!memberToken) return { kind: "send" };
@@ -94,6 +97,7 @@ export async function prepareSeal(tripId: string, memberToken: string | undefine
   }
   if (r.kind === "approved") return { kind: "send", assertionToken: r.assertionToken };
   if (r.kind === "fallback") return { kind: "send" };
+  if (r.kind === "pin") return { kind: "pin" };
   return { kind: "note", message: r.message, ...(r.kind === "blocked" && r.addHere ? { addHere: true } : {}) };
 }
 

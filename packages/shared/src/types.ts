@@ -108,6 +108,8 @@ export interface CrewPublic {
    * whether the link has been opened (claimed). Once true the link is spent; everyone sees it.
    */
   inviteOpen?: boolean;
+  /** Only when true: this seat is (also) at the table on a headset (a Quest seat, or a headset let into the seat). */
+  onHeadset?: boolean;
 }
 export interface BriefInput {
   capCents: number;
@@ -286,6 +288,8 @@ export interface TripState {
   crew: CrewPublic[];
   /** SEC-010: the organizer closed the crew; the join code no longer adds anyone (absent invites still work). */
   crewClosed?: boolean;
+  /** Chart-room pins: only when true, any crew member (not just the organizer) may pin ports on the globe. */
+  crewPins?: boolean;
   candidateCities: { cityId: CityId; name: string; lat: number; lng: number }[];
   /**
    * The date windows this voyage offers. Fixed-window voyages: the organizer's 1–3 (the Brief's date chips). Date-range

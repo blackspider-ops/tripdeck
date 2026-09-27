@@ -2,7 +2,7 @@
 
 We didn't get a Quest 3, and we don't have a Galaxy phone. The headset is an **iPhone 16 Pro** (iOS 18, Safari) clamped into a **Samsung Gear VR shell**, which we use only as a lens viewer. This page covers the whole setup, start to finish, and it's written so anyone on the team can follow it at 7 AM on no sleep.
 
-If a Quest turns up, nothing here gets in its way: `/xr` in Quest Browser still opens the mixed-reality table (doc 03 §4). If someone lends us a Gear VR-compatible Galaxy phone, see the appendix.
+If a Quest turns up, nothing here gets in its way: `/xr` in Quest Browser is the Quest start screen (Start a trip / Join a trip: the headset becomes that person's own seat, doc 03 §4 *Quest-first*); the code pairing below lives at `/xr/code`. If someone lends us a Gear VR-compatible Galaxy phone, see the appendix.
 
 ---
 
@@ -100,7 +100,7 @@ Write down the tunnel address and the `DEV_KEY`. The address changes every time 
 2. **Gallery on the laptop.** Open the Gallery link on the laptop and put it on the projector. The judges watch this.
 3. **Rae on the organizer's phone** (the second phone, not the iPhone in the headset). Send Rae's link to it (AirDrop, a message to yourself, a QR code) and open it once. The link works once, within 2 hours. If it's used up, re‑seed.
 4. **Get the headset code.** On Rae's phone, on the Muster screen, tap **Show headset code**. If you're past that screen, use the **Headset code or unpair** link instead. The code is 8 characters, lasts 10 minutes and works once.
-5. **Open `/xr` on the iPhone.** In Safari open `https://<tunnel>/xr` and type the 8-character code. The Enter card shows *"Checking for mixed reality and VR…"*, then **Enter VR** and **Laptop view**.
+5. **Open `/xr/code` on the iPhone.** In Safari open `https://<tunnel>/xr/code` (or `/xr` → *Pair with a headset code instead*) and type the 8-character code. The Enter card shows *"Checking for mixed reality and VR…"*, then **Enter VR** and **Laptop view**.
 6. **Hide the toolbar.** Tap **aA → Hide Toolbar**.
 7. **Enter VR.** Tap **Enter VR**. When iOS asks for motion and orientation access, tap **Allow**. If the phone is still upright you'll see **"Turn your phone sideways"**. Turn it to landscape and the side-by-side chart room appears.
 8. **Clamp it in** (§3): screen to the lenses, centred, padded. Hold the headset to your face and look straight ahead. If the table isn't in front of you, look at the brass ship's wheel and keep your gaze on it for 3.2 s to **Recenter** (§6).
@@ -178,7 +178,7 @@ Before you move the spacing, check that the phone is centred in the clamp (§3).
 | **Phone hot**, "Temperature" warning, stutters | The shell traps heat; brightness; photoreal tiles | Out of the shell, screen off, 5 minutes. *Photoreal cities* off, `?lowtex`, brightness down. Take it out between judges. Never charge it in the shell |
 | Battery under 30% | VR drains fast | Charge between runs |
 | No voices | Silent mode, volume, or audio not unlocked | Silent mode off, media volume up; **Exit VR**, then tap **Enter VR** again (the tap unlocks audio) |
-| Code refused on `/xr` | Older than 10 min, already used, or the voyage was re-seeded | New code from Rae's phone |
+| Code refused on `/xr/code` | Older than 10 min, already used, or the voyage was re-seeded | New code from Rae's phone |
 | Pairing card shows again by itself | `DEVICE_EXPIRED`: a newer pairing, unpaired from Rae's phone, or 12 h passed | Type a new code |
 | Tunnel URL stopped working | `cloudflared` was restarted, so the address changed | New address on every device, re-seed |
 | Gallery and headset disagree | One of them dropped its socket | Reload that one. The server is the source of truth |
@@ -193,7 +193,7 @@ Before you move the spacing, check that the phone is centred in the clamp (§3).
 2. ☐ Fresh seed on `/demo#key=…`; Gallery up on the projector.
 3. ☐ Rae's phone on the Muster screen, **new headset code** showing.
 4. ☐ iPhone: ≥ 50% battery, cool to the touch, case off, Low Power Mode off, Do Not Disturb on, silent off, brightness up.
-5. ☐ Safari on `https://<tunnel>/xr`, code typed, crew visible, **aA → Hide Toolbar**, **Enter VR**, motion **allowed**, landscape.
+5. ☐ Safari on `https://<tunnel>/xr/code`, code typed, crew visible, **aA → Hide Toolbar**, **Enter VR**, motion **allowed**, landscape.
 6. ☐ Clamped in: centred, padded, camera bump clear, buttons not pressed. Focus wheel set.
 7. ☐ Put it on yourself for five seconds: table ahead, one image (not two), reticle visible, voices audible. **Recenter** if needed.
 8. ☐ Lenses and face pad wiped. Hand it over, and tell the judge: "Just look around. Rae drives from her phone."

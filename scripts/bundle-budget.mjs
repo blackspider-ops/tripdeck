@@ -26,11 +26,11 @@ const BUDGETS = {
   "3d-tiles": 159 * KB,
   troika: 123 * KB,
   Stage: 80 * KB,
-  TripShell: 65 * KB,
+  TripShell: 72 * KB, // + Quest-first: "Let this headset in?" (HeadsetAsk), the seal-PIN step on Seal, the headset seat's larger screens
   entry: 44 * KB,
   socket: 42 * KB,
   browser: 26 * KB, // @simplewebauthn/browser (lazy, the seal/passkey flow only)
-  XRPage: 41 * KB, // + VR chart room (lens-shell / Cardboard): gaze input, room rig, iOS motion + lens settings
+  XRPage: 76 * KB, // + VR chart room (lens-shell / Cardboard): gaze input, room rig, iOS motion + lens settings; + Quest-first: the side panel (canvas UI kit, trip / crew / terms / seal views, keyboard), globe spin + pins, MR recenter + alignment, headset seats
   cardboard: 172 * KB, // webxr-polyfill (lazy: the headset route's Cardboard fallback only)
   index: 9.5 * KB, // qrcode (lazy, the headset code card)
   tripstore: 9.5 * KB, // + the seating plan for 2–12 (shared-ui/seating.ts: exclusion windows, even spread, two-ring fallback, flag tiers)

@@ -48,7 +48,12 @@ export interface ClientToServer {
   "dryrun:control": (p: { action: "pause" | "resume" | "restart" }, ack?: AckFn) => void;
   "plan:vote": (p: { planId: string }, ack?: AckFn) => void;
   "plan:pick": (p: { planId: string }, ack?: AckFn) => void;
-  "seal:set": (p: { bookingId: string; assertionToken?: string }, ack?: AckFn) => void;
+  /**
+   * `pin`: the member's seal PIN (4–6 digits, set on a headset whose browser can't use passkeys). A member with a
+   * passkey or a PIN on file must send a fresh passkey assertion token or the right PIN (BAD_PIN; PIN_LOCKED after
+   * too many wrong ones).
+   */
+  "seal:set": (p: { bookingId: string; assertionToken?: string; pin?: string }, ack?: AckFn) => void;
   "seal:cancel": (p: { bookingId: string }, ack?: AckFn) => void;
   "booking:retry": (p: Record<string, never>, ack?: AckFn) => void;
   /**
@@ -64,6 +69,18 @@ export interface ClientToServer {
    * (`DELETE /api/trips/:id/headset`); the old `headset:unpair` socket event is gone (L3-004).
    */
   "crew:setOpen": (p: { open: boolean }, ack?: AckFn) => void;
+  /**
+   * The seat's own device answers a headset asking to sit in this seat (`headset:request`). One tap: allow → the
+   * headset gets a device key bound to this member (it sees only this member's private terms); deny → refused.
+   * Only the member the request names may answer it.
+   */
+  "headset:approve": (p: { requestId: string; allow: boolean }, ack?: AckFn) => void;
+  /**
+   * Chart-room pins (BRIEFING only): set where the voyage may go, the same effect as the phone's Create screen — named
+   * ports (2–4, `destination.kind:"cities"`), regions, or anywhere. The organizer, or any crew member while the
+   * organizer has `crewPins` on; `crewPins` itself is the organizer's. The new course reaches everyone in a full trip:state.
+   */
+  "course:set": (p: { destination?: import("./types.js").Destination; crewPins?: boolean }, ack?: AckFn) => void;
   /** Fire and forget: never acknowledged, never queued offline (TR3-009). */
   "client:log": (p: { level: "log" | "warn" | "error"; msg: string; data?: unknown }) => void;
 }
@@ -102,12 +119,17 @@ export interface ServerToClient {
    * the headset show it, the Gallery ignores it. (Before, this was a room-wide `error` that re-opened every phone's buttons.)
    */
   "table:failed": (p: { code: "TABLE_FAILED"; message: string }) => void;
+  /**
+   * Member room only: a headset (Quest Browser at /xr → Join a trip) asks to sit in this member's seat. `answered`:
+   * the request was allowed, denied or expired (the prompt goes away). Requests last HEADSET_REQUEST_TTL_MS.
+   */
+  "headset:request": (p: { requestId: string; memberName: string; expiresAt: number; answered?: boolean }) => void;
   /** Caller only (never the trip room). */
   "error": (p: ErrorPayload) => void;
 }
 
 /** Events that must NEVER be sent to the shared trip room (privacy test, doc 04 §14). */
-export const PRIVATE_EVENTS = ["brief:private", "plan:private", "plan:myVote", "seal:private", "seal:declinedPrivate"] as const;
+export const PRIVATE_EVENTS = ["brief:private", "plan:private", "plan:myVote", "seal:private", "seal:declinedPrivate", "headset:request"] as const;
 export type PrivateEvent = (typeof PRIVATE_EVENTS)[number];
 /** Events the server may broadcast to `trip:{id}` (OPT-062: the privacy guard is a compile-time check too). */
 export type TripRoomEvent = Exclude<keyof ServerToClient, PrivateEvent | "error">;
@@ -121,12 +143,12 @@ export type C2SPayload<K extends keyof ClientToServer> = Parameters<ClientToServ
 const S2C = {
   "trip:state": true, "brief:private": true, "table:watch": true, "turn:new": true, "turn:audioReady": true, "table:decided": true,
   "plan:private": true, "dryrun:script": true, "dryrun:control": true, "plan:votes": true, "plan:myVote": true, "booking:created": true,
-  "seal:private": true, "seal:status": true, "seal:declinedPrivate": true, "booking:result": true, "table:failed": true, "error": true,
+  "seal:private": true, "seal:status": true, "seal:declinedPrivate": true, "booking:result": true, "table:failed": true, "headset:request": true, "error": true,
 } as const satisfies Record<keyof ServerToClient, true>;
 const C2S = {
   "trip:join": true, "brief:submit": true, "table:start": true, "table:sailWithout": true, "table:hail": true, "dryrun:control": true,
   "plan:vote": true, "plan:pick": true, "seal:set": true, "seal:cancel": true, "booking:retry": true, "booking:callOff": true,
-  "crew:setOpen": true, "client:log": true,
+  "crew:setOpen": true, "headset:approve": true, "course:set": true, "client:log": true,
 } as const satisfies Record<keyof ClientToServer, true>;
 export const SERVER_TO_CLIENT_EVENTS = Object.keys(S2C) as (keyof ServerToClient)[];
 export const CLIENT_TO_SERVER_EVENTS = Object.keys(C2S) as (keyof ClientToServer)[];

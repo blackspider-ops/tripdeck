@@ -7,6 +7,7 @@ import {
 } from "@all-ayes/shared";
 import { ApiError, api, type Catalog, type CatalogCity } from "../../net/api";
 import { saveSession } from "../../net/session";
+import { questUi } from "../../xr/questMode";
 import { useAsyncAction } from "../useAsyncAction";
 import { formatWindow } from "../format";
 import { CrewMemberFields, type CrewMemberDraft } from "../components/CrewMemberFields";
@@ -27,8 +28,12 @@ function surprise<T>(xs: readonly T[], n: number): T[] {
   return a.slice(0, n);
 }
 
-/** P1 — Create voyage: the organizer's seat, where the voyage may go, and when (a date range + trip length). */
-export default function Create() {
+/**
+ * P1 — Create voyage: the organizer's seat, where the voyage may go, and when (a date range + trip length).
+ * `quest` (Quest-first, /xr/new in Quest Browser): the same form, larger; the seat is the headset's and the voyage
+ * opens in the chart room (its join QR and code are there for the crew's phones).
+ */
+export default function Create({ quest = false }: { quest?: boolean }) {
   const navigate = useNavigate();
   const [name, setName] = useState("Spring Break '27");
   // the organizer's default port; JoinCrew and "Add an absent friend" default to the other two, so a quick demo
@@ -39,17 +44,20 @@ export default function Create() {
   const action = useAsyncAction();
   const ready = course.ready && !dates.problem;
 
+  useEffect(() => (quest ? questUi(true) : undefined), [quest]);
   const submit = () => action.run(async () => {
     const r = await api.createTrip({
       name: name.trim(), organizerName: you.name.trim(), band: you.band, origin: you.origin, ...course.payload(), dateRange: dates.range!,
+      ...(quest ? { device: "headset" as const } : {}),
     });
-    saveSession({ tripId: r.tripId, joinCode: r.joinCode, memberId: r.memberId, memberToken: r.memberToken });
-    navigate(`/t/${r.joinCode}/muster`); // P2 first: the QR to muster the crew (TR1-012)
+    saveSession({ tripId: r.tripId, joinCode: r.joinCode, memberId: r.memberId, memberToken: r.memberToken, ...(quest ? { device: "headset" as const } : {}) });
+    // P2 first: the QR to muster the crew (TR1-012); on a Quest that's the chart room's Enter card
+    navigate(quest ? `/t/${r.joinCode}/xr` : `/t/${r.joinCode}/muster`);
   }, "Couldn't set sail. Try again.");
 
   return (
     <Page>
-      <Eyebrow icon={<Anchor size={18} />}>New voyage</Eyebrow>
+      <Eyebrow icon={<Anchor size={18} />}>{quest ? "New voyage · on this headset" : "New voyage"}</Eyebrow>
       <h1 className="h1">Set a course</h1>
       <form onSubmit={(e) => { e.preventDefault(); if (you.name.trim() && name.trim() && ready) void submit(); }}>
         <label className="field"><span>Voyage name</span>
@@ -65,7 +73,7 @@ export default function Create() {
         {course.problem ? <p className="small">{course.problem}</p> : null}
         {dates.problem ? <p className="small">{dates.problem}</p> : null}
         <StampButton type="submit" disabled={action.busy || !you.name.trim() || !ready}>Set sail</StampButton>
-        <div className="center"><LinkButton onClick={() => navigate("/")}>Back</LinkButton></div>
+        <div className="center"><LinkButton onClick={() => navigate(quest ? "/xr" : "/")}>Back</LinkButton></div>
       </form>
     </Page>
   );

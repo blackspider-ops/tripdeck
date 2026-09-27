@@ -18,6 +18,20 @@ import { DebugOverlay, installConsoleRelay } from "./debugOverlay";
 import { GazeInput } from "./gaze";
 import { LazyFollow, VRRig } from "./vrRig";
 import { LENS_MM, ipdFromSearch, nextLensSpacing, vrBufferScale, type LensSpacing } from "./vrMode";
+import { SidePanel, type SideOpts } from "./panel/SidePanel";
+import { canPin, type Viewer } from "./panel/views";
+import { alignYaw, rayOnPlane } from "./placement";
+import { pinAt, type PinPort } from "./pins";
+import { seatAngle } from "../shared-ui/seating";
+
+/** The tag on the table's near-right edge that opens and closes the side panel (the log book). */
+export const LOG_TAG_LABEL = "Log book";
+/** The alignment step's card (Quest MR, after the chart is laid down). */
+export const ALIGN_TITLE = "Pinch the table corner nearest you";
+/** A held pinch on the globe pins the whole region (ms). */
+export const REGION_HOLD_MS = 600;
+/** A pinch that moves this far on the globe (m) is a spin, not a pin. */
+const SPIN_SLOP_M = 0.012;
 
 /** VR: the caption card floats ~1.5 m ahead at this scale (its body text is then ~1.1°, ~14 px on a Gear VR phone). */
 const VR_CAPTION_SCALE = 1.7;
@@ -87,12 +101,24 @@ export class XRApp {
   private rayQuat = new THREE.Quaternion();
   private rayDir = new THREE.Vector3();
   private wakeLock: { release(): Promise<void> } | null = null;
+  /** The side panel beside the table (docs/03 §4): trip, crew, my terms, my seal, approvals. */
+  readonly panel: SidePanel;
+  private logTag: PaperButton;
+  private alignCard: PaperMenu;
+  /** Quest MR: the chart is down, waiting for "the table corner nearest you". */
+  private alignPending = false;
+  private viewer: Viewer;
+  private pinPorts: PinPort[] | null = null;
+  private pendingPin: string | null = null;
+  private globePress: { at: THREE.Vector3; moved: boolean } | null = null;
+  private lastAsk: string | null = null;
   onExit?: () => void;
 
   /** `gfx.antialias: false` on phones (XRPage decides from the user agent before the renderer exists). `vrMenu`: this
    *  browser may open the VR chart room (a phone, or `?vr=cardboard`), so the menu also gets "Photoreal cities" and
    *  "Lens spacing"; the Quest / laptop menu is unchanged. */
-  constructor(container: HTMLElement, readonly store: TripStore, gfx: { antialias?: boolean; vrMenu?: boolean } = {}) {
+  constructor(container: HTMLElement, readonly store: TripStore, gfx: { antialias?: boolean; vrMenu?: boolean } = {},
+    seat: { viewer: Viewer; rest?: SideOpts["rest"]; api?: SideOpts["api"]; ports?: () => Promise<PinPort[]> } = { viewer: { organizer: true } }) {
     this.stage = new Stage(container, store, { controls: true, voices: true, speechFallback: true, photoreal: () => this.photoreal }, true, gfx);
     const { scene, renderer, anchor } = this.stage;
     // Without this, three renders an immersive session with the flat desk camera (no stereo, no head
@@ -100,12 +126,30 @@ export class XRApp {
     renderer.xr.enabled = true;
     installConsoleRelay(store);
 
+    this.viewer = seat.viewer;
+    this.loadPorts = seat.ports ?? null;
     this.placement = new Placement(anchor);
     scene.add(this.placement.reticle);
     this.placement.onPlaced = () => {
       sound.play("paper");
       void this.stage.director.table.unroll();
+      // Quest MR: line the chart up with the real table (co-located crews share its centre and turn it to their seat)
+      if (this.session && !this.vr) this.startAlign();
     };
+
+    const origin = typeof location !== "undefined" ? location.origin : "";
+    this.panel = new SidePanel(store, { viewer: seat.viewer, rest: seat.rest, api: seat.api, host: typeof location !== "undefined" ? location.host : "", origin });
+    scene.add(this.panel.group);
+    this.logTag = new PaperButton(this.stage.tweens, LOG_TAG_LABEL, 0.12, 0.028);
+    this.logTag.group.position.set(0.25, 0.03, 0.27);
+    this.logTag.group.rotation.x = -0.75;
+    anchor.add(this.logTag.group);
+    this.alignCard = new PaperMenu(this.stage.tweens, ALIGN_TITLE, [
+      { label: "Skip", onSelect: () => this.endAlign("Skipped. Recenter from the menu any time.") },
+    ], 0.2);
+    this.alignCard.group.position.set(0, 0.42, 0.05);
+    this.alignCard.group.visible = false;
+    anchor.add(this.alignCard.group);
 
     this.hailCard = this.buildHailCard();
     anchor.add(this.hailCard.group);
@@ -127,6 +171,10 @@ export class XRApp {
     this.exitPlaque.group.visible = false;
 
     this.hailItems = [
+      ...this.panel.interactables(() => this.eye()),
+      { object: this.logTag.hit, enabled: () => this.placement.placed && !this.alignPending, onSelect: () => { void this.logTag.press(); this.togglePanel(); } },
+      ...this.alignCard.interactables(() => this.alignCard.group.visible),
+      this.globeTarget(),
       ...this.hailCard.interactables(() => this.hailCard.group.visible),
       { object: this.hailTag.hit, enabled: () => !!this.vr && this.canHail() && !this.hailCard.group.visible, onSelect: () => this.openHail() },
       { object: this.exitPlaque.hit, enabled: () => !!this.vr, onSelect: () => this.exit() },
@@ -155,11 +203,21 @@ export class XRApp {
         if (!this.placement.placed && this.placement.canFallback && !this.placement.reticle.visible) void this.placement.place(cam);
       }
       this.orbit?.update();
+      this.stage.director.globe.tickSpin(dt);
+      this.panel.update();
       this.debug.update(dt, this.stage.fps, renderer.info.render.calls);
     });
 
-    // the hail card only makes sense while the Captain is still listening (else CAPTAINS_CALLING)
-    this.unsubStore = store.subscribe(() => { if (this.hailCard.group.visible && !this.canHail()) this.hailCard.group.visible = false; });
+    this.unsubStore = store.subscribe(() => {
+      // a headset seat has the organizer's controls only if it is the organizer's seat
+      if (this.viewer.memberId) this.viewer.organizer = store.state.trip?.organizerId === this.viewer.memberId;
+      // the hail card only makes sense while the Captain is still listening (else CAPTAINS_CALLING)
+      if (this.hailCard.group.visible && !this.canHail()) this.hailCard.group.visible = false;
+      // a headset asking to sit in my seat: the panel opens on it (one tap to answer)
+      const ask = store.state.headsetRequest?.requestId ?? null;
+      if (ask && ask !== this.lastAsk && this.viewer.memberId && this.placement.placed) this.panel.show(this.panel.state.tab, this.stage.anchor, this.eye());
+      this.lastAsk = ask;
+    });
 
     for (let i = 0; i < 2; i++) {
       const hand = renderer.xr.getHand(i);
@@ -210,10 +268,15 @@ export class XRApp {
   private wireInput() {
     const { renderer, scene } = this.stage;
     const input = new XRInput(renderer, scene, this.targets);
-    input.onEmptySelect = () => { if (!this.placement.placed && this.session) void this.placement.place(renderer.xr.getCamera()); };
+    input.onEmptySelect = (ray) => {
+      if (!this.session) return;
+      if (this.alignPending) { this.alignTo(ray); return; }
+      // not down yet, or adjusting after a recenter: lay it at the ring
+      if (!this.placement.placed || this.placement.adjusting) void this.placement.place(renderer.xr.getCamera());
+    };
     input.onLongPress = () => {
       if (!this.placement.placed && this.session) void this.placement.place(renderer.xr.getCamera());
-      else this.openHail();
+      else if (!this.alignPending) this.openHail();
     };
     input.onSqueeze = () => this.menu.toggle(undefined, renderer.xr.getCamera());
     return input;
@@ -251,10 +314,102 @@ export class XRApp {
   /** Menu "Recenter" / long press or long gaze on the brass wheel. AR: find the table again. VR: turn the room to
    *  face the head (next frame, from its pose). Laptop: put the chart back. */
   recenter() {
+    this.menu.toggle(false);
     if (this.vr) { this.vr.recenterPending = true; return; }
-    this.placement.reset(this.session);
-    this.placement.placed = false;
-    if (!this.session) this.deskPlace();
+    if (!this.session) { this.deskPlace(); this.stage.director.note("Chart recentred."); return; }
+    // mixed reality: the chart comes straight back in front, on the table height it had (never hidden, L-recenter);
+    // the ring then looks for the table again and a pinch lays it exactly there
+    this.placement.recenter(this.stage.renderer.xr.getCamera(), this.session);
+    this.stage.director.note("Chart recentred in front of you. Pinch the table to set it down exactly there.");
+  }
+
+  /** The viewer's eye (world), for billboards and the panel. */
+  private eye(): THREE.Vector3 {
+    const cam = this.session ? this.stage.renderer.xr.getCamera() : this.stage.camera;
+    return cam.getWorldPosition(new THREE.Vector3());
+  }
+
+  togglePanel() { this.panel.toggle(this.stage.anchor, this.eye()); sound.play("paper"); }
+
+  /** Entering the chart room: the organizer's panel opens on the trip (the join QR and code) while the crew musters. */
+  private openStartPanel() {
+    const t = this.store.state.trip;
+    if (this.viewer.organizer && t?.status === "BRIEFING" && !this.panel.open) this.panel.show("trip", this.stage.anchor, this.eye());
+  }
+
+  // ---------- Quest MR alignment (docs/03 §4) ----------
+  private startAlign() {
+    this.alignPending = true;
+    this.alignCard.group.visible = true;
+    this.stage.director.note("Pinch the table corner nearest you, so everyone's chart lines up.");
+  }
+  private endAlign(say: string) {
+    this.alignPending = false;
+    this.alignCard.group.visible = false;
+    this.stage.director.note(say);
+    this.openStartPanel();
+  }
+  /** The corner pinch: turn the chart so this viewer's seat points at that corner. */
+  alignTo(ray: THREE.Ray): boolean {
+    const a = this.stage.anchor;
+    const corner = rayOnPlane(ray, a.position.y);
+    if (!corner) return false;
+    if (corner.distanceTo(a.position) < 0.15) { this.stage.director.note("That's the middle of the chart. Pinch a corner of the table."); return false; }
+    this.placement.setYaw(alignYaw(a.position, corner, this.viewerSeatDeg()));
+    sound.play("click");
+    this.endAlign("Lined up. Your piece is on your side of the table.");
+    return true;
+  }
+  private viewerSeatDeg(): number {
+    const t = this.store.state.trip;
+    if (!t) return 90;
+    return seatAngle(t.crew, t.organizerId, this.viewer.memberId ?? t.organizerId);
+  }
+
+  // ---------- the globe: hand spin and pins ----------
+  private loadPorts: (() => Promise<PinPort[]>) | null;
+  private globeTarget(): Interactable {
+    const globe = this.stage.director.globe;
+    return {
+      object: globe.sphere,
+      enabled: () => this.placement.placed && !this.alignPending,
+      onPress: (_ray, hit) => { globe.grabSpin(hit.point); this.globePress = { at: hit.point.clone(), moved: false }; },
+      onDrag: (ray) => {
+        const p = globe.rayPoint(ray);
+        if (this.globePress && p.distanceTo(this.globePress.at) > SPIN_SLOP_M) this.globePress.moved = true;
+        if (this.globePress?.moved) globe.dragSpin(p);
+      },
+      onRelease: (_ray, held) => {
+        const press = this.globePress;
+        this.globePress = null;
+        globe.releaseSpin();
+        if (!press) return false;
+        if (!press.moved) void this.pinAtPoint(press.at, held >= REGION_HOLD_MS);
+        return true; // handled here (a pin or a spin), never also a select
+      },
+      // gaze (the VR chart room): a dwell on the globe pins
+      onSelect: (hit) => { if (hit) void this.pinAtPoint(hit.point, false); },
+    };
+  }
+
+  /** A pinch at this spot on the globe: pin, unpin, or the region (canPin: the organizer, or the crew if allowed). */
+  async pinAtPoint(point: THREE.Vector3, long: boolean) {
+    const s = this.store.state;
+    const trip = s.trip;
+    if (!trip) return;
+    if (!canPin(s, this.viewer)) {
+      if (trip.status === "BRIEFING") this.stage.director.note("Only the organizer pins the chart. Ask them to let the crew pin.");
+      return;
+    }
+    const at = this.stage.director.globe.latLngAt(point);
+    if (!this.pinPorts) this.pinPorts = this.loadPorts ? await this.loadPorts().catch(() => []) : [];
+    const r = pinAt(at, long, trip, this.pinPorts, this.pendingPin);
+    this.stage.director.note(r.say);
+    if (r.kind === "pending") { this.pendingPin = r.cityId; sound.play("pencil"); return; }
+    if (r.kind === "note") return;
+    this.pendingPin = null;
+    sound.play("click");
+    this.store.emit("course:set", { destination: r.destination }, (ack) => { if (!ack.ok) this.stage.director.note(ack.message); });
   }
 
   static async arSupported(): Promise<boolean> {
@@ -329,6 +484,7 @@ export class XRApp {
 
     this.vr = { rig, follow, polyfilled, recenterPending: true };
     void this.stage.director.table.unroll();
+    this.openStartPanel();
 
     session.addEventListener("end", () => {
       window.removeEventListener("popstate", onPop);
@@ -464,6 +620,9 @@ export class XRApp {
     session.addEventListener("end", () => {
       this.session = null;
       this.refSpace = null;
+      this.alignPending = false;
+      this.alignCard.group.visible = false;
+      this.placement.adjusting = false;
       this.placement.stop();
       this.hailCard.group.visible = false;
       this.menu.toggle(false);
@@ -479,14 +638,17 @@ export class XRApp {
     scene.remove(this.placement.reticle);
     this.deskPlace();
     this.menu.deskCamera = camera; // L2-001: the menu opens along the orbit camera's view, pitch included
+    // the mouse listens first, so a press on the globe or the panel's bar can hold the orbit camera still
+    this.mouse = new MouseInput(renderer.domElement, camera, this.targets);
+    this.mouse.onLongPress = () => this.openHail();
+    this.mouse.onDragging = (on) => { if (this.orbit) this.orbit.enabled = !on; };
     this.orbit = new OrbitControls(camera, renderer.domElement);
     this.orbit.target.copy(TABLE_TARGET);
     this.orbit.enableDamping = true;
     this.orbit.minDistance = 0.3;
     this.orbit.maxDistance = 2.2;
     this.orbit.maxPolarAngle = Math.PI * 0.48;
-    this.mouse = new MouseInput(renderer.domElement, camera, this.targets);
-    this.mouse.onLongPress = () => this.openHail();
+    this.openStartPanel();
   }
 
   private deskPlace() {
@@ -533,7 +695,8 @@ export class XRApp {
     for (const off of this.handsOff) off();
     this.menu.dispose();
     this.debug.dispose();
-    for (const o of [this.hailCard.group, this.hailTag.group, this.exitPlaque.group, this.placement.reticle]) { o.removeFromParent(); disposeObject(o); }
+    this.panel.dispose();
+    for (const o of [this.hailCard.group, this.hailTag.group, this.exitPlaque.group, this.placement.reticle, this.logTag.group, this.alignCard.group]) { o.removeFromParent(); disposeObject(o); }
     this.stage.dispose();
   }
 }

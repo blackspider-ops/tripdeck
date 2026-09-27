@@ -64,10 +64,14 @@ class WaxSeal {
     }
     const ring = new THREE.Mesh(G.ring, M.waxDark());
     ring.rotation.x = Math.PI / 2;
-    const a = makeText({ text: "A", font: "display", size: 0.0095, color: PALETTE.waxDark });
+    // a check pressed into the wax, never a letter: an "A" read as "voted for chart A" (the charts keep A/B)
+    const a = inkCheck(0.0075, PALETTE.waxDark);
     a.rotation.x = -Math.PI / 2;
+    a.position.x = -0.0035;
+    a.position.z = 0.0025;
     this.halves[0].add(ring, a);
     ring.position.y = a.position.y = 0.0019;
+    a.userData.waxMark = "check";
     this.group.visible = false;
   }
 

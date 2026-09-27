@@ -24,10 +24,13 @@ import { revokePasskeys } from "../passkeys/passkeys.js";
 const BAND_IDS = Object.keys(BANDS).map(Number);
 const TERMS_SEALED = "Terms are sealed once the table meets.";
 
-type Seat = { name: string; band: Band; origin: Origin; crewKey?: unknown };
+/** `device: "headset"`: the seat is taken on a headset (Quest-first; shown to the crew as onHeadset). */
+type Seat = { name: string; band: Band; origin: Origin; crewKey?: unknown; device?: unknown };
 /** A new voyage: the organizer's seat and the course (see course.ts `resolveCourse`). */
 export interface CreateTrip {
   name: string; organizerName: string; band: Band; origin: Origin; crewKey?: unknown;
+  /** Quest-first: "headset" when the organizer starts the voyage on a headset (their seat is the headset). */
+  device?: unknown;
   /** Named ports (the older API; same as destination {kind:"cities"}). */
   cityIds?: CityId[];
   destination?: Destination;
@@ -83,7 +86,7 @@ export class Crew {
     let added: ReturnType<Crew["addMember"]>;
     try {
       // O2-007: the room is still empty (and the organizer unset), so the organizer's seat isn't broadcast
-      added = this.addMember(t, { name: p.organizerName, band: p.band, origin: p.origin, crewKey: p.crewKey }, "organizer", false);
+      added = this.addMember(t, { name: p.organizerName, band: p.band, origin: p.origin, crewKey: p.crewKey, device: p.device }, "organizer", false);
     } catch (e) {
       helm.removeTrip(t); // no organizer-less orphan voyages
       throw e;
@@ -111,6 +114,7 @@ export class Crew {
     const member: MemberRec = {
       _id: newId(), tripId: t._id, name, role, band: p.band, origin: p.origin, tokenHash: hash(token), briefSealed: false,
       crewKeyHash: crewKey ? crewKeyHash(crewKey) : undefined, inviteKeyHash: inviteKey ? hash(inviteKey) : undefined,
+      ...(p.device === "headset" && role !== "absent" ? { onHeadset: true } : {}),
     };
     helm.members.set(member._id, member);
     t.memberIds.push(member._id);
@@ -129,6 +133,41 @@ export class Crew {
     if (t.crewClosed) throw new HelmError("CREW_CLOSED", "The organizer has closed this crew. Ask them to open it.");
     const { member, token, crewKey } = this.addMember(t, p, "member");
     return { member, token, crewKey: crewKey ?? "" }; // a "member" seat always gets a key (only absent seats don't)
+  }
+
+  /**
+   * Chart-room pins (course:set): the course changes while the crew is briefing — named ports (2–4), regions or
+   * anywhere, validated like Create (course.ts resolveCourse). The organizer, or any seat while `crewPins` is on;
+   * only the organizer turns `crewPins` on or off. Cached charts are dropped; everyone gets the full snapshot.
+   */
+  setCourse(tripId: string, actor: Actor, p: { destination?: unknown; crewPins?: unknown }) {
+    const { helm } = this;
+    const t = helm.trip(tripId);
+    const m = actor.memberId ? helm.members.get(actor.memberId) : helm.memberByToken(tripId, actor.token);
+    const organizer = (m && m.tripId === tripId && m.role === "organizer" && holdsSeat(t, m._id)) || helm.deviceOk(tripId, actor.deviceToken);
+    if (!organizer) {
+      if (!m || !holdsSeat(t, m._id)) throw new HelmError("NOT_MEMBER", "Only crew can pin the chart.");
+      if (!t.crewPins || p.crewPins !== undefined) throw new HelmError("NOT_ORGANIZER", "Only the organizer can pin the chart.");
+    }
+    if (t.status !== "BRIEFING") throw new HelmError("BAD_PHASE", "The chart is set once the table meets.");
+    if (p.crewPins !== undefined && typeof p.crewPins !== "boolean") throw new HelmError("BAD_INPUT", "That request didn't make sense.");
+    if (p.destination !== undefined) {
+      if (!p.destination || typeof p.destination !== "object") throw new HelmError("BAD_INPUT", "That request didn't make sense.");
+      // the dates stay as they are: only the destination is resolved
+      const r = resolveCourse(helm.ds, { destination: p.destination as Destination });
+      t.destination = r.destination;
+      t.candidateCityIds = r.candidateCityIds;
+      const packs = worldPacksFor(t);
+      t.worldPacks = packs.length ? packs : undefined;
+      helm.dropHot(t._id);
+    }
+    if (typeof p.crewPins === "boolean") t.crewPins = p.crewPins || undefined;
+    helm.save(t);
+    helm.broadcastState(t, true); // the ports are static fields: a full snapshot
+    const seated = helm.activeMembers(t);
+    if (p.destination !== undefined && t.destination?.kind === "cities" && seated.length >= MIN_TABLE_CREW && seated.every((x) => x.briefSealed)) {
+      void helm.live.prefetch(t, helm.table.pricingCrew(t));
+    }
   }
 
   /** SEC-010: the organizer closes (or reopens) the crew to joins by code. Absent friends can still be added. */
@@ -185,6 +224,7 @@ export class Crew {
     if (!OPEN_PHASES.includes(t.status)) throw new HelmError("BAD_PHASE", "A seat can be reset before the table meets, or after a void.");
     m.tokenHash = hash(newToken()); // nobody holds this one: the old token is dead until the seat is claimed again
     revokePasskeys(memberId);
+    helm.identity.headsets.forget(m); // Quest-first: its headset key and seal PIN go too
     const invite = this.mintInvite(t, m); // persists the member
     helm.evictSockets(memberId);
     helm.save(t);

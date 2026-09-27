@@ -9,8 +9,16 @@ import { ease, type Tweens } from "./tween";
 
 export interface Interactable {
   object: THREE.Object3D;
-  onSelect: () => void;
+  /** `hit`: where the ray met the object (a side panel maps its uv to a control; the globe to a lat/lng). */
+  onSelect: (hit?: THREE.Intersection) => void;
   enabled?: () => boolean;
+  /**
+   * Press-and-drag targets (the globe's spin, a side panel's grab bar). `onPress` starts it with the ray and hit;
+   * `onDrag` follows the ray while held; `onRelease` ends it and returns true when it was a drag (then no select).
+   */
+  onPress?: (ray: THREE.Ray, hit: THREE.Intersection) => void;
+  onDrag?: (ray: THREE.Ray) => void;
+  onRelease?: (ray: THREE.Ray, heldMs: number) => boolean;
 }
 
 export class PaperButton {

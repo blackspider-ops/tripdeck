@@ -9,6 +9,9 @@ const Demo = lazy(() => import("./phone/screens/Demo"));
 const TripShell = lazy(() => import("./phone/screens/TripShell"));
 // Headset + gallery (docs/03 §4–5) — owned by src/xr and src/gallery
 const PairPage = lazy(() => import("./xr/PairPage"));
+// Quest-first (docs/03 §4): the Quest start screen, Join a trip, Start a trip (the phone's Create, larger)
+const QuestStart = lazy(() => import("./xr/QuestStart"));
+const QuestJoin = lazy(() => import("./xr/QuestStart").then((m) => ({ default: m.QuestJoin })));
 const XRPage = lazy(() => import("./xr/XRPage"));
 const GalleryPage = lazy(() => import("./gallery/GalleryPage"));
 
@@ -21,7 +24,10 @@ export function AppRouter() {
           <Route path="/new" element={<Create />} />
           <Route path="/join" element={<Join />} />
           <Route path="/demo" element={<Demo />} />
-          <Route path="/xr" element={<PairPage />} />
+          <Route path="/xr" element={<QuestStart />} />
+          <Route path="/xr/new" element={<Create quest />} />
+          <Route path="/xr/join" element={<QuestJoin />} />
+          <Route path="/xr/code" element={<PairPage />} />
           <Route path="/t/:code/xr" element={<XRPage />} />
           <Route path="/t/:code/gallery" element={<GalleryPage />} />
           {/* TripShell owns /t/:code, /muster, /brief, /wait, /table, /dryrun, /seal, /booked, /voided */}

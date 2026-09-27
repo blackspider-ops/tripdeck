@@ -9,3 +9,4 @@ dist/
 coverage/
 # local stores (memory.json, backboard.json …) when MongoDB is off; nothing here is tracked (WP-11/WP-14)
 apps/server/data/
+samewhere/

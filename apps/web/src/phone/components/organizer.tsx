@@ -37,7 +37,7 @@ export function HeadsetCodeCard() {
   const [code, setCode] = useState<string | null>(null);
   const { busy, err, run } = useAsyncAction();
   if (!isOrganizer) return null;
-  const host = typeof location !== "undefined" ? `${location.host}/xr` : "/xr";
+  const host = typeof location !== "undefined" ? `${location.host}/xr/code` : "/xr/code";
   return (
     <Card label="Open on the headset">
       <div className="eyebrow"><Spyglass size={18} /> Open on the headset</div>
@@ -50,7 +50,7 @@ export function HeadsetCodeCard() {
         </>
       ) : (
         <>
-          <p className="small">Pair the Quest to this voyage.</p>
+          <p className="small">A shared headset for the table. To make a Quest your own seat instead, open {typeof location !== "undefined" ? location.host : ""}/xr on it and choose Join a trip.</p>
           <Button
             block disabled={busy || !session.memberToken} onClick={() => void run(async () => {
               setCode((await api.headsetCode(session.tripId, session.memberToken!)).code);

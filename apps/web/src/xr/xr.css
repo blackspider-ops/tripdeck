@@ -50,3 +50,28 @@
 }
 /* VR on a phone: "Turn your phone sideways" over the stereo view until it's landscape (iPhone can't lock orientation) */
 .cr-rotate { background: var(--room); z-index: 5; }
+/* Quest-first start screens (Quest Browser 2D page): arm's-length reading, pinch/ray targets ≥ 64 px */
+.cr-scroll { position: absolute; inset: 0; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 32px 16px; box-sizing: border-box; }
+.cr-quest .cr-card { max-width: 720px; padding: 36px 36px 28px; }
+.cr-quest .cr-card h1 { font-size: 44px; }
+.cr-quest .cr-card h2 { font-family: var(--f-heading); font-weight: 400; font-size: 28px; margin: 22px 0 8px; }
+.cr-quest .cr-card p { font-size: 22px; }
+.cr-quest .cr-card .muted { font-size: 20px; }
+.cr-quest .cr-btn { font-size: 24px; min-height: 64px; padding: 14px 24px; }
+.cr-btn.block { display: block; width: 100%; box-sizing: border-box; text-align: center; text-decoration: none; }
+.cr-btn.block + .cr-btn.block { margin-left: 0; }
+.cr-btn:disabled { opacity: .5; cursor: default; }
+.cr-choices { display: grid; gap: 4px; margin: 8px 0 12px; }
+.cr-quest .cr-form { font-size: 20px; }
+.cr-quest .cr-form .input { font-size: 22px; min-height: 56px; }
+.cr-quest .cr-form .swatch { min-width: 56px; min-height: 56px; }
+/* the chart room's Enter card on a headset seat: the join QR and code, big */
+.cr-join { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+.cr-join .cr-joincode { font-family: var(--f-mono); font-size: 48px; letter-spacing: .18em; }
+.cr-ask { border: 2px solid var(--ink); padding: 12px 16px; margin: 12px 0; }
+.cr-card a:not(.cr-btn) { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.cr-quest .cr-form .field > span, .cr-quest .cr-form .swatch-name { font-size: 20px; }
+.cr-quest .cr-form .swatches { gap: 12px; }
+.cr-btn { text-decoration: none; }
+.cr-join > :first-child { flex: 0 0 auto; width: auto; }
+.cr-join > :last-child { flex: 1 1 260px; }

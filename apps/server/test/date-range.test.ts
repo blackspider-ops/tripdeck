@@ -122,7 +122,8 @@ describe("createTrip with a date range", () => {
       expect(ok.status).toBe(200);
       const { tripId } = await ok.json() as { tripId: string };
       expect(h.trip(tripId).dateRange).toEqual(rangeIn(20, 15));
-      const bad = await post({ ...seat, dateRange: rangeIn(0, 15) });
+      // yesterday: refused at any hour (today itself is still "tomorrow" somewhere in UTC−12 for the first 12 UTC hours)
+      const bad = await post({ ...seat, dateRange: rangeIn(-1, 15) });
       expect(bad.status).toBe(422);
       expect((await bad.json() as { code: string }).code).toBe("BAD_INPUT");
       const legacy = await post({ ...seat, windowIds: ["W3"] });

@@ -46,7 +46,7 @@ export class Replayer {
     const b = live ? helm.sealing.currentBooking(t) : undefined;
     return {
       tripId: t._id, joinCode: t.joinCode, name: t.name, status: t.status, version: t.version, organizerId: t.organizerId,
-      crew: helm.crewPublic(t), crewClosed: Boolean(t.crewClosed),
+      crew: helm.crewPublic(t), crewClosed: Boolean(t.crewClosed), ...(t.crewPins ? { crewPins: true } : {}),
       negotiation: { watch: t.negotiation.watch, running: t.negotiation.running },
       // ids only: the plan bodies go once in table:decided (OPT-042)
       shortlistIds: t.shortlistIds && SHORTLIST_PHASES.includes(t.status) ? t.shortlistIds : undefined,
@@ -129,6 +129,9 @@ export class Replayer {
     emit("brief:private", mem.quick ? { brief: brief(), memory: mem.quick } : { brief: brief() });
     for (const p of short) { const priv = toPrivate(p, m._id); if (priv) emit("plan:private", priv); }
     if (t.status === "DRY_RUN") emit("plan:myVote", { planId: t.votes[m._id] ?? null });
+    // Quest-first: a headset still waiting to be let into this seat (the seat's phone may have opened just now)
+    const ask = helm.identity.headsets.pendingAttach(t._id, m._id);
+    if (ask) emit("headset:request", ask);
     if (b && t.chosenPlanId) {
       // only the digits were worth the wait: the share itself belongs to the booking that is current now
       if (seal0 && seal0.bookingId === b._id) emit("seal:private", seal0);

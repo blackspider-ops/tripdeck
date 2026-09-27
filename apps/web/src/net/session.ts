@@ -9,6 +9,8 @@ export interface Session {
   memberId?: string;
   memberToken?: string;
   deviceToken?: string; // headset (headset sessions only)
+  /** Quest-first: this seat lives on a headset (started or joined in Quest Browser at /xr, or let into the seat). */
+  device?: "headset";
 }
 interface HeadsetSession { tripId: string; joinCode: string; deviceToken: string }
 

@@ -21,6 +21,10 @@ interface Pointer {
   /** A select is being held (hover must stay current for the release). */
   down: boolean;
   downHit: Interactable | null;
+  /** The intersection at the press (a panel control, a globe spot). */
+  downPoint: THREE.Intersection | null;
+  /** The press started a drag target (onPress was called). */
+  dragging: boolean;
   /** The controller listeners, kept so `dispose` can remove them. */
   off: () => void;
 }
@@ -34,7 +38,8 @@ export class XRInput {
   private frame = 0;
   /** Off in the VR chart room: gaze input (gaze.ts) owns selection there, so a gaze source's select isn't doubled. */
   enabled = true;
-  onEmptySelect?: () => void;
+  /** A select on nothing, with the pointer's ray (the alignment step intersects it with the table). */
+  onEmptySelect?: (ray: THREE.Ray) => void;
   onLongPress?: () => void;
   onSqueeze?: () => void;
 
@@ -65,6 +70,9 @@ export class XRInput {
         p.downAt = performance.now();
         p.down = true;
         p.downHit = this.hit(p);
+        p.downPoint = this.lastHit;
+        p.dragging = false;
+        if (p.downHit?.onPress && p.downPoint) { p.dragging = true; p.downHit.onPress(this.ray(p), p.downPoint); }
       };
       const onSelectEnd = () => { if (this.enabled) this.release(p); };
       const onSqueeze = () => { if (this.enabled) this.onSqueeze?.(); };
@@ -74,7 +82,7 @@ export class XRInput {
       ctrl.addEventListener("selectend", onSelectEnd);
       ctrl.addEventListener("squeezestart", onSqueeze);
       const p: Pointer = {
-        ctrl, ray, dot, downAt: 0, down: false, downHit: null,
+        ctrl, ray, dot, downAt: 0, down: false, downHit: null, downPoint: null, dragging: false,
         off: () => {
           ctrl.removeEventListener("connected", onConnected);
           ctrl.removeEventListener("disconnected", onDisconnected);
@@ -87,7 +95,18 @@ export class XRInput {
     }
   }
 
+  private lastHit: THREE.Intersection | null = null;
+  /** The pointer's ray in world space (a copy). */
+  private ray(p: Pointer): THREE.Ray {
+    this.tmpM.identity().extractRotation(p.ctrl.matrixWorld);
+    const r = new THREE.Ray();
+    r.origin.setFromMatrixPosition(p.ctrl.matrixWorld);
+    r.direction.set(0, 0, -1).applyMatrix4(this.tmpM);
+    return r;
+  }
+
   private hit(p: Pointer): Interactable | null {
+    this.lastHit = null;
     // an untracked / disconnected pointer keeps a stale matrix: don't ray-cast from it
     if (!p.ctrl.visible) { p.dot.visible = false; return null; }
     this.tmpM.identity().extractRotation(p.ctrl.matrixWorld);
@@ -96,6 +115,7 @@ export class XRInput {
     const found = pickTarget(this.raycaster, this.getTargets());
     if (!found) { p.dot.visible = false; return null; }
     const { target, hit } = found;
+    this.lastHit = hit;
     p.dot.visible = true;
     p.dot.position.copy(hit.point);
     if (hit.face) p.dot.lookAt(this.tmpV.copy(hit.point).add(this.tmpN.copy(hit.face.normal).transformDirection(hit.object.matrixWorld)));
@@ -104,11 +124,15 @@ export class XRInput {
 
   private release(p: Pointer) {
     const held = performance.now() - p.downAt;
+    // a drag target decides for itself (a drag is not a select)
+    if (p.dragging && p.downHit?.onRelease?.(this.ray(p), held)) { p.downHit = null; p.down = false; p.dragging = false; return; }
+    p.dragging = false;
+    const at = p.downPoint;
     const now = this.hit(p);
     // compare the picked mesh, not the Interactable wrapper (a list may be rebuilt between press and release)
-    if (p.downHit && sameTarget(now, p.downHit)) p.downHit.onSelect();
+    if (p.downHit && sameTarget(now, p.downHit)) p.downHit.onSelect(this.lastHit ?? at ?? undefined);
     else if (!p.downHit && held >= HOLD_MS) this.onLongPress?.();
-    else if (!p.downHit) this.onEmptySelect?.();
+    else if (!p.downHit) this.onEmptySelect?.(this.ray(p));
     p.downHit = null;
     p.down = false;
   }
@@ -118,7 +142,10 @@ export class XRInput {
   update() {
     if (!this.enabled || !this.pointers.some((p) => p.ctrl.visible)) { for (const p of this.pointers) p.dot.visible = false; return; }
     const skip = (this.frame++ & 1) === 1;
-    for (const p of this.pointers) if (p.down || !skip) this.hit(p);
+    for (const p of this.pointers) {
+      if (p.down && p.dragging) { p.downHit?.onDrag?.(this.ray(p)); continue; }
+      if (p.down || !skip) this.hit(p);
+    }
   }
 
   /** Stop listening to the controllers and free the rays and dots (O2-053: the instance used to be dropped). */
@@ -181,7 +208,11 @@ export class MouseInput {
   private pressed = false;
   private dragged = false;
   private downHit: Interactable | null = null;
+  private downPoint: THREE.Intersection | null = null;
+  private dragTarget: Interactable | null = null;
   onLongPress?: () => void;
+  /** A drag target took the press (the orbit camera must hold still) or let it go. */
+  onDragging?: (on: boolean) => void;
 
   constructor(private el: HTMLElement, private camera: THREE.Camera, private getTargets: () => readonly Interactable[]) {
     el.addEventListener("pointerdown", this.down);
@@ -191,11 +222,14 @@ export class MouseInput {
     el.addEventListener("lostpointercapture", this.cancel);
   }
 
+  private lastPoint: THREE.Intersection | null = null;
   private pick(e: PointerEvent): Interactable | null {
     const r = this.el.getBoundingClientRect();
     this.ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     this.raycaster.setFromCamera(this.ndc, this.camera);
-    return pickTarget(this.raycaster, this.getTargets())?.target ?? null;
+    const found = pickTarget(this.raycaster, this.getTargets());
+    this.lastPoint = found?.hit ?? null;
+    return found?.target ?? null;
   }
 
   private down = (e: PointerEvent) => {
@@ -208,24 +242,42 @@ export class MouseInput {
     this.pressed = true;
     this.dragged = false;
     this.downHit = this.pick(e);
+    this.downPoint = this.lastPoint;
+    this.dragTarget = null;
+    if (this.downHit?.onPress && this.downPoint) {
+      this.dragTarget = this.downHit;
+      this.onDragging?.(true);
+      this.downHit.onPress(this.raycaster.ray.clone(), this.downPoint);
+    }
   };
   private up = (e: PointerEvent) => {
     if (!this.pressed || e.button !== 0) return;
     this.pressed = false;
     const hit = this.pick(e);
+    const drag = this.dragTarget;
+    if (drag) {
+      this.dragTarget = null;
+      this.onDragging?.(false);
+      if (drag.onRelease?.(this.raycaster.ray.clone(), performance.now() - this.downAt)) { this.downHit = null; return; }
+      if (sameTarget(hit, drag)) drag.onSelect(this.lastPoint ?? this.downPoint ?? undefined);
+      this.downHit = null;
+      return;
+    }
     // an orbit drag is looking around, not a click or a hold
     if (!this.dragged) {
-      if (this.downHit && sameTarget(hit, this.downHit)) this.downHit.onSelect();
+      if (this.downHit && sameTarget(hit, this.downHit)) this.downHit.onSelect(this.lastPoint ?? undefined);
       else if (!this.downHit && performance.now() - this.downAt > LONG_PRESS_MS) this.onLongPress?.();
     }
     this.downHit = null;
   };
   private cancel = () => {
+    if (this.dragTarget) { this.dragTarget.onRelease?.(this.raycaster.ray.clone(), 0); this.dragTarget = null; this.onDragging?.(false); }
     this.pressed = false;
     this.dragged = false;
     this.downHit = null;
   };
   private move = (e: PointerEvent) => {
+    if (this.dragTarget) { this.pick(e); this.dragTarget.onDrag?.(this.raycaster.ray.clone()); return; }
     if (this.pressed && !this.dragged && Math.hypot(e.clientX - this.downX, e.clientY - this.downY) > DRAG_PX) this.dragged = true;
     if (!this.pressed) this.el.style.cursor = this.pick(e) ? "pointer" : "grab";
   };

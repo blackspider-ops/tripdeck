@@ -36,7 +36,7 @@ type Watched = Pick<ClientState, "trip" | "turns" | "votes" | "booking" | "error
 export class SceneDirector {
   readonly root = new THREE.Group();
   readonly table: ChartTable;
-  private globe: Globe;
+  readonly globe: Globe;
   private compass: CompassTimer;
   private captain: CaptainPiece;
   private clock = new CarriageClock();
@@ -182,6 +182,9 @@ export class SceneDirector {
       if (this.store.state.error === e) this.store.clearError();
     }, NOTE_MS);
   }
+
+  /** A line of the chart room's own on the caption strip (pins, recenter, alignment: doc 03 §4). */
+  note(text: string) { this.caption("Chart", text, PALETTE.inkSoft); }
 
   private caption(speaker: string, text: string, color: string) {
     this.lastCaption = [speaker, text, color];

@@ -9,6 +9,8 @@ import { actionError } from "../errors";
 import { Anchor } from "../components/icons";
 import { Eyebrow, MarginNote, Page, Plotting, StampButton } from "../components/ui";
 import { JoinCrew } from "../components/JoinCrew";
+import { HeadsetAsk } from "../components/HeadsetAsk";
+import { questUi } from "../../xr/questMode";
 import PhaseRoutes from "./PhaseRoutes";
 
 /** Owns /t/:code/* — session bootstrapping, one TripStore, and the phase guard. */
@@ -103,9 +105,15 @@ function Aboard({ session }: { session: Session }) {
     store.open();
     return () => store.close();
   }, [store]);
+  // Quest-first: a headset seat reads the phone screens larger (arm's length, ray pointing)
+  useEffect(() => questUi(session.device === "headset"), [session.device]);
   return (
     <TripProvider store={store} session={session}>
       <PhaseRoutes />
+      <HeadsetAsk />
+      {session.device === "headset" ? (
+        <a className="btn quest-back" href={`/t/${session.joinCode}/xr`}>Chart room</a>
+      ) : null}
     </TripProvider>
   );
 }

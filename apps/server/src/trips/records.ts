@@ -18,6 +18,18 @@ export interface MemberRec {
    * L5-007: never its limit (the member's cap lives in the brief only).
    */
   standing?: StoredStanding;
+  /** Quest-first: this seat was taken on a headset (Quest Browser → /xr). Shown to the crew as `onHeadset`. */
+  onHeadset?: boolean;
+  /**
+   * Quest-first: a headset let into this seat by the seat's own device (identity.ts approveAttach). Its device key
+   * acts as this member (never anyone else's private data), one headset per member, 12 h. Server-only (a hash).
+   */
+  headset?: { tokenHash: string; expiresAt: number };
+  /**
+   * Quest-first: the member's seal PIN (4–6 digits) for a headset that can't hold a passkey. scrypt(salt, pin);
+   * server-only, never sent. With one on file a seal needs the PIN or a passkey assertion (sealing.ts).
+   */
+  sealPin?: { salt: string; hash: string };
 }
 export interface TripRec {
   _id: string; joinCode: string; name: string; status: TripStatus; version: number;
@@ -59,6 +71,8 @@ export interface TripRec {
   headset?: { codeHash: string; expiresAt: number; deviceTokenHash?: string; deviceExpiresAt?: number };
   /** SEC-010: the organizer closed the crew; the join code no longer adds anyone. */
   crewClosed?: boolean;
+  /** Chart-room pins: the organizer let the whole crew pin ports on the globe (course:set). */
+  crewPins?: boolean;
   /** The last booking:result's public reason, so a reload in BOOKED/VOIDED replays it (TR3-003). */
   lastResult?: { bookingId: string; publicReason?: string };
   /** The Dry Run clock, so a restart resumes the tour at the same minute, paused or not (TR5-011). */

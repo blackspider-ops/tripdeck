@@ -51,11 +51,14 @@ export interface ClientState {
   lastResult: { bookingId: string; status: "CAPTURED" | "VOIDED"; reference?: string; publicReason?: string } | null;
   /** The last refusal (caller-only `error`; `event` names the action it answers), or the table failing (`table:failed`). */
   error: ErrorPayload | null;
+  /** Quest-first (member room): a headset asking to sit in my seat, until it's answered or expires. */
+  headsetRequest: { requestId: string; memberName: string; expiresAt: number } | null;
 }
 
 const initial: ClientState = {
   connected: false, joined: false, role: null, trip: null, turns: [], audio: {}, shortlist: [], planPrivate: {}, brief: null, memory: [],
   dryrun: null, votes: {}, autoPick: null, myVote: null, booking: null, sealPrivate: null, declined: null, lastResult: null, error: null,
+  headsetRequest: null,
 };
 
 type Listener = () => void;
@@ -209,6 +212,8 @@ export class TripStore {
   }
 
   clearError() { this.set({ error: null }); }
+  /** A lifted seal was set again (the helm sends no "un-declined" notice: the seal read "set" publicly all along). */
+  clearDeclined(bookingId: string) { if (this.state.declined?.bookingId === bookingId) this.set({ declined: null }); }
 
   /** Dry Run clock: in-trip minutes since day start, derived from wall time. */
   dryrunMinute(now = Date.now()): number | null {
@@ -296,6 +301,10 @@ export const reducers: { [K in keyof ServerToClient]: Reducer<K> } = {
   // TR3-007: the table failing is news for the crew's phones and the headset, not an error banner on the Gallery
   "table:failed": (_st, p, surface) => (surface === "gallery" ? undefined : { error: { code: p.code, message: p.message } }),
   error: (_st, e) => ({ error: e }),
+  // an answered (or replaced) request takes its prompt away; the expiry is on the server's clock (close enough here)
+  "headset:request": (st, p) => (p.answered
+    ? (st.headsetRequest?.requestId === p.requestId ? { headsetRequest: null } : undefined)
+    : { headsetRequest: { requestId: p.requestId, memberName: p.memberName, expiresAt: p.expiresAt } }),
 };
 
 const EXPIRED: Ack = { ok: false, code: "EXPIRED", message: "That was a while ago, so it wasn't sent. Try again." };

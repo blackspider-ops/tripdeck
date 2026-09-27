@@ -189,3 +189,16 @@ export const MIN_TABLE_CREW = 2;
 export const JOIN_CODE_LEN = 6;
 /** R2-WP-16 (O2-017): what the phone and the Gallery say while the socket is down. */
 export const SIGNAL_LOST = "Lost the signal. Holding your place.";
+
+/**
+ * The Quest-first flow (docs/03 §4, docs/04 §6): a headset asking to sit in an existing seat waits this long for the
+ * seat's own device to let it in; a seal PIN (a headset whose browser can't hold a passkey) is 4–6 digits, and this
+ * many wrong tries lock it for SEAL_PIN_LOCK_MS.
+ */
+export const HEADSET_REQUEST_TTL_MS = 2 * 60_000;
+export const SEAL_PIN_MIN = 4;
+export const SEAL_PIN_MAX = 6;
+export const SEAL_PIN_TRIES = 5;
+export const SEAL_PIN_LOCK_MS = 15 * 60_000;
+/** A valid seal PIN: 4–6 digits. */
+export const validSealPin = (pin: unknown): pin is string => typeof pin === "string" && /^\d{4,6}$/.test(pin);

@@ -62,7 +62,8 @@ export default function Demo() {
           ))}
           <Card label="Headset and gallery">
             <h2 className="h2">Headset</h2>
-            <p className="body">Quest Browser → <span className="mono">{location.host}/xr</span></p>
+            <p className="body">A Quest as someone's own seat: Quest Browser → <span className="mono">{location.host}/xr</span> → Join a trip → <span className="mono">{seed.joinCode}</span> → "I'm {seed.organizer.name}" (this device gets "Let this headset in?"), or take a new seat.</p>
+            <p className="small">The shared headset (the organizer's controls, nobody's terms): <span className="mono">{location.host}/xr/code</span> and type</p>
             <div className="join-code center">{seed.headsetCode}</div>
             <hr className="rule" />
             <h2 className="h2">Gallery</h2>

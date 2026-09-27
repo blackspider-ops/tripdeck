@@ -237,6 +237,8 @@ export abstract class HelmCore {
       if (t.removedMemberIds.includes(id)) continue;
       const m = this.members.get(id);
       if (m && sameHash(token, m.tokenHash)) return m;
+      // Quest-first: a headset let into this seat acts as the member until its key expires (12 h)
+      if (m?.headset && m.headset.expiresAt > Date.now() && sameHash(token, m.headset.tokenHash)) return m;
     }
     return null;
   }
@@ -295,6 +297,7 @@ export abstract class HelmCore {
       // L1-009 / S2-012: an invited seat (an absent friend, or a seat the organizer reset) says whether its link was
       // opened, so everyone sees a claim and the organizer stops offering a spent link
       if (m.role === "absent" || m.inviteKeyHash) c.inviteOpen = !m.inviteKeyHash;
+      if (m.onHeadset || (m.headset && m.headset.expiresAt > Date.now())) c.onHeadset = true;
       return c;
     });
   }

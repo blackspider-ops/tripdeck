@@ -89,14 +89,15 @@ export const api = {
   worldPack: (osmId: string) => call<{ pack: CityPack; cached: boolean; registered: boolean }>("POST", "/world/packs", { osmId }, undefined, undefined, { timeoutMs: 90_000 }),
 
   /** A new voyage: a date range (`dateRange`), or the older fixed windows (`windowIds`, still accepted by the helm). */
-  createTrip: (p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: string[]; destination?: Destination; windowIds?: string[]; dateRange?: DateRange }) =>
+  createTrip: (p: { name: string; organizerName: string; band: Band; origin: Origin; cityIds?: string[]; destination?: Destination; windowIds?: string[]; dateRange?: DateRange; device?: "headset" }) =>
     withCrewKey(call<{ tripId: string; joinCode: string; memberId: string; memberToken: string; crewKey?: string }>("POST", "/trips", { ...p, crewKey: loadCrewKey() })),
 
   tripByCode: (code: string, opts?: CallOpts) =>
     call<{ tripId: string; joinCode: string; name: string; status: TripStatus; crew: CrewPublic[]; takenBands: Band[]; crewClosed?: boolean }>(
       "GET", `/trips/by-code/${encodeURIComponent(code)}`, undefined, undefined, undefined, opts),
 
-  join: (tripId: string, p: { name: string; band: Band; origin: Origin }) =>
+  /** `device: "headset"`: the seat is taken on a headset (Quest-first; the crew sees it as on a headset). */
+  join: (tripId: string, p: { name: string; band: Band; origin: Origin; device?: "headset" }) =>
     withCrewKey(call<{ memberId: string; memberToken: string; crewKey?: string }>("POST", `/trips/${tripId}/members`, { ...p, crewKey: loadCrewKey() })),
 
   addAbsent: (tripId: string, token: string, p: { name: string; band: Band; origin: Origin }) =>
@@ -126,6 +127,19 @@ export const api = {
   pairHeadset: (code: string) =>
     call<{ tripId: string; joinCode: string; deviceToken: string }>("POST", "/xr/pair", { code }),
 
+  // Quest-first (docs/04 §6): a headset asks to sit in an existing seat; that seat's own device lets it in
+  attachHeadset: (joinCode: string, memberId: string) =>
+    call<{ requestId: string; secret: string; expiresAt: number; askName: string; tripId: string; joinCode: string }>("POST", "/xr/attach", { joinCode, memberId }),
+  attachStatus: (requestId: string, secret: string) =>
+    call<{ status: "pending" | "denied" | "expired" | "approved"; expiresAt?: number; tripId?: string; joinCode?: string; memberId?: string; deviceToken?: string }>(
+      "POST", "/xr/attach/status", { requestId, secret }),
+  /** The seat's own device ends the headset it let in. */
+  detachHeadset: (tripId: string, token: string) => call<{ ok: true }>("DELETE", `/trips/${tripId}/my-headset`, undefined, token),
+  /** The seal PIN (a headset whose browser can't hold a passkey): 4–6 digits; replacing one needs the current PIN. */
+  sealPinStatus: (tripId: string, token: string) => call<{ set: boolean }>("GET", `/trips/${tripId}/seal-pin`, undefined, token),
+  setSealPin: (tripId: string, token: string, pin: string, currentPin?: string) =>
+    call<{ ok: true }>("POST", `/trips/${tripId}/seal-pin`, { pin, ...(currentPin ? { currentPin } : {}) }, token),
+
   /** SEC-018: the organizer revokes the paired headset. */
   unpairHeadset: (tripId: string, token: string) => call<{ ok: true }>("DELETE", `/trips/${tripId}/headset`, undefined, token),
 
@@ -144,7 +158,8 @@ export const api = {
 
   // passkeys (PRD E2)
   /** registered: usable on this address; required: the seal needs a passkey (one exists somewhere). */
-  passkeyStatus: (tripId: string, token: string) => call<{ registered: boolean; required?: boolean }>("GET", `/trips/${tripId}/passkey`, undefined, token),
+  /** pin (Quest-first): a seal PIN is on file, so a seal without a passkey needs it. */
+  passkeyStatus: (tripId: string, token: string) => call<{ registered: boolean; required?: boolean; pin?: boolean }>("GET", `/trips/${tripId}/passkey`, undefined, token),
   passkeyRegisterOptions: (tripId: string, token: string) => call<PublicKeyCredentialCreationOptionsJSON>("POST", `/trips/${tripId}/passkey/register/options`, {}, token),
   passkeyRegisterVerify: (tripId: string, token: string, response: RegistrationResponseJSON) => call<{ ok: true }>("POST", `/trips/${tripId}/passkey/register/verify`, { response }, token),
   passkeyAuthOptions: (tripId: string, token: string) => call<PublicKeyCredentialRequestOptionsJSON>("POST", `/trips/${tripId}/passkey/auth/options`, {}, token),

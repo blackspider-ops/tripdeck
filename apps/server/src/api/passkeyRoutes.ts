@@ -75,7 +75,8 @@ export function mountPasskeyRoutes(r: Router, helm: TripService) {
     // canRegister (S2-009): this phone may add one here (it holds the seat's passkey claim, and none is in the way)
     const o = originFor(req);
     const { registered, required } = passkeyStatus(m._id, o.rpID);
-    res.json({ registered, required, canRegister: !registrationBlock(m._id, o.rpID, claimNonceOf(req, m._id)) });
+    // pin (Quest-first): the member set a seal PIN on a headset; a seal then needs it (or a passkey)
+    res.json({ registered, required, canRegister: !registrationBlock(m._id, o.rpID, claimNonceOf(req, m._id)), ...(m.sealPin ? { pin: true } : {}) });
   }));
   r.post("/trips/:tripId/passkey/register/options", asyncRoute(async (req, res) => {
     const m = memberOf(req);

@@ -70,7 +70,8 @@ export const WaxSeal = (p: P) => (
   <Base {...p}>
     <path d="M12 3.2l2 1.4 2.4-.3 1 2.2 2.2 1-.3 2.4 1.4 2-1.4 2 .3 2.4-2.2 1-1 2.2-2.4-.3-2 1.4-2-1.4-2.4.3-1-2.2-2.2-1 .3-2.4-1.4-2 1.4-2-.3-2.4 2.2-1 1-2.2 2.4.3z" />
     <circle cx="12" cy="12" r="4.4" />
-    <path d="M10 13.8l2-4.4 2 4.4M10.8 12.4h2.4" />
+    {/* a check pressed into the wax, never a letter: an "A" read as "voted for chart A" */}
+    <path d="M9.8 12.2l1.6 1.6 2.9-3.2" />
   </Base>
 );
 

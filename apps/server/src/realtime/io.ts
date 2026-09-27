@@ -113,13 +113,20 @@ const HANDLERS: { [K in Exclude<keyof ClientToServer, "trip:join" | "client:log"
   },
   "plan:vote": (c, p) => c.helm.vote(c.tripId(), c.memberId(), str(p.planId)),
   "plan:pick": (c, p) => c.helm.pick(c.tripId(), c.actor(), str(p.planId)),
-  "seal:set": (c, p) => c.helm.setSeal(c.tripId(), c.memberId(), str(p.bookingId), optStr(p.assertionToken, F.text)),
+  "seal:set": (c, p) => c.helm.setSeal(c.tripId(), c.memberId(), str(p.bookingId), optStr(p.assertionToken, F.text), optStr(p.pin, 12)),
   "seal:cancel": (c, p) => c.helm.cancelSeal(c.tripId(), c.memberId(), str(p.bookingId)),
   "booking:retry": (c) => c.helm.retry(c.tripId(), c.actor()),
   // SEC-011: organizer (phone or paired headset) voids a booking that is still gathering seals
   "booking:callOff": (c, p) => c.helm.callOff(c.tripId(), c.actor(), optStr(p.bookingId)),
   // SEC-010: the organizer closes / reopens the crew to joins by code. L3-004: `open` must be a boolean (a string
   // "true" used to close the crew). (The headset is unpaired over REST only, `DELETE /api/trips/:id/headset`.)
+  // Quest-first: the seat's own device lets a headset in (or not)
+  "headset:approve": (c, p) => {
+    if (typeof p.allow !== "boolean") throw badInput();
+    c.helm.approveAttach(c.tripId(), c.memberId(), str(p.requestId, F.text), p.allow);
+  },
+  // chart-room pins: the course (organizer, or the crew while crewPins is on)
+  "course:set": (c, p) => c.helm.setCourse(c.tripId(), c.actor(), { destination: p.destination, crewPins: p.crewPins }),
   "crew:setOpen": (c, p) => {
     if (typeof p.open !== "boolean") throw badInput();
     return c.helm.setCrewOpen(c.tripId(), c.actor(), p.open);

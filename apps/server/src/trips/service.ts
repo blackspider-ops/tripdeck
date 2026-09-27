@@ -49,7 +49,8 @@ export class TripService extends HelmCore implements Helm {
 
   // ---------- crew ----------
   createTrip(p: CreateTrip) { return this.crew.createTrip(p); }
-  join(tripId: string, p: { name: string; band: Band; origin: Origin; crewKey?: unknown }) { return this.crew.join(tripId, p); }
+  join(tripId: string, p: { name: string; band: Band; origin: Origin; crewKey?: unknown; device?: unknown }) { return this.crew.join(tripId, p); }
+  setCourse(tripId: string, actor: Actor, p: { destination?: unknown; crewPins?: unknown }) { return this.crew.setCourse(tripId, actor, p); }
   setCrewOpen(tripId: string, actor: Actor, open: boolean) { return this.crew.setCrewOpen(tripId, actor, open); }
   addAbsent(tripId: string, actor: Actor, p: { name: string; band: Band; origin: Origin }) { return this.crew.addAbsent(tripId, actor, p); }
   reissueInvite(tripId: string, actor: Actor, memberId: string) { return this.crew.reissueInvite(tripId, actor, memberId); }
@@ -64,6 +65,12 @@ export class TripService extends HelmCore implements Helm {
   headsetCode(tripId: string, actor: Actor) { return this.identity.headsetCode(tripId, actor); }
   pairHeadset(code: string) { return this.identity.pairHeadset(code); }
   unpairHeadset(tripId: string, actor: Actor) { return this.identity.unpairHeadset(tripId, actor); }
+  // Quest-first: headsets as crew devices
+  requestAttach(joinCode: string, memberId: string) { return this.identity.headsets.requestAttach(joinCode, memberId); }
+  approveAttach(tripId: string, memberId: string, requestId: string, allow: boolean) { return this.identity.headsets.approveAttach(tripId, memberId, requestId, allow); }
+  attachStatus(requestId: string, secret: string) { return this.identity.headsets.attachStatus(requestId, secret); }
+  detachHeadset(tripId: string, memberId: string) { return this.identity.headsets.detach(tripId, memberId); }
+  setSealPin(tripId: string, memberId: string, pin: unknown, current?: unknown) { return this.identity.headsets.setSealPin(tripId, memberId, pin, current); }
 
   // ---------- the table ----------
   startTable(tripId: string, actor: Actor) { return this.table.startTable(tripId, actor); }
@@ -73,7 +80,7 @@ export class TripService extends HelmCore implements Helm {
   vote(tripId: string, memberId: string, planId: string) { return this.dryrun.vote(tripId, memberId, planId); }
   dryrunControl(tripId: string, actor: Actor, action: "pause" | "resume" | "restart") { return this.dryrun.dryrunControl(tripId, actor, action); }
   pick(tripId: string, actor: Actor, planId: string) { return this.sealing.pick(tripId, actor, planId); }
-  setSeal(tripId: string, memberId: string, bookingId: string, assertionToken?: string) { return this.sealing.setSeal(tripId, memberId, bookingId, assertionToken); }
+  setSeal(tripId: string, memberId: string, bookingId: string, assertionToken?: string, pin?: string) { return this.sealing.setSeal(tripId, memberId, bookingId, assertionToken, pin); }
   cancelSeal(tripId: string, memberId: string, bookingId: string) { return this.sealing.cancelSeal(tripId, memberId, bookingId); }
   callOff(tripId: string, actor: Actor, bookingId?: string) { return this.sealing.callOff(tripId, actor, bookingId); }
   retry(tripId: string, actor: Actor) { return this.sealing.retry(tripId, actor); }

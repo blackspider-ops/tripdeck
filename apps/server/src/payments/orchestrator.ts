@@ -316,8 +316,11 @@ export class PaymentsOrchestrator {
     const b = this.bookings.get(bookingId);
     const s = b?.seals.find((x) => x.memberId === memberId);
     if (!b || !s) return "none";
-    // a second tap while the first is still asking the provider is the same seal: locked, not a second instruction
-    if (s.status !== "PENDING" || !this.gathering(b) || this.setting.has(s.idempotencyKey)) return "locked";
+    // a second tap while the first is still asking the provider is the same seal: locked, not a second instruction.
+    // A seal its owner lifted may be set again while the others are still gathering (never once settling has begun):
+    // publicly it read "set" all along (S2-001), so setting it again changes nothing anyone else can see.
+    const lifted = isLifted(s) && !this.held.has(b._id);
+    if ((s.status !== "PENDING" && !lifted) || !this.gathering(b) || this.setting.has(s.idempotencyKey)) return "locked";
     this.setting.add(s.idempotencyKey);
     try {
       const card = await this.provider.ensureAgentCard(memberId);
@@ -361,7 +364,9 @@ export class PaymentsOrchestrator {
 
   /** A seal is "set" (public AUTHORIZED): its instruction is on file. False when it can't be set any more. */
   private markSet(b: BookingRec, s: SealRec, instructionRef: string) {
-    if (s.status !== "PENDING" || !this.gathering(b)) return false;
+    const lifted = isLifted(s) && !this.held.has(b._id);
+    if ((s.status !== "PENDING" && !lifted) || !this.gathering(b)) return false;
+    if (lifted) { s.declineReason = undefined; this.persistSoon(b); } // set again after a lift
     s.instructionRef = instructionRef;
     if (b.status === "PENDING") this.setBooking(b, "AUTHORIZING"); // one write with the seal's (persistSoon)
     this.setSealStatus(b, s, "AUTHORIZING"); // public: "set" (no outcome); internally: waiting for the settle point
@@ -583,6 +588,9 @@ type ForgetfulProvider = PaymentProvider & { forget?(p: { idempotencyPrefix: str
  * authorization outcome, until the booking's outcome is published and every seal turns CAPTURED or VOIDED together.
  * While `held` (S2-001: settling, outcome not yet published) every seal simply reads "set".
  */
+/** A seal its own member lifted ("Lift my seal"), as opposed to one the card declined. */
+const isLifted = (s: SealRec) => s.status === "DECLINED" && s.declineReason === "user_cancelled";
+
 function publicSealOf(b: BookingRec, s: SealRec, held: boolean): SealStatus {
   if (!held && b.status === "CAPTURED") return "CAPTURED";
   if (!held && (b.status === "VOIDED" || b.status === "ANY_DECLINED")) return "VOIDED";

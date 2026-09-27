@@ -89,7 +89,7 @@ export function useCrew(): CrewView {
  * button. The success path usually moves the screen on. If the socket drops before the answer, the ack is lost for
  * good, so the button re-opens then too. Returns false from `send` if this action already went out.
  */
-export function useSendGuard<K extends keyof ClientToServer, P = undefined>(event: K, opts: { reopenOnOk?: boolean } = {}) {
+export function useSendGuard<K extends keyof ClientToServer, P = undefined>(event: K, opts: { reopenOnOk?: boolean; onOk?: () => void } = {}) {
   const { store } = useCtx();
   const connected = useTripSelector((s) => s.connected);
   const [sent, setSent] = useState(false);
@@ -103,6 +103,8 @@ export function useSendGuard<K extends keyof ClientToServer, P = undefined>(even
     if (!connected && inflight.current > 0) reopen(); // answer lost with the socket
   }
   const { reopenOnOk = false } = opts;
+  const onOk = useRef(opts.onOk);
+  onOk.current = opts.onOk;
   const send = (body: Parameters<ClientToServer[K]>[0], p?: P) => {
     if (latch.current) return false;
     latch.current = true;
@@ -115,6 +117,7 @@ export function useSendGuard<K extends keyof ClientToServer, P = undefined>(even
     store.emit(event, body, (r: Ack) => {
       if (inflight.current !== id) return;
       inflight.current = 0;
+      if (r.ok) onOk.current?.();
       if (!r.ok || reopenOnOk) reopen();
     });
     return true;

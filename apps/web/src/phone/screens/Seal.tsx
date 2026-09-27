@@ -12,6 +12,7 @@ import { Dividers, Ledger, WaxSeal } from "../components/icons";
 import { SealRow, sealIsSet } from "../components/SealRow";
 import { useTwoTap } from "../components/useTwoTap";
 import { Card, Eyebrow, LinkButton, MarginNote, Page, Plotting, StampButton } from "../components/ui";
+import { PinPad } from "../components/PinPad";
 
 const FOOTER = {
   visa_sandbox: "Paid with a Visa agent card, capped at your terms. Sandbox.",
@@ -21,16 +22,20 @@ const FOOTER = {
 /** P8 — Your share & Seal. The share is private to this phone. */
 export default function Seal() {
   // O2-046: the booking, my share and the chart; a turn or a vote doesn't redraw the seal screen
-  const { session, isOrganizer, crew } = useCrew();
+  const { session, isOrganizer, crew, store } = useCrew();
   const booking = useTripSelector((s) => s.booking);
   const mine = useTripSelector((s) => s.sealPrivate);
   // R2-WP-14: dateWindows is a static field (the store keeps it from the join's full snapshot)
   const dateWindows = useTripSelector((s) => s.trip!.dateWindows);
   const plan = useTripSelector((s) => s.shortlist.find((p) => p.planId === s.booking?.planId));
   const resultFor = useTripSelector((s) => s.lastResult?.bookingId ?? null);
-  // seal:set stays "sent" once it lands (the seal row moves on); lifting it re-opens Set your seal
-  const [sealSent, sendSeal, { reset: reopenSeal }] = useSendGuard("seal:set");
+  const declined = useTripSelector((s) => s.declined);
+  // seal:set stays "sent" once it lands (the seal row moves on); lifting it re-opens Set your seal. A seal set again
+  // after a lift clears this phone's "you lifted it" note (the helm sends none: publicly it read "set" all along)
+  const [sealSent, sendSeal, { reset: reopenSeal }] = useSendGuard("seal:set", { onOk: () => { if (booking) store.clearDeclined(booking.bookingId); } });
   const [liftSent, sendLift] = useSendGuard("seal:cancel", { reopenOnOk: true });
+  // "Lift my seal" asks first: a lifted seal left alone voids the booking for everyone
+  const [liftArmed, tapLift] = useTwoTap((bookingId: string) => { if (sendLift({ bookingId })) reopenSeal(); });
   const [callOffSent, sendCallOff] = useSendGuard("booking:callOff");
   // an inline two-tap confirm, not a browser dialog
   const [callOffArmed, tapCallOff] = useTwoTap((bookingId: string) => sendCallOff({ bookingId }));
@@ -40,7 +45,9 @@ export default function Seal() {
   if (!booking || !mine || mine.bookingId !== booking.bookingId) return <Page><Plotting label="Unrolling your share…" /></Page>;
 
   const mySeal = booking.seals.find((s) => s.memberId === session.memberId);
-  const status = mySeal?.status ?? "PENDING";
+  // my own lift (private: publicly a lifted seal still reads "set", S2-001) — I'm told plainly, and can set it again
+  const lifted = declined?.bookingId === booking.bookingId && declined.reason === "user_cancelled";
+  const status = lifted ? "PENDING" : mySeal?.status ?? "PENDING";
   // Publicly a seal is only "set" (AUTHORIZED on the wire) or not: no one, the owner included, sees an authorization
   // outcome before the booking settles (doc 06 §7, SEC-002). A decline reaches only its owner, privately.
   const waitingOn = booking.seals.filter((s) => !sealIsSet(s)).length;
@@ -71,17 +78,16 @@ export default function Seal() {
         <p className="small">{FOOTER[mine.mode]}</p>
       </Card>
 
-      {status === "PENDING" ? (
-        <SealAction bookingId={booking.bookingId} sent={sealSent} send={sendSeal} />
+      {lifted && gathering ? (
+        <div className="margin-note" role="status" aria-live="polite">
+          <p className="body"><b>You lifted your seal.</b> If you don't set it again before the timer, nobody is booked.</p>
+        </div>
+      ) : null}
+      {status === "PENDING" && (!lifted || (gathering && !settling)) ? (
+        <SealAction bookingId={booking.bookingId} sent={sealSent} send={sendSeal} again={lifted} />
       ) : (
         <p className="body row" role="status" aria-live="polite">{statusLine}</p>
       )}
-
-      {(status === "AUTHORIZED" || status === "AUTHORIZING") && othersPending ? (
-        <div className="center">
-          <LinkButton red disabled={liftSent} onClick={() => { if (sendLift({ bookingId: booking.bookingId })) reopenSeal(); }}>Lift my seal</LinkButton>
-        </div>
-      ) : null}
 
       <Card label="The crew's seals">
         <div className="eyebrow">Seals</div>
@@ -89,6 +95,14 @@ export default function Seal() {
         {gathering && waitingOn > 0 && booking.sealDeadlineAt ? <SealCountdown deadline={booking.sealDeadlineAt} /> : null}
         <p className="small">If not every seal is set in time, the booking is called off and nobody is charged.</p>
       </Card>
+
+      {/* secondary, away from the status line, and it asks first (a lifted seal voids the booking for everyone) */}
+      {!lifted && (status === "AUTHORIZED" || status === "AUTHORIZING") && othersPending ? (
+        <div className="center">
+          <LinkButton red disabled={liftSent} onClick={() => tapLift(booking.bookingId)}>{liftArmed ? "Yes, lift my seal" : "Lift my seal"}</LinkButton>
+          {liftArmed ? <p className="small">Lift your seal? If you don't set it again before the timer, nobody is booked.</p> : null}
+        </div>
+      ) : null}
 
       {/* settling: too late to call it off (the helm would answer CAPTURING), so the button goes */}
       {isOrganizer && gathering && !settling ? (
@@ -111,8 +125,8 @@ export default function Seal() {
  * confirm tap seals. A cancelled or failed Face ID prompt is a note, never a seal (L1-001). An unreachable passkey
  * service → confirm tap, and the server answers PASSKEY_REQUIRED if a passkey is on file (note below).
  */
-function SealAction({ bookingId, sent, send }: {
-  bookingId: string; sent: boolean; send: (body: { bookingId: string; assertionToken?: string }) => boolean;
+function SealAction({ bookingId, sent, send, again = false }: {
+  bookingId: string; sent: boolean; send: (body: { bookingId: string; assertionToken?: string; pin?: string }) => boolean; again?: boolean;
 }) {
   const { session } = useCrew();
   const [approving, setApproving] = useState(false);
@@ -120,6 +134,9 @@ function SealAction({ bookingId, sent, send }: {
   const [note, setNote] = useState<{ text: string; addHere?: boolean } | null>(null);
   // L1-004 / O2-026: a PASSKEY_REQUIRED refusal shows once, here, and the shell banner is cleared
   const passkeyRefused = useInlineError(["PASSKEY_REQUIRED"]);
+  // Quest-first: a seal PIN (set on a headset) — asked for here when there's no passkey on this phone
+  const [askPin, setAskPin] = useState(false);
+  const pinRefused = useInlineError(["BAD_PIN", "PIN_LOCKED", "PIN_REQUIRED"], true, ["seal:set"]);
 
   async function setSeal() {
     if (approvingRef.current || sent) return;
@@ -128,6 +145,7 @@ function SealAction({ bookingId, sent, send }: {
     try {
       const step = await prepareSeal(session.tripId, session.memberToken, bookingId);
       if (step.kind === "note") { setNote({ text: step.message, addHere: step.addHere }); return; }
+      if (step.kind === "pin") { setAskPin(true); return; }
       send({ bookingId, assertionToken: step.assertionToken });
     } finally {
       approvingRef.current = false;
@@ -135,10 +153,19 @@ function SealAction({ bookingId, sent, send }: {
     }
   }
 
+  if (askPin || pinRefused.code === "PIN_REQUIRED") {
+    return (
+      <>
+        <PinPad label="Enter your seal PIN" busy={sent} onDone={(pin) => { pinRefused.clear(); send({ bookingId, pin }); }} />
+        {pinRefused.note && pinRefused.code !== "PIN_REQUIRED" ? <MarginNote onClear={pinRefused.clear}>{pinRefused.note}</MarginNote> : null}
+      </>
+    );
+  }
+
   return (
     <>
       <StampButton onClick={() => void setSeal()} disabled={approving || sent}>
-        <WaxSeal size={20} /> {approving ? "Checking your passkey…" : sent ? "Setting your seal…" : "Set your seal"}
+        <WaxSeal size={20} /> {approving ? "Checking your passkey…" : sent ? "Setting your seal…" : again ? "Set my seal again" : "Set your seal"}
       </StampButton>
       <p className="small center">If you added a passkey, approve with Face ID or Touch ID. Otherwise this tap sets it.</p>
       {note ? <MarginNote onClear={() => setNote(null)}>{note.text}</MarginNote>

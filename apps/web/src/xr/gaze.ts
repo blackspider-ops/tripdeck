@@ -103,6 +103,8 @@ export class GazeInput {
   private dotMat: THREE.MeshBasicMaterial;
   private session: XRSession | null = null;
   private now: () => number;
+  /** Where the gaze ray last met its target (a side panel's control, a spot on the globe). */
+  private lastHit: THREE.Intersection | undefined;
 
   constructor(private opts: GazeOptions) {
     this.now = opts.now ?? (() => performance.now());
@@ -149,6 +151,7 @@ export class GazeInput {
     this.raycaster.ray.origin.copy(origin);
     this.raycaster.ray.direction.copy(dir).normalize();
     const found = pickTarget(this.raycaster, this.opts.getTargets());
+    this.lastHit = found?.hit;
     const t = found?.target ?? null;
     // keep the wrapper stable while the same mesh is under the ray (lists may be rebuilt)
     if (!sameTarget(t, this.hover)) this.hover = t;
@@ -165,7 +168,7 @@ export class GazeInput {
     const step = stepDwell(this.dwell, this.hover?.object ?? null, this.now(), !!long);
     this.setFill(this.fill, step.fire || this.dwell.fired ? 0 : step.progress);
     this.setFill(this.longFill, long ? step.longProgress : 0);
-    if (step.fire && this.hover) this.hover.onSelect();
+    if (step.fire && this.hover) this.hover.onSelect(this.lastHit);
     if (step.long && long) long();
   }
 
@@ -177,7 +180,7 @@ export class GazeInput {
     const h = this.hover;
     if (h && (h.enabled?.() ?? true)) {
       markFired(this.dwell, h.object);
-      h.onSelect();
+      h.onSelect(this.lastHit);
     } else {
       this.opts.onEmptySelect?.();
     }
