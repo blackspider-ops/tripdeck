@@ -64,7 +64,7 @@ const MAX_WORDS = 35;
  * O2-033: the pause after a line: its voice's length (or, without one, ~380 ms a word, 2.5 to 9 s) plus a 400 ms
  * breath, never under 2.5 s, counted from when the voice was asked for and scaled by PACE_SCALE.
  */
-const PACE = { msPerWord: 380, minEstimateMs: 2_500, maxEstimateMs: 9_000, breathMs: 400, minLineMs: 2_500 } as const;
+const PACE = { msPerWord: 380, minEstimateMs: 2_500, maxEstimateMs: 9_000, breathMs: 1_200, minLineMs: 3_000 } as const;
 
 /**
  * A big table (MAX_CREW is 12) keeps the meeting short with a speaking budget: every mate still decides every watch

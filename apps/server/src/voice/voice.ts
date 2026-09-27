@@ -33,7 +33,8 @@ const STT_TIMEOUT_MS = 15_000;
 /** Turns whose audio we can serve (turnId → cache key), most recent first. */
 const TURN_AUDIO_ENTRIES = 20_000;
 /** Expo mode speaks a little faster; without a readable mp3 header, length is estimated at 2.7 words a second. */
-const EXPO_SPEED = 1.1;
+/** ElevenLabs speaking speed (0.7–1.2). Human pace by default; VOICE_SPEED overrides. */
+const VOICE_SPEED = Math.min(1.2, Math.max(0.7, Number(process.env.VOICE_SPEED?.trim() || 0.9)));
 const WORDS_PER_SEC = 2.7;
 
 const SETTINGS: Record<string, { stability: number; similarity_boost: number; style: number }> = {
@@ -81,7 +82,7 @@ export async function restoreTurnAudio(turnId: string, key: string): Promise<boo
 export async function synthesize(turnId: string, text: string, voiceKey: string): Promise<number | null> {
   if (!features.eleven() && !features.cached()) return null;
   const voiceId = config.eleven.voices[voiceKey] ?? config.eleven.voices["1"];
-  const speed = config.expoMode ? EXPO_SPEED : 1.0;
+  const speed = VOICE_SPEED;
   // Same text + voice → reuse (makes rehearsals and the Expo demo instant)
   const key = createHash("sha1").update(`${voiceId}|${speed}|${text}`).digest("hex");
   const cached = ttsPath(key);
