@@ -24,10 +24,8 @@ await restoreWorldPacks().then((n) => { if (n) console.log(`[helm] ${n} generate
 await connectDb();
 // L5-002: one writer. A new instance waits for the previous helm's lease (released on its shutdown, or expired)
 // before its restore voids "abandoned" seals and resets "interrupted" tables that another process may still own.
-await acquireHelmLease();
-// L5-009: a failed restore (a network blip on a load, a malformed doc) never crash-loops the boot: the helm starts,
-// answers 503 LOADING for voyages it doesn't hold yet, and merges what is stored in the background.
-await restoreOrRetry(helm);
+// Render (and any zero-downtime host) keeps the old instance until the new one answers its health check, so the port
+// opens first and the lease + restore happen after listen(); until then voyages answer 503 LOADING (L5-009).
 
 const app = express();
 // SEC-007 / TR3-015: trust exactly the proxies in front (0 on a bare host, 1 on Render/Fly; see config.limits), so a
@@ -51,6 +49,8 @@ http.listen(config.port, () => {
   console.log(`   gemini: ${features.gemini() ? config.gemini.model : "off (rule-based lines)"} · voices: ${features.eleven() ? "ElevenLabs" : "off (captions + browser speech)"}`);
   console.log(`   mongo: ${features.mongo() ? "on" : "off (memory)"} · payments: ${helm.payments.mode} · memory: ${features.backboard() ? "Backboard" : "local file"}`);
   console.log(`   mode: ${config.production ? "production" : config.devMode ? "development (dev routes open)" : "local (dev routes need DEV_KEY)"}\n`);
+  // L5-009: a failed restore never crash-loops the boot; it merges what is stored in the background.
+  void acquireHelmLease().then(() => restoreOrRetry(helm)).catch((e) => console.error("[helm] lease/restore failed", e));
 });
 
 // SEC-015 / OPT-040: idle voyages leave memory (every 15 minutes, R2-WP-13: so "lone after VOYAGE_LONE_HOURS" is
